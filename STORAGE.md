@@ -1,0 +1,73 @@
+# Storing the confidential aspects of OSS applications
+
+## Introduction
+
+It is vital to combine the automation of OSS assessments with the existing confidentiality requirements. As such, any stakeholder executing assessments may not share, and hence is required to store in a private manner:
+- any assessment comment added to an application of a vehicle type
+- any metadata added to any of the (documents in the) submitted files
+- the contents of any of the files in the Library or any data belonging to an OSS Application.
+
+This hard requirement has some technological consequences, given the combination with linked open data as described [here](TECHNOLOGY.md).
+
+## Using a backend database
+
+It is evidently possible to store confidential data in a proprietary database, run at the premises of the assessor. Several disadvantages however exist:
+- the stakeholder cannot (simply) share the data with other allowed stakeholders, who need the work to be reused as well.
+- the data interface layer of the internal application requires CRUD operation on a proprietary database, next to accessing routins for KG's: at least two interfaces are then to be supported.
+- the db itself requires maintenance and results in an extra operational cost, which only increases when external access by authorised stakeholders is needed.
+
+> [!NOTE]
+> Running database servers with external access is a complication on its own and does not reduce the operational cost of these systems.
+
+> [!CAUTION]
+> External stakeholders may not be allowed to use login data for the database directly and hence complicated authorisation mechanisms allowing to do so are to be put in place.
+
+When working already with the Linked Open Data from the Agency, it could be recommended to store the private data also inherently as linked data, open to stakeholders who (also) need it.
+
+## Using a private triple store
+
+One such solution requires the installation and maintenance of a private instance of a triple store, which also would enable the storage of linked data. But several disadvantages still exist:
+- the ontology must be shared with other stakeholders for them to be able to read from this triple store.
+- authentication on a triple store is not simple, because access is to be configured per dataset or even on lower levels.
+- the cost on maintaining and operating a local TS is about the same as running database servers.
+
+> [!WARNING]
+> Apart from the same complication as above and the increased complexity in most triple store implementations to authenticate and give access to only a subset of triples, there is a contradiction in hosting separate triple stores for authenticated access from outside.
+
+An ideal solution should be built on open data, with a rigourous access model built in. The inventor of the WWW, at [Inrupt](https://www.inrupt.com/), has provided a solution based on this vision which could be examined by the stakeholders of automating OSS assessments: Solid Pods.
+
+## Storing and exchanging OSS private data using Solid Pods
+
+### Introduction
+
+Solid Pods are explained [here](https://www.inrupt.com/videos/what-is-a-solid-pod). In essence, these pods allow structured and unstructured resources to be stored in the area of control of the stakeholder (a person or organisation), whereby he/she alone is able to control precise access to this data.
+
+### Approach
+
+The architectural consequence of using these Pods are:
+- each stakeholder will create a Container 'Applications', in which (per vehicle type) another Container will store the metadata of its assessments, per file. We explain below why this Container should not regroup OSS applications.
+- These containers within the 'OSS Applications' Container are only available for the stakeholder themselves, to execute [CRUD operations](https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/read-write-data/) on. These CRUD operations are all described in the [Requirements](REQUIREMENTS.md).
+- The data is stored using the Agency's [common ontology for Authorisations](ERA_KG.md).
+
+> [!TIP]
+> You are invited to collaborate on this ontology for Authorisations by forking its Github repository.
+
+- If another stakeholder requires to look up information on files submitted in his applications, he can be given access to the data in the relevant Container (Vehicle Type based). Based on the hash of the file, the metadata and remarks can be shared. No other data can be shared.
+
+### Proposed Containers
+
+After creation of the Pod by each stakeholder wishing to automate the authorisation process, a certain structure of Containers must be chosen in common. The root container should be called in common, we propose 'Applications'. Then, there is a choice to make regarding the Containers holding the confidential data, only accessible for allowed (other) stakeholders.
+
+> [!WARNING]
+> The EU Legislation does not allow data of an Application to be shared, which leads to the constraint that no containers per application are allowed. Access to individual applications and what they hold as information is not allowed explicitly.
+
+The legislation does however not prohibit that authorising entities work efficiently and reuse observations and facts about files submitted in Applications. This means that data about individual files, when having been reused in OSS applications and only when added by authorised stakeholders themselves, can be shared in principle if the annotating stakeholder agrees on this sharing.
+
+> [!IMPORTANT]
+> The data added by stakeholders is limited to observation comments, a check on the dates, the scope and applicability. No contents of the file are allowed to be annotated again, unless the data is on public registers like ERADIS or ERATV.
+
+As stakeholders on Authorisations will generally work on vehicles belonging to the same type, we propose the Container to be named after the Vehicle type. The dataset within this container will then contain instances (Things) of the [SolidDataSet](https://docs.inrupt.com/developer-tools/javascript/client-libraries/structured-data/#structured-data).
+
+The structure of the open data with strictly controlled access will be documented as discussed above.
+
+
