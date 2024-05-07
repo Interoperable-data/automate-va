@@ -2,7 +2,9 @@
 
 This document will be updated with information regarding how to access the data below.
 
-The EU Agency for Railways will make available the following public datasets in a Knowledge Graph (further: KG):
+## Registers which are being migrated to Linked Open Data
+
+The EU Agency for Railways will make/is making available the following public datasets in a Knowledge Graph (further: KG):
 
 ### ERADIS
 Please note that the first publication as linked data of ERADIS will only contain a static, non-verifiable image of the following data:
@@ -26,3 +28,10 @@ The Vehicle Type information is composed of 4 major groups of data:
 
 ### RINF
 At the moment, no use of the existing RINF KG is foreseen in the context of VA.
+
+## Shared Ontology for Verified Permissions
+
+The Agency proposes to/is asked by its stakeholders to work together efficiently. To that end, it has been working and sharing a common vocabulary and ontology to store the open data in its Registers. To enable advanced collaboration regarding [Authorisations, Approvals and other verified Permissions](https://linkedvocabs.org/data/VPADoc/doc/index-en.html), an ontology will be made available in order to commonly store the work in these processes, while strictly following the legal obligations regarding confidentiality.
+
+> [!TIP]
+> The linked Ontology is a draft proposal and we invite the stakeholders to collaborate on its completeness.
