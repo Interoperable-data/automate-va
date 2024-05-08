@@ -1,6 +1,6 @@
 # Requirements for automated assessment
 
-In order to automate assessments, the following 3-step method could be used. 
+Automating assessments requires a set of general information from each Application and three process steps. 
 
 To inform the assessor of the application as a whole, general information should in principle be available in most views, so as to:
 - [ ] display basic information about
@@ -9,11 +9,13 @@ To inform the assessor of the application as a whole, general information should
   - [ ] milestones (dates) of the Application.
 - [ ] display the subsystems (and IC's) which the applicant declared applicable for the change/application, and allow for this collection to be updated. This updated collection will serve the linking of documents with the SS/IC they cover in step 2.
 
+In order to execute an assessment, documents need to be checked on relevance and applicability, linked with legal requirements they close and produce an assessment report.
+
 ## 1. Displaying the Library (Files), extracting Documents
 The following functions are required:
 - [ ] listing the submitted *files* (as per Library), and allowing:
-  - [ ] extracting ONE or more *documents* from each file, indicating on what pages each document is present in the file.
-  - [ ] to check whether this file was already submitted in another application.
+  - [ ] extracting one or more *documents* from each file, indicating on what pages each document is present in the file.
+  - [ ] checking whether this file was already submitted in another application.
 - Per document, extracted as such from each file:
   - [ ] provide a clear, human-readable label (Defaults to the filename, but this is rarely a good label)
   - [ ] allow to mark the document as "not applicable" if such would be the case in this specific application. Note that the status "obsolete" or "expired" is managed through the expiration dates or through the version of the document as submitted (older DOC for instance).
@@ -30,7 +32,7 @@ The following functions are required:
  
 ## 2. Assigning documents to legal requirements
 The following function is required:
-  - [ ] what subsystem(s) it is documenting, and if relevant, what IC(s). Note that
+  - [ ] what subsystem(s) it is documenting, and if relevant, what IC(s). Note that:
      - a document can sometimes cover multiple subsystems and IC's.
      - the applicant is supposed to announce this list, but as already mentioned, corrections by the assessor are not rare.
      - a special addressing system can be used to store this information in the document.
@@ -46,4 +48,4 @@ The following functions are required:
   - [ ] Generate the fixed phrases which appear in these assessments.
   - [ ] Allow for the easy conversion of this data into a Word file which can be submitted into OSS, after separate signing process as executed by the assessor.
      
-The assessment information may only be stored in private data stores: see [recommendations on storage](STORING.md).
+The assessment information may only be stored in private data stores: see [recommendations on storage](STORAGE.md).
