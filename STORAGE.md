@@ -59,7 +59,7 @@ The architectural consequence of using these Pods are:
 After creation of the Pod by each stakeholder wishing to automate the authorisation process, a [certain structure](https://docs.inrupt.com/ess/latest/services/service-pod-storage/#pod-storage-resource-container) of Containers must be chosen in common. The root container should be called in common, we propose 'Applications'. Then, there is a choice to make regarding the lower Containers holding the confidential data, only accessible for allowed (other) stakeholders.
 
 ``
-https://{POD_PROVIDER_URL}/storage/Applications/{VehicleType}/{file-hash}
+https://storage.{ESS Domain}/{Unique Root Container}/Applications/{VehicleType}/files#{file-hash}
 ``
 
 > [!WARNING]
