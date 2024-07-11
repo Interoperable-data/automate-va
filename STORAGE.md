@@ -36,6 +36,9 @@ One such solution requires the installation and maintenance of a private instanc
 
 An ideal solution should be built on open data, with a rigourous access model built in. The inventor of the WWW, at [Inrupt](https://www.inrupt.com/), has provided a solution based on this vision which could be examined by the stakeholders of automating OSS assessments: Solid Pods.
 
+> [!TIP]
+> If an API already exists at the premises of the stakeholder, a Triple Store is not needed if the data can be presented as [JSON-LD](https://json-ld.org/) or [any other linked Data presentation format](https://data.europa.eu/en/academy/incorporating-open-data-your-application).
+
 ## Storing and exchanging private data using Solid Pods
 
 ### Introduction
