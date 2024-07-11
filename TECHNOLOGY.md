@@ -28,7 +28,7 @@ In conclusion, all data enabling to link (numbers of) vehicles with the underlyi
 - For ERADIS' IO documents, use the available KG's, which will need to be extended with the file hashes. This allows assessors to easily collect the data of ERADIS, based on OSS files.
 - For ERATV data, idem.
 
-The Agency proposes to use the Solid Project technology, as detailed [here](STORAGE.md) in order to store the confidential info, which nevertheless may need to be shared with colleagues. 
+The Agency proposes to examine the Solid Project technology, as detailed [here](STORAGE.md) in order to store the confidential info, which nevertheless may need to be shared with colleagues.
 
 ### UI
 - Even if front-end frameworks can speed up the delivery of the UI, we would currently recommend to build the web application with pure Javascript, HTML and CSS.
