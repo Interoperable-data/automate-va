@@ -31,7 +31,7 @@ At the moment, no use of the existing RINF KG is foreseen in the context of VA.
 
 ## Shared Ontology for Verified Permissions
 
-The Agency proposes to/is asked by its stakeholders to work together efficiently. To that end, it has been working and sharing a common vocabulary and ontology to store the open data in its Registers. To enable advanced collaboration regarding [Authorisations, Approvals and other verified Permissions](https://linkedvocabs.org/data/VPADoc/doc/index-en.html), an ontology will be made available in order to commonly store the work in these processes, while strictly following the legal obligations regarding confidentiality.
+The Agency proposes to/is asked by its stakeholders to work together efficiently. To that end, it has been working and sharing a common vocabulary and ontology to store the open data in its Registers. To enable advanced collaboration regarding [Authorisations, Approvals and other verified Permissions](https://w3id.org/vpa), an ontology will be made available in order to commonly store the work in these processes, while strictly following the legal obligations regarding confidentiality.
 
 > [!TIP]
-> The linked Ontology is a draft proposal and we invite the stakeholders to collaborate on its completeness.
+> The linked Ontology is a draft proposal and we invite the stakeholders to collaborate on its completeness. We will currently focus on providing a common vocabulary regarding EC Certificates & Declarations, whereby we maximally reuse other ontologies.
