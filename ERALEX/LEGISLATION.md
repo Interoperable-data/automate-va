@@ -1,11 +1,11 @@
 # Railway Legislation
 
-In order to represent Directives, TSIs and other legal references, like IC's and Subsystems as IRI's, and not as strings, the EU Agency for Railways proposes a set of properties and classess to be used.
+In order to represent Directives, TSIs and other legal references, like IC's and Subsystems as IRI's, and not as strings, the EU Agency for Railways proposes a set of properties and classess to be used. The namespace for European Legislation Identifier `eli:`ontology is `[[http://](https://op.europa.eu/en/web/eu-vocabularies/eli)](http://data.europa.eu/eli/ontology#).
 
 The following example will be elaborated in this document:
 
 ```csharp
-eralex:dir-2014-38  rdf:type  vp:Requirement ;
+eralex:dir-2014-38  rdf:type  vpa:Requirement ;
         rdfs:comment    "Amendment to Annex III to Directive 2008/57/EC, as far as noise pollution is concerned"^^<xsd:string> ;
         rdfs:label      "2014/38"^^<xsd:string> ;
         rdfs:seeAlso    "https://eur-lex.europa.eu/eli/dir/2014/38/oj"^^<xsd:anyURI> ;
@@ -17,7 +17,7 @@ eralex:dir-2014-38  rdf:type  vp:Requirement ;
 We also will reuse the following TSI:
 
 ```js
-eralex:cir-2023-1694  rdf:type  vp:Requirement ;
+eralex:cir-2023-1694  rdf:type  vpa:Requirement ;
 ...
         eli:has_part  eralex:ic-2023-1694-5.2.1 , eralex:ic-2023/1694-5.3.1.1 , eralex:ic-2023/1694-5.3.1 , eralex:ic-2023/1694-5.3.3 , eralex:ic-2023/1694-5.2.1 , eralex:ic-2023-1694-5_3.1.1 , eralex:ic-2023-1694-5_3.1 , eralex:ic-2023-1694-5_3.3 , eralex:ic-2023-1694-5_2.1 ;
         owl:deprecated  "false"^^<xsd:boolean> ;
@@ -40,7 +40,7 @@ eralex:ic-2020-387-TS-3
 
 ### Directives, Regulations, Decisions
 
-For full `eli"LegalResource`, like directives, regulations, decisions, etc:
+For full `eli:LegalResource`, like directives, regulations, decisions, etc:
 
 - The instances of legislation (/ERALEX dataset) are `rdf:type vp:Requirement`. As we declare the instances `owl:sameAs` IRI's in the ELI data, they are `eli:LegalResource` as well.
 - This allows to reuse `eli:amends`.
