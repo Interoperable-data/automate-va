@@ -1,13 +1,14 @@
 # Data model for EC Certificates
 
+
 ## Scope
 
 The EU Agency for Railways has introduced the [ontology for Verified Permissions](https://w3id.org/vpa). This ontology is not detailing - on purpose - the Datatype- and ObjectProperties which can be added in order to model EC Certificates and EC Declarations, the first of which exists in the current ERA vocabulary.
 
-Stakeholders wanting to represent this `vp:DocumentedEvidence` as linked data, in order to achieve the objectives as described elsewhere, are invited to examine and return comments on the following proposal.
+Stakeholders wanting to represent this `vpa:DocumentedEvidence` as linked data, in order to achieve the objectives as described elsewhere, are invited to examine and return comments on the following proposal.
 
 > [!TIP]
-> The class `vpa:DocumentedEvidence` can be linked to verified `Requirements`, which are further not specified, but can be, for instance to eli:LegalResource and other classes. The EU Agency for Railways uses the `DocumentedEvidence` class to model [ERADIS Interoperability documents](https://eradis.era.europa.eu/default.aspx). Documented evidence allows permission seekers to ask these permissions to permission providers. Instances of documented evidence are resources, potentially having a physical/electronical document as its realisation.
+> The class `vpa:DocumentedEvidence` can be linked to verified `vpa:Requirement`, which are further not specified, but can be, for instance to eli:LegalResource and other classes. The EU Agency for Railways uses the `vpa:DocumentedEvidence` class to model [ERADIS Interoperability documents](https://eradis.era.europa.eu/default.aspx). Documented evidence allows permission seekers to ask these permissions to permission providers. Instances of documented evidence are resources, potentially having a physical/electronical document as its realisation.
 
 ## Data model
 
@@ -42,9 +43,12 @@ The data at which the NoBo issued the Certificate (signatory process).
 
 ### Period of Validity
 
-We reuse the following ontologies:
+We reuse the following ontologies and namespaces:
 
 - `PREFIX dct: <http://purl.org/dc/terms/>`
+- `PREFIX vpa: <https://w3id.org/vpa#>`
+- `PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>`
+- `PREFIX era: <http://data.europa.eu/949/>`
 - `PREFIX dc: <http://purl.org/dc/elements/1.1/>` (explanation [here](https://www.dublincore.org/specifications/dublin-core/dcmi-terms/elements11/date/))
 - `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>`.
 - `PREFIX common: <http://www.w3.org/2007/uwa/context/common.owl#>`.
@@ -57,21 +61,21 @@ We wish to avoid using the datatype `xsd:yearMonthDuration`. We also note that `
 
 We reuse the [time: ontology candidate recommendation draft of 2022](https://www.w3.org/TR/owl-time/), as it has been used also in the ERA Vocabulary.
 
-An unnamed subClass (implemented through blank nodes) of `time:Interval` is needed in order to store the beginning and end date of a certificate's validity. The property linking instances of the vp classes to any validity duration, reused for other classes as well, is the ObjectProperty `vp:valid` from the VP ontology[^2].
+An unnamed subClass (implemented through blank nodes) of `time:Interval` is needed in order to store the beginning and end date of a certificate's validity. The property linking instances of the vp classes to any validity duration, reused for other classes as well, is the ObjectProperty `vpa:valid` from the VP ontology[^2].
 
 [^2]: Reusing `dc:date` (which has no specific Range) has the disadvantage to cause confusion with `dct:date`.
 
-An example will make this clear for a certificate which is valid for two years:
+An example will make this clear for a certificate which is valid for two years, issued on April 5th, 2020:
 
 ```csharp
 era:doc-uuid_of_document a era:ECCertificate ;
-        dct:issued "issue_date"^^xsd:date ;
-        vp:valid [ 
+        dct:issued "2020-04-05"^^xsd:date ;
+        vpa:valid [ 
             # TemporalEntity
             a time:Interval ; 
             time:hasBeginning  [
                 a time:Instant ;
-                time:inXSDDate "start_date_of_validity"^^xsd:date
+                time:inXSDDate "2020-04-05"^^xsd:date 
             ] ;
             # If no DurationDescription, unlimited duration
             time:hasDurationDescription [
