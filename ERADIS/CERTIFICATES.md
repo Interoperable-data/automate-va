@@ -1,6 +1,5 @@
 # Data model for EC Certificates
 
-
 ## Scope
 
 The EU Agency for Railways has introduced the [ontology for Verified Permissions](https://w3id.org/vpa). This ontology is not detailing - on purpose - the Datatype- and ObjectProperties which can be added in order to model EC Certificates and EC Declarations, the first of which exists in the current ERA vocabulary.
@@ -75,7 +74,7 @@ era:doc-uuid_of_document a era:ECCertificate ;
             a time:Interval ; 
             time:hasBeginning  [
                 a time:Instant ;
-                time:inXSDDate "2020-04-05"^^xsd:date 
+                time:inXSDDate "2020-04-13"^^xsd:date 
             ] ;
             # If no DurationDescription, unlimited duration
             time:hasDurationDescription [

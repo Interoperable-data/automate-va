@@ -21,7 +21,7 @@ Details are summarised in [REQUIREMENTS](REQUIREMENTS.md).
 
 ## Linked open data for Interoperability Documents and Vehicle Types
 
-Some of the assessment comments require checks as executed on the ERADIS and ERATV data of the involved vehicle type(s). 
+Some of the assessment comments require checks as executed on the ERADIS and ERATV data of the involved vehicle type(s).
 
 Details on the datasets as available in the ERA Knowledge Graph are [here](ERA_KG.md).
 

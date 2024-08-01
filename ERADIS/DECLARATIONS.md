@@ -44,7 +44,7 @@ As explained, the data model most provide for sets of certificates, together for
 ```csharp
 era:doc-uuid_of_document a era:ECDeclaration ;
         dct:issued "issue_date"^^xsd:date ;
-        //# vp:valid should NOT be used for declarations: the validity must be deduced from the underlying certificates! 
+        //# vpa:valid should NOT be used for declarations: the validity must be deduced from the underlying certificates! 
         //# refences to the certificate sets:
         dct:references [
             a era:CertificateSet ;
@@ -72,21 +72,21 @@ Text within a declaration must be marked with the @language identifier, and the 
 
 The following mandatory properties are the basis for the data model allowing extraction from ERADIS:
 
-| Property              | ERADIS Data                                        |                Datatype/ObjectProperty                 | dataset @ ERA |
-| :-------------------- | :------------------------------------------------- | :----------------------------------------------------: | :-----------: |
-| `dct:identifier`      | 1. ID Data - Document ID number                    |            `xsd:string` (with `sh:pattern`)            |      n/a      |
-| `rdfs:comment`        | 3.3 Description of the subsystem                   |                      `xsd:string`                      |      n/a      |
-| `dct:description`     | If amending a previous declaration:                |                      `xsd:string`                      |      n/a      |
-|                       | 10. Description of the amendment                   |                                                        |               |
-| `dct:coverage`        | 5. References to EC Directives                     | (IRI to /ERALEX instances of the applied IO Directive) |    /ERALEX    |
-| TBD                   | 5. Reference "List of documents in technical file" |   `xsd:string` (`dct:source` can hence not be used)    |      n/a      |
-| `dct:coverage`        | 5. References to TSIs                              |            (IRI to those /ERALEX instances)            |    /ERALEX    |
-| `dct:coverage`        | 3.4 Description of procedures followed in order    |  (IRI to those /ERALEX instances, which are modules)   |    /ERALEX    |
-|                       | to declare conformity of the subsystem             |                                                        |               |
-| `dct:replaces`        | Previous Declaration                               |               (IRI to that declaration)                |    /IODOCS    |
-| `dct:isReplacedBy`    | Declaration replacing the current                  | (if replaced, then IRI to that replacing declaration)  |    /IODOCS    |
-| `era:status`          | 9. Status of the doc                               |             (IRI to the ERA SKOS Concept)              |     SKOS      |
-| `dct:available`       | 9. Date of publication in Database                 |                       `xsd:date`                       |      n/a      |
+|      Property      | ERADIS Data                                        |                Datatype/ObjectProperty                 | dataset @ ERA |
+| :----------------: | :------------------------------------------------- | :----------------------------------------------------: | :-----------: |
+|  `dct:identifier`  | 1. ID Data - Document ID number                    |            `xsd:string` (with `sh:pattern`)            |      n/a      |
+|   `rdfs:comment`   | 3.3 Description of the subsystem                   |                      `xsd:string`                      |      n/a      |
+| `dct:description`  | If amending a previous declaration:                |                      `xsd:string`                      |      n/a      |
+|                    | 10. Description of the amendment                   |                                                        |               |
+|   `dct:coverage`   | 5. References to EC Directives                     | (IRI to /ERALEX instances of the applied IO Directive) |    /ERALEX    |
+|   To Be Defined    | 5. Reference "List of documents in technical file" |   `xsd:string` (`dct:source` can hence not be used)    |      n/a      |
+|   `dct:coverage`   | 5. References to TSIs                              |            (IRI to those /ERALEX instances)            |    /ERALEX    |
+|   `dct:coverage`   | 3.4 Description of procedures followed in order    |  (IRI to those /ERALEX instances, which are modules)   |    /ERALEX    |
+|                    | to declare conformity of the subsystem             |                                                        |               |
+|   `dct:replaces`   | Previous Declaration                               |               (IRI to that declaration)                |    /IODOCS    |
+| `dct:isReplacedBy` | Declaration replacing the current                  | (if replaced, then IRI to that replacing declaration)  |    /IODOCS    |
+|    `era:status`    | 9. Status of the doc                               |             (IRI to the ERA SKOS Concept)              |     SKOS      |
+|  `dct:available`   | 9. Date of publication in Database                 |                       `xsd:date`                       |      n/a      |
 
 For Applicant, Manufacturer, Document owner/holder and Approvals NoBo the IRI to those /ORGS instances MUST be used.
 
@@ -103,9 +103,8 @@ The following properties are implied:
 - "3.1 Type of subsystem" is deduced from the certificates supporting the declaration (see above): if they are subsystem certificates, the declaration must concern these subsystems.
 - "3.2 IC's" must be those existing under the TSI's covered (as linked under "5.References to TSIs").  
 - "3.4 Description of procedures followed in order..." should be deduced from the supporting certificates.
-- "5. References to Conditions of Use" (tbd: instances of `vp:Restriction` or `xsd:string`) should be deduced from the underlying certificates (`vpa:withRestriction`)
+- "5. References to Conditions of Use" (tbd: instances of `vpa:Restriction` or `xsd:string`) should be deduced from the underlying certificates (`vpa:withRestriction`)
 - "10. Amendment of the document" is realised through `dct:replaces`. The date at which the amending declaration is available is the date of amendment of the amended declaration.
-
 
 #### Open points
 
