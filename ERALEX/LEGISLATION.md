@@ -1,6 +1,6 @@
 # Railway Legislation
 
-In order to represent Directives, TSIs and other legal references, like IC's and Subsystems as IRI's, and not as strings, the EU Agency for Railways proposes a set of properties and classess to be used. The namespace for European Legislation Identifier `eli:`ontology is `[[http://](https://op.europa.eu/en/web/eu-vocabularies/eli)](http://data.europa.eu/eli/ontology#).
+In order to represent Directives, TSIs and other legal references, like IC's and Subsystems as IRI's, and not as strings, the EU Agency for Railways proposes a set of properties and classess to be used. The namespace for European Legislation Identifier `eli:`ontology is `[[https://op.europa.eu/en/web/eu-vocabularies/eli](http://data.europa.eu/eli/ontology#).
 
 The following example will be elaborated in this document:
 
