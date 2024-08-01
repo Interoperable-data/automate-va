@@ -3,6 +3,7 @@
 ## Introduction
 
 It is vital to combine the automation of assessments with the existing confidentiality requirements. As such, any stakeholder executing assessments may not share, and hence is required to store in a private manner:
+
 - any assessment comment added to an application of a vehicle type
 - any metadata added to any of the (documents in the) submitted files
 - the contents of any of the files in the Library or any data belonging to an OSS Application.
@@ -12,6 +13,7 @@ This hard requirement has some technological consequences, given the combination
 ## Using a backend database
 
 It is evidently possible to store confidential data in a proprietary database, run at the premises of the assessor. Several disadvantages however exist:
+
 - the stakeholder cannot (simply) share the data with other allowed stakeholders, who need the work to be reused as well.
 - the data interface layer of the internal application requires CRUD operation on a proprietary database, next to accessing routins for KG's: at least two interfaces are then to be supported.
 - the backend database itself requires maintenance and results in an extra operational cost, which only increases when external access by authorised stakeholders is needed.
@@ -19,14 +21,15 @@ It is evidently possible to store confidential data in a proprietary database, r
 > [!NOTE]
 > Running database servers with external access is a complication on its own and does not reduce the operational cost of these systems.
 
+When working already with the Linked Open Data from the Agency, it could be recommended to store the private data also inherently as linked data, open to stakeholders who (also) need it.
+
 > [!CAUTION]
 > External stakeholders may not be allowed to use login data for the database directly and hence complicated authorisation mechanisms allowing to do so are to be put in place.
-
-When working already with the Linked Open Data from the Agency, it could be recommended to store the private data also inherently as linked data, open to stakeholders who (also) need it.
 
 ## Using a private triple store
 
 One such solution requires the installation and maintenance of a private instance of a triple store, which also would enable the storage of linked data. But several disadvantages still exist:
+
 - the ontology must be shared with other stakeholders for them to be able to read from this triple store.
 - authentication on a triple store is not simple, because access is to be configured per dataset or even on lower levels.
 - the cost on maintaining and operating a local TS is about the same as running database servers.
@@ -41,13 +44,14 @@ An ideal solution should be built on open data, with a rigourous access model bu
 
 ## Storing and exchanging private data using Solid Pods
 
-### Introduction
+### Solid Pods
 
 Solid Pods are explained [here](https://www.inrupt.com/videos/what-is-a-solid-pod). In essence, these pods allow structured and unstructured resources to be stored in the area of control of the stakeholder (a person or organisation), whereby he/she alone is able to control precise access to this data.
 
 ### Approach
 
 The architectural consequence of using these Pods are:
+
 - each stakeholder could create, in its Organisational Pod,  a Container 'Applications', in which (per vehicle type) another Container will store the metadata of its assessments, per file. We explain below why this Container should not regroup applications.
 - These containers within the 'Applications' Container are only available for the stakeholder themselves, to execute [CRUD operations](https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/read-write-data/) on. These CRUD operations are all described in the [Requirements](REQUIREMENTS.md).
 - The data is stored using the Agency's [common ontology for Authorisations](ERA_KG.md), such that other applicable stakeholders can retrieve the data as well, if at least given access.
