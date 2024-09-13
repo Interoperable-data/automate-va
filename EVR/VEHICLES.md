@@ -50,7 +50,7 @@ Some of the main vehicle classes share properties, but its values must be availa
 
 - [ ] `era:letterMarking`, a general property for vehicle classes `era:FreightWagon` and `era:HauledPassengerStock`, a `xsd:string` independent of the class (although the Regular Expression check is different).
 - [ ] `era:speedRange`, a general property for vehicle classes `era:HauledPassengerStock` and `era:Specialvehicle`, a SKOS Concept (detailed per class).
-- [ ] existing property `era:eratvSubCategory` for vehicle classes `era:HauledPassengerStock`, `era:TractiveRollingStock` and `era:Specialvehicle`, a SKOS Concept (stubbed per class, and not put into one SKOS CS!).
+- [ ] existing property `era:subCategory` must be renamed to `era:eratvSubCategory` for vehicle classes `era:HauledPassengerStock`, `era:TractiveRollingStock` and `era:Specialvehicle`, a SKOS Concept (stubbed per class, and not put into one SKOS CS!).
 - [ ] `era:fixedGauge` and `era:adjustableGauge`, for vehicle classes `era:FreightWagon` and `era:HauledPassengerStock`, a SKOS Concept (detailed per class).
 - [ ] `era:evrSubCategory`, a general property for vehicle classes `era:FreightWagon` and `era:SpecialVehicle`, a SKOS Concept (detailed per class).
 
@@ -127,7 +127,7 @@ The below properties must be considered *per wagon or element within a rake*. Th
       - with ice bunkers of capacity less than 3,5 m3
       - with ice bunkers of capacity more than 3,5 m3
       - without gratings ()
-    - [ ] `era:withMeatHook`, `era:forFish`, both `xsd:boolean` 
+    - [ ] `era:withMeatHook`, `era:forFish`, both `xsd:boolean`
     - [ ] `era:withHeatingDevice`, `era:withShockAbsorbingDevice`, `era:withSwivellingBolster`, all `xsd:boolean`
     - [ ] `era:withLargeDoorHeight`, `xsd:boolean` (with unobstructed height of the doors > 1,90 m)
     - [ ] `era:fittedForGaugeExceedingTransports`, a `xsd:boolean` (fitted out for the transport objects which should exceed the gauge if they were loaded on ordinary wagons).
