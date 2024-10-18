@@ -7,7 +7,8 @@ This living document traces the requirements for the PoC which exist for the CLD
 
 The success of the project is possible thanks to the intensive reuse of available ontologies (RDF(S), OWL, DCTERMS, SHACL, ...), the Agency's [Verified Permissions ontology](https://w3id.org/vpa) (created for this purpose) and the Agency's [formal Vocabulary](https://data-interop.era.europa.eu/era-vocabulary/) (versions to be used are 3.1.0 and higher). It MAY further make use of existing technologies for securing the integrity and authenticity of the mentioned datasets (e.g. [Verifiable Credentials/Presentations](https://www.w3.org/TR/vc-overview/) which allows authenticity and the assurance of origin of a resource, [RDF dataset canonicalisation](https://www.w3.org/TR/rdf-canon/#abstract) which allows hashing and integrity). On the digital representation of stakeholders themselves, this is considered out of scope of this work (see for instance: [DiD](https://www.w3.org/TR/did-core/) and the possible use of the EBSI ledger in order to attain [its verifiable data registry function](https://www.w3.org/TR/did-core/#dfn-distributed-ledger-technology). Other choices may be made in the future.)
 
-> [!TIP] To contribute to this document, please use [the EUAR process as described  here](https://github.com/Interoperable-data/ERA_vocabulary/blob/main/README.md#Contributing). A GitHub account is required, and should be indicative of the organisation contributing.
+> [!TIP]
+> To contribute to this document, please use [the EUAR process as described  here](https://github.com/Interoperable-data/ERA_vocabulary/blob/main/README.md#Contributing). A GitHub account is required, and should be indicative of the organisation contributing.
 
 ## Overview and structure
 
