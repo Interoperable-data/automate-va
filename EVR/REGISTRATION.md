@@ -14,18 +14,24 @@ To identify a VR, the Keeper's orgCode could be chosen, followed by a sequence n
 eravr:NNNN-n a era:VehicleRegistration .  
 eravr:vr-NNNN-n a era:VRApplication .
 ```
+
 The registration cases are defined in 3.2.2 of Annex II, Appendix 4 and will be available as SKOS Concepts. They merge the Registration Case type, with the Registration Case, e.g. as `rdfs:label "New - New Registration"` or `rdfs:label "Update - Change of Owner"`.
+
 ```
 # The registration case itself documents the type of registration which is executed.
 eravr:vrc-NNNN-n-0 a era:VRegistrationCase ;
                    vp:permissionType <era-vr-regCase:UpdateOwner> . # proposed name for the ERA SKOS CS.
 ```
+
 The process requires the Keeper to request for the Registration, by issuing a Vehicle Registration Application:
+
 ```
 keeper:KE-NNNN vp:requests eravr:NNNN-n ; # the keeper, with its org Id.
                vp:issues eravr:vr-NNNN-n .
 ```
+
 Much of the data coming from the Vehicle's Authorisation, if available as linked data, could be reused as supporting the Registration process:
+
 ```
 # The preceding Authorisation can serve the Registration!
 erava:vac-V-YYYYMMDD-NNN-0 vp:supports eravr:vr-NNN-n ; # allows to reuse the linked data of the auth case regarding vehicles, aou, and underlying evidence.
@@ -52,7 +58,7 @@ We use the [existing](https://github.com/Certiman/ERA-Ontology-5.0.0-5.1.0/blob/
 
 `eravr:NNNN-n a era:VehicleRegistration ; era:inCountry <EU SKOS CS for relevant country> .`
 
-### (3) Memberstate where Vehicles are authorised & underlying (11) Authorisations 
+### (3) Memberstate where Vehicles are authorised & underlying (11) Authorisations
 
 The link between a registration and its preceding authorisation is modeled:
 
