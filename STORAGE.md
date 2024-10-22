@@ -30,23 +30,27 @@ When working already with the Linked Open Data from the Agency, it could be reco
 
 One such solution requires the installation and maintenance of a private instance of a triple store, which also would enable the storage of linked data. But several disadvantages still exist:
 
-- the ontology must be shared with other stakeholders for them to be able to read from this triple store.
-- authentication on a triple store is not simple, because access is to be configured per dataset or even on lower levels.
-- the cost on maintaining and operating a local TS is about the same as running database servers.
+- the ontology must be shared with other stakeholders for them to be able to read from this triple store. Updates to the ontology would require renaming operations in all the private triple stores.
+- authentication on a triple store is not simple, because access is to be configured per dataset or even on lower levels. This is supported only by a few high-end triple store products.
+- the cost on maintaining and operating a local TS is about the same as running database servers, but it requires additional levels of knowledge on RDF and TS security.
 
 > [!WARNING]
-> Apart from the same complication as above and the increased complexity in most triple store implementations to authenticate and give access to only a subset of triples, there is a contradiction in hosting separate triple stores for authenticated access from outside.
+> Apart from the same complication as above and the increased complexity in most triple store implementations to authenticate and give access to only a subset of triples, there is a contradiction in hosting separate triple stores for central authenticated access from outside.
 
-An ideal solution should be built on open data, with a rigourous access model built in. The inventor of the WWW, at [Inrupt](https://www.inrupt.com/), has provided a solution based on this vision which could be examined by the stakeholders of automating OSS assessments: Solid Pods.
+Only when the stakeholder already has invested in RDF representations of his data, the private triple store may already be present and may then evidently be used.
 
 > [!TIP]
 > If an API already exists at the premises of the stakeholder, a Triple Store is not needed if the data can be presented as [JSON-LD](https://json-ld.org/) or [any other linked Data presentation format](https://data.europa.eu/en/academy/incorporating-open-data-your-application).
 
-## Storing and exchanging private data using Solid Pods
+## Storing and exchanging private data using Linked Web Storage
 
-### Solid Pods
+An ideal solution should be built on open data, with a rigourous access model built in. Teams inspired by an original idea from Sir Tim Berners-Lee, have provided a solution based on this vision which could be examined by the stakeholders of automating OSS assessments: Linked Web Storage vaults, usually called Solid Pods[^solid].
 
-Solid Pods are explained [here](https://www.inrupt.com/videos/what-is-a-solid-pod). In essence, these pods allow structured and unstructured resources to be stored in the area of control of the stakeholder (a person or organisation), whereby he/she alone is able to control precise access to this data.
+### [What are Linked Web Storage pods](https://www.w3.org/groups/wg/lws/)
+
+Linked Web Storage pods are explained [here](https://www.inrupt.com/videos/what-is-a-solid-pod) and the formalisation of the technology is handled a the [Linked Web Storage WG of W3C](https://www.w3.org/groups/wg/lws/).
+
+In essence, this personal online data storage allow structured and unstructured resources to be stored in the area of control of the stakeholder (a person or organisation), whereby he/she alone is able to control precise access to this data.
 
 ### Approach
 
@@ -63,10 +67,10 @@ The architectural consequence of using these Pods are:
 
 ### Proposed Containers
 
-After creation of the Pod by each stakeholder wishing to automate the authorisation process, a [certain structure](https://docs.inrupt.com/ess/latest/services/service-pod-storage/#pod-storage-resource-container) of Containers must be chosen in common. The root container should be called in common, we propose 'Applications'. Then, there is a choice to make regarding the lower Containers holding the confidential data, only accessible for allowed (other) stakeholders.
+After creation of the Pod by each stakeholder wishing to automate the authorisation process, a [certain structure](https://docs.inrupt.com/ess/latest/services/service-pod-storage/#pod-storage-resource-container) of Containers must be chosen in common. The root container should be called in common, we propose '/data/applications'. Then, there is a choice to make regarding the lower Containers holding the confidential data, only accessible for allowed (other) stakeholders.
 
 ``
-https://storage.{ESS Domain}/{Unique Root Container}/Applications/{VehicleType}/files#{file-hash}
+https://{CSS/ESS Storage Provider Domain}/{Unique Root Container}/data/applications/{VehicleType}/files#{file-hash}
 ``
 
 > [!WARNING]
@@ -80,3 +84,5 @@ The legislation does however not prohibit that authorising entities work efficie
 As stakeholders on Authorisations will generally work on vehicles belonging to the same type, we propose the Container to be named after the Vehicle type. The dataset within this container will then contain instances (Things) of the [SolidDataSet](https://docs.inrupt.com/developer-tools/javascript/client-libraries/structured-data/#structured-data).
 
 The structure of the open data with strictly controlled access will be documented as discussed above.
+
+[^solid]: Until very recently named "Solid Pods", W3C wishes to avoid standardising the technology using the [Solid Project](https://solidproject.org/about)'s name. The Solid name also has competition with SolidJS and other technologies.
