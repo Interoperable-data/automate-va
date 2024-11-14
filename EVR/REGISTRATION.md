@@ -10,14 +10,14 @@ The  [`Ontology for Verified Permissions`](https://w3id.org/vpa/) allows to stor
 
 To identify a VR, the Keeper's orgCode could be chosen, followed by a sequence number. Of course, a unique identifier could be chosen as well.
 
-```
+```rdf
 eravr:NNNN-n a era:VehicleRegistration .  
 eravr:vr-NNNN-n a era:VRApplication .
 ```
 
 The registration cases are defined in 3.2.2 of Annex II, Appendix 4 and will be available as SKOS Concepts. They merge the Registration Case type, with the Registration Case, e.g. as `rdfs:label "New - New Registration"` or `rdfs:label "Update - Change of Owner"`.
 
-```
+```csharp
 # The registration case itself documents the type of registration which is executed.
 eravr:vrc-NNNN-n-0 a era:VRegistrationCase ;
                    vp:permissionType <era-vr-regCase:UpdateOwner> . # proposed name for the ERA SKOS CS.
@@ -25,14 +25,14 @@ eravr:vrc-NNNN-n-0 a era:VRegistrationCase ;
 
 The process requires the Keeper to request for the Registration, by issuing a Vehicle Registration Application:
 
-```
+```csharp
 keeper:KE-NNNN vp:requests eravr:NNNN-n ; # the keeper, with its org Id.
                vp:issues eravr:vr-NNNN-n .
 ```
 
 Much of the data coming from the Vehicle's Authorisation, if available as linked data, could be reused as supporting the Registration process:
 
-```
+```csharp
 # The preceding Authorisation can serve the Registration!
 erava:vac-V-YYYYMMDD-NNN-0 vp:supports eravr:vr-NNN-n ; # allows to reuse the linked data of the auth case regarding vehicles, aou, and underlying evidence.
                            vp:requestFor eravr:NNN-n .
@@ -75,5 +75,7 @@ In the last case, a property should be added.
 ### EC DoV
 
 ### Owner, Keeper and ECM
+
+Link to the URI of that organisation.
 
 ### Registration Status

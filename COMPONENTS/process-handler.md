@@ -21,10 +21,21 @@ As above, with UI-elements to start the task of a certain version. The versions 
 
 ## Form Displayer
 
-Using a SHACL-shape as found in the step under `dcterms:source` (a TTL file), displays the SHACL-FORM and returns the triples for further use. 
+Using a SHACL-shape as found in the step under `dcterms:source` (a TTL file), displays the SHACL-FORM and returns the triples for further use.
 
 If the Displayer is given an IRI of an instance of the class as described in the SHAPE file, the data will be displayed in non-editable form.
 
-
 The displayer should not execute any writing into the storage.
 
+## Data sources
+
+> Given that a process step may need to add URI's for certain properties, and not just literals, this URI must be retrievable from a source. Each process must describe the data sources to which its data outcome will link.
+
+Example: a process collecting information about a document may require a link to the publishing organisation. In order for the user to be able to LINK to that organisation, a source must be displayed next to the form which the user is complementing, in which (s)he can search for the URI of that organisation based on a literal property of that organisation.
+
+A source is therefore:
+
+- A URI to a RDF resource containing all the data
+- (optional) A set of datatype-properties which can serve as elements of a search query
+
+The set is optional as it should be automatically generated from the data in the RDF document.

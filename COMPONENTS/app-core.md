@@ -56,9 +56,9 @@ The template language should be `Handlebars` or alike.
 
 > Organisations may prefer to encrypt the value of some literals, before storing it, because data will be stored in public storage systems. The decryption of those literals can then be executed by the organisation itself (using a master key) or by those possessing the private key of the key pair with which the literals were encrypted.
 
+If the organisation itself is the only one accessing the data, a non-stored master key is used, derived from a master password. Further, client-side encryption mechanisms can then be used to encrypt the literals. An example is elaborated [here](https://blog.cozy.io/en/cozy-cloud-how-to-encrypt-web-application/).
+
 > [!WARNING]
 > Encrypted triple literals are evidently unavailable for any search query. Before encrypting literals, it should be examined if privately accessible storage systems are not possible (as for instance provided by LWS).
-
-If the organisation itself is the only one accessing the data, a non-stored master key is used, derived from a master password. Further, client-side encryption mechanisms can then be used to encrypt the literals. An example is elaborated [here](https://blog.cozy.io/en/cozy-cloud-how-to-encrypt-web-application/).
 
 If the organisation wants to share the triple contents with some reserved stakeholders, and the storage provider does not have a function to allow access based on user credentials, the literals may be encrypted by a key, which itself is encrypted using the stakeholder's public key. This mechanism has its disadvantages as well and should be avoided.

@@ -20,12 +20,13 @@ Currently, a process has no properties.
 
 From a SHACL SHAPE-file, a small form could be shown, and the task is added to the Process with name `ProcessName`:
 
-- LWS: AS a `LDP:RDFSource` and a `dul:Task` in the Process Container. 
+- LWS: AS a `LDP:RDFSource` and a `dul:Task` in the Process Container.
 - TS: *add*
 - File: *add*
 
 Currently, a task has the following properties (LWS example):
-```
+
+```js
 <https://{STORAGEPROVIDER/}{processRootContainer/}/{ProcessName/}{TaskName}>
         a              dul:TaskTask> , ldp:RDFSource;
         rdf:first      <https://{STORAGEPROVIDER/}{processRootContainer/}/{ProcessName}/{TaskName}#1728977376498>;
@@ -37,10 +38,11 @@ Currently, a task has the following properties (LWS example):
 
 From a SHACL Shape-file, a form could be shown, and the Step is added to the Task, with a unique identifier (uuid4).
 
-- LWS: 
+- LWS:
 
 Currently, a Step has the following properties (LWS example):
-```
+
+```js
 <https://{STORAGEPROVIDER/}{processRootContainer/}/{ProcessName/}{TaskName}#1728997997702>
         a               dul:Action;
         <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>  ();
