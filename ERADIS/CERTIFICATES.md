@@ -1,13 +1,15 @@
-# Data model for EC Certificates
+# Data model for EC Certificates, QMS Approvals and Intermediate Statements (CLDs)
 
 ## Scope
 
-The EU Agency for Railways has introduced the [ontology for Verified Permissions](https://w3id.org/vpa). This ontology is not detailing - on purpose - the Datatype- and ObjectProperties which can be added in order to model EC Certificates and EC Declarations, the first of which exists in the current ERA vocabulary.
+The EU Agency for Railways has introduced the [ontology for Verified Permissions](https://w3id.org/vpa). This ontology is not detailing - on purpose - the Datatype- and ObjectProperties which can be added in order to model CLDs and EC Declarations, the first of which exists in the current ERA vocabulary.
+
+> `Documented evidence` allows permission seekers to ask these permissions to permission providers. Instances of documented evidence are resources, potentially having a physical/electronic document as its presentation.
 
 Stakeholders wanting to represent this `vpa:DocumentedEvidence` as linked data, in order to achieve the objectives as described elsewhere, are invited to examine and return comments on the following proposal.
 
-> [!TIP]
-> The class `vpa:DocumentedEvidence` can be linked to verified `vpa:Requirement`, which are further not specified, but can be, for instance to eli:LegalResource and other classes. The EU Agency for Railways uses the `vpa:DocumentedEvidence` class to model [ERADIS Interoperability documents](https://eradis.era.europa.eu/default.aspx). Documented evidence allows permission seekers to ask these permissions to permission providers. Instances of documented evidence are resources, potentially having a physical/electronical document as its realisation.
+> [!NOTE]
+> The class `vpa:DocumentedEvidence` can be linked to verified `vpa:Requirement`, which are further not specified, but can be, for instance to eli:LegalResource and other classes. The EU Agency for Railways uses the `vpa:DocumentedEvidence` class to model [ERADIS Interoperability documents](https://eradis.era.europa.eu/default.aspx). The process is described [here](./RESTRICTION.md).
 
 ## Data model
 
@@ -15,16 +17,17 @@ For EC Declarations, [see this document](DECLARATIONS.md).
 
 `era:Certificate a vpa:DocumentedEvidence ;` are instantiated from ERADIS data, and will be complemented by verifiable credentials (assumption).
 
-An EC Certificate has the following properties.
+A CLD has the following properties. For the use cases, please consult [this document](../USE%20CASES/CLD.md).
 
-### ERADIS URL
+### ERADIS URL (public)
 
-- DatatypeProperty `rdfs:seeAlso`
-- range: `xsd:anyURI` of the ERADIS URL
+- [X] For archiving purpose, and as long as the ERADIS data exists on the website, this ?p will contain the URL:
+  - DatatypeProperty `rdfs:seeAlso`
+  - range: `xsd:anyURI` of the ERADIS URL
 
-For archiving purpose, and as long as the ERADIS data exists on the website, this ?p will contain the URL. This web page can be seen as one presentation of the data collected in the Documented Evidence instance, while a PDF file can be another (the file is sometimes available on the ERADIS web page).
+> This web page can be seen as one presentation of the data collected in the Documented Evidence instance, while a PDF file can be another (the file is sometimes available on the ERADIS web page).
 
-### Issuer
+### Issuer (public)
 
 - ObjectProperty `http://purl.org/dc/elements/1.1/creator`
 - range: IRI of the issuing NoBo, which must itself be an instance of `<http://www.w3.org/ns/org#Organization>`.
@@ -33,14 +36,13 @@ The Agency is considering to provide `era-org:NoBo-` + `NANDO number of the NoBo
 
 [^1]: Ideally, NoBo's would provide the IRI as part of their presence on the web. One way of doing so would be to store their organisational data as RDFa on their website (guideline under design).
 
-### Issue date
+### Issue date (public)
 
-The data at which the NoBo issued the Certificate (signatory process).
+- [X] The data at which the NoBo issued the Certificate (signatory process).
+  - DatatypeProperty `http://purl.org/dc/terms/issued`
+  - range: `xsd:date`
 
-- DatatypeProperty `http://purl.org/dc/terms/issued`
-- range: `xsd:date`
-
-### Period of Validity
+### Period of Validity (public)
 
 We reuse the following ontologies and namespaces:
 
@@ -66,7 +68,7 @@ An unnamed subClass (implemented through blank nodes) of `time:Interval` is need
 
 An example will make this clear for a certificate which is valid for two years, issued on April 5th, 2020:
 
-```csharp
+```js
 era:doc-uuid_of_document a era:ECCertificate ;
         dct:issued "2020-04-05"^^xsd:date ;
         vpa:valid [ 
@@ -85,7 +87,12 @@ era:doc-uuid_of_document a era:ECCertificate ;
         # see other properties below
 ```
 
+> [!WARNING]
+> CLD's SHALL express their validity expiration by using the Duration method, as this period is reset to 0 in the case of Withdrawn CLD's! Other properties are not allowed and applications must calculate valid expiration dates themselves.
+
 ### Refinement of Certificate Subsystem (SS) and Interoperability Constituent (IC)
+
+#### The subject (public)
 
 The legal subject of the certificates can be documented using links to instances of ERALEX/ELI. Details are [here](../ERALEX/LEGISLATION.md).
 
@@ -94,11 +101,16 @@ The legal subject of the certificates can be documented using links to instances
 | `dct:subject` |                     Subsystem | (IRI to the /ERALEX instance representing that subsystem) |    /ERALEX    |
 | `dct:subject` | Interoperability Constituents | (IRI to those /ERALEX instances, if relevant)             |    /ERALEX    |
 
+#### The spatial range (public)
+
 Because different certificates sometimes treat the same IC but produced at different sites, the spatial applicability is in some cases required:
 
 | Property      |                                              Data | Datatype/ObjectProperty                      | dataset @ ERA |
 | :------------ | ------------------------------------------------: | :------------------------------------------- | :-----------: |
 | `dct:spatial` | Validity restricted in Location (production site) | (IRI to the /ORG containing the site's data) |     /ORG      |
+|               |                           RFU-STR-001  [R3.a,R33] |                                              |               |
+
+#### The [INF, ENE, CCS]-combination
 
 Finally, some certificates are inherently specifying a limited application, regarding [ENE, INF, CCS]-combinations. The `era:hasSetOfParameters` could in that case be used, be it through the relevant classes as in the following table. More information is available in the [ERA Vocabulary](https://linkedvocabs.org/data/era-ontology/3.1.0/doc/index-en.html).
 
@@ -112,7 +124,7 @@ Finally, some certificates are inherently specifying a limited application, rega
 
 ### Other properties of Certificates
 
-EC Certificates can only have versions by using the ERADIS Identifier, and preferably by adding `/V_version_number_` at the end.
+CLDs can only have versions by using the ERADIS Identifier, and by adding `/V_version_number_` at the end.
 
 To clarify that a certificate has:
 
@@ -157,14 +169,16 @@ The following properties are not mandatory but allow detailing the verification 
 
 For Applicant, Manufacturer and NoBo the IRI to those /ORGS instances MUST be used.
 
-| Property          | Organization                                                                                |
+| Property          | Organization (IRI)                                                                          |
 | :---------------- | :------------------------------------------------------------------------------------------ |
 | `dct:creator`     | For a certificate, this is the issuing **NoBo**                                             |
 | `dct:contributor` | For a certificate, the **manufacturer** of the IC/SS in scope of the vertification process. |
-| `dct:audience`    | the **applicant** using the certificate in a permission-achieving process.                  |
+| `dct:audience`    | the **applicant** who uses the certificate in a permission-achieving process.               |
 
 If in ERADIS, 'supplementary information' contains certificate numbers, they must be linked as IRI's under Previous or Replacing Certificate.
 
-Certificates should not link to the declarations they support, the link is created inversely.
+Certificates should **not** link to the declarations they support, the link is created inversely.
 
 See also [EC Declarations](DECLARATIONS.md).
+
+See also [Restrictions](./RESTRICTION.md) for the private data regarding the Conditions and Limits of Use.

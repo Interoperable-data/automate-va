@@ -1,0 +1,252 @@
+@base <http://data.europa.eu/949/> .
+@prefix : <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+
+# For inclusion in the ERA ontology (work package `Authorisations`)
+:CLD a 
+    owl:Class , sh:NodeShape, vpa:DocumentedEvidence ;
+    dcterms:created "2024-10-25"^^xsd:date ;
+    # dcterms:modified "_RESERVED_"^^xsd:date ;
+
+    ## definitions ----------
+    rdfs:comment """Certification Level Documents (CLD) issued by NoBos are:
+• EC Certificates
+• QMS-Approvals
+• Intermediate Statements of Verification (ISVs)
+
+The EU legislative documents 768/2008/EC, (EU) 2016/797, (EU) 2019/250 and 2010/713/EU establish a number of requirements on the content of CLDs."""@en ;
+    rdfs:isDefinedBy <http://data.europa.eu/949/> ;
+    rdfs:seeAlso "https://nb-rail.eu/official-documents?_hash=sdZw5f9knrCRlgtc8tjzq263IkcdQhDo05f6n%2FKVqUA%3D&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A154%3B%7D&p=documents%2FRFU%2FAll+subsystems%2FRFU-STR-001+Content+of+EC+Certificates.pdf";
+    rdfs:label "Certification Level Documents"@en ;
+    dcterms:source <http://data.europa.eu/eli/dec/2008/768(1)/oj>, 
+        <http://data.europa.eu/eli/dir/2016/797/2020-05-28>,
+        <http://data.europa.eu/eli/reg_impl/2019/250/2020-06-16>,
+        <http://data.europa.eu/eli/dec/2010/713/oj> ;
+
+    ## shape ----------
+    # The following `era:` Classes must conform to the shape of a CLD.
+    # TODO: DeBo, AsBo certificates can conform to this shape as well.
+    sh:targetClass era:ECCertificate, era:QMSApproval, era:IntermediateStatement ; 
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dct:identifier ;
+        sh:datatype xsd:string ;
+        sh:pattern ""; # todo, see VA-Inspector
+        sh:nodeKind sh:Literal ;
+        sh:description "The CLD ID, as defined in RFU-STR-001.";
+        skos:definition """The combination of the CLD ID and the Version counter is the unique ‘identification number’ ensuring traceability of the CLD in accordance with (EU) 2019/250."""@en ;
+        sh:minCount 1;
+        sh:maxCount 1
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dct:hasVersion ;
+        sh:datatype xsd:number ;
+        sh:nodeKind sh:Literal ;
+        sh:description "The Version Counter of the CLD, as defined in RFU-STR-001.";
+        skos:definition """The combination of the CLD ID and the Version counter is the unique ‘identification number’ ensuring traceability of the CLD in accordance with (EU) 2019/250.
+
+CLD's carry version number 0, if no `/Vxx` in the `identification number` is present. There are no CLD's with /V00 (allowed)."""@en ;
+        sh:minCount 1;
+        sh:maxCount 1
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path rfs:comment ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:description "Scope of Certification by reference to Object of Assessment (un-ambiguous denomination)"@en; 
+        skos:note "The Object of Assessment of the CLD, as defined in RFU-STR-001.";
+        skos:definition """Scope of Certification by reference to Object of Assessment: Identified by industry-typical and un-ambiguous denomination. This may include a reference to a separate attached document which provides a more detailed 
+definition (e.g. a Product Type Drawing, the NoBo-File/Documentation, the EC Assessment Report.) [R4,R12,R28]"""@en ;
+        sh:minCount 1;
+        sh:maxCount 1
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path rdfs:seeAlso ;
+        sh:datatype xsd:anyURI ;
+        sh:nodeKind sh:Literal ;
+        sh:description "The ERADIS URL of the CLD, if available under `http://eradis.era.europa.eu`.";
+        sh:maxCount 1
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dct:issued ;
+        sh:datatype xsd:date ;
+        sh:nodeKind sh:Literal ;
+        sh:description "The date, on which the CLD was issued by the NoBo.";
+        sh:maxCount 1 
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:valid ;
+        sh:description "The validity range, during which the CLD was originally declared valid by the assessment body.";
+        sh:maxCount 1 ;
+        sh:nodeKind sh:BlankNode, sh:IRI ; 
+        sh:class :EvidenceValidityInterval
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dct:subject ;
+        sh:description "Scope of Certification by reference to Object of Assessment (links to EURLEX)"@en;
+        skos:note "The examined subsystem and if applicable, interoperability constituent, expressed as a URI to the legal reference in which these are uniquely defined.";
+        skos:definition """Scope of Certification by reference to Object of Assessment: Designation of the certified Interoperability Constituent/ Subsystem Type(s) and variant(s)/versions(s)
+included in the certification. Detailed further using `rdfs:comment`"""@en ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ; 
+        sh:class vpa:Requirement
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dct:coverage ;
+        sh:description "Scope of Certification by reference to Assessment Requirements (links to EURLEX)"@en;
+        skos:note "The examined subsystem and if applicable, interoperability constituent, expressed as a URI to the legal reference in which these are uniquely defined.";
+        skos:definition """Scope of Certification by reference to Assessment Requirements: TSls and their identification number to which conformity was assessed, including any Amendments. 
+
+Format as defined by ELI: 
+<http://data.europa.eu/eli/reg/2014/1304/oj> for the unamended legislation;
+<http://data.europa.eu/eli/reg/2014/1304/2023-09-28> for the amendment <http://data.europa.eu/eli/reg_impl/2023/1694/oj>, as published on 28/09/2023.;
+"""@en ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:IRI ; 
+        sh:class vpa:Requirement
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:checked ;
+        sh:description "Scope of Certification by reference to Assessment Requirements (TSI specific verification)"@en;
+        skos:definition """The detailed assessment references must be the URI of SKOS Concepts of the ERA RINF vocabulary.
+        
+(Mandatory) For TSI CCS also the set(s) of specifications of TSI CCS Appendix A, including the TSI CCS from which the set is taken (e. g. set of specifications #2 from
+TSI CCS (EU) 2016/919 last amended by (EU) 2020/387) and (only if part train protection is assessed) the ETCS system version.
+
+(Optional) For other TSI's"""@en ;
+        sh:nodeKind sh:IRI ; 
+        sh:class skos:ConceptScheme # ETCSMandatorySpecificationsSet & (exists) ETCSMVersions
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dct:creator ;
+        sh:description "The assesment body having issued the CLD, expressed as a URI to the organisation which represents this body uniquely.";
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ; 
+        sh:class :EvidenceProvidingOrganisation 
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dct:audience ;
+        sh:description "The organisation using the CLD as Applicant, expressed as a URI to the organisation which represents this body uniquely.";
+        skos:definition """Name and address of Applicant (or of his authorized representative established within the Community.) [R9] """@en;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ; 
+        sh:class :ApplyingOrganisation 
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dct:contributor ;
+        sh:description "The manufacturer involved in the assessment, expressed as a URI to the organisation which represents this body uniquely.";
+        skos:definition """Name and address of the Manufacturer (or of his authorized representative established within the Community. 
+If Applicant and Manufacturer are the same entity, reuse the IRI from the Applicant.) [R1,R8,R33]"""@en;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ; 
+        sh:class :ApplyingOrganisation 
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dct:spatial ;
+        sh:description "The `org:Site` to which this CLD is linked, mostly a specific Production site audited in a QMSA.";
+        skos:definition """6. Scope of Certification by reference to Location of manufacturer (only if relevant (e.g. for all QMS approvals), only if different from address of Manufacturer. 
+May also be a list of several locations.) [R3.a,R33]"""@en;
+        sh:nodeKind sh:IRI ; 
+        sh:class org:Site 
+    ];
+.
+
+# The expression of the start and end of validity of any DocumentedEvidence.
+:EvidenceValidityInterval a 
+    time:ProperInterval, sh:NodeShape ;
+    ## shape: beginning and duration are mandatory.
+    rdfs:comment """"""@en;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:description "The starting date from which the CLD was originally declared valid by the assessment body."@en ;
+        sh:path time:hasBeginning ;
+        sh:class time:Instant ;
+        sh:minCount 1;
+        sh:maxCount 1
+    ];
+    sh:or (
+        [    
+            sh:property [
+                a sh:PropertyShape ;
+                sh:description "The duration during which the CLD was originally declared valid by the assessment body."@en ;
+                sh:path time:hasDurationDescription ;
+                sh:class :EvidenceValidityInYears ;
+                # sh:minCount 1; Without a duration, the CLD is assumed to be valid without limitations.
+                sh:maxCount 1
+            ]
+        ]
+        [   sh:property [
+                a sh:PropertyShape ;
+                sh:description "The ending date after which the CLD was originally declared to be no longer valid by the assessment body."@en ;
+                sh:path time:hasEnd ;
+                sh:class time:Instant ;
+                sh:minCount 1;
+                sh:maxCount 1
+            ]
+        ]
+    ).
+
+:EvidenceValidityInYears a 
+    time:DurationDescription , sh:NodeShape ;
+    # only a duration expressed in time:years can be accepted. A value of 2.5 can be accepted.
+    sh:closed "true"^^xsd:boolean ; # no other properties can be used.
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path time:years ;
+        sh:datatype xsd:decimal ;
+        sh:description "Number expressing the duration of validity period in years."@en ;
+    ].
+
+# Organisations with the mandate to issue CLD's
+# The CLD-issuing organisation MUST have the suitable era:hasRole <era-skos:NoBo> role.
+:EvidenceProvidingOrganisation a sh:NodeShape , era:Body ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Values are Bodies with OrganisationRole `Notified Body`" ;
+        sh:select """
+# to be elaborated.
+# era:Body era:role era:OrganisationRole -> era:OrganisationRole era:hasOrganisationRole <SKOS Concept> 
+# http://data.europa.eu/949/concepts/organisation-roles/OrgRoles
+        """
+    ].
+
+# Organisations with the mandate to use CLD's as Applicant in an Authorisation process
+# The applying organisation MUST have the suitable era:hasRole <era-skos:NoBo> role.
+:ApplyingOrganisation a sh:NodeShape , era:Body ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Values are Bodies with OrganisationRole belonging to the SKOS Collection for `Applicant`" ;
+        sh:select """
+# to be elaborated.
+# era:Body era:role era:OrganisationRole -> era:OrganisationRole era:hasOrganisationRole <SKOS Concept> 
+# http://data.europa.eu/949/concepts/organisation-roles/OrgRoles
+        """
+    ].
