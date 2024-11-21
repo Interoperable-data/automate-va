@@ -1,10 +1,10 @@
 # Process Handler
 
-> A `Process Handler` will use the data retrieved by a `Process Connector` to execute the process.
+> A `Process Handler` will use the datasets, conforming to a process, retrieved in the `Repository` by a `Process Connector` to execute the process.
 
 It is at least able to:
 
-- list the retrieved processes, and the tasks they provide;
+- list the retrieved processes, and the tasks (all versions or filtered by a version) they provide;
 - allow for a version of a task to be started, by starting the first step of that version (`rdf:first`);
 - allow for tasks to be following each other, by executing the task and heading for the `rdf:rest`-refered Task;
 - allow for the closure of the task, mostly the storage of the new or modified data, which can be shown as a summary.

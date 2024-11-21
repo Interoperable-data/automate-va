@@ -81,7 +81,7 @@ The legislation does however not prohibit that authorising entities work efficie
 > [!IMPORTANT]
 > The data added by stakeholders is limited to observation comments, a check on the dates, the scope and applicability. No contents of the file are allowed to be annotated again, unless the data is on public registers like ERADIS or ERATV. Not even the filename is stored in the vehicle type Containers.
 
-As stakeholders on Authorisations will generally work on vehicles belonging to the same type, we propose the Container to be named after the Vehicle type. The dataset within this container will then contain instances (Things) of the [SolidDataSet](https://docs.inrupt.com/developer-tools/javascript/client-libraries/structured-data/#structured-data).
+As stakeholders on Authorisations will generally work on vehicles belonging to the same type, we propose the LWS Container to be named after the Vehicle type. The dataset within this container will then contain instances (`Thing`s) in a [`SolidDataset`](https://docs.inrupt.com/developer-tools/javascript/client-libraries/structured-data/#structured-data) belonging together.
 
 The structure of the open data with strictly controlled access will be documented as discussed above.
 

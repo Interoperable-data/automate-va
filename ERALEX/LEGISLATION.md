@@ -1,6 +1,6 @@
 # Railway Legislation
 
-In order to represent Directives, TSIs and other legal references, like IC's and Subsystems as IRI's, and not as strings, the EU Agency for Railways proposes a set of properties and classess to be used.
+In order to represent Directives, TSIs and other legal references, like IC's and Subsystems as IRI's, and not as strings, the EU Agency for Railways proposes a set of properties and classes to be used, which would complement the URI's from the Publications Office.
 
 The namespace for [European Legislation Identifier](http://data.europa.eu/eli/ontology#) `eli:` is [further explained here](https://op.europa.eu/en/web/eu-vocabularies/eli).
 
@@ -8,7 +8,7 @@ The namespace for [DCMI Metadata Terms](https://www.dublincore.org/specification
 
 The following example will be elaborated in this document:
 
-```csharp
+```js
 eralex:reg_impl-2023-1694
         rdf:type        vpa:Requirement , eli:LegalResource ;
         rdfs:comment    "(Amending 2019/777) On the common specifications of the register of railway infrastructure"^^<xsd:string> ;
@@ -21,7 +21,7 @@ eralex:reg_impl-2023-1694
 
 We also will reuse the following TSI, as we will extend these to be `dct:Standard`s:
 
-```csharp
+```js
 eralex:cir-2023-1694  rdf:type  vpa:Requirement , eli:LegalResource, dct:Standard ;
 ...
         eli:has_part  eralex:ic-2023-1694-5.2.1 , eralex:ic-2023/1694-5.3.1.1 , eralex:ic-2023/1694-5.3.1 , eralex:ic-2023/1694-5.3.3 , eralex:ic-2023/1694-5.2.1 , eralex:ic-2023-1694-5_3.1.1 , eralex:ic-2023-1694-5_3.1 , eralex:ic-2023-1694-5_3.3 , eralex:ic-2023-1694-5_2.1 ;
@@ -31,7 +31,7 @@ eralex:cir-2023-1694  rdf:type  vpa:Requirement , eli:LegalResource, dct:Standar
 
 And discuss the data model for Interoperability Constituents:
 
-```csharp
+```js
 eralex:ic-2020-387-TS-3
         rdf:type          erava:IC ;
         rdfs:comment      "This IC (#TS-3 of its defining TSI 2020/387) handles about Eurobalise. It concerns the subsystem function CCS trackside." ;
@@ -73,3 +73,13 @@ For the instances of `erava:IC`:
 ### Verification modules
 
 Modules are foreseen to have the IRI `eralex:dec-2010-713-SB` whereby the last characters express the module. They are - like IC's - instances of `eli:LegalResourceSubdivision`, which as a subClassOf `eli:LegalResource`. In order to refer to them using for instance `dct:coverage`, they must also be considered subClassOf `dct:Jurisdiction`.
+
+### Verification Set in the TSI CCS
+
+NBRail's RFU-STR-001 prescribes an indication of:
+
+`
+(Mandatory) For TSI CCS also the set(s) of specifications of TSI CCS Appendix A, including the TSI CCS from which the set is taken (e. g. set of specifications #2 from TSI CCS (EU) 2016/919 last amended by (EU) 2020/387) and (only if part train protection is assessed) the ETCS system version.
+`
+
+As we wish to represent this data also as URI's, a [SKOS Concept Scheme](../ERADIS/era-skos-ETCSMandatorySpecificationsSet.ttl) must be made available.
