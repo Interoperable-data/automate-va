@@ -1,11 +1,13 @@
 # Use cases for Vehicle (Type) Authorisations (VTA)
 
-Source: EULEX
+Source: EULEX PAVA
+
 Main objectives: any process/application which supports the submission of an application for VTA, its automatic checks and the preparation of the reports necessary to sign the VTA.
 
 ## Parameters
 
-To be completed.
+> [!IMPORTANT]
+> This document is an incomplete draft, to be reviewed by the working party.
 
 ## Presentation
 
@@ -26,7 +28,7 @@ Display a sequence of forms, for private storage of the VTAA:
 - VTA `vpa:Case`s (of a SKOS-defined `vpa:permissionType`), each with a precise `vpa:Scope` (a VehicleType and a VehiclesCollection), a statement on the adequacy of the selected VTA case, the language used and the project name. The record in EVR of each vehicle number present in the VehiclesCollection is verified through an API to be provided.
 - If applicable, a link to a pre-engagement resource.
 - A separate listing on the applicable rules (linking to ERALEX instances where possible)
-- The required 'Sets of Evidence' for the VTA case, as now implemented in 'OSS Documentation'.
+- The required 'Sets of Evidence' for the VTA case, as now implemented in 'OSS Documentation'. This collection is a `DocumentsCollection`, consisting of links to resources, and if needed, files. Each instance in the collection SHOULD be provided with extra property values for data reuse in the automated process.
 - The required 'Mapping tables'.
 
 Data available through links is not repeated in the VTA Application. Example: all the VehicleType related info, including the Holder must be retrieved through that `Source`.
@@ -46,7 +48,7 @@ If an VTAIssue-dialogue has been created, the applicant can always add a reply, 
 
 ## Signing a VTA Application Check, Assessment, Recommendation, Conclusion and Decision
 
-These presentations SHOULD be signed using a `Verifiable Credential` on the data which uniquely defines it (given the presentation itself is not linked data). Both the integrity as the authority to sign should be embedded in the digital signature. 
+These presentations SHOULD be signed using a `Verifiable Credential` on the data which uniquely defines it (given the presentation itself is not linked data). Both the integrity as the authority to sign should be embedded in the digital signature.
 
 In order to avoid some `foaf:Agent` of an Authorising Entity to sign out of his/her authority, the organisational data should make use of `org:Membership` and `org:Role`. These roles can then be used to allow the Agent to execute the 'Signing'-use case.
 

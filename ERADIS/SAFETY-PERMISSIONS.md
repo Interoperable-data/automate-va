@@ -48,3 +48,6 @@ For non-organisational properties:
 | Property      |                       Data | Datatype/ObjectProperty | dataset @ ERA |
 | :------------ | -------------------------: | :---------------------- | :-----------: |
 | `dct:subject` | Maintenance activity scope | ()                      |    /ERALEX    |
+
+> [!IMPORTANT]
+> This document is an incomplete draft, to be reviewed by the working party.

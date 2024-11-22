@@ -1,6 +1,7 @@
 # Use Cases for CLD
 
 Source: RFU-STR-001.
+
 Main objective: any application/process using CLD's should be able to retrieve the data of any CLD that has not been replaced (no `dct:isReplacedBy`) by any superseded CLD;
 
 ## Parameters
@@ -50,7 +51,7 @@ The issuing of a new CLD with an existing ERADIS ID and version should be prohib
 ## Issue a new version of a CLD (update)
 
 URI: `/process/CLD/update`
-SHACL: (LWS) `process/CLD/update#shape`, which contains ONLY the properties which MAY be changed during an update and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001. 
+SHACL: (LWS) `process/CLD/update#shape`, which contains ONLY the properties which MAY be changed during an update and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
 
 The user must first search for and select the CLD to update (from the collection of Issued but not any other CLD's) and displays **part** of its current data in a form. The updated CLD's other properties will be copied into the updating CLD.
 
@@ -69,11 +70,11 @@ The updated CLD:
 URI: `/process/CLD/amend`
 SHACL: `/process/CLD/amend#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
 
-```
-This case is used when a certificate must be amended. The “amend” 
-activity shall only be used in case of small and strictly administrative 
+`
+This case is used when a certificate must be amended. The “amend”
+activity shall only be used in case of small and strictly administrative
 amendments to an already issued CLD in order to correct an error.
-```
+`
 
 Allows the user to search for and select the CLD (from the collection of Issued/Suspended/Restricted, and only after a warning, the Amended CLD's) to be amended and displays **part of** its current data in a form. The amended CLD's other properties will be copied into the amending CLD.
 
@@ -91,7 +92,7 @@ The amended CLD:
 - SHALL have its status be changed into `Suspended` (Potential Issue When Restoring!).
 
 > [!WARNING]
-> An amended CLD, which contains errors, should never be [restored](#restore) as this would restore the errors. Should the Status better not be `Amended`?
+> An amended CLD, which contains errors, should never be [restored](#restore-a-suspendedrestricted-cld) as this would restore the errors. Should the Status better not be `Amended`?
 
 - SHALL NOT BE CHANGED in regard to its `vpa:valid` property.
 
@@ -170,4 +171,4 @@ Allows for the user to search for the CLD to be withdrawn (from the collection o
 - SHALL have its status be changed into `Withdrawn`, which blocks it from ever being restored again.
 - SHALL BE CHANGED in regard to its `vpa:valid` property, whereby the Period of Validity is set to 0 ([more info here](../ERADIS/CERTIFICATES.md#w3c-time-ontology)).
 
-All withdrawals must lead to the approriate
+All withdrawals must lead to the appropriate notifications.
