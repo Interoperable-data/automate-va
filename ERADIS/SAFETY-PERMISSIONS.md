@@ -49,5 +49,9 @@ For non-organisational properties:
 | :------------ | -------------------------: | :---------------------- | :-----------: |
 | `dct:subject` | Maintenance activity scope | ()                      |    /ERALEX    |
 
+For the ECM-property (5. Scope of ECM activities) 'Covers wagons specialised in transport of dangerous goods' : (YES|NO), we could propose `era:ecmCertificateCoversRID` (a DatatypeProperty of `xsd:boolean`).
+
+For the ECM-property (6. ADDITIONAL INFORMATION), which is free text, `rdfs:comment` (`xsd:string`) could be used.
+
 > [!IMPORTANT]
 > This document is an incomplete draft, to be reviewed by the working party.
