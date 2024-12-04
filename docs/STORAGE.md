@@ -8,7 +8,7 @@ It is vital to combine the automation of assessments with the existing confident
 - any metadata added to any of the (documents in the) submitted files
 - the contents of any of the files in the Library or any data belonging to an OSS Application.
 
-This hard requirement has some technological consequences, given the combination with linked open data as described [here](TECHNOLOGY.md). We give an overview of possible storage solutions and clarify important consequences of these choices.
+This hard requirement has some technological consequences, given the combination with linked open data as described [here](./TECHNOLOGY.md). We give an overview of possible storage solutions and clarify important consequences of these choices.
 
 ## Using a backend database
 
@@ -57,8 +57,8 @@ In essence, this personal online data storage allow structured and unstructured 
 The architectural consequence of using these Pods are:
 
 - each stakeholder could create, in its Organisational Pod,  a Container 'Applications', in which (per vehicle type) another Container will store the metadata of its assessments, per file. We explain below why this Container should not regroup applications.
-- These containers within the 'Applications' Container are only available for the stakeholder themselves, to execute [CRUD operations](https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/read-write-data/) on. These CRUD operations are all described in the [Requirements](REQUIREMENTS.md).
-- The data is stored using the Agency's [common ontology for Authorisations](ERA_KG.md), such that other applicable stakeholders can retrieve the data as well, if at least given access.
+- These containers within the 'Applications' Container are only available for the stakeholder themselves, to execute [CRUD operations](https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/read-write-data/) on. These CRUD operations are all described in the [Requirements](./REQUIREMENTS.md).
+- The data is stored using the Agency's [common ontology for Authorisations](./ERA_KG.md), such that other applicable stakeholders can retrieve the data as well, if at least given access.
 
 > [!TIP]
 > You are invited to collaborate on this ontology for Authorisations by forking its Github repository.

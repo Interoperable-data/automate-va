@@ -34,7 +34,7 @@ In conclusion, all data enabling to link (numbers of) vehicles with the underlyi
 - For ERADIS' IO documents, use the available KG's, which will need to be extended with the file hashes. This allows assessors to easily collect the data of ERADIS, based on OSS files.
 - For ERATV data, idem.
 
-The Agency's OPD Unit collecting available technologies is examining the [Solid Project](https://solidproject.org/about) technology, as it implements the Linked Storage Web technology. As detailed [here](STORAGE.md), these "pods" allow to store public and confidential information resources, whereby any need to share some resource data with colleagues is fully controlled by the Pod Owner.
+The Agency's OPD Unit collecting available technologies is examining the [Solid Project](https://solidproject.org/about) technology, as it implements the Linked Storage Web technology. As detailed [here](./STORAGE.md), these "pods" allow to store public and confidential information resources, whereby any need to share some resource data with colleagues is fully controlled by the Pod Owner.
 
 ### UI
 
@@ -52,4 +52,4 @@ In summary, the following approach seems to lead to the most reusable operation 
 
 ### Use linked data to the fullest
 
-The generation of the assessment (and all checks involved) is possible in an OPEN way, if data from the applications is stored as RDF, upon which SHACL or SHEX shapes are validated. Recommendations regarding the approach are in a [separate recommendation](STORAGE.md) in this repository.
+The generation of the assessment (and all checks involved) is possible in an OPEN way, if data from the applications is stored as RDF, upon which SHACL or SHEX shapes are validated. Recommendations regarding the approach are in a [separate recommendation](./STORAGE.md) in this repository.

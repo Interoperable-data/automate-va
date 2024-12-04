@@ -25,17 +25,21 @@ URI's of ?s when making use of Triple Stores:
 
 The URI of any CLD below must also be stored centrally, as [explained here](../COMPONENTS/app-core.md#search). The central search platform should be accessible publicly.
 
-## Presentation
+## Other functions realised by use cases
+
+### Presentation
 
 This document does not treat the approach to implement a [`Presenter for CLD's`](../COMPONENTS/app-core.md#presenters) as this module ony displays the CLD resource, in formats as configured outside of the scope of Use Cases.
 
-## Subscriptions
+### Subscriptions
 
 Some of the use cases below MUST trigger `Notifications` to given `Subscribers`. In fact, the creation of a CLD should automatically trigger certain subscriptions as well.
 
 More info is available [here](../COMPONENTS/app-subscriptions.md).
 
-## Issue new CLD
+## Core Use Cases
+
+### Issue new CLD
 
 URI: `/process/CLD/add`
 SHACL: (LWS) `process/CLD/add#shape` or any URI which resolves to the shape of a new CLD, which SHOULD be used to generate the form(s).
@@ -48,7 +52,7 @@ Displays a sequence of forms, for storage of the CLD as sets of public and priva
 Requires a [search function](../COMPONENTS/process-sources.md) retrieving the URI's for the ObjectProperties in the above models.
 The issuing of a new CLD with an existing ERADIS ID and version should be prohibited. The data to do so is available at each Appropriate Body, as the identifiers contain an organisational ID.
 
-## Issue a new version of a CLD (update)
+### Issue a new version of a CLD (update)
 
 URI: `/process/CLD/update`
 SHACL: (LWS) `process/CLD/update#shape`, which contains ONLY the properties which MAY be changed during an update and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
@@ -65,7 +69,7 @@ The updated CLD:
 - SHALL be marked as updated using `dct:modified` to the DATE of amendment;
 - SHALL have its status 'Issued' not changed, as it remains issued.
 
-## Amend existing CLD
+### Amend existing CLD
 
 URI: `/process/CLD/amend`
 SHACL: `/process/CLD/amend#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
@@ -98,7 +102,7 @@ The amended CLD:
 
 The amending CLD must state 'the nature of the amendment' in an addition to its `dct:description`.
 
-## Restrict an existing CLD
+### Restrict an existing CLD
 
 URI: `/process/CLD/restrict`
 SHACL: `/process/CLD/restrict#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
@@ -119,7 +123,7 @@ The restricted CLD:
 
 The restricting CLD must state 'the nature of the restriction' in an addition to its `dct:description`.
 
-## Suspend a CLD
+### Suspend a CLD
 
 URI: `/process/CLD/suspend`
 
@@ -139,7 +143,7 @@ The suspended CLD itself:
 
 The suspending CLD SHOULD not have any other properties, like ERADIS ID or Version, as the core mechanism to detect Suspension is handled through the link.
 
-## Restore a suspended/restricted CLD
+### Restore a suspended/restricted CLD
 
 URI: `/process/CLD/restore`
 SHACL: `/process/CLD/restore#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
@@ -161,7 +165,7 @@ The restored CLD itself:
 
 The restoring CLD SHOULD state 'the reason of lifting the restriction' in an addition to its `dct:description` and links to the restored CLD using `dct:replaces`.
 
-## Withdraw a CLD
+### Withdraw a CLD
 
 URI: `/process/CLD/withdraw`
 

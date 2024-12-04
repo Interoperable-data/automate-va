@@ -1,6 +1,6 @@
 # Generating forms from Linked Data
 
-The shape files `{Class}.ttl` contain named nodes for the `sh:PropertyShape`s in each Class. The shapes should not be blank nodes, as their subject node is explicitly required in what we propose to name the `Form Display Shape`.
+The shape files `{Class}.ttl` contain **named** nodes for the `sh:PropertyShape`s in each Class. The shapes should not be blank nodes, as their subject node is explicitly required in what we propose to name the `Form Display Shape`.
 
 Using a reference to these named nodes, this separate display shape file `{DisplayCommentForClass}-{Step Index}.ttl` can be created which structures the properties for usage in `shacl-form`.
 

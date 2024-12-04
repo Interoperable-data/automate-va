@@ -3,6 +3,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix era: <http://data.europa.eu/949/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix org: <http://www.w3.org/ns/org#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -42,7 +43,7 @@ The EU legislative documents 768/2008/EC, (EU) 2016/797, (EU) 2019/250 and 2010/
     sh:targetClass era:ECCertificate, era:QMSApproval, era:IntermediateStatement ; 
     sh:property [
         a sh:PropertyShape ;
-        sh:path dct:identifier ;
+        sh:path dcterms:identifier ;
         sh:datatype xsd:string ;
         sh:pattern ""; # todo, see VA-Inspector
         sh:nodeKind sh:Literal ;
@@ -53,7 +54,7 @@ The EU legislative documents 768/2008/EC, (EU) 2016/797, (EU) 2019/250 and 2010/
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dct:hasVersion ;
+        sh:path dcterms:hasVersion ;
         sh:datatype xsd:number ;
         sh:nodeKind sh:Literal ;
         sh:description "The Version Counter of the CLD, as defined in RFU-STR-001.";
@@ -65,7 +66,7 @@ CLD's carry version number 0, if no `/Vxx` in the `identification number` is pre
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path rfs:comment ;
+        sh:path rdfs:comment ;
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
         sh:description "Scope of Certification by reference to Object of Assessment (un-ambiguous denomination)"@en; 
@@ -85,7 +86,7 @@ definition (e.g. a Product Type Drawing, the NoBo-File/Documentation, the EC Ass
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dct:issued ;
+        sh:path dcterms:issued ;
         sh:datatype xsd:date ;
         sh:nodeKind sh:Literal ;
         sh:description "The date, on which the CLD was issued by the NoBo.";
@@ -101,7 +102,7 @@ definition (e.g. a Product Type Drawing, the NoBo-File/Documentation, the EC Ass
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dct:subject ;
+        sh:path dcterms:subject ;
         sh:description "Scope of Certification by reference to Object of Assessment (links to EURLEX)"@en;
         skos:note "The examined subsystem and if applicable, interoperability constituent, expressed as a URI to the legal reference in which these are uniquely defined.";
         skos:definition """Scope of Certification by reference to Object of Assessment: Designation of the certified Interoperability Constituent/ Subsystem Type(s) and variant(s)/versions(s)
@@ -112,7 +113,7 @@ included in the certification. Detailed further using `rdfs:comment`"""@en ;
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dct:coverage ;
+        sh:path dcterms:coverage ;
         sh:description "Scope of Certification by reference to Assessment Requirements (links to EURLEX)"@en;
         skos:note "The examined subsystem and if applicable, interoperability constituent, expressed as a URI to the legal reference in which these are uniquely defined.";
         skos:definition """Scope of Certification by reference to Assessment Requirements: TSls and their identification number to which conformity was assessed, including any Amendments. 
@@ -140,7 +141,7 @@ TSI CCS (EU) 2016/919 last amended by (EU) 2020/387) and (only if part train pro
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dct:creator ;
+        sh:path dcterms:creator ;
         sh:description "The assesment body having issued the CLD, expressed as a URI to the organisation which represents this body uniquely.";
         sh:minCount 1 ;
         sh:maxCount 1 ;
@@ -149,7 +150,7 @@ TSI CCS (EU) 2016/919 last amended by (EU) 2020/387) and (only if part train pro
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dct:audience ;
+        sh:path dcterms:audience ;
         sh:description "The organisation using the CLD as Applicant, expressed as a URI to the organisation which represents this body uniquely.";
         skos:definition """Name and address of Applicant (or of his authorized representative established within the Community.) [R9] """@en;
         sh:minCount 1 ;
@@ -159,7 +160,7 @@ TSI CCS (EU) 2016/919 last amended by (EU) 2020/387) and (only if part train pro
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dct:contributor ;
+        sh:path dcterms:contributor ;
         sh:description "The manufacturer involved in the assessment, expressed as a URI to the organisation which represents this body uniquely.";
         skos:definition """Name and address of the Manufacturer (or of his authorized representative established within the Community. 
 If Applicant and Manufacturer are the same entity, reuse the IRI from the Applicant.) [R1,R8,R33]"""@en;
@@ -170,7 +171,7 @@ If Applicant and Manufacturer are the same entity, reuse the IRI from the Applic
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dct:spatial ;
+        sh:path dcterms:spatial ;
         sh:description "The `org:Site` to which this CLD is linked, mostly a specific Production site audited in a QMSA.";
         skos:definition """6. Scope of Certification by reference to Location of manufacturer (only if relevant (e.g. for all QMS approvals), only if different from address of Manufacturer. 
 May also be a list of several locations.) [R3.a,R33]"""@en;
