@@ -13,7 +13,7 @@ const StorageElement = defineCustomElement(WebStorage)
 customElements.define('web-storage', StorageElement)
 
 // Locale should be set through component as well.
-const locale = ref<string>('en')
+const locale = ref<string>('ja')
 
 // Add the new element type to Vue's GlobalComponents type.
 declare module 'vue' {
@@ -44,24 +44,17 @@ declare module 'vue' {
     <select id="locale-select" v-model="locale">
       <option value="en">en</option>
       <option value="ja">ja</option>
+      <option value="fr">fr</option>
     </select>
   </form>
   <i18n-host .locale="locale">
     <section><h2>Only for serving the elements</h2></section>
-    <web-storage name="Martijn">speaks {{ locale }}</web-storage>
+    <web-storage name="Matthijs">All other web components here as they use storage</web-storage>
   </i18n-host>
   <!-- <RouterView /> -->
 </template>
 
 <style scoped>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 /* header {
   line-height: 1.5;
   max-height: 100vh;

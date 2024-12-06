@@ -18,16 +18,21 @@ import { createI18n, I18nInjectionKey } from 'vue-i18n'
  * NOTE:
  *  In web components only supports the composition API.
  *  It will not work in legacy API mode.
+ *
+ * TODO: import the translations from the KG
  */
 const i18n = createI18n<false>({
-  legacy: false, // must set to `false`
+  legacy: false, // must be set to `false`
   locale: 'en',
   messages: {
     en: {
-      hello: 'Hello!',
+      hello: 'Hello ',
     },
     ja: {
-      hello: 'こんにちは！',
+      hello: 'こんにちは ',
+    },
+    fr: {
+      hello: 'Bonjour',
     },
   },
 })
@@ -41,13 +46,22 @@ provide(I18nInjectionKey, i18n)
 
 watchEffect(() => {
   console.log(`Language captured in watcher, changed to ${props.locale}!`)
-
   i18n.global.locale.value = props.locale
 })
 </script>
 
 <template>
-  <p>The wrapper will speak {{ props.locale }}</p>
   <slot />
-  <p>End of wrapper</p>
 </template>
+
+<!-- NOT ACTIVE HERE, use messages
+<i18n>
+{
+   "en": {
+     "hello": 'Hello'
+   },
+   ja: {
+     "hello": 'こんにちは'
+   }
+}
+</i18n> -->
