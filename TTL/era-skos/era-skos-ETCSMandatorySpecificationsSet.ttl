@@ -43,106 +43,107 @@ era-etcsmanspecset:ETCSMandatorySpecificationsSet a skos:ConceptScheme ;
 
 
 ########## ETCS Sets of mandatory specifications ##########
-era-specset:2012-88-1 a skos:Concept;
+## 2012/88
+era-etcsmanspecset:2012-88-1 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/dec/2012/88(1)/oj> ;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Only Set - ETCS baseline 2 and GSM-R baseline 0"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 2.3.0 & (EIRENE) 7/15"@en .
 
 ## 2012/696 ---------------------------
-era-specset:2012-696-1 a skos:Concept;
+era-etcsmanspecset:2012-696-1 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/dec/2012/88(1)/2013-01-01> , <http://data.europa.eu/eli/dec/2012/696/oj>;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Set #1 - ETCS baseline 2 and GSM-R baseline 0"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 2.3.0 & (EIRENE) 7.3/15.3"@en .
 
-era-specset:2012-696-2 a skos:Concept;
+era-etcsmanspecset:2012-696-2 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/dec/2012/88(1)/2013-01-01> , <http://data.europa.eu/eli/dec/2012/696/oj> ;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Set #2 - ETCS baseline 3 and GSM-R baseline 0"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 3.3.0 & (EIRENE) 7.3/15.3"@en .
 
 ## 2015/14 ---------------------------
-era-specset:2015-14-1 a skos:Concept;
+era-etcsmanspecset:2015-14-1 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/dec/2012/88(1)/2015-07-01> , <http://data.europa.eu/eli/dec/2015/14/oj> ;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Set #1 - ETCS baseline 2 and GSM-R baseline 0"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 2.3.0 & (EIRENE) 7.4/15.4"@en .
 
-era-specset:2015-14-2 a skos:Concept;
+era-etcsmanspecset:2015-14-2 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/dec/2012/88(1)/2015-07-01> , <http://data.europa.eu/eli/dec/2015/14/oj> ;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Set #2 - ETCS baseline 3 and GSM-R baseline 0"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 3.4.0 & (EIRENE) 7.4/15.4"@en .
 
 ## 2016/919 ---------------------------
-era-specset:2016-919-1 a skos:Concept;
+era-etcsmanspecset:2016-919-1 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/dec/2012/88(1)/2017-01-26> , <http://data.europa.eu/eli/reg/2016/919/oj> ;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Set #1 - ETCS Baseline 2 and GSM-R Baseline 1"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 2.3.0 & (EIRENE) 8/16"@en .
 
-era-specset:2016-919-2 a skos:Concept;
+era-etcsmanspecset:2016-919-2 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/dec/2012/88(1)/2017-01-26> , <http://data.europa.eu/eli/reg/2016/919/oj> ;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Set #2 - ETCS Baseline 3 Maintenance Release 1 and GSM-R Baseline 1"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 3.4.0 & (EIRENE) 8/16"@en .
 
-era-specset:2016-919-3 a skos:Concept;
+era-etcsmanspecset:2016-919-3 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/dec/2012/88(1)/2017-01-26> , <http://data.europa.eu/eli/reg/2016/919/oj>;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Set #3 - ETCS Baseline 3 Release 2 and GSM-R Baseline 1"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 3.6.0 & (EIRENE) 8/16"@en .
 
 ## 2016/919, final amendment  ---------------------------
-era-specset:2019-776-1 a skos:Concept;
+era-etcsmanspecset:2019-776-1 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/reg/2016/919/2019-06-16> , <http://data.europa.eu/eli/reg/2016/919/2020-03-11> ;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Set #1 - ETCS Baseline 2 and GSM-R Baseline 1"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 2.3.0 & (EIRENE) 8/16"@en .
 
-era-specset:2019-776-2 a skos:Concept;
+era-etcsmanspecset:2019-776-2 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/reg/2016/919/2019-06-16> , <http://data.europa.eu/eli/reg/2016/919/2020-03-11>;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Set #2 - ETCS Baseline 3 Maintenance Release 1 and GSM-R Baseline 1"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 3.4.0 & (EIRENE) 8/16"@en .
 
-era-specset:2019-776-3 a skos:Concept;
+era-etcsmanspecset:2019-776-3 a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/reg/2016/919/2019-06-16> , <http://data.europa.eu/eli/reg/2016/919/2020-03-11>;
-#   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "Set #3 - ETCS Baseline 3 Release 2 and GSM-R Baseline 1"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 3.6.0 & (EIRENE) 8/16"@en .
 
 ## 2023/1695  ---------------------------
-era-specset:2023-1695-etcs a skos:Concept;
+era-etcsmanspecset:2023-1695-etcs a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/reg_impl/2023/1695/oj> ;
-  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+    #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "ETCS Baseline 4 Release 1;"^^xsd:string ;
   skos:prefLabel "(SUBSET-026) 4.0.0"@en .
 
-era-specset:2023-1695-rmr a skos:Concept;
+era-etcsmanspecset:2023-1695-rmr a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/reg_impl/2023/1695/oj> ;
-  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+    #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "RMR: GSM-R Baseline 1 Maintenance Release 1 + FRMCS Baseline 0"^^xsd:string ;
   skos:prefLabel "(EIRENE) 8.1/16.1 & (AT-7800) 1.0.0"@en .
 
-era-specset:2023-1695-ato a skos:Concept;
+era-etcsmanspecset:2023-1695-ato a skos:Concept;
   skos:inScheme era-etcsmanspecset:ETCSMandatorySpecificationsSet;  
   dct:source <http://data.europa.eu/eli/reg_impl/2023/1695/oj> ;
-  #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
+    #   skos:topConceptOf era-etcsmvers:ETCSMVersions; 
   skos:notation "ATO Baseline 1 Release 1"^^xsd:string ;
   skos:prefLabel "(SUBSET-125) 1.0.0"@en .
 
