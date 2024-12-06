@@ -13,7 +13,7 @@ PoC user interface components SHALL not hard-code any textual content. Instead, 
 - French, `fr`
 - German, `de`
 - Greek, `el`
-- Hungarian, `hu` 
+- Hungarian, `hu`
 - Irish, `ga`
 - Italian, `it`
 - Latvian, `lv`

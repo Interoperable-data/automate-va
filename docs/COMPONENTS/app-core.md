@@ -2,7 +2,7 @@
 
 This document describes the *functions* to be provided by the root application. Each function should be modeled as a module. Modules could be replaced by better versions in the future.  
 
-The implementation details are not provided, as these are the choice of any party developing their own application itself. The Agency OPD responsible for the PoC application is considering [Vue3-based custom elements](https://vuejs.org/guide/extras/web-components#building-custom-elements-with-vue).
+The implementation details are not provided, as these are the choice of any party developing their own application itself. The Agency OPD responsible for the PoC application is considering [Vue3-based custom elements](https://vuejs.org/guide/extras/web-components#building-custom-elements-with-vue) which can be integrated as Web Components by any stakeholder wishing to build upon it.
 
 We use the following prefixes in what follows:
 

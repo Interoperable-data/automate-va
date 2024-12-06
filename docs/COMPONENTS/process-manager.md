@@ -27,15 +27,15 @@ From a SHACL SHAPE-file, a small form could be shown, and the task is added to t
 Currently, a task has the following properties (LWS example):
 
 ```js
-<https://{STORAGEPROVIDER/}{processRootContainer/}/{ProcessName/}{TaskName}>
+<https://{STORAGEPROVIDER/}{processRootContainer/}{ProcessName/}{TaskName}>
         a               dul:Task , ldp:RDFSource;
-        rdf:first       <https://{STORAGEPROVIDER/}{processRootContainer/}/{ProcessName}/{TaskName}#1728977376498>;
+        rdf:first       <https://{STORAGEPROVIDER/}{processRootContainer/}{ProcessName/}{TaskName}#1728977376498>;
         rdfs:comment    "TITLE OF THE TASK";
         dct:source      <URI-to-SOURCE>, <URI-to-OTHER-SOURCE> ;
         vcard:hasEmail <mailto:task.author@email.example> .
 ```
 
-Sources contain datasets from which the user needs to enter URI's. They are retrievable by providing a search function on the resources datatype-properties, and returning the URI of the found resource.
+Sources (`dct:source`) contain datasets from which the user needs to enter URI's. They are retrievable by providing a search function on the resources datatype-properties, and returning the URI of the found resource, which is then entered.
 
 ## Add Step
 
@@ -46,12 +46,12 @@ From a SHACL Shape-file, a form could be shown, and the Step is added to the Tas
 Currently, a Step has the following properties (LWS example):
 
 ```js
-<https://{STORAGEPROVIDER/}{processRootContainer/}/{ProcessName/}{TaskName}#1728997997702>
+<https://{STORAGEPROVIDER/}{processRootContainer/}{ProcessName/}{TaskName}#1728997997702>
         a               dul:Action;
         <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>  ();
         rdfs:label      "STEP title"@nl-NL , "STEP title"@en-US , "Step title"@fr-FR;
         dct:description "STEP explanation"@en-US;
-        dct:source      <https://{STORAGEPROVIDER/}{processRootContainer/}/{ProcessName/}{TaskName}/form_shape_file.ttl>;
+        dct:source      <https://{STORAGEPROVIDER/}{processRootContainer/}{ProcessName/}{TaskName}/form_shape_file.ttl>;
         schema:version  1;
         dul:realizes    "org" .
 ```
