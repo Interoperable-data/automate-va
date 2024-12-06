@@ -9,3 +9,19 @@ The details of the action are present in the instance of a `Step`. The order of 
 Each process task must be an instance of `dul:Task` or `prov:Action`, with its steps instances of `dul:Action` or `prov:Activity`. Each step contains several properties allowing a Process Handler to show the step contents, and know where to collect/store the data involved in the step. The processes are instance of `dul:Process`. `Step`s have versions (creating versions of the `Task`), and their sequence can be deduced (usage of `rdf:first`, `rdf:rest`).
 
 The processes, tasks and steps can be created using a Process Manager component. The ontology used for them is also elaborated in [that component](./process-manager.md).
+
+## @base
+
+Depending on the storage systems, the URI's to Processes may be:
+
+- (JENA TS) `http://{JENA-server:port}/#/dataset/{DATASET Containing the Process Task Graphs}/{verb}`, with verbs `[get|data|query|sparql|shacl|update]` as for JENA endpoints;
+- (LWS) `https://{LWS-provider}/{Pod-identifier}/{Type Index Path to prov:Action}/{ProcessLabel}/`-container;
+- (FILE) `{ProcessLabel}.ttl` with the Tasks grouped in Graphs and the Steps as triples in these graphs.
+
+In all cases:
+
+- Processes should be managed as containers, implemented as `RDF datasets`, LWS storage containers or files.
+- Tasks should be managed as `RDF Graphs`, be it through `Graph`s directly or `SolidDataset`s.
+- Steps within the tasks are managed as linked data resources, be it through RDF resources or Solid `Thing`s.
+
+## 
