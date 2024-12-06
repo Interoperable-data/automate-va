@@ -20,8 +20,12 @@ Depending on the storage systems, the URI's to Processes may be:
 
 In all cases:
 
-- Processes should be managed as containers, implemented as `RDF datasets`, LWS storage containers or files.
-- Tasks should be managed as `RDF Graphs`, be it through `Graph`s directly or `SolidDataset`s.
+- Processes should be managed as `Graph Containers`, implemented as `Triple Store datasets`, LWS storage containers or files.
+- Tasks should be managed as `RDF Graphs`, be it through `Graph`s directly or [`SolidDataset`](https://docs.inrupt.com/developer-tools/javascript/client-libraries/reference/glossary/#term-SolidDataset)s. Tasks are the RDF resources inside of the process file.
 - Steps within the tasks are managed as linked data resources, be it through RDF resources or Solid `Thing`s.
 
-## 
+## Examples
+
+- (JENA TS) The JENA dataset endpoint above will contain a named GRAPH for Task T, which contains all triples grouped per Task Step.
+- (LWS) The Solid Pod Container above will contain the Task SolidDataset `taskname`, in which the Solid `Thing`s are the steps of the Task.
+- A file process.ttl will contain graphs per Task, in which each step is a named resource.
