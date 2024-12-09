@@ -11,7 +11,7 @@
  *    More than one provider should be supported, many known issues with ESS - NSS - CSS login stream
  * - redirectURI: URI | null - given the complexities of Web Components, the component itself should catch the call from the OIDC.
  *    if null: the component should serve as the catcher of this call.
- * - ...
+ * - TODO: from analysis
  *
  */
 const props = defineProps<{ name: string }>()

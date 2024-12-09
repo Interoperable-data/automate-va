@@ -48,7 +48,7 @@ The data model for Vehicle Registrations is deduced from the e-form.
 
 ### EVNs
 
-The vehicles are regrouped into a `era:VehiclesCollection owl:subClassOf vpa:Scope`. This enables us to express
+The vehicles are regrouped into a `era:VehiclesCollection rdfs:subClassOf vpa:Scope`. This enables us to express
 
 `eravr:vrc-NNNN-n-0 a vpa:Case ; vpa:concerns eravr:vehcol-uuid` to indicate what vehicles are in the Registration Case.
 

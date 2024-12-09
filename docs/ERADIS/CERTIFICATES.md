@@ -112,6 +112,9 @@ Because different certificates sometimes treat the same IC but produced at diffe
 
 #### The [INF, ENE, CCS]-combination
 
+> [!WARNING] 
+> Needs update given `era:CommonCharacteristicsSubset`
+
 Finally, some certificates are inherently specifying a limited application, regarding [ENE, INF, CCS]-combinations. The `era:hasSetOfParameters` could in that case be used, be it through the relevant classes as in the following table. More information is available in the [ERA Vocabulary](https://linkedvocabs.org/data/era-ontology/3.1.0/doc/index-en.html).
 
 | Property                        |                                     Data | Datatype/ObjectProperty                                          | dataset @ ERA |
