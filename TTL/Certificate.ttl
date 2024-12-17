@@ -24,11 +24,11 @@
 
     ## definitions ----------
     rdfs:comment """Certification Level Documents (CLD) issued by NoBos are:
-• EC Certificates
-• QMS-Approvals
-• Intermediate Statements of Verification (ISVs)
+    • EC Certificates
+    • QMS-Approvals
+    • Intermediate Statements of Verification (ISVs)
 
-The EU legislative documents 768/2008/EC, (EU) 2016/797, (EU) 2019/250 and 2010/713/EU establish a number of requirements on the content of CLDs."""@en ;
+    The EU legislative documents 768/2008/EC, (EU) 2016/797, (EU) 2019/250 and 2010/713/EU establish a number of requirements on the content of CLDs."""@en ;
     rdfs:isDefinedBy <http://data.europa.eu/949/> ;
     rdfs:seeAlso "https://nb-rail.eu/official-documents?_hash=sdZw5f9knrCRlgtc8tjzq263IkcdQhDo05f6n%2FKVqUA%3D&ctx=a%3A1%3A%7Bs%3A2%3A%22id%22%3Bi%3A154%3B%7D&p=documents%2FRFU%2FAll+subsystems%2FRFU-STR-001+Content+of+EC+Certificates.pdf";
     rdfs:label "Certification Level Documents"@en ;
@@ -60,7 +60,7 @@ The EU legislative documents 768/2008/EC, (EU) 2016/797, (EU) 2019/250 and 2010/
         sh:description "The Version Counter of the CLD, as defined in RFU-STR-001.";
         skos:definition """The combination of the CLD ID and the Version counter is the unique ‘identification number’ ensuring traceability of the CLD in accordance with (EU) 2019/250.
 
-CLD's carry version number 0, if no `/Vxx` in the `identification number` is present. There are no CLD's with /V00 (allowed)."""@en ;
+        CLD's carry version number 0, if no `/Vxx` in the `identification number` is present. There are no CLD's with /V00 (allowed)."""@en ;
         sh:minCount 1;
         sh:maxCount 1
     ];
@@ -118,10 +118,10 @@ included in the certification. Detailed further using `rdfs:comment`"""@en ;
         skos:note "The examined subsystem and if applicable, interoperability constituent, expressed as a URI to the legal reference in which these are uniquely defined.";
         skos:definition """Scope of Certification by reference to Assessment Requirements: TSls and their identification number to which conformity was assessed, including any Amendments. 
 
-Format as defined by ELI: 
-<http://data.europa.eu/eli/reg/2014/1304/oj> for the unamended legislation;
-<http://data.europa.eu/eli/reg/2014/1304/2023-09-28> for the amendment <http://data.europa.eu/eli/reg_impl/2023/1694/oj>, as published on 28/09/2023.;
-"""@en ;
+        Format as defined by ELI: 
+        <http://data.europa.eu/eli/reg/2014/1304/oj> for the unamended legislation;
+        <http://data.europa.eu/eli/reg/2014/1304/2023-09-28> for the amendment <http://data.europa.eu/eli/reg_impl/2023/1694/oj>, as published on 28/09/2023.;
+        """@en ;
         sh:minCount 1 ;
         sh:nodeKind sh:IRI ; 
         sh:class vpa:Requirement

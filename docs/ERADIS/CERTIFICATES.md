@@ -181,4 +181,17 @@ Certificates should **not** link to the declarations they support, the link is c
 
 See also [EC Declarations](DECLARATIONS.md).
 
-See also [Restrictions](./RESTRICTION.md) for the private data regarding the Conditions and Limits of Use.
+## Non-disclosed properties
+
+See also [Restrictions](./RESTRICTION.md) for the non-disclosed data regarding the Conditions and Limits of Use.
+
+The following data should be stored in non-disclosed graphs.
+
+- ASSESSMENT REQUIREMENTS: In combination with those Harmonised Standards, Voluntary Standards (or parts thereof), other European or national rules authorized by the TSI and Alternative Solutions as identified in the EC Technical [File/Documentation]
+- STANDARD USED [optional]
+- ASSESSMENT RESULT: This is the core statement of the Certificate. NoBo statement that the object of assessment (Interoperability Constituent/Subsystem, or its phase/part/Quality Management System), was shown to comply with the assessment requirements, subject to any restrictions and conditions as listed in the relevant field. The essential requirements have been assessed as being met through compliance with the requirements of the relevant TSI only. The details of the assessment results are provided within the documentation part of the NoBo Technical File and/or NoBo Assessment Report.
+- RESTRICTIONS / CONDITIONS FOR USE [optional]
+- ANNEXES (each with [identifier, revision-if used, date]):
+  - [optional]
+  - [optional - NOBO ASSESSMENT REPORT]
+  - [optional - NOBO TECHNICAL FILE/DOCUMENTATION]

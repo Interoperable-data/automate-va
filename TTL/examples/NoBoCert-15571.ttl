@@ -1,0 +1,77 @@
+@base <http://data.europa.eu/949/> .
+@prefix : <http://data.europa.eu/949/eradis/> .
+@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix eralex: <http://data.europa.eu/949/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+
+:cld-NoBoCert-15571 
+    a era:CLD ;
+    dcterms:created "2024-12-16"^^xsd:date ; # the creation of this resource in the KG
+    dcterms:replaces :cld-NoBoCert-7370 ;
+    dcterms:coverage eralex:dir-2016-797 ,
+        eralex:dec-2010-713-SB ,
+        eralex:reg-2013-1236 , 
+        eralex:reg-2014-1304 ,
+        eralex:reg-2015-924,
+        eralex:reg-2013-321 ;
+    rdfs:comment "Tank Wagon 97m3 Za(c)ns" ;
+    dcterms:subject eralex:reg-2015-924 ;
+    dcterms:type era-skos-CLDType:ECTypeExamination ;
+    dcterms:identifier "2826/1/SB/2021/RST/EN/N20210917/01" ;
+    rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/NoBoCert/view.aspx?id=15571"^^xsd:anyURI ;
+    dcterms:issued "2021-09-23"^^xsd:date ; # the document issue date
+    vpa:valid [
+        a time:ProperInterval ;
+        time:hasBeginning "2016-09-02"^^xsd:date ; #start of validity
+        time:hasDurationDescription [
+            # https://www.w3.org/TR/owl-time/#time:DurationDescription
+            time:years 10 ;
+        ]
+    ];
+    skos:note """This certificate follows certificate number 0038/1/SB/2016/RST/EN/20161113 issue 2 dated
+02/09/2016 and certificate number 2673/1/SB/2016/RST/EN/N20160045/02 dated 29/05/2020"""@en ;
+    dcterms:audience era-org:MF-RO-310141-2931 ; # Applicant
+    dcterms:contributor era-org:MF-RO-310141-2931 ; # Manufacturer
+    dcterms:creator era-org:NoBo-2826 ; # The NoBo itself /ORGS (<http://data.europa.eu/949/taxonomies/org#NoBo-2826>)
+    vpa:checked 
+        erapod:check-NoBoCert-15571-1 ,
+        erapod:check-NoBoCert-15571-2 ;
+    dcterms:hasversion 1 .
+
+# Stored in a confidential data pod and inaccessible
+# The following is illustrative only
+erapod:check-NoBoCert-15571-1
+    a vpa:Compliance ;
+    vpa:checkedSection era-skos-lex:TSI-WAG-Section-6.2.2.1.StrengthOfUnit ; # See also the Non-disclosed properties
+    vpa:isCompliant "false"^^xsd:boolean ;
+    vpa:withRestriction [
+        a vpa:Restriction ;
+        vpa:regarding eralex:reg-2015-924 ;
+        dcterms:source eralex:reg-2015-924 ;
+        rdfs:comment "Example: Original text of the NoBo's restriction can be provided here" ;
+    ].
+
+# Example of a check without a restriction
+erapod:check-NoBoCert-15571-2
+    a vpa:Compliance ;
+    vpa:checkedSection era-skos-lex:TSI-WAG-Section-6.2.2.3.RunningDynamicBehaviour ;
+    dcterms:source eralex:reg-2013-1236 ;
+    rdfs:comment "The WAG is compliant in regard to 6.2.2.3 of TSI WAG." ;
+    vpa:isCompliant "true"^^xsd:boolean     .
+
+
+
