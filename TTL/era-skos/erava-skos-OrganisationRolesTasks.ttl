@@ -1,0 +1,159 @@
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-skos: <http://data.europa.eu/949/concepts/> .
+@prefix org: <https://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
+
+
+
+
+#################################################################
+#
+#    Concept Schemes
+#
+#################################################################
+
+
+
+erava-orgroletasks:OrganisationRoleTasks a skos:ConceptScheme ; 
+    dct:issued "2024-12-06"^^xsd:date ;
+    # dct:modified "_RESERVED_"^^xsd:date ;
+    cc:license <https://creativecommons.org/licenses/by/4.0/> ;
+    rdfs:label "Organisations - task groups to be executed by Agents, within Organisations having a certain era:Role"@en ;
+    rdfs:comment """This SKOS Concept Scheme is used to define what `org:Role`s are executed by Agents belonging to a certain Organisation.
+
+Organisations play certain roles (`era:hasRole`), which are realised by the execution of tasks by Agents working within them. In the W3C Organisation ontology,
+these tasks are grouped under `org:Role`, a subClassof skos:Concept.
+
+This Concept scheme provides the task groups which exist in each of the organisation roles ERA is executing processes with."""@en ;
+    skos:example """To be provided"""@en ;
+    rdfs:seeAlso "era-skos/era-skos-OrgRoles.ttl" ;
+    dct:source <http://data.europa.eu/949/concepts/organisation-roles/OrgRoles> ;
+    skos:prefLabel "Tasks executed by Agents belonging to a certain Organisation"@en ;
+    skos:editorialNote ""@en ;
+    dct:title "Concept scheme grouping tasks belonging to organisation roles"@en .
+
+
+
+#################################################################
+#
+#    Concept instances
+#
+#################################################################
+
+    
+
+
+########## Tasks executed by Agents belonging to a certain Organisation ##########
+
+#### MANUFACTURER
+
+erava-orgroletasks:va-applicant a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <http://data.europa.eu/eli/reg_impl/2018/545/2020-06-16#art_3> ;
+    skos:notation "The agent executing the role of applicant of a vehicle (type) authorisation process."@en ;
+    skos:prefLabel "Responsable agent, representing the applicant for vehicle authorisation" ;
+    skos:definition "See Article 3 of the legal reference."@en .    
+
+erava-orgroletasks:ic-applicant a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016L0797-20200528#art_10> ;
+    skos:notation "The agent executing the role of applicant of a process to bring an IC to the market."@en ;
+    skos:prefLabel "Responsable agent, representing the applicant for placing an IC on the market" ;
+    skos:definition """In order to establish the ‘EC’ declaration of conformity or suitability for use of an interoperability constituent, the manufacturer or his authorised
+ representative shall apply the provisions laid down by the relevant TSIs."""@en .    
+
+erava-orgroletasks:ss-applicant a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016L0797-20200528#art_15> ;
+    skos:notation "The agent executing the role of applicant of a process to bring a Subsystem to the market."@en ;
+    skos:prefLabel "Responsable agent, representing the applicant for placing a Subsystem on the market" ;
+    skos:definition """The applicant shall establish the ‘EC’ declaration of verification of a subsystem. The applicant shall declare on his sole responsibility that 
+the subsystem concerned has been subject to the relevant verification procedures and that it satisfies the requirements of relevant Union law and any relevant national rule."""@en .
+
+#### AUTHORISING ENTITY
+
+## Vehicle Authorisation
+
+erava-orgroletasks:va-projectmanager a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <http://data.europa.eu/eli/reg_impl/2018/545/2020-06-16#art_4> ;
+    skos:notation "The agent executing the role of project manager at the authorising entity executing a vehicle authorisation process."@en ;
+    rdfs:comment "Not all authorising entities have agents executing this role separately."@en ;
+    skos:prefLabel "Agent, representing authorising entity for vehicle authorisation, managing the project of a vehicle (type) authorisation." ;
+    skos:definition "See Article 4 of the legal reference."@en .    
+
+erava-orgroletasks:va-assessor a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <http://data.europa.eu/eli/reg_impl/2018/545/2020-06-16#art_4> ;
+    skos:notation "The agent executing the role of assessor at the authorising entity executing a vehicle authorisation process."@en ;
+    skos:prefLabel "Agent, representing authorising entity for vehicle authorisation, executing the analysis and assessment tasks of a vehicle (type) authorisation." ;
+    skos:definition "See Article 4 of the legal reference."@en .    
+
+erava-orgroletasks:va-qualitymanager a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <http://data.europa.eu/eli/reg_impl/2018/545/2020-06-16#art_4> ;
+    skos:notation "The agent executing the role of quality manager at the authorising entity executing a vehicle authorisation process."@en ;
+    rdfs:comment "Not all authorising entities have agents executing this role separately."@en ;
+    skos:prefLabel "Agent, representing authorising entity for vehicle authorisation, and responsible for the quality assurance" ;
+    skos:definition "See Article 4 of the legal reference."@en .    
+
+erava-orgroletasks:va-decisionmaker a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <http://data.europa.eu/eli/reg_impl/2018/545/2020-06-16#art_4> ;
+    skos:notation "The agent deciding at the authorising entity to finalise a vehicle authorisation process."@en ;
+    skos:prefLabel "Agent, representing authorising entity for vehicle authorisation, and responsible for the final authorisation" ;
+    skos:definition "See Article 4 of the legal reference."@en .    
+
+#### Assessment Body (NoBo, DeBo, AsBo, ISA, etc...)
+
+erava-orgroletasks:ab-assessor a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <> ;
+    skos:notation "The agent executing the role of assessor at the accredited body executing a certification process."@en ;
+    skos:prefLabel "Agent, representing an assessment body, and responsible for the assessment (any reference chapter)" ;
+    skos:definition ""@en . 
+
+erava-orgroletasks:ab-qualitymanager a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <> ;
+    skos:notation "The agent executing the role of quality manager at the accredited body executing a certification process."@en ;
+    skos:prefLabel "Agent, representing an assessment body, and responsible for the quality assurance" ;
+    skos:definition ""@en .  
+
+erava-orgroletasks:ab-decisionmaker a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <> ;
+    skos:notation "The agent executing the role of decision maker at the accredited body signing the final result of a certification process."@en ;
+    skos:prefLabel "Agent, representing an assessment body, and responsible for the final certification process result." ;
+    skos:definition ""@en .  
+
+erava-orgroletasks:int-assessor a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016L0797-20200528#art_35> ;
+    skos:notation "The agent executing the role of assessor at the accredited in-house body executing a certification process."@en ;
+    skos:prefLabel "Agent, representing an accredited in-house body, and responsible for the assessment (any reference chapter)" ;
+    skos:definition ""@en . 
+
+erava-orgroletasks:int-qualitymanager a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016L0797-20200528#art_35> ;
+    skos:notation "The agent executing the role of quality manager at the accredited in-house body executing a certification process."@en ;
+    skos:prefLabel "Agent, representing an accredited in-house body, and responsible for the quality assurance" ;
+    skos:definition ""@en .  
+
+erava-orgroletasks:int-decisionmaker a org:Role ; # skos:Concept
+    skos:inScheme erava-orgroletasks:OrganisationRoleTasks ;
+    dct:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016L0797-20200528#art_35> ;
+    skos:notation "The agent executing the role of decision maker at the accredited in-house body signing the final result of a certification process."@en ;
+    skos:prefLabel "Agent, representing an accredited in-house body, and responsible for the final certification process result." ;
+    skos:definition ""@en .  
+
+#### ISS - to be provided. A link is to be made with the authorisations needed to execute certain tasks.

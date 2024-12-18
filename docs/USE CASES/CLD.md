@@ -11,12 +11,12 @@ Main objective: any application/process using CLD's should be able to retrieve t
 Appropriate Bodies (NoBo, DeBo, AsBo), if they use LWS, should decide how to structure the CLD-repository in `{NoBo:Containers}/` and `{NoBo:Containers-Private}/`.
 When using a triple store, they must decide on the GRAPHs to store the resource in as `{NoBo:Graphs}` and `{NoBo:Graphs-Private}`.
 
-URI's of ?s when making use of LWS:
+Possible URI's of ?s when making use of LWS:
 
 - `/data/CLD/{NoBo:Containers}/[eccert|qmsa|isv]-{uuid4}`, depending on the CLD's type
 - `/data/CLD/{NoBo:Containers-Private}/[clou|compliance]-{uuid4}`
 
-URI's of ?s when making use of Triple Stores:
+Possible URI's of ?s when making use of Triple Stores:
 
 - `GRAPH {NoBo:Graphs} { [eccert|qmsa|isv]-{uuid4} a vpa:DocumentedEvidence }`
 - `GRAPH {NoBo:Graphs-Private} { [clou|compliance]-{uuid4} a vpa:DocumentedEvidence }`

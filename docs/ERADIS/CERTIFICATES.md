@@ -138,17 +138,17 @@ To clarify that a certificate has:
 
 The following mandatory properties are the basis for the data model allowing extraction from ERADIS:
 
-| Property           | Data                               |                Datatype/ObjectProperty                 | dataset @ ERA |
-| :----------------- | :--------------------------------- | :----------------------------------------------------: | :-----------: |
-| `rdfs:comment`     | Object of assessment               |                      `xsd:string`                      |      n/a      |
-| `dct:description`  | Supplementary information          |                      `xsd:string`                      |      n/a      |
-| `dct:type`         | Certificate type                   |     (IRI to SKOS Concept [Scheme to be provided])      |    /ERALEX    |
-| `dct:identifier`   | Certificate Number                 |            `xsd:string` (with `sh:pattern`)            |      n/a      |
-| `dct:replaces`     | Previous Certificate               |               (IRI to that certificate)                |    /IODOCS    |
-| `dct:isReplacedBy` | Certificate replacing the current  | (if replaced, then IRI to that replacing certificate)  |    /IODOCS    |
-| `dct:coverage`     | Interoperability Directive applied | (IRI to /ERALEX instances of the applied IO Directive) |    /ERALEX    |
-| `dct:coverage`     | Modules Applied                    |  (IRI to those /ERALEX instances, which are modules)   |    /ERALEX    |
-| `dct:coverage`     | TSI's used (amendments included)   |            (IRI to those /ERALEX instances)            |    /ERALEX    |
+| Property           | Data                               |                          Datatype/ObjectProperty                          | dataset @ ERA |
+| :----------------- | :--------------------------------- | :-----------------------------------------------------------------------: | :-----------: |
+| `rdfs:comment`     | Object of assessment               |                               `xsd:string`                                |      n/a      |
+| `dct:description`  | Supplementary information          |                               `xsd:string`                                |      n/a      |
+| `dct:type`         | Certificate type                   | (IRI to [SKOS Concept](https://github.com/Certiman/automate-va/issues/2)) |    /ERALEX    |
+| `dct:identifier`   | Certificate Number                 |                     `xsd:string` (with `sh:pattern`)                      |      n/a      |
+| `dct:replaces`     | Previous Certificate               |                         (IRI to that certificate)                         |    /IODOCS    |
+| `dct:isReplacedBy` | Certificate replacing the current  |           (if replaced, then IRI to that replacing certificate)           |    /IODOCS    |
+| `dct:coverage`     | Interoperability Directive applied |          (IRI to /ERALEX instances of the applied IO Directive)           |    /ERALEX    |
+| `dct:coverage`     | Modules Applied                    |            (IRI to those /ERALEX instances, which are modules)            |    /ERALEX    |
+| `dct:coverage`     | TSI's used (amendments included)   |                     (IRI to those /ERALEX instances)                      |    /ERALEX    |
 
 > [!NOTE]
 > [Modules are foreseen to have the IRI](../ERALEX/LEGISLATION.md): `eralex:dec-2010-713-SB` whereby the last characters express the module. They are - like IC's - instances of `eli:LegalResourceSubdivision`, which as a subClassOf `eli:LegalResource` must still be considered `dct:Jurisdiction` (hence `dct:coverage`).
@@ -181,4 +181,17 @@ Certificates should **not** link to the declarations they support, the link is c
 
 See also [EC Declarations](DECLARATIONS.md).
 
-See also [Restrictions](./RESTRICTION.md) for the private data regarding the Conditions and Limits of Use.
+## Non-disclosed properties
+
+See also [Restrictions](./RESTRICTION.md) for the non-disclosed data regarding the Conditions and Limits of Use.
+
+The following data should be stored in non-disclosed graphs.
+
+- ASSESSMENT REQUIREMENTS: In combination with those Harmonised Standards, Voluntary Standards (or parts thereof), other European or national rules authorized by the TSI and Alternative Solutions as identified in the EC Technical [File/Documentation]
+- STANDARD USED [optional]
+- ASSESSMENT RESULT: This is the core statement of the Certificate. NoBo statement that the object of assessment (Interoperability Constituent/Subsystem, or its phase/part/Quality Management System), was shown to comply with the assessment requirements, subject to any restrictions and conditions as listed in the relevant field. The essential requirements have been assessed as being met through compliance with the requirements of the relevant TSI only. The details of the assessment results are provided within the documentation part of the NoBo Technical File and/or NoBo Assessment Report.
+- RESTRICTIONS / CONDITIONS FOR USE [optional]
+- ANNEXES (each with [identifier, revision-if used, date]):
+  - [optional]
+  - [optional - NOBO ASSESSMENT REPORT]
+  - [optional - NOBO TECHNICAL FILE/DOCUMENTATION]
