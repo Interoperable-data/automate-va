@@ -1,0 +1,49 @@
+@base <http://data.europa.eu/949/> .
+@prefix : <http://data.europa.eu/949/eradis/> .
+@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix eralex: <http://data.europa.eu/949/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+
+:ecd-ecDecl-15571 
+    a era:ECDeclaration ;
+    dcterms:created "2024-12-18"^^xsd:date ; # the creation of this resource in the KG
+    dcterms:coverage eralex:dir-2016-797 ,
+                     eralex:reg-2014-1302 ;
+    rdfs:comment "For detailed info, please see ANNEX" ;
+    dcterms:subject eralex:ic-1302-2014-5_3.11 ; # The URI of the exact IC in scope
+    dcterms:identifier "AT/000000FN93653a/2021/001714" ;
+    rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=8917"^^xsd:anyURI ;
+    dcterms:issued "2021-04-27"^^xsd:date ; # the document issue date
+    dcterm:references [
+         a era:CertificateSet ;
+         dct:hasPart 
+            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3474" ],
+            [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ]
+         ;
+    ], [
+         a era:CertificateSet ;
+         dct:hasPart 
+            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3480" ],
+            [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
+    ], [
+         a era:CertificateSet ;
+         dct:hasPart 
+            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3482" ],
+            [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ]          
+    ] .
+
+# TO BE COMPLETED
