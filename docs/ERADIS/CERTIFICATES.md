@@ -138,17 +138,17 @@ To clarify that a certificate has:
 
 The following mandatory properties are the basis for the data model allowing extraction from ERADIS:
 
-| Property           | Data                               |                Datatype/ObjectProperty                 | dataset @ ERA |
-| :----------------- | :--------------------------------- | :----------------------------------------------------: | :-----------: |
-| `rdfs:comment`     | Object of assessment               |                      `xsd:string`                      |      n/a      |
-| `dct:description`  | Supplementary information          |                      `xsd:string`                      |      n/a      |
-| `dct:type`         | Certificate type                   |     (IRI to SKOS Concept [Scheme to be provided])      |    /ERALEX    |
-| `dct:identifier`   | Certificate Number                 |            `xsd:string` (with `sh:pattern`)            |      n/a      |
-| `dct:replaces`     | Previous Certificate               |               (IRI to that certificate)                |    /IODOCS    |
-| `dct:isReplacedBy` | Certificate replacing the current  | (if replaced, then IRI to that replacing certificate)  |    /IODOCS    |
-| `dct:coverage`     | Interoperability Directive applied | (IRI to /ERALEX instances of the applied IO Directive) |    /ERALEX    |
-| `dct:coverage`     | Modules Applied                    |  (IRI to those /ERALEX instances, which are modules)   |    /ERALEX    |
-| `dct:coverage`     | TSI's used (amendments included)   |            (IRI to those /ERALEX instances)            |    /ERALEX    |
+| Property           | Data                               |                          Datatype/ObjectProperty                          | dataset @ ERA |
+| :----------------- | :--------------------------------- | :-----------------------------------------------------------------------: | :-----------: |
+| `rdfs:comment`     | Object of assessment               |                               `xsd:string`                                |      n/a      |
+| `dct:description`  | Supplementary information          |                               `xsd:string`                                |      n/a      |
+| `dct:type`         | Certificate type                   | (IRI to [SKOS Concept](https://github.com/Certiman/automate-va/issues/2)) |    /ERALEX    |
+| `dct:identifier`   | Certificate Number                 |                     `xsd:string` (with `sh:pattern`)                      |      n/a      |
+| `dct:replaces`     | Previous Certificate               |                         (IRI to that certificate)                         |    /IODOCS    |
+| `dct:isReplacedBy` | Certificate replacing the current  |           (if replaced, then IRI to that replacing certificate)           |    /IODOCS    |
+| `dct:coverage`     | Interoperability Directive applied |          (IRI to /ERALEX instances of the applied IO Directive)           |    /ERALEX    |
+| `dct:coverage`     | Modules Applied                    |            (IRI to those /ERALEX instances, which are modules)            |    /ERALEX    |
+| `dct:coverage`     | TSI's used (amendments included)   |                     (IRI to those /ERALEX instances)                      |    /ERALEX    |
 
 > [!NOTE]
 > [Modules are foreseen to have the IRI](../ERALEX/LEGISLATION.md): `eralex:dec-2010-713-SB` whereby the last characters express the module. They are - like IC's - instances of `eli:LegalResourceSubdivision`, which as a subClassOf `eli:LegalResource` must still be considered `dct:Jurisdiction` (hence `dct:coverage`).
