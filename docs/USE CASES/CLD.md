@@ -11,12 +11,12 @@ Main objective: any application/process using CLD's should be able to retrieve t
 Appropriate Bodies (NoBo, DeBo, AsBo), if they use LWS, should decide how to structure the CLD-repository in `{NoBo:Containers}/` and `{NoBo:Containers-Private}/`.
 When using a triple store, they must decide on the GRAPHs to store the resource in as `{NoBo:Graphs}` and `{NoBo:Graphs-Private}`.
 
-URI's of ?s when making use of LWS:
+Possible URI's of ?s when making use of LWS:
 
 - `/data/CLD/{NoBo:Containers}/[eccert|qmsa|isv]-{uuid4}`, depending on the CLD's type
 - `/data/CLD/{NoBo:Containers-Private}/[clou|compliance]-{uuid4}`
 
-URI's of ?s when making use of Triple Stores:
+Possible URI's of ?s when making use of Triple Stores:
 
 - `GRAPH {NoBo:Graphs} { [eccert|qmsa|isv]-{uuid4} a vpa:DocumentedEvidence }`
 - `GRAPH {NoBo:Graphs-Private} { [clou|compliance]-{uuid4} a vpa:DocumentedEvidence }`
@@ -176,3 +176,17 @@ Allows for the user to search for the CLD to be withdrawn (from the collection o
 - SHALL BE CHANGED in regard to its `vpa:valid` property, whereby the Period of Validity is set to 0 ([more info here](../ERADIS/CERTIFICATES.md#w3c-time-ontology)).
 
 All withdrawals must lead to the appropriate notifications.
+
+## Deduced States of a CLD
+
+From the above lifecycle, we can deduce the need for the Concepts representing Status of a CLD:
+
+1. Issued
+2. Issued, Restricting
+3. Issued, Suspending
+4. Issued, Restoring
+5. Refused
+6. Amended
+7. Restricted
+8. Suspended
+9. Withdrawn

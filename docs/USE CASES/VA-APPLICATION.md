@@ -17,7 +17,9 @@ The presentation of VTA applications, the related reports/check lists and VTA's 
 
 The creation of a VTA Application by a Requesting Body to an Authorising Entity (the Permitting Body) is notified to the latter and inversely, the publication of the VTA is notified to the first. Within the process, if additional comments are to be provided in the scope of some submitted document, a notification SHOULD be sent to the party to provide them.
 
-## Issue a new VTA Application (private only)
+## Core Use cases
+
+### Issue a new VTA Application (private only)
 
 URI: `/process/vtaa/add`
 
@@ -33,7 +35,7 @@ Display a sequence of forms, for private storage of the VTAA:
 
 Data available through links is not repeated in the VTA Application. Example: all the VehicleType related info, including the Holder must be retrieved through that `Source`.
 
-## Update an existing VTA Application (private only)
+### Update an existing VTA Application (private only)
 
 URI: `/process/vtaa#update`
 
@@ -41,17 +43,30 @@ A limited amount of properties can be changed without the need to re-apply. Also
 
 If an VTAIssue-dialogue has been created, the applicant can always add a reply, which is notified to the Authorising Entity.
 
-## Assess a VTA Application
+### Assess a VTA Application
 
 > [!CAUTION]
 > Assessment reports and check lists are to be generated automatically by integrating the submitted linked data above. Assessment should be limited to editing the literals as displayed in these presentations and should NOT require any process to be run separately.
 
-## Signing a VTA Application Check, Assessment, Recommendation, Conclusion and Decision
+### Signing a VTA Application Check, Assessment, Recommendation, Conclusion and Decision
 
 These presentations SHOULD be signed using a `Verifiable Credential` on the data which uniquely defines it (given the presentation itself is not linked data). Both the integrity as the authority to sign should be embedded in the digital signature.
 
 In order to avoid some `foaf:Agent` of an Authorising Entity to sign out of his/her authority, the organisational data should make use of `org:Membership` and `org:Role`. These roles can then be used to allow the Agent to execute the 'Signing'-use case.
 
-## Other use cases
+### Other use cases
 
 To be examined.
+
+## Machine-to-machine cycle
+
+> Idea launched 17/12/2024 - non-formalised
+
+1. Applicant client sends data on VVTAApplication and its contained library (`era:DocumentSet`) to a SPARQL-endpoint. In any case, the DocumentSet contains only links to ECDeclarations, as the underlying certificates are referenced.
+2. A notification is sent to an ERA listener.
+3. The listener launches SHACL-validation on the added triples and returns:
+   1. The SHACL-validation report
+   2. A proposed DC2T, for the Applicant to confirm by sending it back (with some authentication token added)
+   3. If non-blocking validation, the draft assessment reports (Completeness, Detailed, Proposed Recommendation)
+4. The creation of the assessment triples causes another Notification to be sent to the ERA Decision Maker.
+5. On reception of the signed DC2T, the DM can sign the Recommendation and proposed Authorisation.

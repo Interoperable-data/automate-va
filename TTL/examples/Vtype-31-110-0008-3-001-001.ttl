@@ -1,0 +1,59 @@
+@base <http://data.europa.eu/949/> .
+@prefix : <http://data.europa.eu/949/cld/> .
+@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix eralex: <http://data.europa.eu/949/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+
+eratv:vt-31-110-0008-3-001-001 a era:VehicleType ;
+    dcterms:identifier "31-110-0008-3-001-001";
+    dcterms:issued "2023-06-12"^^xsd:date ; # the entry of record in ERATV
+    dcterms:created "2024-12-17"^^xsd:date ; # this resource in the KG
+    rdfs:label "Passenger coach IC 1 - R294 (80 Sitzplätze)"@en ;
+    era:category era-vehicle-types-eratv:hauledPassenger ;
+    era:subCategory era-vehicle-types-eratv:passengerCoach ;
+    vpa:definesCase eva:vac-31-110-0008-3-001-001-1 ;
+    era:manufacturer era-org:WaggonUnionLinkeHoffmannBusch ; # only possible reference, given no more data
+    era:vehicleTypePlatform "DB RIC" .
+
+# Link with the underlying authorisation case in which this was submitted in OSS.
+# The case {type}-1 must compile the data of authorisation 3.1
+
+# DANMARK - See all authorisation data under 3.1.X.X
+eva:vac-31-110-0008-3-001-001-1 a era:VAAuthorisationCase ;             # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+    vpa:permissionType era-va-authcase:EXT ;                            # implies presence of a era:VehicleAuthorisation in OSS
+    era:typeRegistrationMethod era-vehicle-types-regmethod:NewType ;    # see: https://github.com/Certiman/automate-va/issues/2
+    era:areaOfUse <http://publications.europa.eu/resource/authority/country/DNK> ; # Whole memberstate
+    vpa:supports eva:va-V20230413021 .                                  # A real VA application
+
+eva:va-V20230413021 a era:VAApplication, vpa:Request ; # named node as it was physically submitted in OSS
+    vpa:requestFor eva:V20230413021 . # Only the first is needed as we can find corrections by following dcterms:isReplacedBy*
+    # other properties via https://eraeuropaeu.sharepoint.com/:x:/r/sites/PMS/_layouts/15/Doc.aspx?sourcedoc=%7BB64105B4-26A3-48C8-8C0F-2EDE62A4B6B3%7D&file=ERA1209-014%20VA-Report%20OSS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1
+    # and via VA Inspector.
+
+# 3.1.3.1 Initial Registration (of the auth)
+eva:V20230413021 a era:VAAuthorisation , vpa:Permission ;
+    dcterms:identifier "EU8020230120" ;
+    dcterms:issued "2023-06-12"^^xsd:date ; # the document issue date
+    era:vehicleTypeAuthorisationHolder era-org:MF-DE-60486-7884 ; # DB Fernverkehr AG
+    vpa:valid [
+        a time:ProperInterval ;
+        time:hasBeginning "2023-06-12"^^xsd:date ; #start of validity
+        time:hasDurationDescription [
+            # https://www.w3.org/TR/owl-time/#time:DurationDescription
+            time:years 10 ;
+        ]
+    ].
