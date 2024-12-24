@@ -23,8 +23,8 @@
     # dcterms:modified "_RESERVED_"^^xsd:date ;
     rdfs:comment """Resources with a specific validity (start date, and period of validity or end date):
 
-- Documented Evidence as issued by an Appropriate Body.
-- Permissions as issued by an permitting body."""@en;
+    - Documented Evidence as issued by an Appropriate Body.
+    - Permissions as issued by an permitting body."""@en;
     rdfs:label "Resource with limited validity";
     sh:property [
         a sh:PropertyShape ;

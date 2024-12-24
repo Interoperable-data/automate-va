@@ -1,16 +1,16 @@
 <script setup lang="ts">
 // import { RouterLink, RouterView } from 'vue-router'
 import { defineCustomElement, ref } from 'vue'
-import WebStorage from './components/WebStorage.ce.vue'
-import I18nHost from './components/wrappers/I18nHost.ce.vue'
+import TranslationTester from './components/TranslationTester.ce.vue'
+import I18nHost from './components/providers/I18nHost.ce.vue'
 
-console.log(WebStorage.styles) // ["/* inlined css */"]
+console.log(TranslationTester.styles) // ["/* inlined css */"]
 
 // convert into custom element constructor
-const StorageElement = defineCustomElement(WebStorage)
+const TesterElement = defineCustomElement(TranslationTester)
 
 // register
-customElements.define('web-storage', StorageElement)
+customElements.define('translation-tester', TesterElement)
 
 // Locale should be set through component as well.
 const locale = ref<string>('ja')
@@ -20,8 +20,8 @@ declare module 'vue' {
   interface GlobalComponents {
     // Be sure to pass in the Vue component type here (SomeComponent, *not* SomeElement).
     // Custom Elements require a hyphen in their name, so use the hyphenated element name here.
-    'web-storage': typeof WebStorage
-    'i18n-host': typeof I18nHost
+    'translation-tester': typeof TranslationTester
+    'i18n-provider': typeof I18nHost
   }
 }
 </script>
@@ -47,10 +47,10 @@ declare module 'vue' {
       <option value="fr">fr</option>
     </select>
   </form>
-  <i18n-host .locale="locale">
+  <i18n-provider .locale="locale">
     <section><h2>Only for serving the elements</h2></section>
-    <web-storage name="Matthijs">All other web components here as they use storage</web-storage>
-  </i18n-host>
+    <translation-tester name="Matthijs">All other web components here as they use storage</translation-tester>
+  </i18n-provider>
   <!-- <RouterView /> -->
 </template>
 
