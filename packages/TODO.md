@@ -1,5 +1,7 @@
 # Proof Of Concept Tasklist
 
+> Before publication and rebase : move custom elements in `va-poc-ce`, after all testing is done.
+
 See also: [the project page](https://github.com/users/Certiman/projects/4).
 
 ## Structure
