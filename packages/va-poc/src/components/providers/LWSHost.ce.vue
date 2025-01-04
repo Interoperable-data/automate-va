@@ -11,68 +11,87 @@
  * ===> It should be visible as a button with choices of LWS providers and
  */
 
-import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { sessionStore } from './LWSHost'
+import { onMounted, ref, InjectionKey } from "vue";
+import {
+  useRouter,
+  type RouteLocationNormalizedLoadedGeneric,
+} from "vue-router";
+import { sessionStore } from "./LWSHost";
 import {
   login,
   handleIncomingRedirect,
   getDefaultSession,
   Session,
-} from '@inrupt/solid-client-authn-browser'
+} from "@inrupt/solid-client-authn-browser";
 
-const route = useRoute()
-const router = useRouter()
+const router = useRouter();
+
+// Refs
+// TODO: this value should be one of a prop array
+const SELECTED_IDP = ref("https://login.inrupt.com");
+
+// props
+const route = defineProps<{ info: RouteLocationNormalizedLoadedGeneric }>();
 
 // login function
-const SELECTED_IDP = ref('https://login.inrupt.com')
 const loginToSelectedIdP = () => {
   return login({
     oidcIssuer: SELECTED_IDP.value,
-    redirectUrl: new URL('/auth', window.location.href).toString(),
-    clientName: 'VA Automate',
-  })
-}
+    redirectUrl: new URL("/auth", window.location.href).toString(),
+    clientName: "VA Automate",
+  });
+};
 
 // Component stores the Session it is own memory
 const setSession = (session: Session) => {
-  if (session.info.isLoggedIn) {
-    sessionStore.canReadPODURLs = true
-    sessionStore.loggedInWebId = session.info.webId!
+  const routeInfo = route.info.query;
+  if (routeInfo.code && routeInfo.state) {
+    console.warn(`Storing session return values:`, routeInfo);
+
+    // Inrupt token returned, then store the token and reroute the application
+    sessionStore.rerouting = true;
+    sessionStore.addSolidPodAuthData({
+      token: routeInfo.code,
+      state: routeInfo.state,
+    });
+    setTimeout(() => router.push("/"), 3500);
   } else {
-    console.warn(`No active session found`)
+    console.warn(`No session return values found.`);
   }
-}
+  if (session.info.isLoggedIn) {
+    console.log(`Session found:`, session.info);
+    sessionStore.canReadPODURLs = true;
+    sessionStore.loggedInWebId = session.info.webId!;
+  } else {
+    console.warn(`No active session found`);
+  }
+};
 
 // Login
 const tryIncomingRedirect = async () => {
   try {
-    const currentSession = getDefaultSession()
-    console.log(`Retrying to use a previous session...`)
+    const currentSession = getDefaultSession();
+    console.log(`Retrying to use a previous session:`, currentSession.info);
     if (!currentSession.info.sessionId) {
-      console.log(`failed. Please log in yourself.`)
-      await handleIncomingRedirect({ restorePreviousSession: true })
+      console.log(`failed. Please log in yourself.`);
+      await handleIncomingRedirect({ restorePreviousSession: true });
     } else {
-      console.log(`worked. Reusing it.`, currentSession.info)
-      await handleIncomingRedirect() // no-op if not part of login redirect
+      console.log(`worked. Reusing it.`);
+      await handleIncomingRedirect(); // no-op if not part of login redirect
     }
-    setSession(currentSession)
+    setSession(currentSession);
   } catch (err) {
-    console.error(`Relogin failed with error ${err}`)
+    console.error(`Relogin failed with error ${err}`);
+  } finally {
+    sessionStore.rerouting = false;
   }
-}
+};
 
 onMounted(async () => {
-  if (route.query.code && route.query.state) {
-    // Inrupt token returned, then store the token and reroute the application
-    sessionStore.state.rerouting = true
-    sessionStore.addSolidPodAuthData({ token: route.query.code, state: route.query.state })
-    setTimeout(() => router.push('/'), 3500)
-  } else {
-    // When the component is mounted, it should check the session
-    await tryIncomingRedirect()
-  }
-})
+  sessionStore.rerouting = true;
+  // When the component is mounted, it should check the session
+  await tryIncomingRedirect();
+});
 
 /**
  * Props for the
@@ -86,16 +105,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section v-if="sessionStore.state.rerouting">
-    <h5>Authentication redirect (debug)</h5>
-    <div>Parameters: {{ $route.params }}</div>
-    <div>Route query object: {{ $route.query }}</div>
+  <section v-if="sessionStore.rerouting">
+    <h5>Redirecting after session storage...</h5>
   </section>
   <section v-else-if="!sessionStore.loggedInWebId">
     <p>We only support LWS at Inrupt for the moment.</p>
     <button @click="loginToSelectedIdP">Login to LWS Inrupt</button>
   </section>
   <section v-else>Logged in as {{ sessionStore.loggedInWebId }}</section>
+  <slot />
 </template>
 
 <style scoped></style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { provide, watchEffect } from 'vue'
-import { createI18n, I18nInjectionKey } from 'vue-i18n'
+import { provide, watchEffect } from "vue";
+import { createI18n, I18nInjectionKey } from "vue-i18n";
 
 /**
  * Define the web components that host the i18n instance.
@@ -23,31 +23,31 @@ import { createI18n, I18nInjectionKey } from 'vue-i18n'
  */
 const i18n = createI18n<false>({
   legacy: false, // must be set to `false`
-  locale: 'en',
+  locale: "en",
   messages: {
     en: {
-      hello: 'Hello ',
+      hello: "Hello ",
     },
     ja: {
-      hello: 'こんにちは ',
+      hello: "こんにちは ",
     },
     fr: {
-      hello: 'Bonjour',
+      hello: "Bonjour",
     },
   },
-})
+});
 
-const props = defineProps<{ locale: string }>()
+const props = defineProps<{ locale: string }>();
 
 /**
  * provide i18n instance with `I18nInjectionKey` for other web components
  */
-provide(I18nInjectionKey, i18n)
+provide(I18nInjectionKey, i18n); // FIXME: This is not working
 
 watchEffect(() => {
-  console.log(`Language captured in watcher, changed to ${props.locale}!`)
-  i18n.global.locale.value = props.locale
-})
+  console.log(`Language captured in watcher, changed to ${props.locale}!`);
+  i18n.global.locale.value = props.locale;
+});
 </script>
 
 <template>
