@@ -3,20 +3,22 @@ import { sessionStore } from "../components/providers/LWSHost";
 
 // As a component, translation is done using the plugin
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+const { t, locale } = useI18n();
+const props = defineProps<{ loc: string, justAProp:number }>();
+// locale.value = props.loc FAILS;
 </script>
 
 <template>
   <div class="home">
-    <h1>{{ t('welcome') }}</h1>
-    <p>{{ t('message') }}</p>
-    <!-- <p>Locale in Homeview: {{ locale }}</p> -->
+    <h1>{{ t("welcome") }}</h1>
+    <p>{{ t("message") }}</p>
+    <p>[Locale {{ props.justAProp }} in Homeview: {{ props.loc }}]</p>
     <translation-tester name="Matthijs">
-      {{ t('all') }}
+      {{ t("all") }}
       {{
         sessionStore.loggedInWebId
           ? `Logged in webId: ${sessionStore.loggedInWebId}`
-          : t('notConnected')
+          : t("notConnected")
       }}
     </translation-tester>
     <!-- <slot/> -->
@@ -32,7 +34,7 @@ const { t } = useI18n();
       "notConnected": "Not connected to LWS."
     },
     "fr": {
-      "welcome": "Bienvenu a Home View",
+      "welcome": "Bienvenu `a` Home View",
       "message": "C'est le chemin racine de l'application.",
       "all": "Tous les autres composants Web ici car ils utilisent le stockage",
       "notConnected": "Pas connecté à LWS."

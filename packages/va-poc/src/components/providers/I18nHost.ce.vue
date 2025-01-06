@@ -24,7 +24,7 @@ import { createI18n, I18nInjectionKey } from "vue-i18n";
 const i18n4ce = createI18n<false>({
   legacy: false, // must be set to `false`
   // globalInjection: true,
-  locale: "en",
+  locale: "fr",
   messages: {
     en: {
       hello: "Hello ",
@@ -46,7 +46,7 @@ const props = defineProps<{ locale: string }>();
 /**
  * provide i18n instance with `I18nInjectionKey` for other web components
  */
-provide(I18nInjectionKey, i18n4ce); // FIXME: This is not working
+provide(I18nInjectionKey, i18n4ce); // FIXME: This is only working towards custom elements
 
 watchEffect(() => {
   console.log(`Language captured in watcher, changed to ${props.locale}!`);

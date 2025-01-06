@@ -10,14 +10,14 @@ import LWSHost from "./components/providers/LWSHost.ce.vue";
 import NavBar from "./components/NavBar.vue";
 
 // Internationalisation is done in the CE itself (https://vue-i18n.intlify.dev/guide/advanced/wc.html) using a wrapper in App
-// const I18nHostElement = defineCustomElement(I18nHost);
+const I18nHostElement = defineCustomElement(I18nHost);
 
 // convert into custom element constructor
 const TesterElement = defineCustomElement(TranslationTester);
 const LWSElement = defineCustomElement(LWSHost);
 
 // register
-// customElements.define("i18n-provider", I18nHostElement);
+customElements.define("i18n-provider", I18nHostElement);
 customElements.define("translation-tester", TesterElement);
 customElements.define("lws-provider", LWSElement);
 
@@ -47,7 +47,7 @@ declare module "vue" {
       <lws-provider :info="$route">
         <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
         <section><h3>Custom element locale: {{ locale }}</h3></section>
-        <RouterView />
+        <RouterView .loc="locale" :justAProp="8"/>
       </lws-provider>
     </main>
   </i18n-provider>
