@@ -21,8 +21,9 @@ import { createI18n, I18nInjectionKey } from "vue-i18n";
  *
  * TODO: import the translations from the KG
  */
-const i18n = createI18n<false>({
+const i18n4ce = createI18n<false>({
   legacy: false, // must be set to `false`
+  // globalInjection: true,
   locale: "en",
   messages: {
     en: {
@@ -34,6 +35,9 @@ const i18n = createI18n<false>({
     fr: {
       hello: "Bonjour",
     },
+    de: {
+      hello: "Hallo",
+    },
   },
 });
 
@@ -42,11 +46,11 @@ const props = defineProps<{ locale: string }>();
 /**
  * provide i18n instance with `I18nInjectionKey` for other web components
  */
-provide(I18nInjectionKey, i18n); // FIXME: This is not working
+provide(I18nInjectionKey, i18n4ce); // FIXME: This is not working
 
 watchEffect(() => {
   console.log(`Language captured in watcher, changed to ${props.locale}!`);
-  i18n.global.locale.value = props.locale;
+  i18n4ce.global.locale.value = props.locale;
 });
 </script>
 

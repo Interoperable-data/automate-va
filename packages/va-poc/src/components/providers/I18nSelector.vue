@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { inject, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
 
 const selectedLanguage = ref("en");
 import { i18nStore } from "./i18nHost";
@@ -8,6 +7,7 @@ import { i18nStore } from "./i18nHost";
 const emit = defineEmits(["update:locale"]);
 
 // FAILS: Use the i18n instance from the parent component
+// import { useI18n } from "vue-i18n";
 // import { I18nInjectionKey } from "vue-i18n";
 // FIXME: const i18n = inject(I18nInjectionKey); NOT FOUND
 // let i18nLocale = ref("de");
@@ -32,8 +32,8 @@ watch(selectedLanguage, (newVal) => {
 </script>
 
 <template>
-  <form>
-    <label for="locale-select">select language: </label>
+  <form class="d-flex align-items-center">
+    <label for="locale-select"><IMdiLanguage class="mx-2" /></label>
     <select id="locale-select" v-model="selectedLanguage">
       <option v-for="lang in i18nStore.allLanguages" :value="lang">
         {{ lang }}

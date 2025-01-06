@@ -109,7 +109,7 @@ onMounted(async () => {
     <h5>Redirecting after session storage...</h5>
   </section>
   <section v-else-if="!sessionStore.loggedInWebId">
-    <p>We only support LWS at Inrupt for the moment.</p>
+    <p>We only support Linked Web Storage from Inrupt for the moment.</p>
     <button @click="loginToSelectedIdP">Login to LWS Inrupt</button>
   </section>
   <section v-else>Logged in as {{ sessionStore.loggedInWebId }}</section>

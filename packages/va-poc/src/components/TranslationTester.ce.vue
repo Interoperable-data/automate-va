@@ -28,6 +28,9 @@ const { t } = useI18n({
     },
     "fr": {
       "world": "monde!"
+    },
+    "de": {
+      "world": "welt!"
     }
   }
 </i18n>

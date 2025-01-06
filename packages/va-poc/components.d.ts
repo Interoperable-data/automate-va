@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     'I18nHost.ce': typeof import('./src/components/providers/I18nHost.ce.vue')['default']
     I18nSelector: typeof import('./src/components/providers/I18nSelector.vue')['default']
+    IMdiLanguage: typeof import('~icons/mdi/language')['default']
     'LWSHost.ce': typeof import('./src/components/providers/LWSHost.ce.vue')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
