@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { computed, watchEffect } from 'vue';
+import { useI18n } from "vue-i18n";
 
-import { computed, inject, watchEffect } from 'vue';
-import { I18nInjectionKey } from 'vue-i18n';
+import { i18nStore } from '../components/providers/i18nHost';
 
 // As a component, translation is done using the main ts plugin
-// OPTION 1 - As a component, translation is done using the plugin
-import { useI18n } from "vue-i18n";
-import { i18nStore } from '../components/providers/i18nHost';
+// AuthView is a component, so it MUST use the plugin directly,
+// but the locale is available in the store, so it can be watched
 const { t, locale } = useI18n();
 const newLocale = computed(() => i18nStore.selectedLocale);
 watchEffect(() => {

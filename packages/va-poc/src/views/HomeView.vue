@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { computed, watchEffect } from "vue";
-
-// OPTION 1 - As a component, translation is done using the plugin define app.use()
 import { useI18n } from "vue-i18n";
+
 import { i18nStore } from "../components/providers/i18nHost";
+
+// As a component, translation is done using the main ts plugin
+// AuthView is a component, so it MUST use the plugin directly,
+// but the locale is available in the store, so it can be watched
 const { t, locale } = useI18n();
-// const props = defineProps<{ loc: string; justAProp: number }>();
-// locale.value = props.loc FAILS;
 const newLocale = computed(() => i18nStore.selectedLocale);
 watchEffect(() => {
   console.log(`Language captured in HomeView watcher, changed to ${newLocale.value}!`);
   locale.value = newLocale.value;
 });
 
-// OPTION 2 FAILS - Direct import does not work in normal components
+// FAILS - Direct inject does not work in normal components
+// FAILS ALSO - using props in RouterView get
 // import { inject } from 'vue';
 // import { I18nInjectionKey } from 'vue-i18n';
 // const i18n = inject(I18nInjectionKey);
