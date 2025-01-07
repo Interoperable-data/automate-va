@@ -1,11 +1,7 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{ name: string }>()
-
-/**
- * Local terms, only here works. <i18n>JSON</i18n> fails.
- */
-import { useI18n } from 'vue-i18n'
 
 const { t, locale } = useI18n({
   inheritLocale: true,
@@ -14,8 +10,7 @@ const { t, locale } = useI18n({
 </script>
 
 <template>
-  <h3>{{ props.name }} says: {{ t('hello') + ' ' + t('world') }}</h3>
-  <p>[Locale in tester: {{ locale }}]</p>
+  <h3>{{ props.name }} says [{{ locale }}]: {{ t('hello') + ' ' + t('world') }}</h3>
   <slot id="first">Loading...</slot>
 </template>
 
@@ -24,14 +19,14 @@ const { t, locale } = useI18n({
     "en": {
       "world": " world!"
     },
-    "ja": {
-      "world": "ザ・ワールド"
-    },
     "fr": {
       "world": "monde!"
     },
     "de": {
       "world": "welt!"
+    },
+    "es": {
+      "world": "mundo!"
     }
   }
 </i18n>

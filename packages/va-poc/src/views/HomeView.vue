@@ -28,8 +28,7 @@ import { sessionStore } from "../components/providers/LWSHost";
   <div class="home">
     <h1>{{ t("welcome") }}</h1>
     <p>{{ t("message") }}</p>
-    <!-- <p>[PROPS - Locale {{ props.justAProp }} in Homeview: {{ props.loc }}]</p> -->
-    <p>Locale in Homeview: [{{ locale }}, {{ newLocale }}]</p>
+    <!-- <p>Locale in Homeview: [{{ locale }}, {{ newLocale }}]</p> -->
     <translation-tester name="Matthijs">
       {{ t("all") }}
       {{
@@ -38,7 +37,6 @@ import { sessionStore } from "../components/providers/LWSHost";
           : t("notConnected")
       }}
     </translation-tester>
-    <!-- <slot/> -->
   </div>
 </template>
 
@@ -62,11 +60,11 @@ import { sessionStore } from "../components/providers/LWSHost";
       "all": "Alle anderen Webkomponenten hier, da sie den Speicher verwenden.",
       "notConnected": "Nicht mit LWS verbunden."
     },
-    "ja": {
-      "welcome": "ホームビューへようこそ",
-      "message": "これはアプリケーションのルートパスです。",
-      "all": "他のすべてのWebコンポーネントがここにあります。",
-      "notConnected": "LWSに接続されていません。"
+    "es": {
+      "welcome": "Bienvenido a Home View",
+      "message": "Esta es la ruta raíz de la aplicación.",
+      "all": "Todas las demás webcomponents aquí ya que usan almacenamiento.",
+      "notConnected": "No conectado a LWS."
     }
   }
 </i18n>

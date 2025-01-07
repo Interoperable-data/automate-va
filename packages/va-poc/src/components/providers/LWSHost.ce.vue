@@ -11,12 +11,13 @@
  * ===> It should be visible as a button with choices of LWS providers and
  */
 
-import { onMounted, ref, InjectionKey } from "vue";
+import { onMounted, ref } from "vue";
 import {
   useRouter,
   type RouteLocationNormalizedLoadedGeneric,
 } from "vue-router";
-import { sessionStore } from "./LWSHost";
+import { BNavbar, BNavbarBrand, BNavbarNav, BNavItem, BButton } from "bootstrap-vue-next";
+
 import {
   login,
   handleIncomingRedirect,
@@ -24,7 +25,8 @@ import {
   Session,
 } from "@inrupt/solid-client-authn-browser";
 
-const router = useRouter();
+// Stores
+import { sessionStore } from "./LWSHost";
 
 // Refs
 // TODO: this value should be one of a prop array
@@ -44,6 +46,7 @@ const loginToSelectedIdP = () => {
 
 // Component stores the Session it is own memory
 const setSession = (session: Session) => {
+  const router = useRouter();
   const routeInfo = route.info.query;
   if (routeInfo.code && routeInfo.state) {
     console.warn(`Storing session return values:`, routeInfo);
@@ -105,14 +108,21 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section v-if="sessionStore.rerouting">
-    <h5>Redirecting after session storage...</h5>
-  </section>
-  <section v-else-if="!sessionStore.loggedInWebId">
-    <p>We only support Linked Web Storage from Inrupt for the moment.</p>
-    <button @click="loginToSelectedIdP">Login to LWS Inrupt</button>
-  </section>
-  <section v-else>Logged in as {{ sessionStore.loggedInWebId }}</section>
+  <BNavbar variant="secondary" type="light">
+    <BNavbarBrand href="#">Session Info</BNavbarBrand>
+    <BNavbarNav>
+      <BNavItem v-if="sessionStore.rerouting">
+        Redirecting after session storage...
+      </BNavItem>
+      <BNavItem v-else-if="!sessionStore.loggedInWebId">
+        We only support Linked Web Storage from Inrupt for the moment.
+        <BButton @click="loginToSelectedIdP" variant="outline-primary">Login to LWS Inrupt</BButton>
+      </BNavItem>
+      <BNavItem v-else>
+        Logged in as {{ sessionStore.loggedInWebId }}
+      </BNavItem>
+    </BNavbarNav>
+  </BNavbar>
   <slot />
 </template>
 

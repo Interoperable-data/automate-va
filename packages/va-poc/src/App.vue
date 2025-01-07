@@ -46,7 +46,7 @@ declare module "vue" {
     <main class="container mt-10">
       <lws-provider :info="$route">
         <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
-        <section><h3>Custom element locale: {{ locale }}</h3></section>
+        <!-- <section><h3>Custom element locale: {{ locale }}</h3></section> -->
         <RouterView />
       </lws-provider>
     </main>

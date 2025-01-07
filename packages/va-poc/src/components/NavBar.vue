@@ -1,14 +1,35 @@
 <template>
-  <header id="nav">
-    <RouterLink to="/">{{ t("home") }}</RouterLink>
-    <RouterLink to="/auth">{{ t("about") }}</RouterLink>
-    <I18nSelector @update:locale="emitNewLocale" />
-  </header>
+  <BNavbar v-b-color-mode="'dark'" toggleable="lg" variant="primary">
+    <BNavbarBrand to="/">JOSEPHA</BNavbarBrand>
+    <BNavbarToggle target="nav-collapse" />
+    <BCollapse id="nav-collapse" is-nav>
+      <BNavbarNav>
+        <BNavItem to="/proc">{{ t("processes") }}</BNavItem>
+        <BNavItem to="/auth">{{ t("about") }}</BNavItem>
+      </BNavbarNav>
+      <!-- Right aligned nav items -->
+      <BNavbarNav class="ms-auto mb-2 mb-lg-0">
+        <BNavItemDropdown right>
+          <!-- Using 'button-content' slot -->
+          <template #button-content>
+            <em>User</em>
+          </template>
+          <BDropdownItem href="#">Profile</BDropdownItem>
+          <BDropdownItem href="#">Sign Out</BDropdownItem>
+        </BNavItemDropdown>
+        <I18nSelector @update:locale="emitNewLocale" />
+      </BNavbarNav>
+      <BNavForm class="d-flex">
+        <BFormInput class="me-2" placeholder="Search" />
+        <BButton type="submit" variant="outline-success">Search</BButton>
+      </BNavForm>
+    </BCollapse>
+  </BNavbar>
 </template>
 
 <script setup lang="ts">
-import { onMounted, inject } from "vue";
-import { I18nInjectionKey, useI18n } from "vue-i18n";
+import { onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 
 // OPTION 1 - As a component, translation is done using the plugin
 const { t, locale } = useI18n();
@@ -31,7 +52,7 @@ const emitNewLocale = (newLocale: string) => {
 
 onMounted(() => {
   console.log(
-    `NavBar mounted with locale: ${locale.value || i18n.global.locale.value}`
+    `NavBar mounted with locale: ${locale.value}`
   );
 });
 </script>
@@ -41,20 +62,20 @@ onMounted(() => {
 <i18n>
   {
     "en": {
-      "home": "Home",
+      "processes": "Processes",
       "about": "About"
     },
     "fr": {
-      "home": "Accueil",
+      "processes": "Process",
       "about": "À propos"
     },
     "de": {
-      "home": "Startseite",
+      "processes": "Prozesse",
       "about": "Über"
     },
-    "ja": {
-      "home": "ホーム",
-      "about": "約"
+    "es": {
+      "processes": "Procesos",
+      "about": "Acerca de"
     }
   }
 </i18n>

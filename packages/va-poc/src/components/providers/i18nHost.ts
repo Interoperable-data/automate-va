@@ -8,19 +8,19 @@ import { reactive } from "vue";
  */
 export const i18nStore = reactive({
   selectedLocale: "en",
-  allLanguages: ["en", "fr", "de", "ja"],
+  allLanguages: ["en", "fr", "de", "es"],
   messages: {
     en: {
-      hello: "Hello ",
-    },
-    ja: {
-      hello: "こんにちは ",
+      hello: "Hello",
     },
     fr: {
       hello: "Bonjour",
     },
     de: {
       hello: "Hallo",
+    },
+    es: {
+      hello: "Hola",
     },
   },
 });
