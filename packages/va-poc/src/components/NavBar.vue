@@ -15,8 +15,8 @@ const { t, locale } = useI18n();
 
 // OPTION 2 FAILS - Direct import does not work in normal components
 // const i18n = inject(I18nInjectionKey);
-// const t = useI18n().t;
-// const locale = i18n.global.locale;
+// const t = i18n!.global.t;
+// const locale = i18n!.global.locale;
 
 import I18nSelector from "./providers/I18nSelector.vue";
 

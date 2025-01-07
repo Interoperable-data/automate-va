@@ -1,18 +1,33 @@
 <script setup lang="ts">
-import { sessionStore } from "../components/providers/LWSHost";
+import { computed, watchEffect } from "vue";
 
-// As a component, translation is done using the plugin
+// OPTION 1 - As a component, translation is done using the plugin define app.use()
 import { useI18n } from "vue-i18n";
+import { i18nStore } from "../components/providers/i18nHost";
 const { t, locale } = useI18n();
-const props = defineProps<{ loc: string, justAProp:number }>();
+// const props = defineProps<{ loc: string; justAProp: number }>();
 // locale.value = props.loc FAILS;
+const newLocale = computed(() => i18nStore.selectedLocale);
+watchEffect(() => {
+  console.log(`Language captured in HomeView watcher, changed to ${newLocale.value}!`);
+  locale.value = newLocale.value;
+});
+
+// OPTION 2 FAILS - Direct import does not work in normal components
+// import { inject } from 'vue';
+// import { I18nInjectionKey } from 'vue-i18n';
+// const i18n = inject(I18nInjectionKey);
+// const t = i18n!.global.t;
+// const locale = i18n!.global.locale;
+import { sessionStore } from "../components/providers/LWSHost";
 </script>
 
 <template>
   <div class="home">
     <h1>{{ t("welcome") }}</h1>
     <p>{{ t("message") }}</p>
-    <p>[Locale {{ props.justAProp }} in Homeview: {{ props.loc }}]</p>
+    <!-- <p>[PROPS - Locale {{ props.justAProp }} in Homeview: {{ props.loc }}]</p> -->
+    <p>Locale in Homeview: [{{ locale }}, {{ newLocale }}]</p>
     <translation-tester name="Matthijs">
       {{ t("all") }}
       {{

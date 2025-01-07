@@ -6,15 +6,18 @@ import { createApp, defineCustomElement } from "vue";
 import { createI18n, I18nInjectionKey } from "vue-i18n";
 // import { createPinia } from 'pinia'
 import { createBootstrap } from "bootstrap-vue-next";
+import { i18nStore } from "./components/providers/i18nHost";
 
 import App from "./App.vue";
 import router from "./router";
 
-// // Internationalisation in the views is done explicitly
+// For non-custom elements, we MUST use the i18n plugin directly
+// It will however align the selected locale with the custom element,
+// through the I18nStore.
 const i18n = createI18n<false>({
   legacy: false, // Composition API: must be set to`false`
-  locale: "en", // default locale for the application COMPONENTS, not the CEs
-  globalInjection: true,
+  locale: i18nStore.selectedLocale, // default locale for the application COMPONENTS, not the CEs
+  // globalInjection: true,
 });
 
 // Internationalisation is done in the CE itself (https://vue-i18n.intlify.dev/guide/advanced/wc.html) using a wrapper in App
@@ -27,5 +30,5 @@ const app = createApp(App);
 app.use(createBootstrap());
 app.use(router);
 app.use(i18n);
-app.provide(I18nInjectionKey, i18n);
+// app.provide(I18nInjectionKey, i18n);
 app.mount("#app");

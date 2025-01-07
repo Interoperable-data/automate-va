@@ -7,7 +7,7 @@ const props = defineProps<{ name: string }>()
  */
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n({
+const { t, locale } = useI18n({
   inheritLocale: true,
   useScope: 'local',
 })
@@ -15,6 +15,7 @@ const { t } = useI18n({
 
 <template>
   <h3>{{ props.name }} says: {{ t('hello') + ' ' + t('world') }}</h3>
+  <p>[Locale in tester: {{ locale }}]</p>
   <slot id="first">Loading...</slot>
 </template>
 

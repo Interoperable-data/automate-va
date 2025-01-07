@@ -47,7 +47,7 @@ declare module "vue" {
       <lws-provider :info="$route">
         <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
         <section><h3>Custom element locale: {{ locale }}</h3></section>
-        <RouterView .loc="locale" :justAProp="8"/>
+        <RouterView />
       </lws-provider>
     </main>
   </i18n-provider>

@@ -1,44 +1,24 @@
 <script setup lang="ts">
+/**
+ * This file sets up the i18n (internationalization) configuration for the application.
+ * It uses the vue-i18n library to provide localized messages for different languages.
+ *
+ * The `i18nHost.ts` file holds a store for information shared with non-custom elements.
+ * This store is used to manage the selected locale and provide the corresponding translations.
+ *
+ * The `createI18n` function is used to create an i18n instance with the specified configuration.
+ * The `provide` function is used to make the i18n instance available to the rest of the application.
+ *
+ * The `watchEffect` function is used to reactively update the i18n configuration when the selected locale changes.
+ */
 import { provide, watchEffect } from "vue";
 import { createI18n, I18nInjectionKey } from "vue-i18n";
-
-/**
- * Define the web components that host the i18n instance.
- *
- * Because the web components environment isn't hosted in a Vue apps by `createApp`, but is provided by itself.
- * The i18n instance created by `createI18n` will be installed with `app.use` in Vue apps,
- * so that you can use i18n features with `useI18n` in Vue components.
- * In order to use `useI18n` in web components, you need to have web components hosted as root to use it.
- */
-
-/**
- * create an i18n instance to host for other web components
- * Terms used in ALL components can be set here
- *
- * NOTE:
- *  In web components only supports the composition API.
- *  It will not work in legacy API mode.
- *
- * TODO: import the translations from the KG
- */
+import { i18nStore } from "./i18nHost";
 const i18n4ce = createI18n<false>({
   legacy: false, // must be set to `false`
   // globalInjection: true,
-  locale: "fr",
-  messages: {
-    en: {
-      hello: "Hello ",
-    },
-    ja: {
-      hello: "こんにちは ",
-    },
-    fr: {
-      hello: "Bonjour",
-    },
-    de: {
-      hello: "Hallo",
-    },
-  },
+  locale: i18nStore.selectedLocale,
+  messages: i18nStore.messages,
 });
 
 const props = defineProps<{ locale: string }>();
@@ -51,6 +31,7 @@ provide(I18nInjectionKey, i18n4ce); // FIXME: This is only working towards custo
 watchEffect(() => {
   console.log(`Language captured in watcher, changed to ${props.locale}!`);
   i18n4ce.global.locale.value = props.locale;
+  i18nStore.selectedLocale = props.locale;
 });
 </script>
 
