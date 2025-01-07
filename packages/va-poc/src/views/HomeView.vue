@@ -14,13 +14,6 @@ watchEffect(() => {
   locale.value = newLocale.value;
 });
 
-// FAILS - Direct inject does not work in normal components
-// FAILS ALSO - using props in RouterView get
-// import { inject } from 'vue';
-// import { I18nInjectionKey } from 'vue-i18n';
-// const i18n = inject(I18nInjectionKey);
-// const t = i18n!.global.t;
-// const locale = i18n!.global.locale;
 import { sessionStore } from "../components/providers/LWSHost";
 </script>
 
@@ -28,43 +21,23 @@ import { sessionStore } from "../components/providers/LWSHost";
   <div class="home">
     <h1>{{ t("welcome") }}</h1>
     <p>{{ t("message") }}</p>
-    <!-- <p>Locale in Homeview: [{{ locale }}, {{ newLocale }}]</p> -->
-    <translation-tester name="Matthijs">
-      {{ t("all") }}
-      {{
-        sessionStore.loggedInWebId
-          ? `Logged in webId: ${sessionStore.loggedInWebId}`
-          : t("notConnected")
-      }}
-    </translation-tester>
   </div>
 </template>
 
 <i18n>
   {
     "en": {
-      "welcome": "Welcome to Home View",
-      "message": "This is the root path of the application.",
-      "all": "All other web components here as they use storage.",
-      "notConnected": "Not connected to LWS."
+      "welcome": "Welcome to Josepha",
+      "message": "Joined Ontology System for Enhanced Process Handling and Automation.",
     },
     "fr": {
-      "welcome": "Bienvenu `a` Home View",
-      "message": "C'est le chemin racine de l'application.",
-      "all": "Tous les autres composants Web ici car ils utilisent le stockage",
-      "notConnected": "Pas connecté à LWS."
+      "welcome": "Bienvenu a Josepha",
     },
     "de": {
-      "welcome": "Willkommen zu Home View",
-      "message": "Dies ist der Root der Anwendung.",
-      "all": "Alle anderen Webkomponenten hier, da sie den Speicher verwenden.",
-      "notConnected": "Nicht mit LWS verbunden."
+      "welcome": "Willkommen zu Josepha"
     },
     "es": {
-      "welcome": "Bienvenido a Home View",
-      "message": "Esta es la ruta raíz de la aplicación.",
-      "all": "Todas las demás webcomponents aquí ya que usan almacenamiento.",
-      "notConnected": "No conectado a LWS."
+      "welcome": "Bienvenido a Josepha",
     }
   }
 </i18n>

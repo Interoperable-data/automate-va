@@ -10,13 +10,22 @@
  * Component should also be placed in the app, linked to the / route and any other where it needs to share the Session object.
  * ===> It should be visible as a button with choices of LWS providers and
  */
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
 
+import { useI18n } from "vue-i18n";
 import { onMounted, ref } from "vue";
 import {
   useRouter,
   type RouteLocationNormalizedLoadedGeneric,
 } from "vue-router";
-import { BNavbar, BNavbarBrand, BNavbarNav, BNavItem, BButton } from "bootstrap-vue-next";
+import {
+  BNavbar,
+  BNavbarBrand,
+  BNavbarNav,
+  BNavItem,
+  BButton,
+} from "bootstrap-vue-next";
 
 import {
   login,
@@ -34,6 +43,12 @@ const SELECTED_IDP = ref("https://login.inrupt.com");
 
 // props
 const route = defineProps<{ info: RouteLocationNormalizedLoadedGeneric }>();
+
+// translate
+const { t, locale } = useI18n({
+  inheritLocale: true,
+  useScope: "local",
+});
 
 // login function
 const loginToSelectedIdP = () => {
@@ -109,21 +124,44 @@ onMounted(async () => {
 
 <template>
   <BNavbar variant="secondary" type="light">
-    <BNavbarBrand href="#">Session Info</BNavbarBrand>
+    <!-- <BNavbarBrand href="#">Session Info</BNavbarBrand> -->
     <BNavbarNav>
       <BNavItem v-if="sessionStore.rerouting">
         Redirecting after session storage...
       </BNavItem>
       <BNavItem v-else-if="!sessionStore.loggedInWebId">
-        We only support Linked Web Storage from Inrupt for the moment.
-        <BButton @click="loginToSelectedIdP" variant="outline-primary">Login to LWS Inrupt</BButton>
+        {{ t("support") }}
+        <BButton @click="loginToSelectedIdP" variant="outline-primary">{{
+          t("login")
+        }}</BButton>
       </BNavItem>
-      <BNavItem v-else>
+      <!-- <BNavItem v-else>
         Logged in as {{ sessionStore.loggedInWebId }}
-      </BNavItem>
+      </BNavItem> -->
     </BNavbarNav>
   </BNavbar>
   <slot />
 </template>
 
 <style scoped></style>
+
+<i18n>
+  {
+    "en": {
+      "support": "We only support Linked Web Storage from Inrupt for the moment.",
+      "login": "Login"
+    },
+    "fr": {
+      "support": "Nous ne supportons que le stockage web lié d'Inrupt pour le moment.",
+      "login": "Connexion"
+    },
+    "de": {
+      "support": "Wir unterstützen derzeit nur Linked Web Storage von Inrupt.",
+      "login": "Anmeldung"
+    },
+    "es": {
+      "support": "Por el momento, solo admitimos almacenamiento web vinculado de Inrupt.",
+      "login": "Iniciar sesión"
+    }
+  }
+</i18n>

@@ -4,25 +4,26 @@
     <BNavbarToggle target="nav-collapse" />
     <BCollapse id="nav-collapse" is-nav>
       <BNavbarNav>
-        <BNavItem to="/proc">{{ t("processes") }}</BNavItem>
-        <BNavItem to="/auth">{{ t("about") }}</BNavItem>
+        <!-- <BNavItem to="/process">{{ t("processes") }}</BNavItem> -->
+        <BNavItem to="/about">{{ t("about") }}</BNavItem>
       </BNavbarNav>
       <!-- Right aligned nav items -->
       <BNavbarNav class="ms-auto mb-2 mb-lg-0">
         <BNavItemDropdown right>
           <!-- Using 'button-content' slot -->
           <template #button-content>
-            <em>User</em>
+            <em>{{  sessionStore.loggedInWebId==='' ? t("noStorage") : sessionStore.loggedInWebId }}</em>
           </template>
-          <BDropdownItem href="#">Profile</BDropdownItem>
-          <BDropdownItem href="#">Sign Out</BDropdownItem>
+          <BDropdownItem to="/lws-profile" :disabled="sessionStore.loggedInWebId===''">Storage Profile</BDropdownItem>
+          <BDropdownItem to="/id-profile" disabled>Identity Profile</BDropdownItem>
+          <BDropdownItem to="/logout" v-if="sessionStore.loggedInWebId!=''">Sign Out</BDropdownItem>
         </BNavItemDropdown>
         <I18nSelector @update:locale="emitNewLocale" />
       </BNavbarNav>
-      <BNavForm class="d-flex">
+      <!-- <BNavForm class="d-flex">
         <BFormInput class="me-2" placeholder="Search" />
-        <BButton type="submit" variant="outline-success">Search</BButton>
-      </BNavForm>
+        <BButton type="submit" variant="warning outline-danger">Search</BButton>
+      </BNavForm> -->
     </BCollapse>
   </BNavbar>
 </template>
@@ -40,6 +41,7 @@ const { t, locale } = useI18n();
 // const locale = i18n!.global.locale;
 
 import I18nSelector from "./providers/I18nSelector.vue";
+import { sessionStore } from "./providers/LWSHost";
 
 const emit = defineEmits(["update:locale"]);
 const emitNewLocale = (newLocale: string) => {
@@ -63,10 +65,11 @@ onMounted(() => {
   {
     "en": {
       "processes": "Processes",
-      "about": "About"
+      "about": "About",
+      "noStorage": "Please Connect to LWS"
     },
     "fr": {
-      "processes": "Process",
+      "processes": "Processus",
       "about": "À propos"
     },
     "de": {
