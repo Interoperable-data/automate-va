@@ -18,14 +18,17 @@ const solidProfile = ref(null);
 watchEffect(async () => {
   if (!sessionStore.loggedInWebId) return;
   const webId = sessionStore.loggedInWebId
-  const profile = await getWebIdDataset(webId, { fetch: fetch });
-  const podRoot = getPodUrlAllFrom(
-    { webIdProfile: profile, altProfileAll: [] },
-    webId
-  );
-  const profileThing = getThing(profile, webId);
-  const name = getStringNoLocale(profileThing, FOAF.name);
-  solidProfile.value = profileThing || "No profile found";
+
+  // const profile = await getWebIdDataset(webId, { fetch: fetch });
+  // const podRoot = getPodUrlAllFrom(
+  //   { webIdProfile: profile, altProfileAll: [] },
+  //   webId
+  // );
+  // const profileThing = getThing(profile, webId);
+  // const name = getStringNoLocale(profileThing, FOAF.name);
+  // solidProfile.value = JSON.stringify(profile, null, 2) || "No profile found";
+
+  
 });
 </script>
 

@@ -12,18 +12,21 @@
  */
 
 import { useI18n } from "vue-i18n";
-import { onMounted, ref, nextTick } from "vue";
+import { onMounted, ref } from "vue";
 import {
-  useRouter,
+  //   CE's do not have the router
+  //   useRouter,
   type RouteLocationNormalizedLoadedGeneric,
 } from "vue-router";
-const router = useRouter();
+// const router = useRouter();
 import {
   login,
   handleIncomingRedirect,
   getDefaultSession,
   Session,
+  fetch,
 } from "@inrupt/solid-client-authn-browser";
+import { getPodUrlAll } from "@inrupt/solid-client";
 
 // Stores
 import { sessionStore } from "./LWSHost";
@@ -39,7 +42,7 @@ const props = defineProps<{
 }>();
 
 // translate
-const { t, locale } = useI18n({
+const { t } = useI18n({
   inheritLocale: true,
   useScope: "local",
 });
@@ -54,10 +57,11 @@ const loginToSelectedIdP = () => {
 };
 
 // Component stores the Session it is own memory
-const setSession = (session: Session) => {
+const setSession = async (session: Session) => {
+  console.log(`(setSession) Session:`, session);
   const routeInfo = props.routeInfo.query;
   if (routeInfo.code && routeInfo.state) {
-    console.warn(`Storing session return values:`, routeInfo);
+    console.warn(`Storing session return values`);
 
     // Inrupt token returned, then store the token and reroute the application
     sessionStore.rerouting = true;
@@ -65,14 +69,20 @@ const setSession = (session: Session) => {
       token: routeInfo.code,
       state: routeInfo.state,
     });
-    setTimeout(() => router.push("/"), 3500);
+
+    // CE's do not have the router from App
+    // const home = new URL("/", window.location.href).toString()
+    // setTimeout(() => window.location.assign(home), 10000); // reloads and destroys session
+    // FIXME: the page reload CAN be caught using a correct use of { restorePreviousSession: true }
   } else {
     console.warn(`No session return values found.`);
   }
   if (session.info.isLoggedIn) {
-    console.log(`Session found:`, session.info);
     sessionStore.canReadPODURLs = true;
     sessionStore.loggedInWebId = session.info.webId!;
+    sessionStore.ownPodURLs = await getPodUrlAll(session.info.webId!, {
+      fetch: fetch,
+    });
   } else {
     console.warn(`No active session found`);
   }
@@ -82,15 +92,15 @@ const setSession = (session: Session) => {
 const tryIncomingRedirect = async () => {
   try {
     const currentSession = getDefaultSession();
-    console.log(`Retrying to use a previous session:`, currentSession.info);
-    if (!currentSession.info.sessionId) {
-      console.log(`failed. Please log in yourself.`);
+    console.log(`(tryIncomingRedirect) Current session:`, currentSession);
+    if (currentSession.info.sessionId && !currentSession.info.isLoggedIn) {
+      console.log(`Not logged in.`);
       await handleIncomingRedirect({ restorePreviousSession: true });
+      await setSession(currentSession);
     } else {
-      console.log(`worked. Reusing it.`);
+      console.log(`Logged in.`);
       await handleIncomingRedirect(); // no-op if not part of login redirect
     }
-    setSession(currentSession);
   } catch (err) {
     console.error(`Relogin failed with error ${err}`);
   } finally {
@@ -119,9 +129,13 @@ onMounted(async () => {
 
 <template>
   <!-- IS LAUNCHED TOO EARLY <Teleport defer :to="props.target"> -->
-    <BButton v-if="!sessionStore.loggedInWebId" @click="loginToSelectedIdP" variant="primary outline-warning">
-      {{ t("login") }}
-    </BButton>
+  <BButton
+    v-if="!sessionStore.loggedInWebId"
+    @click="loginToSelectedIdP"
+    variant="primary outline-warning"
+  >
+    {{ t("login") }}
+  </BButton>
   <!-- </Teleport> -->
   <slot />
 </template>
@@ -130,16 +144,16 @@ onMounted(async () => {
 <i18n>
   {
     "en": {
-      "login": "Login"
+      "login": "Login to Solid Pod"
     },
     "fr": {
-      "login": "Connexion"
+      "login": "Connexion au Solid Pod"
     },
     "de": {
-      "login": "Anmeldung"
+      "login": "Anmeldung beim Solid Pod"
     },
     "es": {
-      "login": "Iniciar sesión"
+      "login": "Iniciar sesión en Solid Pod"
     }
   }
 </i18n>

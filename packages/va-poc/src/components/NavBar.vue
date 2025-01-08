@@ -4,7 +4,7 @@
     <BNavbarToggle target="nav-collapse" />
     <BCollapse id="nav-collapse" is-nav>
       <BNavbarNav>
-        <!-- <BNavItem to="/process">{{ t("processes") }}</BNavItem> -->
+        <BNavItem to="/processes">{{ t("processes") }}</BNavItem>
         <BNavItem to="/about">{{ t("about") }}</BNavItem>
       </BNavbarNav>
       <!-- Right aligned nav items -->
@@ -19,7 +19,7 @@
             }}</em>
           </template>
           <BDropdownItem
-            to="/lws-profile"
+            to="/containers"
             :disabled="sessionStore.loggedInWebId === ''"
             >Storage Profile</BDropdownItem
           >
@@ -80,15 +80,18 @@ onMounted(() => {
     },
     "fr": {
       "processes": "Processus",
-      "about": "À propos"
+      "about": "À propos",
+      "noStorage": "Veuillez vous connecter à LWS"
     },
     "de": {
       "processes": "Prozesse",
-      "about": "Über"
+      "about": "Über",
+      "noStorage": "Bitte verbinden Sie sich mit LWS"
     },
     "es": {
       "processes": "Procesos",
-      "about": "Acerca de"
+      "about": "Acerca de",
+      "noStorage": "Por favor, conéctese a LWS"
     }
   }
 </i18n>

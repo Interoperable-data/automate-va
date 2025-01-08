@@ -28,6 +28,8 @@ declare module 'vue' {
     IMdiLanguage: typeof import('~icons/mdi/language')['default']
     'LWSHost.ce': typeof import('./src/components/providers/LWSHost.ce.vue')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
+    ProviderInoutField: typeof import('./src/components/ProviderInputField.vue')['default']
+    ProviderInputField: typeof import('./src/components/ProviderInputField.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SecondNavbar: typeof import('./src/components/SecondNavbar.vue')['default']

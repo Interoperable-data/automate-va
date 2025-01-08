@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import AboutView from "../views/AboutView.vue";
+import ProcessView from "../views/ProcessView.vue";
 
 const routes = [
   {
@@ -10,20 +11,30 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/lws-profile",
-    name: "solid-profile",
+    path: "/containers",
+    name: "containers",
     component: ProfileView,
   },
   {
-    path: '/about',
-    name: 'about',
+    path: "/processes",
+    name: "processes",
+    component: ProcessView,
+  },
+  {
+    path: "/auth",
+    name: "post-lws-authentication",
+    component: ProfileView,
+  },
+  {
+    path: "/about",
+    name: "about",
     component: AboutView,
   },
-]
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 export default router;

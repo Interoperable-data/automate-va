@@ -6,11 +6,11 @@
         {{ t("redirecting") }}
       </BNavItem>
       <BNavItem v-else-if="!sessionStore.loggedInWebId">
-        <div id="lws-btn"></div>
+        <div id="lws-btn">LOG IN TO LWS</div>
         {{ t("support") }}
       </BNavItem>
       <BNavItem v-else>
-        {{ t("las") + sessionStore.loggedInWebId }}
+        {{ t("las") }}
       </BNavItem>
     </BNavbarNav>
   </BNavbar>
@@ -48,22 +48,22 @@ watchEffect(() => {
     "en": {
       "redirecting": "Redirecting after session storage...",
       "support": "We only support Linked Web Storage from Inrupt for the moment.",
-      "las": "Logged in as: ",
+      "las": "Logged in to LWS",
     },
     "fr": {
       "redirecting": "Redirection après stockage de session...",
       "support": "Nous ne supportons que le stockage web lié d'Inrupt pour le moment.",
-      "las": "Connecté comme: ",
+      "las": "Connecté avec LWS",
     },
     "de": {
       "redirecting": "Weiterleitung...",
       "support": "Wir unterstützen derzeit nur Linked Web Storage von Inrupt.",
-      "las": "Angemeldet als: ",
+      "las": "Angemeldet beim LWS",
     },
     "es": {
       "redirecting": "Redirigiendo después del almacenamiento de la sesión...",
       "support": "Por el momento, solo admitimos almacenamiento web vinculado de Inrupt.",
-      "las": "Conectado como: ",
+      "las": "Conectado a LWS",
     }
   }
 </i18n>

@@ -26,7 +26,7 @@ const props = defineProps<{ locale: string }>();
 /**
  * provide i18n instance with `I18nInjectionKey` for other web components
  */
-provide(I18nInjectionKey, i18n4ce); // FIXME: This is only working towards custom elements
+provide(I18nInjectionKey, i18n4ce); // WARNING: This is only working towards custom elements
 
 watchEffect(() => {
   console.log(`Language captured in watcher, changed to ${props.locale}!`);
@@ -38,15 +38,3 @@ watchEffect(() => {
 <template>
   <slot />
 </template>
-
-<!-- NOT ACTIVE HERE, use messages
-<i18n>
-{
-   "en": {
-     "hello": 'Hello'
-   },
-   ja: {
-     "hello": 'こんにちは'
-   }
-}
-</i18n> -->
