@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     BButton: typeof import('bootstrap-vue-next/components/BButton')['BButton']
     BCollapse: typeof import('bootstrap-vue-next/components/BCollapse')['BCollapse']
+    BContainer: typeof import('bootstrap-vue-next/components/BContainer')['BContainer']
     BDropdownItem: typeof import('bootstrap-vue-next/components/BDropdown')['BDropdownItem']
     BForm: typeof import('bootstrap-vue-next/components/BForm')['BForm']
     BFormGroup: typeof import('bootstrap-vue-next/components/BFormGroup')['BFormGroup']
@@ -29,6 +30,7 @@ declare module 'vue' {
     NavBar: typeof import('./src/components/NavBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SecondNavbar: typeof import('./src/components/SecondNavbar.vue')['default']
     'TranslationTester.ce': typeof import('./src/components/TranslationTester.ce.vue')['default']
   }
   export interface ComponentCustomProperties {

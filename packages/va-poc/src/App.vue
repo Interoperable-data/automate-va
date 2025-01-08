@@ -8,6 +8,8 @@ import TranslationTester from "./components/TranslationTester.ce.vue";
 import I18nHost from "./components/providers/I18nHost.ce.vue";
 import LWSHost from "./components/providers/LWSHost.ce.vue";
 import NavBar from "./components/NavBar.vue";
+import SecondNavbar from "./components/SecondNavbar.vue";
+import { i18nStore } from "./components/providers/i18nHost";
 
 // Internationalisation is done in the CE itself (https://vue-i18n.intlify.dev/guide/advanced/wc.html) using a wrapper in App
 const I18nHostElement = defineCustomElement(I18nHost);
@@ -22,7 +24,7 @@ customElements.define("translation-tester", TesterElement);
 customElements.define("lws-provider", LWSElement);
 
 // Locale should be set through component as well.
-const locale = ref<string>("en");
+const locale = ref<string>(i18nStore.selectedLocale);
 const updateLocale = (newLocale: string) => {
   locale.value = newLocale;
   console.log(`Locale updated to ${locale.value}`);
@@ -42,13 +44,13 @@ declare module "vue" {
 
 <template>
   <i18n-provider .locale="locale">
-    <NavBar @update:locale="updateLocale" />
-    <main class="container mt-10">
-      <lws-provider :info="$route">
-        <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
+    <lws-provider :routeInfo="$route" target="#lws-btn">
+      <NavBar @update:locale="updateLocale" />
+      <SecondNavbar />
+      <main class="container mt-10">
         <!-- <section><h3>Custom element locale: {{ locale }}</h3></section> -->
         <RouterView />
-      </lws-provider>
-    </main>
+      </main>
+    </lws-provider>
   </i18n-provider>
 </template>

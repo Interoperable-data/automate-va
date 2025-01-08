@@ -12,11 +12,23 @@
         <BNavItemDropdown right>
           <!-- Using 'button-content' slot -->
           <template #button-content>
-            <em>{{  sessionStore.loggedInWebId==='' ? t("noStorage") : sessionStore.loggedInWebId }}</em>
+            <em>{{
+              sessionStore.loggedInWebId === ""
+                ? t("noStorage")
+                : sessionStore.loggedInWebId
+            }}</em>
           </template>
-          <BDropdownItem to="/lws-profile" :disabled="sessionStore.loggedInWebId===''">Storage Profile</BDropdownItem>
-          <BDropdownItem to="/id-profile" disabled>Identity Profile</BDropdownItem>
-          <BDropdownItem to="/logout" v-if="sessionStore.loggedInWebId!=''">Sign Out</BDropdownItem>
+          <BDropdownItem
+            to="/lws-profile"
+            :disabled="sessionStore.loggedInWebId === ''"
+            >Storage Profile</BDropdownItem
+          >
+          <BDropdownItem to="/id-profile" disabled
+            >Identity Profile</BDropdownItem
+          >
+          <BDropdownItem to="/logout" v-if="sessionStore.loggedInWebId != ''"
+            >Sign Out</BDropdownItem
+          >
         </BNavItemDropdown>
         <I18nSelector @update:locale="emitNewLocale" />
       </BNavbarNav>
@@ -53,9 +65,7 @@ const emitNewLocale = (newLocale: string) => {
 };
 
 onMounted(() => {
-  console.log(
-    `NavBar mounted with locale: ${locale.value}`
-  );
+  console.log(`NavBar mounted with locale: ${locale.value}`);
 });
 </script>
 

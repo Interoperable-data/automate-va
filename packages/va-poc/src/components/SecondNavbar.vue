@@ -1,0 +1,69 @@
+<template>
+  <BNavbar variant="secondary" type="light" id="second-navbar">
+    <BNavbarBrand href="#">Session Info</BNavbarBrand>
+    <BNavbarNav>
+      <BNavItem v-if="sessionStore.rerouting">
+        {{ t("redirecting") }}
+      </BNavItem>
+      <BNavItem v-else-if="!sessionStore.loggedInWebId">
+        <div id="lws-btn"></div>
+        {{ t("support") }}
+      </BNavItem>
+      <BNavItem v-else>
+        {{ t("las") + sessionStore.loggedInWebId }}
+      </BNavItem>
+    </BNavbarNav>
+  </BNavbar>
+  <BContainer>
+    <strong>Current route path:</strong> {{ $route.fullPath }}
+  </BContainer>
+</template>
+
+<script setup lang="ts">
+import { computed, watchEffect } from "vue";
+import { sessionStore } from "./providers/LWSHost";
+import { i18nStore } from "./providers/i18nHost";
+
+// translate
+import { useI18n } from "vue-i18n";
+
+const { t, locale } = useI18n({
+  inheritLocale: true,
+  useScope: "local",
+});
+
+const newLocale = computed(() => i18nStore.selectedLocale);
+watchEffect(() => {
+  console.log(
+    `Language captured in SecondNavbar watcher, changed to ${newLocale.value}!`
+  );
+  locale.value = newLocale.value;
+});
+</script>
+
+<style scoped></style>
+
+<i18n>
+  {
+    "en": {
+      "redirecting": "Redirecting after session storage...",
+      "support": "We only support Linked Web Storage from Inrupt for the moment.",
+      "las": "Logged in as: ",
+    },
+    "fr": {
+      "redirecting": "Redirection après stockage de session...",
+      "support": "Nous ne supportons que le stockage web lié d'Inrupt pour le moment.",
+      "las": "Connecté comme: ",
+    },
+    "de": {
+      "redirecting": "Weiterleitung...",
+      "support": "Wir unterstützen derzeit nur Linked Web Storage von Inrupt.",
+      "las": "Angemeldet als: ",
+    },
+    "es": {
+      "redirecting": "Redirigiendo después del almacenamiento de la sesión...",
+      "support": "Por el momento, solo admitimos almacenamiento web vinculado de Inrupt.",
+      "las": "Conectado como: ",
+    }
+  }
+</i18n>

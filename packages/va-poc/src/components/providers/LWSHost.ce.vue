@@ -10,23 +10,14 @@
  * Component should also be placed in the app, linked to the / route and any other where it needs to share the Session object.
  * ===> It should be visible as a button with choices of LWS providers and
  */
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
 
 import { useI18n } from "vue-i18n";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, nextTick } from "vue";
 import {
   useRouter,
   type RouteLocationNormalizedLoadedGeneric,
 } from "vue-router";
-import {
-  BNavbar,
-  BNavbarBrand,
-  BNavbarNav,
-  BNavItem,
-  BButton,
-} from "bootstrap-vue-next";
-
+const router = useRouter();
 import {
   login,
   handleIncomingRedirect,
@@ -38,11 +29,14 @@ import {
 import { sessionStore } from "./LWSHost";
 
 // Refs
-// TODO: this value should be one of a prop array
-const SELECTED_IDP = ref("https://login.inrupt.com");
+// TODO: values should be props
+const SELECTED_IDP = ref("https://login.inrupt.com"); // More options needed
 
 // props
-const route = defineProps<{ info: RouteLocationNormalizedLoadedGeneric }>();
+const props = defineProps<{
+  routeInfo: RouteLocationNormalizedLoadedGeneric;
+  target: string;
+}>();
 
 // translate
 const { t, locale } = useI18n({
@@ -61,8 +55,7 @@ const loginToSelectedIdP = () => {
 
 // Component stores the Session it is own memory
 const setSession = (session: Session) => {
-  const router = useRouter();
-  const routeInfo = route.info.query;
+  const routeInfo = props.routeInfo.query;
   if (routeInfo.code && routeInfo.state) {
     console.warn(`Storing session return values:`, routeInfo);
 
@@ -109,6 +102,8 @@ onMounted(async () => {
   sessionStore.rerouting = true;
   // When the component is mounted, it should check the session
   await tryIncomingRedirect();
+  // await nextTick();
+  // BUTTON_TARGET.value = "#lws-button";
 });
 
 /**
@@ -123,44 +118,27 @@ onMounted(async () => {
 </script>
 
 <template>
-  <BNavbar variant="secondary" type="light">
-    <!-- <BNavbarBrand href="#">Session Info</BNavbarBrand> -->
-    <BNavbarNav>
-      <BNavItem v-if="sessionStore.rerouting">
-        Redirecting after session storage...
-      </BNavItem>
-      <BNavItem v-else-if="!sessionStore.loggedInWebId">
-        {{ t("support") }}
-        <BButton @click="loginToSelectedIdP" variant="outline-primary">{{
-          t("login")
-        }}</BButton>
-      </BNavItem>
-      <!-- <BNavItem v-else>
-        Logged in as {{ sessionStore.loggedInWebId }}
-      </BNavItem> -->
-    </BNavbarNav>
-  </BNavbar>
+  <!-- IS LAUNCHED TOO EARLY <Teleport defer :to="props.target"> -->
+    <BButton v-if="!sessionStore.loggedInWebId" @click="loginToSelectedIdP" variant="primary outline-warning">
+      {{ t("login") }}
+    </BButton>
+  <!-- </Teleport> -->
   <slot />
 </template>
 
 <style scoped></style>
-
 <i18n>
   {
     "en": {
-      "support": "We only support Linked Web Storage from Inrupt for the moment.",
       "login": "Login"
     },
     "fr": {
-      "support": "Nous ne supportons que le stockage web lié d'Inrupt pour le moment.",
       "login": "Connexion"
     },
     "de": {
-      "support": "Wir unterstützen derzeit nur Linked Web Storage von Inrupt.",
       "login": "Anmeldung"
     },
     "es": {
-      "support": "Por el momento, solo admitimos almacenamiento web vinculado de Inrupt.",
       "login": "Iniciar sesión"
     }
   }
