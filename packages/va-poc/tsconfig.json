@@ -1,0 +1,10 @@
+// tsconfig.json
+{
+    "include": ["components.d.ts"],
+    "compilerOptions": {
+        "types": ["unplugin-icons/types/vue"],
+        "target": "ES2020",
+        "module": "ESNext",
+        "strict": true
+    }
+}
