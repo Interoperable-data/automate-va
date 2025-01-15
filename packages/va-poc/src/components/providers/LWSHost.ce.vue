@@ -93,14 +93,15 @@ const tryIncomingRedirect = async () => {
   try {
     const currentSession = getDefaultSession();
     console.log(`(tryIncomingRedirect) Current session:`, currentSession);
-    if (currentSession.info.sessionId && !currentSession.info.isLoggedIn) {
+    if (!currentSession.info.sessionId) {
+      //  && !currentSession.info.isLoggedIn should not be checked
       console.log(`Not logged in.`);
       await handleIncomingRedirect({ restorePreviousSession: true });
-      await setSession(currentSession);
     } else {
       console.log(`Logged in.`);
       await handleIncomingRedirect(); // no-op if not part of login redirect
     }
+    await setSession(currentSession);
   } catch (err) {
     console.error(`Relogin failed with error ${err}`);
   } finally {
