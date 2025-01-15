@@ -176,3 +176,17 @@ Allows for the user to search for the CLD to be withdrawn (from the collection o
 - SHALL BE CHANGED in regard to its `vpa:valid` property, whereby the Period of Validity is set to 0 ([more info here](../ERADIS/CERTIFICATES.md#w3c-time-ontology)).
 
 All withdrawals must lead to the appropriate notifications.
+
+## Deduced States of a CLD
+
+From the above lifecycle, we can deduce the need for the Concepts representing Status of a CLD:
+
+1. Issued
+2. Issued, Restricting
+3. Issued, Suspending
+4. Issued, Restoring
+5. Refused
+6. Amended
+7. Restricted
+8. Suspended
+9. Withdrawn

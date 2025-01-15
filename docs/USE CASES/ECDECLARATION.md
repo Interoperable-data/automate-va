@@ -43,7 +43,7 @@ A newly created Declaration SHOULD have the property `dct:hasVersion "0"^^xsd:nu
 
 URI: `/process/ECDeclaration/update`
 
-Reserved for non-administrative changes to the certification scope as mentioned in the Declaration, whereby the version number is increased. 
+Reserved for non-administrative changes to the certification scope as mentioned in the Declaration, whereby the version number is increased.
 
 ### Amend existing Declaration
 
@@ -80,18 +80,18 @@ Document ID number: `DE/00000000201298/2017/000001` ([Kesselwagen Zacens 77m³, 
 
 1. ISSUE NEW as Declaration 1199, issued 13/12/2017 (2008/57/EC), based on:
 
-```
-1010/1/SB/2017/RST/DEEN/TRRC6242182	13/12/2017
-1010/4/SD/2017/RST/DEEN/TRRC6252183	13/12/2017
-1010/6/SD/2017/RST/DEEN/TRRC6252184	13/12/2017
+```txt
+1010/1/SB/2017/RST/DEEN/TRRC6242182 13/12/2017
+1010/4/SD/2017/RST/DEEN/TRRC6252183 13/12/2017
+1010/6/SD/2017/RST/DEEN/TRRC6252184 13/12/2017
 ```
 
 2. UPDATE: New version (1A, 16/02/2022) as Declaration 12889, issued 01/03/2022 (2016/797/EU, error in ERADIS), based on new certificates:
 
-```
-1010/1/SB/2022/RST/DEEN/TRRC1294082/V01	18/02/2022
-1010/4/SD/2022/RST/DEEN/TRRC1294083/V01	18/02/2022
-1010/6/SD/2022/RST/DEEN/TRRC1294081/V01	18/02/2022
+```txt
+1010/1/SB/2022/RST/DEEN/TRRC1294082/V01 18/02/2022
+1010/4/SD/2022/RST/DEEN/TRRC1294083/V01 18/02/2022
+1010/6/SD/2022/RST/DEEN/TRRC1294081/V01 18/02/2022
 ```
 
 3. AMEND: Small amendment (1B = 1A, re-signed 24/05/2022) as Declaration 12890, applied on 2/03/2022.
@@ -99,11 +99,11 @@ Document ID number: `DE/00000000201298/2017/000001` ([Kesselwagen Zacens 77m³, 
 5. UPDATE: New version (1D, 11/01/2023, new RID certificate added) as Declaration 17218, applied on 17/01/2023.
 6. UPDATE: New version (1E, 7/11/2023, new QMSA- and COV-certificate, new NoBo-file v3 reference) as Declaration 24148, applied on 8/11/2023:
 
+```txt
+1010/4/SD/2023/RST/DEEN/TRRC1294802/V01 29/08/2023
+1010/6/SD/2023/RST/DEEN/TRRC1294803/V01 29/08/2023
 ```
-1010/4/SD/2023/RST/DEEN/TRRC1294802/V01	29/08/2023
-1010/6/SD/2023/RST/DEEN/TRRC1294803/V01	29/08/2023
-``` 
 
 ## Declarations with large amounts of type/design examination certificates
 
-Example: 
+Example: [Schunk Carbon's DOC for Pantograph contact strips](https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=8917&DocumentType=ECDeclCnf). This EC DOC contains many 2CH1 design examination certificates. Internally (see /OSSDOCS#doc-ecDecl-8917>), the property to link them was `erava:supportedBy`, while the proposed ontology prescribes the use of `era:CertificateSet`, a class of which all instances are linked to by the `dct:references` property. This EC Declaration has been elaborated [here](../../TTL/examples/ecDecl-8917.ttl).
