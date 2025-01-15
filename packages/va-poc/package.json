@@ -1,6 +1,7 @@
 {
   "name": "va-poc",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "description": "va automate proof of concept with solid pods",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,10 +14,17 @@
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
   },
+  "repository": {
+    "type": "git",
+    "url": "@certiman/va-automate"
+  },
+  "author": "Certiman",
+  "license": "MIT",
   "dependencies": {
     "@comunica/query-sparql": "^4.0.2",
     "@inrupt/solid-client": "^2.1.2",
     "@inrupt/solid-client-authn-browser": "^2.3.0",
+    "@inrupt/vocab-common-rdf": "^1.0.5",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.26.19",
     "pinia": "^2.2.6",
@@ -27,6 +35,7 @@
     "@floating-ui/vue": "^1.1.6",
     "@iconify-json/mdi": "^1.2.0",
     "@intlify/unplugin-vue-i18n": "^6.0.1",
+
     "@tsconfig/node22": "^22.0.0",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.9.3",
@@ -44,8 +53,8 @@
     "npm-run-all2": "^7.0.1",
     "prettier": "^3.3.3",
     "typescript": "~5.6.3",
-    "unplugin-icons": "^22.0.0",
-    "unplugin-vue-components": "^28.0.0",
+    "unplugin-icons": "^0.22.0",
+    "unplugin-vue-components": "^0.28.0",
     "vite": "^6.0.7",
     "vite-plugin-vue-devtools": "^7.7.0",
     "vitest": "^2.1.5",
