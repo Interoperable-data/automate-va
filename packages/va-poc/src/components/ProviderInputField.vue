@@ -1,87 +1,90 @@
 <template>
-  <b-form-group label="Provider URI">
+  <b-form-group label="Provider URI" class="d-flex align-items-center">
     <b-form-input
       v-model="processProviderURI"
       @blur="validateAndProcessURI"
       placeholder="Enter a Solid Pod WebId, SPARQL endpoint URL, or Turtle file URL"
+      class="flex-grow-1"
     ></b-form-input>
-    <b-form-text v-if="errorMessage" class="text-danger">{{
-      errorMessage
-    }}</b-form-text>
+    <b-button @click="validateAndProcessURI" variant="primary" class="ml-2">
+      <MdiCloudPlus />
+    </b-button>
+    <b-form-text v-if="errorMessage" class="text-danger">{{ errorMessage }}</b-form-text>
   </b-form-group>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useStore } from "vuex";
-import {
-  isWebId,
-  isSparqlEndpoint,
-  isTurtleFile,
-  fetchData,
-} from "./providers/LWSHost";
+import { ref } from 'vue'
+import LWSHost, { processStore } from './providers/LWSHost'
+const { isWebId, isSparqlEndpoint, isTurtleFile, loadProcessesFrom, TargetType } = LWSHost
 
-const processProviderURI = ref("");
-const errorMessage = ref("");
-const store = useStore();
+const processProviderURI = ref('')
+const errorMessage = ref('')
 
 const validateAndProcessURI = async () => {
-  errorMessage.value = "";
-  if (isWebId(processProviderURI.value)) {
-    await processWebId(processProviderURI.value);
-  } else if (isSparqlEndpoint(processProviderURI.value)) {
-    await processSparqlEndpoint(processProviderURI.value);
-  } else if (isTurtleFile(processProviderURI.value)) {
-    await processTurtleFile(processProviderURI.value);
-  } else {
-    errorMessage.value =
-      "Invalid URI. Please enter a valid WebId, SPARQL endpoint URL, or Turtle file URL.";
-  }
-};
-
-const processWebId = async (uri) => {
+  errorMessage.value = ''
   try {
-    const data = await fetchData(uri);
-    if (data) {
-      store.commit("addProviderData", { key: uri, value: data });
-    } else {
-      errorMessage.value = "No relevant instances found in the WebId.";
-    }
-  } catch (error) {
-    errorMessage.value = "Error fetching data from WebId.";
-  }
-};
-
-const processSparqlEndpoint = async (uri) => {
-  try {
-    const data = await fetchData(uri);
-    if (data) {
-      store.commit("addProviderData", { key: uri, value: data });
+    const uri = new URL(processProviderURI.value)
+    if (await isWebId(uri)) {
+      await processWebId(uri)
+    } else if (await isSparqlEndpoint(uri)) {
+      await processSparqlEndpoint(uri)
+    } else if (isTurtleFile(uri)) {
+      await processTurtleFile(uri)
     } else {
       errorMessage.value =
-        "No relevant instances found in the SPARQL endpoint.";
+        'Invalid URI. Please enter a valid WebId, SPARQL endpoint URL, or Turtle file URL.'
     }
   } catch (error) {
-    errorMessage.value = "Error fetching data from SPARQL endpoint.";
+    errorMessage.value = `Invalid URL format: ${error}`
   }
-};
+}
 
-const processTurtleFile = async (uri) => {
+const processWebId = async (uri: URL) => {
   try {
-    const data = await fetchData(uri);
+    const data = await loadProcessesFrom(uri, TargetType.WebId)
     if (data) {
-      store.commit("addProviderData", { key: uri, value: data });
+      processStore.processProviders.push(data)
     } else {
-      errorMessage.value = "No relevant instances found in the Turtle file.";
+      errorMessage.value = 'No relevant instances found in the WebId.'
     }
   } catch (error) {
-    errorMessage.value = "Error fetching data from Turtle file.";
+    errorMessage.value = `Error fetching data from WebId: ${error}`
   }
-};
+}
+
+const processSparqlEndpoint = async (uri: URL) => {
+  try {
+    const data = await loadProcessesFrom(uri, TargetType.SparqlEndpoint)
+    if (data) {
+      processStore.processProviders.push(data)
+    } else {
+      errorMessage.value = 'No relevant instances found in the SPARQL endpoint.'
+    }
+  } catch (error) {
+    errorMessage.value = `Error fetching data from SPARQL endpoint: ${error}`
+  }
+}
+
+const processTurtleFile = async (uri: URL) => {
+  try {
+    const data = await loadProcessesFrom(uri, TargetType.TurtleFile)
+    if (data) {
+      processStore.processProviders.push(data)
+    } else {
+      errorMessage.value = 'No relevant instances found in the Turtle file.'
+    }
+  } catch (error) {
+    errorMessage.value = `Error fetching data from Turtle file: ${error}`
+  }
+}
 </script>
 
 <style scoped>
 .text-danger {
   color: red;
+}
+.mdi-icon {
+  font-size: 24px;
 }
 </style>
