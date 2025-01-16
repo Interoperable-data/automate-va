@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import LWSHostHelpers from './LWSHost';
-const { sessionStore, isWebId, isSparqlEndpoint } = LWSHostHelpers;
-import LWSProcessHelpers from './LWSProcess';
+import LWSHostHelpers from '../providers/LWSHost';
+const {  isWebId, isSparqlEndpoint } = LWSHostHelpers;
+import { sessionStore } from '../providers/LWSHost';
+import LWSProcessHelpers from '../providers/LWSProcess';
 const { extractProcessNamefromPodURL, extractTaskNamefromPodURL, extractApplicationPathFromTaskURI } = LWSProcessHelpers
 
 describe('LWSHost', () => {
@@ -74,7 +75,7 @@ describe('LWSHost', () => {
       expect(result).toBe('SecondTask');
     });
 
-    it('should extract task name correctly when a step is added', () => {
+    it('should extract task name correctly as a URL fragment, when a step is added', () => {
       const taskURI = new URL('https://storage.inrupt.com/b5186a91-fffe-422a-bf6a-02a61f470541/process/TheThirdProcess/SecondTask#StepNr');
       const processContainer = new URL('https://storage.inrupt.com/b5186a91-fffe-422a-bf6a-02a61f470541/process/');
       const result = extractTaskNamefromPodURL(taskURI, processContainer, true);

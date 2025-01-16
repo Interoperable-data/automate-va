@@ -2,7 +2,7 @@ import { reactive } from 'vue';
 import { type QuerySourceUnidentified, type QueryStringContext } from '@comunica/types';
 import { type LocationQueryValue } from 'vue-router';
 import { fetch } from "@inrupt/solid-client-authn-browser";
-import { getWebIdDataset, getThingAll, getUrlAll, getSolidDataset, getThing, getUrl, getStringNoLocaleAll, getStringNoLocale } from '@inrupt/solid-client';
+import { getWebIdDataset, getThingAll, getUrlAll, getSolidDataset, getThing, getUrl, getLinkedResourceUrlAll, getStringNoLocale } from '@inrupt/solid-client';
 import { QueryEngine } from '@comunica/query-sparql';
 import { FOAF, RDF } from '@inrupt/vocab-common-rdf';
 import { SOLID } from '@inrupt/vocab-solid';
@@ -115,6 +115,48 @@ export async function getTypeIndexContainers(webId: URL, reload: boolean = false
   }
 }
 
+// Function to update the literal and NamedNode properties from a type registration - returns the registration itself
+export async function getPropertiesFromTypeRegistration(registration: TypeRegistration): Promise<TypeRegistration> {
+  try {
+    const dataset = await getSolidDataset(registration.inContainer, { fetch: fetch });
+    const things = getThingAll(dataset);
+    console.log(`Found ${things.length} things in the container dataset.`, things);
+
+    const literalProperties: string[] = [];
+    const uriProperties: string[] = [];
+
+    things.forEach(thing => {
+      console.log(`Inspecting thing:`, thing);
+      // FIXME: there seems to be no functions returning the properties themselves.
+      // FIXME: const literals = getStringNoLocaleAll(thing, PROPERTY MISSING);
+      // FIXME: const uris = getLinkedResourceUrlAll(thing DOES NOT WORK as thing is not resource.);
+
+      // literals.forEach(literal => {
+      //   if (!literalProperties.includes(literal)) {
+      //     literalProperties.push(literal);
+      //   }
+      // });
+
+      // uris.forEach(uri => {
+      //   if (!uriProperties.includes(uri)) {
+      //     uriProperties.push(uri);
+      //   }
+      // });
+    });
+
+    registration.literalProperties = literalProperties;
+    registration.uriProperties = uriProperties;
+  } catch (error) {
+    if (error.statusCode === 404) {
+      console.log(`Container ${registration.inContainer} not found (404). Skipping.`);
+    } else {
+      console.error(`Error accessing container ${registration.inContainer}:`, error);
+    }
+  } finally {
+    return registration;
+  }
+}
+
 // Function to retrieve type registrations from containers
 export async function getTypeRegistrationsFromContainers(containers: URL[], reload: boolean = false): Promise<TypeRegistration[]> {
   console.log(`Fetching type registrations from ${containers.length} containers.`);
@@ -165,43 +207,6 @@ export async function getTypeRegistrationsFromContainers(containers: URL[], relo
   }
 
   console.log(`Total type registrations found: ${typeRegistrations.length}`);
-  return typeRegistrations;
-}
-
-// Function to retrieve properties from type registrations
-export async function getPropertiesFromTypeRegistrations(typeRegistrations: TypeRegistration[]): Promise<TypeRegistration[]> {
-  for (const registration of typeRegistrations) {
-    try {
-      const dataset = await getSolidDataset(registration.inContainer, { fetch: fetch });
-      const things = getThingAll(dataset);
-
-      const literalProperties: string[] = [];
-      const uriProperties: string[] = [];
-
-      things.forEach(thing => {
-        const literals = getStringNoLocaleAll(thing);
-        const uris = getUrlAll(thing);
-
-        literals.forEach(literal => {
-          if (!literalProperties.includes(literal.predicate.value)) {
-            literalProperties.push(literal.predicate.value);
-          }
-        });
-
-        uris.forEach(uri => {
-          if (!uriProperties.includes(uri.predicate.value)) {
-            uriProperties.push(uri.predicate.value);
-          }
-        });
-      });
-
-      registration.literalProperties = literalProperties;
-      registration.uriProperties = uriProperties;
-    } catch (error) {
-      console.error(`Error accessing container ${registration.inContainer}:`, error);
-    }
-  }
-
   return typeRegistrations;
 }
 
@@ -313,6 +318,6 @@ export default {
   querySparql,
   getTypeIndexContainers,
   getTypeRegistrationsFromContainers,
-  getPropertiesFromTypeRegistrations,
+  getPropertiesFromTypeRegistration,
   getProfileInfo,
 };
