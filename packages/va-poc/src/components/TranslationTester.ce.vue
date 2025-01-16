@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { ref, watchEffect } from "vue";
-import { getProfileAll, getWebIdDataset, getPodUrlAllFrom, getThing, getStringNoLocale } from "@inrupt/solid-client";
-import { fetch } from "@inrupt/solid-client-authn-browser";
-import { FOAF } from "@inrupt/vocab-common-rdf";
+import { getTypeIndexContainers, getProfileInfo, getTypeRegistrationsFromContainers, sessionStore, type TypeRegistration } from "./providers/LWSHost";
 
 const props = defineProps<{ name: string }>();
 
@@ -13,37 +11,49 @@ const { t, locale } = useI18n({
 });
 
 // Read the profile
-import { sessionStore } from "./providers/LWSHost";
-const solidProfile = ref(null);
+const solidProfileName = ref<string | null>(null);
+const typeIndexContainers = ref<URL[]>([]);
+const typeRegistrations = ref<TypeRegistration[]>([]);
+
 watchEffect(async () => {
   if (!sessionStore.loggedInWebId) return;
-  const webId = sessionStore.loggedInWebId
+  const webId = new URL(sessionStore.loggedInWebId);
 
-  // const profile = await getWebIdDataset(webId, { fetch: fetch });
-  // const podRoot = getPodUrlAllFrom(
-  //   { webIdProfile: profile, altProfileAll: [] },
-  //   webId
-  // );
-  // const profileThing = getThing(profile, webId);
-  // const name = getStringNoLocale(profileThing, FOAF.name);
-  // solidProfile.value = JSON.stringify(profile, null, 2) || "No profile found";
+  try {
+    const profileInfo = await getProfileInfo(webId);
+    solidProfileName.value = profileInfo.name;
 
-  
+    typeIndexContainers.value = await getTypeIndexContainers(webId);
+    typeRegistrations.value = await getTypeRegistrationsFromContainers(typeIndexContainers.value);
+  } catch (error) {
+    console.error('Error fetching profile info, type index containers, or type registrations:', error);
+  }
 });
 </script>
 
 <template>
-  <h3>{{ podRoot }}</h3>
+  <h3>{{ props.name }}</h3>
   <div>
-    {{ solidProfile || props.name }} says [{{ locale }}]: {{ t("hello") + " " + t("world") }}
+    {{ solidProfileName || props.name }} says [{{ locale }}]: {{ t("hello") + " " + t("world") }}
   </div>
+  <ul>
+    <li v-for="container in typeIndexContainers" :key="container.href">
+      {{ container.href }}
+      <ul>
+        <li v-for="registration in typeRegistrations.filter(reg => reg.foundIn === container.href)"
+          :key="registration.forClass">
+          {{ registration.forClass }} in {{ registration.inContainer }}
+        </li>
+      </ul>
+    </li>
+  </ul>
   <slot id="first">Loading...</slot>
 </template>
 
 <i18n>
   {
     "en": {
-      "world": " world!",
+      "world": " world!"
     },
     "fr": {
       "world": "monde!"

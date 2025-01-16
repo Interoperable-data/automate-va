@@ -17,6 +17,7 @@ import { computed, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { i18nStore } from "../components/providers/i18nHost";
+import { sessionStore } from "../components/providers/LWSHost";
 
 // As a component, translation is done using the main ts plugin
 // AuthView is a component, so it MUST use the plugin directly,
@@ -30,7 +31,6 @@ watchEffect(() => {
   locale.value = newLocale.value;
 });
 
-import { sessionStore } from "../components/providers/LWSHost";
 </script>
 
 <i18n>

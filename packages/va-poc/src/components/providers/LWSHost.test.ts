@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import LWSHostHelpers from './LWSHost';
-const { sessionStore, extractProcessNamefromPodURL, extractTaskNamefromPodURL, extractApplicationPathFromTaskURI, isWebId, isSparqlEndpoint } = LWSHostHelpers;
+const { sessionStore, isWebId, isSparqlEndpoint } = LWSHostHelpers;
+import LWSProcessHelpers from './LWSProcess';
+const { extractProcessNamefromPodURL, extractTaskNamefromPodURL, extractApplicationPathFromTaskURI } = LWSProcessHelpers
 
 describe('LWSHost', () => {
   describe('extractProcessNamefromPodURL', () => {

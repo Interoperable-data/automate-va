@@ -25,6 +25,7 @@
     "@inrupt/solid-client": "^2.1.2",
     "@inrupt/solid-client-authn-browser": "^2.3.0",
     "@inrupt/vocab-common-rdf": "^1.0.5",
+    "@inrupt/vocab-solid": "^1.0.4",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.26.19",
     "pinia": "^2.2.6",
