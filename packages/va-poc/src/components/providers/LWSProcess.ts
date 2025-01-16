@@ -1,6 +1,7 @@
 import { reactive } from 'vue';
 
 const processStore = reactive({
+  typeIndexContainers: {} as Record<string, URL[]>,
   processProviders: [], // Comunica can query several process sources
   taskBeingEdited: '',
   taskURI: '', // pod URI of the process/task whicha is being selected for execution
@@ -8,7 +9,6 @@ const processStore = reactive({
     return this.processProviders.length > 0;
   },
 });
-
 
 // ---- HELP{ERS} to finish the processStore
 

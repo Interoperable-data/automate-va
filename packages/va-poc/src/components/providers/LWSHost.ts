@@ -1,12 +1,15 @@
 import { reactive } from 'vue';
 import { type QuerySourceUnidentified, type QueryStringContext } from '@comunica/types';
-import { type LocationQueryValue } from 'vue-router'
-
+import { type LocationQueryValue } from 'vue-router';
 import { fetch } from "@inrupt/solid-client-authn-browser";
 import { getWebIdDataset, getThingAll, getUrlAll, getSolidDataset, getThing, getUrl, getStringNoLocaleAll, getStringNoLocale } from '@inrupt/solid-client';
 import { QueryEngine } from '@comunica/query-sparql';
 import { FOAF, RDF } from '@inrupt/vocab-common-rdf';
 import { SOLID } from '@inrupt/vocab-solid';
+
+// Store for process data
+import Pstore from './LWSProcess';
+const { processStore } = Pstore;
 
 // Comunica engine
 const queryEngine = new QueryEngine();
@@ -73,8 +76,15 @@ function extractTypeIndexes(things: any[]): URL[] {
 }
 
 // Function to retrieve type index containers from a WebID
-export async function getTypeIndexContainers(webId: URL): Promise<URL[]> {
+export async function getTypeIndexContainers(webId: URL, reload: boolean = false): Promise<URL[]> {
   console.log(`Fetching type index containers for WebID: ${webId.href}`);
+  const webIdKey = webId.href;
+
+  if (!reload && processStore.typeIndexContainers[webIdKey]) {
+    console.log(`Returning cached type index containers for WebID: ${webId.href}`);
+    return processStore.typeIndexContainers[webIdKey];
+  }
+
   try {
     const dataset = await getWebIdDataset(webId.href);
     console.log('WebID dataset retrieved successfully.');
@@ -97,6 +107,7 @@ export async function getTypeIndexContainers(webId: URL): Promise<URL[]> {
     }
 
     console.log(`Total type index containers found: ${typeIndexContainers.length}`);
+    processStore.typeIndexContainers[webIdKey] = typeIndexContainers;
     return typeIndexContainers;
   } catch (error) {
     console.error('Error retrieving type index containers:', error);
@@ -251,11 +262,11 @@ export async function isSparqlEndpoint(uri: URL): Promise<boolean> {
     return false;
   }
 }
+
 type LWSAuth = {
   token: string | LocationQueryValue[]
   state: string | LocationQueryValue[]
 }
-
 export const sessionStore = reactive({
   canReadPODURLs: false,
   ownPodURLs: [], // all the WebId's OWN pod Urls
