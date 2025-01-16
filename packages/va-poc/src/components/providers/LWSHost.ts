@@ -116,16 +116,26 @@ export async function getTypeIndexContainers(webId: URL, reload: boolean = false
 }
 
 // Function to retrieve type registrations from containers
-export async function getTypeRegistrationsFromContainers(containers: URL[]): Promise<TypeRegistration[]> {
+export async function getTypeRegistrationsFromContainers(containers: URL[], reload: boolean = false): Promise<TypeRegistration[]> {
   console.log(`Fetching type registrations from ${containers.length} containers.`);
   const typeRegistrations: TypeRegistration[] = [];
 
   for (const container of containers) {
+    const containerKey = container.href;
+
+    if (!reload && processStore.typeRegistrations && processStore.typeRegistrations[containerKey]) {
+      console.log(`Returning cached type registrations for container: ${container.href}`);
+      typeRegistrations.push(...processStore.typeRegistrations[containerKey]);
+      continue;
+    }
+
     try {
       console.log(`Fetching dataset from container: ${container.href}`);
       const dataset = await getSolidDataset(container.href, { fetch: fetch });
       const things = getThingAll(dataset);
-      console.log(`Found ${things.length} things in the container dataset.`, things);
+      console.log(`Found ${things.length} things in the container dataset.`);
+
+      const containerRegistrations: TypeRegistration[] = [];
 
       things.forEach(thing => {
         const types = getUrlAll(thing, RDF.type);
@@ -133,15 +143,22 @@ export async function getTypeRegistrationsFromContainers(containers: URL[]): Pro
           const forClass = getUrl(thing, SOLID.forClass);
           const instanceContainer = getUrl(thing, SOLID.instanceContainer);
           if (forClass && instanceContainer) {
-            typeRegistrations.push({
+            const registration = {
               forClass,
               inContainer: instanceContainer,
               foundIn: container.href
-            });
+            };
+            containerRegistrations.push(registration);
+            typeRegistrations.push(registration);
             console.log(`Added type registration: forClass=${forClass}, inContainer=${instanceContainer}, foundIn=${container.href}`);
           }
         }
       });
+
+      processStore.typeRegistrations = {
+        ...processStore.typeRegistrations,
+        [containerKey]: containerRegistrations
+      };
     } catch (error) {
       console.error(`Error accessing container ${container.href}:`, error);
     }
