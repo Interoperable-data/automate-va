@@ -46,8 +46,10 @@
  * NOTE: Special classes representing a process, like a workflow, will be stored in the state of the application as well. No distinction is made.
  */
 import { ref } from 'vue'
-import LWSHost, { processStore } from './providers/LWSHost'
-const { isWebId, isSparqlEndpoint, isTurtleFile, loadProcessesFrom, TargetType } = LWSHost
+import { processStore } from './providers/LWSProcessStore'
+import LWSHost from './providers/LWSHost'
+const { isWebId, isSparqlEndpoint, isTurtleFile, loadProcessesFrom } = LWSHost
+import type { TargetType } from './providers/LWSHost.d'
 
 const sourceURI = ref('')
 const errorMessage = ref('')

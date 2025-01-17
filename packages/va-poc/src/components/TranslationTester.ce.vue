@@ -6,9 +6,10 @@ import {
   getProfileInfo,
   getPropertiesFromTypeRegistration,
   getTypeRegistrationsFromContainers,
-  sessionStore,
-  type TypeRegistration,
 } from './providers/LWSHost'
+
+import { sessionStore } from './providers/LWSSessionStore'
+import { type TypeRegistration } from './providers/LWSHost.d'
 
 const props = defineProps<{ name: string }>()
 

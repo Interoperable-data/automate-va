@@ -2,7 +2,7 @@
 import { computed, watchEffect, defineCustomElement } from "vue";
 
 // stores
-import { sessionStore } from "../components/providers/LWSHost";
+import { sessionStore } from "../components/providers/LWSSessionStore";
 
 // translation
 import { useI18n } from "vue-i18n";

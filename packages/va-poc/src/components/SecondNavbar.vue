@@ -3,42 +3,38 @@
     <BNavbarBrand href="#">Session Info</BNavbarBrand>
     <BNavbarNav>
       <BNavItem v-if="sessionStore.rerouting">
-        {{ t("redirecting") }}
+        {{ t('redirecting') }}
       </BNavItem>
       <BNavItem v-else-if="!sessionStore.loggedInWebId">
         <div id="lws-btn">LOG IN TO LWS</div>
-        {{ t("support") }}
+        {{ t('support') }}
       </BNavItem>
       <BNavItem v-else>
-        {{ t("las") }}
+        {{ t('las') }}
       </BNavItem>
     </BNavbarNav>
   </BNavbar>
-  <BContainer>
-    <strong>Current route path:</strong> {{ $route.fullPath }}
-  </BContainer>
+  <BContainer> <strong>Current route path:</strong> {{ $route.fullPath }} </BContainer>
 </template>
 
 <script setup lang="ts">
-import { computed, watchEffect } from "vue";
-import { sessionStore } from "./providers/LWSHost";
-import { i18nStore } from "./providers/i18nHost";
+import { computed, watchEffect } from 'vue'
+import { sessionStore } from './providers/LWSSessionstore'
+import { i18nStore } from './providers/i18nHost'
 
 // translate
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n'
 
 const { t, locale } = useI18n({
   inheritLocale: true,
-  useScope: "local",
-});
+  useScope: 'local',
+})
 
-const newLocale = computed(() => i18nStore.selectedLocale);
+const newLocale = computed(() => i18nStore.selectedLocale)
 watchEffect(() => {
-  console.log(
-    `Language captured in SecondNavbar watcher, changed to ${newLocale.value}!`
-  );
-  locale.value = newLocale.value;
-});
+  console.log(`Language captured in SecondNavbar watcher, changed to ${newLocale.value}!`)
+  locale.value = newLocale.value
+})
 </script>
 
 <style scoped></style>

@@ -29,7 +29,7 @@ import {
 import { getPodUrlAll } from "@inrupt/solid-client";
 
 // Stores
-import { sessionStore } from "./LWSHost";
+import { sessionStore } from "./LWSSessionstore";
 
 // Refs
 // TODO: values should be props

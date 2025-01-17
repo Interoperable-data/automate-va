@@ -1,25 +1,21 @@
-import { reactive } from 'vue';
-import { type QuerySourceUnidentified, type QueryStringContext } from '@comunica/types';
-import { type LocationQueryValue } from 'vue-router';
 import { fetch } from "@inrupt/solid-client-authn-browser";
-import { getWebIdDataset, getThingAll, getUrlAll, getSolidDataset, getThing, getUrl, getLinkedResourceUrlAll, getStringNoLocale } from '@inrupt/solid-client';
+import { getWebIdDataset, getThingAll, getUrlAll, getSolidDataset, getThing, getUrl, getStringNoLocale } from '@inrupt/solid-client';
 import { QueryEngine } from '@comunica/query-sparql';
+
+// Vocabularies
 import { FOAF, RDF } from '@inrupt/vocab-common-rdf';
 import { SOLID } from '@inrupt/vocab-solid';
 
+// Types
+import type { QuerySourceUnidentified, QueryStringContext } from '@comunica/types';
+import type { TypeRegistration, KeyValueObject } from './LWSHost.d';
+import { TargetType } from './LWSHost.d';
+
 // Store for process data
-import Pstore from './LWSProcess';
-const { processStore } = Pstore;
+import { processStore } from './LWSProcessStore';
 
 // Comunica engine
 const queryEngine = new QueryEngine();
-
-// Define the enum for target types
-export enum TargetType {
-  WebId = 'webId',
-  SparqlEndpoint = 'sparqlEndpoint',
-  TurtleFile = 'turtleFile',
-}
 
 // Fetch data function
 export async function fetchData(uri: URL, type: TargetType) {
@@ -41,15 +37,6 @@ export async function fetchData(uri: URL, type: TargetType) {
   }
   // Return fetched data
 }
-
-// Define the type for type registrations
-export type TypeRegistration = {
-  forClass: string;
-  inContainer: string;
-  foundIn: string;
-  literalProperties?: string[];
-  uriProperties?: string[];
-};
 
 // Helper function to extract type indexes from things
 function extractTypeIndexes(things: any[]): URL[] {
@@ -236,7 +223,6 @@ export async function isWebId(uri: URL): Promise<boolean> {
 }
 
 // Generic SPARQL query function
-type KeyValueObject = Record<string, string>;
 export async function querySparql(sources: QuerySourceUnidentified[], query: string): Promise<KeyValueObject | null> {
   try {
     const options = {
@@ -285,34 +271,9 @@ export async function isSparqlEndpoint(uri: URL): Promise<boolean> {
   }
 }
 
-type LWSAuth = {
-  token: string | LocationQueryValue[]
-  state: string | LocationQueryValue[]
-}
-export const sessionStore = reactive({
-  canReadPODURLs: false,
-  ownPodURLs: [], // all the WebId's OWN pod Urls
-  selectedPodURL: '', // the WebId's selected pod URLn
-  loggedInWebId: '', // falsy
-  rerouting: false,
-  authProvidersSessionData: { inrupt: {} },
-  ownStoragePodRoot(): string | null {
-    // From https://storage.inrupt.com/b5186a91-pfffe-422a-bf6a-02a61f470541/
-    // returns https://storage.inrupt.com, in order to recreate the RDFSource URIs
-    const sp = this.selectedPodURL;
-    if (!sp) return null;
-    const tld = sp.substring(0, sp.length - 1).lastIndexOf('/');
-    return sp.substring(0, tld);
-  },
-  addSolidPodAuthData({ token, state }: LWSAuth) {
-    // From Inrupt at least, to be checked for the others
-    this.authProvidersSessionData.inrupt = { token: token, state: state }
-  },
-});
 
 export default {
   fetchData,
-  TargetType,
   isWebId,
   isSparqlEndpoint,
   querySparql,
