@@ -113,8 +113,34 @@ const extractApplicationPathFromTaskURI = (
   }
 }
 
+/**
+ * Converts a URI and a given prefix object into the prefix key string followed by the URI path after the prefix value.
+ * TODO: should be working under prefixify code
+ * @param uri The URI to convert
+ * @param prefixes An object containing prefix keys and their corresponding URI values
+ * @returns The prefix key string followed by the URI path after the prefix value
+ *
+ * Example:
+ *   uri: id.inrupt.com/root/link1/Bar
+ *   prefixes: { mypod: 'id.inrupt.com/root/link1/' }
+ *   Returns: mypod:Bar
+ */
+const convertURIToPrefixedString = (
+  uri: URL,
+  prefixes: { [key: string]: string }
+): string | null => {
+  const uriString = uri.toString();
+  for (const [prefix, prefixURI] of Object.entries(prefixes)) {
+    if (uriString.startsWith(prefixURI)) {
+      return `${prefix}:${uriString.substring(prefixURI.length)}`;
+    }
+  }
+  return null;
+}
+
 export default {
   extractProcessNamefromPodURL,
   extractTaskNamefromPodURL,
   extractApplicationPathFromTaskURI,
+  convertURIToPrefixedString
 }

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import { RouterLink, RouterView } from 'vue-router'
 import { defineCustomElement, ref } from "vue";
 import { RouterView } from "vue-router";
 
@@ -7,6 +6,8 @@ import { RouterView } from "vue-router";
 import TranslationTester from "./components/TranslationTester.ce.vue";
 import I18nHost from "./components/providers/I18nHost.ce.vue";
 import LWSHost from "./components/providers/LWSHost.ce.vue";
+
+// Import application components
 import NavBar from "./components/NavBar.vue";
 import SecondNavbar from "./components/SecondNavbar.vue";
 import { i18nStore } from "./components/providers/i18nHost";
@@ -18,7 +19,7 @@ const I18nHostElement = defineCustomElement(I18nHost);
 const TesterElement = defineCustomElement(TranslationTester);
 const LWSElement = defineCustomElement(LWSHost);
 
-// register
+// register the custom elements
 customElements.define("i18n-provider", I18nHostElement);
 customElements.define("translation-tester", TesterElement);
 customElements.define("lws-provider", LWSElement);

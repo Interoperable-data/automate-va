@@ -11,13 +11,13 @@
  * ===> It should be visible as a button with choices of LWS providers and
  */
 
-import { useI18n } from "vue-i18n";
-import { onMounted, ref } from "vue";
+import { useI18n } from 'vue-i18n'
+import { onMounted, ref } from 'vue'
 import {
   //   CE's do not have the router
   //   useRouter,
   type RouteLocationNormalizedLoadedGeneric,
-} from "vue-router";
+} from 'vue-router'
 // const router = useRouter();
 import {
   login,
@@ -25,97 +25,108 @@ import {
   getDefaultSession,
   Session,
   fetch,
-} from "@inrupt/solid-client-authn-browser";
-import { getPodUrlAll } from "@inrupt/solid-client";
+} from '@inrupt/solid-client-authn-browser'
+import { getPodUrlAll } from '@inrupt/solid-client'
+
+import {
+  getTypeIndexContainers,
+  getTypeRegistrationsFromContainers,
+} from './LWSHost'
+import { processStore } from './LWSProcessStore'
 
 // Stores
-import { sessionStore } from "./LWSSessionstore";
+import { sessionStore } from './LWSSessionstore'
 
 // Refs
 // TODO: values should be props
-const SELECTED_IDP = ref("https://login.inrupt.com"); // More options needed
+const SELECTED_IDP = ref('https://login.inrupt.com') // More options needed
 
 // props
 const props = defineProps<{
-  routeInfo: RouteLocationNormalizedLoadedGeneric;
-  target: string;
-}>();
+  routeInfo: RouteLocationNormalizedLoadedGeneric
+  target: string
+}>()
 
 // translate
 const { t } = useI18n({
   inheritLocale: true,
-  useScope: "local",
-});
+  useScope: 'local',
+})
 
 // login function
 const loginToSelectedIdP = () => {
   return login({
     oidcIssuer: SELECTED_IDP.value,
-    redirectUrl: new URL("/auth", window.location.href).toString(),
-    clientName: "VA Automate",
-  });
-};
+    redirectUrl: new URL('/auth', window.location.href).toString(),
+    clientName: 'VA Automate',
+  })
+}
 
 // Component stores the Session it is own memory
 const setSession = async (session: Session) => {
-  console.log(`(setSession) Session:`, session);
-  const routeInfo = props.routeInfo.query;
+  console.log(`(setSession) Session:`, session)
+  const routeInfo = props.routeInfo.query
   if (routeInfo.code && routeInfo.state) {
-    console.warn(`Storing session return values`);
+    console.warn(`Storing session return values`)
 
     // Inrupt token returned, then store the token and reroute the application
-    sessionStore.rerouting = true;
+    sessionStore.rerouting = true
     sessionStore.addSolidPodAuthData({
       token: routeInfo.code,
       state: routeInfo.state,
-    });
+    })
 
     // CE's do not have the router from App
     // const home = new URL("/", window.location.href).toString()
     // setTimeout(() => window.location.assign(home), 10000); // reloads and destroys session
     // FIXME: the page reload CAN be caught using a correct use of { restorePreviousSession: true }
   } else {
-    console.warn(`No session return values found.`);
+    console.warn(`No session return values found.`)
   }
   if (session.info.isLoggedIn) {
-    sessionStore.canReadPODURLs = true;
-    sessionStore.loggedInWebId = session.info.webId!;
+    sessionStore.canReadPODURLs = true
+    sessionStore.loggedInWebId = session.info.webId!
     sessionStore.ownPodURLs = await getPodUrlAll(session.info.webId!, {
       fetch: fetch,
-    });
+    })
+
+    // Fetch type indices and update processStore
+    const webIdUri = new URL(session.info.webId!)
+    const typeIndexContainers = await getTypeIndexContainers(webIdUri);
+    await getTypeRegistrationsFromContainers(webIdUri, typeIndexContainers);
   } else {
-    console.warn(`No active session found`);
+    console.warn(`No active session found`)
   }
-};
+}
 
 // Login
 const tryIncomingRedirect = async () => {
   try {
-    const currentSession = getDefaultSession();
-    console.log(`(tryIncomingRedirect) Current session:`, currentSession);
+    const currentSession = getDefaultSession()
+    console.log(`(tryIncomingRedirect) Current session:`, currentSession)
     if (!currentSession.info.sessionId) {
       //  && !currentSession.info.isLoggedIn should not be checked
-      console.log(`Not logged in.`);
-      await handleIncomingRedirect({ restorePreviousSession: true });
+      console.log(`Not logged in.`)
+      await handleIncomingRedirect({ restorePreviousSession: true })
     } else {
-      console.log(`Logged in.`);
-      await handleIncomingRedirect(); // no-op if not part of login redirect
+      console.log(`Logged in.`)
+      await handleIncomingRedirect() // no-op if not part of login redirect
     }
-    await setSession(currentSession);
+    await setSession(currentSession)
   } catch (err) {
-    console.error(`Relogin failed with error ${err}`);
+    console.error(`Relogin failed with error ${err}`)
   } finally {
-    sessionStore.rerouting = false;
+    sessionStore.rerouting = false
   }
-};
+}
 
 onMounted(async () => {
-  sessionStore.rerouting = true;
+  sessionStore.rerouting = true
   // When the component is mounted, it should check the session
-  await tryIncomingRedirect();
+  await tryIncomingRedirect()
   // await nextTick();
   // BUTTON_TARGET.value = "#lws-button";
-});
+})
 
 /**
  * Props for the
@@ -135,7 +146,7 @@ onMounted(async () => {
     @click="loginToSelectedIdP"
     variant="primary outline-warning"
   >
-    {{ t("login") }}
+    {{ t('login') }}
   </BButton>
   <!-- </Teleport> -->
   <slot />

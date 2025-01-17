@@ -32,7 +32,7 @@ watchEffect(async () => {
     solidProfileName.value = profileInfo.name
 
     typeIndexContainers.value = await getTypeIndexContainers(webId)
-    typeRegistrations.value = await getTypeRegistrationsFromContainers(typeIndexContainers.value)
+    typeRegistrations.value = await getTypeRegistrationsFromContainers(webId, typeIndexContainers.value)
 
     for (const registration of typeRegistrations.value) {
       const properties = await getPropertiesFromTypeRegistration(registration)

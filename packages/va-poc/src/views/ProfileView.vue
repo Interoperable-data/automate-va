@@ -16,12 +16,24 @@ watchEffect(() => {
   locale.value = newLocale.value;
 });
 
-// Import the custom element
-import TranslationTesterCe from "@/components/TranslationTester.ce.vue";
+// Import the custom elements
+import LWSSourceAdder from "@/components/providers/LWSSourceAdder.ce.vue";
+import LWSSourcesList from "@/components/providers/LWSSourcesList.ce.vue";
+import TranslationTester from "@/components/TranslationTester.ce.vue";
+import LWSProcessList from "@/components/providers/LWSProcessList.ce.vue";
 
-// Register the custom element
+// Register the custom elements
+if (!customElements.get('lws-source-adder')) {
+  customElements.define('lws-source-adder', defineCustomElement(LWSSourceAdder));
+}
+if (!customElements.get('lws-sources-list')) {
+  customElements.define('lws-sources-list', defineCustomElement(LWSSourcesList));
+}
 if (!customElements.get('translation-tester')) {
-  customElements.define('translation-tester', defineCustomElement(TranslationTesterCe));
+  customElements.define('translation-tester', defineCustomElement(TranslationTester));
+}
+if (!customElements.get('lws-process-list')) {
+  customElements.define('lws-process-list', defineCustomElement(LWSProcessList));
 }
 </script>
 
@@ -31,8 +43,11 @@ if (!customElements.get('translation-tester')) {
     <p>{{ t("message") }}</p>
     <BContainer>
       {{ sessionStore.ownPodURLs }}
+      <lws-source-adder />
+      <lws-sources-list />
+      <lws-process-list />
+      <!-- <translation-tester name="Karel">Nothing to report</translation-tester> -->
     </BContainer>
-    <translation-tester name="Karel">Nothing to report</translation-tester>
   </section>
 </template>
 

@@ -7,6 +7,7 @@ export const processStore = reactive({
   processProviders: [], // Comunica can query several process sources
   taskBeingEdited: '',
   taskURI: '', // pod URI of the process/task which is being selected for execution
+  processRegistrations: {} as Record<string, URL[]>, // Update the type to match the new function
   canProcessData() {
     return this.processProviders.length > 0;
   },
