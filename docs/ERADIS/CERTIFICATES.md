@@ -1,4 +1,9 @@
-# Data model for EC Certificates, QMS Approvals and Intermediate Statements (CLDs)
+---
+next:
+  text: 'EC Declarations'
+  link: './DECLARATIONS.md'
+---
+# EC Certificates, QMS Approvals and Intermediate Statements (CLDs)
 
 ## Scope
 

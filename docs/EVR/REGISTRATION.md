@@ -1,3 +1,8 @@
+---
+next:
+  text: 'Vehicle Data Model'
+  link: '/EVR/VEHICLES/'
+---
 # Vehicle Registration
 
 The  [`Ontology for Verified Permissions`](https://w3id.org/vpa/) allows to store vehicle registration application (cases), leading to Registrations (VR). It allows to define:
@@ -10,7 +15,7 @@ The  [`Ontology for Verified Permissions`](https://w3id.org/vpa/) allows to stor
 
 To identify a VR, the Keeper's orgCode could be chosen, followed by a sequence number. Of course, a unique identifier could be chosen as well.
 
-```rdf
+```csharp
 eravr:NNNN-n a era:VehicleRegistration .  
 eravr:vr-NNNN-n a era:VRApplication .
 ```
