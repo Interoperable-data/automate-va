@@ -10,22 +10,18 @@ import {
   getContainedResourceUrlAll,
   isContainer,
 } from '@inrupt/solid-client'
-import { QueryEngine } from '@comunica/query-sparql'
 
 // Vocabularies
 import { FOAF, RDF } from '@inrupt/vocab-common-rdf'
 import { SOLID } from '@inrupt/vocab-solid'
 
 // Types
-import type { QuerySourceUnidentified, QueryStringContext } from '@comunica/types'
-import type { TypeRegistration, KeyValueObject } from './LWSHost.d'
+import type { TypeRegistration } from './LWSHost.d'
 import { TargetType, typeIndexProperties, processClasses } from './LWSHost.d'
 
 // Store for process data
 import { processStore } from './LWSProcessStore'
 
-// Comunica engine
-const queryEngine = new QueryEngine()
 
 // Fetch data function
 export async function fetchData(uri: URL, type: TargetType) {
@@ -278,63 +274,11 @@ export async function isWebId(uri: URL): Promise<boolean> {
   }
 }
 
-// Generic SPARQL query function
-export async function querySparql(
-  sources: QuerySourceUnidentified[],
-  query: string,
-): Promise<KeyValueObject | null> {
-  try {
-    const options = {
-      sources: sources,
-      lenient: true,
-    } as QueryStringContext
-    const result = await queryEngine.query(query, options)
-    if (result.resultType === 'bindings') {
-      const res: KeyValueObject = {}
-      const variables = (await result.metadata()).variables
-      const bindingsStream = await result.execute()
-      for await (const bindings of bindingsStream) {
-        for (const variable of variables) {
-          res[variable.value] = bindings.get(variable)!.value
-        }
-      }
-      return res
-    } else {
-      console.error('Query result type is not bindings: ', result.resultType)
-      return null
-    }
-  } catch (error) {
-    return null
-  }
-}
 
-// isSparqlEndpoint function
-export async function isSparqlEndpoint(uri: URL): Promise<boolean> {
-  try {
-    const query = `ASK { ?s ?p ?o }` // SELECT ?s WHERE { ?s ?p ?o } LIMIT 1
-
-    // FIXME: const endpoint = new Array( { type: 'sparql', value: uri.href } )
-    const endpoint = new Array(uri.href)
-    const options = {
-      sources: endpoint,
-      lenient: true,
-    } as QueryStringContext
-    // const isAnEndPoint = await queryEngine.queryBoolean(query, options)
-    // return isAnEndPoint
-
-    const bindingsresult = await queryEngine.query(query, options)
-    return bindingsresult.resultType === 'boolean'
-  } catch (error) {
-    console.error('isSparqlEndpoint failed: ', error)
-    return false
-  }
-}
 
 export default {
   fetchData,
   isWebId,
-  isSparqlEndpoint,
-  querySparql,
   getTypeIndexContainers,
   getTypeRegistrationsFromContainers,
   getPropertiesFromTypeRegistration,

@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import LWSHostHelpers from '../providers/LWSHost';
-const {  isWebId, isSparqlEndpoint } = LWSHostHelpers;
-import { sessionStore } from '../providers/LWSHost';
+const {  isWebId } = LWSHostHelpers;
+
+import { sessionStore } from '../providers/LWSSessionStore';
 import LWSProcessHelpers from '../providers/LWSProcess';
 const { extractProcessNamefromPodURL, extractTaskNamefromPodURL, extractApplicationPathFromTaskURI } = LWSProcessHelpers
 
@@ -157,34 +158,6 @@ describe('LWSHost', () => {
     it('should return false for an invalid WebId', async () => {
       const webIdURI = new URL('https://www.inrupt.com/about');
       const result = await isWebId(webIdURI);
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('isSparqlEndpoint', () => {
-    // local ones
-    const validLocalEndpoint = 'http://va-inspector.era.europa.eu:3030/ERALEX/sparql';
-
-    // https://demo.openlinksw.com/sparql, , 'https://dbpedia.org/sparql', https://fragments.dbpedia.org/2015/en
-    const validEndpoint = 'https://demo.openlinksw.com/sparql';
-    const invalidEndpoint = 'https://demo.openlinksw.com/query';
-
-    // TESTs
-    it('should return true for a valid SPARQL endpoint', async () => {
-      const sparqlEndpointURI = new URL(validEndpoint);
-      const result = await isSparqlEndpoint(sparqlEndpointURI);
-      expect(result).toBe(true);
-    });
-
-    it('should return true for a valid local SPARQL endpoint', async () => {
-      const sparqlEndpointURI = new URL(validLocalEndpoint);
-      const result = await isSparqlEndpoint(sparqlEndpointURI);
-      expect(result).toBe(true);
-    });
-
-    it('should return false for an invalid SPARQL endpoint', async () => {
-      const sparqlEndpointURI = new URL(invalidEndpoint); // not an endpoint, even 404
-      const result = await isSparqlEndpoint(sparqlEndpointURI);
       expect(result).toBe(false);
     });
   });

@@ -20,7 +20,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { getTypeIndexContainers, getTypeRegistrationsFromContainers, isWebId, isSparqlEndpoint } from './LWSHost';
+import { getTypeIndexContainers, getTypeRegistrationsFromContainers, isWebId } from './LWSHost';
+import { isSparqlEndpoint } from './KGHost';
 import { TargetType } from './LWSHost.d';
 import { processStore } from './LWSProcessStore';
 
@@ -43,20 +44,20 @@ const addSource = async () => {
     // Determine the target type based on the URI
     if (await isWebId(uri)) {
       targetType = TargetType.WebId;
+      // Fetch data through the LWS containers containing the Type Indices and
+      // if a process, then also update processStore.processRegistrations[]
+      const typeIndexContainers = await getTypeIndexContainers(uri);
+      await getTypeRegistrationsFromContainers(uri, typeIndexContainers);
     } else if (await isSparqlEndpoint(uri)) {
       targetType = TargetType.SparqlEndpoint;
+      // TODO: Fetch data from the SPARQL endpoint
     } else if (uri.pathname.endsWith('.ttl')) {
       targetType = TargetType.TurtleFile;
     }
 
     if (targetType) {
-      // FIXME: this should only run when .WebId!
-      // Fetch data and update processStore
-      const typeIndexContainers = await getTypeIndexContainers(uri);
-      await getTypeRegistrationsFromContainers(uri, typeIndexContainers);
-
       if (processStore.typeRegistrations[uri.href]) {
-        successMessage.value = `Data source added successfully for URI: ${uri.href}`;
+        successMessage.value = `Data source from LWS added successfully for URI: ${uri.href}`;
       } else {
         errorMessage.value = `No relevant instances found for the provided URI: ${uri.href}`;
       }

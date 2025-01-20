@@ -1,7 +1,7 @@
 import { type LocationQueryValue } from 'vue-router';
 
 // Vocabularies
-import { FOAF, RDF } from '@inrupt/vocab-common-rdf';
+import { FOAF } from '@inrupt/vocab-common-rdf';
 import { SOLID } from '@inrupt/vocab-solid';
 import { DUL } from '@/vocabularies/DUL' // Import DUL vocabulary
 
@@ -34,7 +34,7 @@ export const typeIndexProperties: string[] = [
   SOLID.privateTypeIndex
 ];
 
-// Array of possible Process Classes
+// Array of possible Process Classes, should not use prefixes internally
 export const processClasses: string[] = [
   DUL.Process
 ];

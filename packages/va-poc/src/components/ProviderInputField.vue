@@ -48,7 +48,9 @@
 import { ref } from 'vue'
 import { processStore } from './providers/LWSProcessStore'
 import LWSHost from './providers/LWSHost'
-const { isWebId, isSparqlEndpoint, isTurtleFile, loadProcessesFrom } = LWSHost
+const { isWebId, isTurtleFile, loadProcessesFrom } = LWSHost
+import KGHostHelpers from '../providers/KGHost';
+const {  isSparqlEndpoint } = KGHostHelpers;
 import type { TargetType } from './providers/LWSHost.d'
 
 const sourceURI = ref('')
