@@ -1,0 +1,916 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<VehicleType>
+  <GeneralInfo>
+    <Type ID="13-178-0010-8-001-001">
+      <Characteristic>
+        <Name>Type ID</Name>
+        <Code>0.1 0.2 0.4</Code>
+        <Value>13-178-0010-8-001-001</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Date of record</Name>
+        <Code>0.3</Code>
+        <Value>14-06-2024</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Type name</Name>
+        <Code>1.1</Code>
+        <Value>MIREO 4-Teiler 15kV PZB Midi</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Alternative type name</Name>
+        <Code>1.2</Code>
+        <Value>MIREO Regensburg Donautal</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Number of driving cabs</Name>
+        <Code>4.1.1</Code>
+        <Value>2</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Manufacturer</Name>
+        <Code>1.3</Code>
+        <Characteristic>
+          <Name>Manufacturer identification data</Name>
+          <Code>1.3.1</Code>
+          <Characteristic>
+            <Name>Name of organisation</Name>
+            <Code>1.3.1.1</Code>
+            <Value>Siemens Mobility GmbH</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>Registered business number</Name>
+            <Code>1.3.1.2</Code>
+            <Value>HRB 237219</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>Organisation code</Name>
+            <Code>1.3.1.3</Code>
+            <Value>P0EL</Value>
+          </Characteristic>
+        </Characteristic>
+        <Characteristic>
+          <Name>Manufacturer contact data</Name>
+          <Code>1.3.2</Code>
+          <Characteristic>
+            <Name>Address of organisation, street and number</Name>
+            <Code>1.3.2.1</Code>
+            <Value>Otto-Hahn-Ring 6</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>Town</Name>
+            <Code>1.3.2.2</Code>
+            <Value>München</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>Country code</Name>
+            <Code>1.3.2.3</Code>
+            <Value>DE</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>Post code</Name>
+            <Code>1.3.2.4</Code>
+            <Value>81739</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>E-mail address</Name>
+            <Code>1.3.2.5</Code>
+            <Value>register.mobility@siemens.com</Value>
+          </Characteristic>
+        </Characteristic>
+      </Characteristic>
+      <Characteristic>
+        <Name>Registration Method</Name>
+        <Value>New Type</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Registered Vehicle Type</Name>
+      </Characteristic>
+      <Characteristic>
+        <Name>Category</Name>
+        <Code>1.4</Code>
+        <Value>Traction vehicles</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Subcategory</Name>
+        <Code>1.5</Code>
+        <Value>Self-propelled passenger trainset</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Exceptional Mode</Name>
+        <Value>New authorisation after upgrade or renewal </Value>
+      </Characteristic>
+    </Type>
+    <Characteristic>
+      <Name>Platform</Name>
+      <Value>MIREO</Value>
+    </Characteristic>
+  </GeneralInfo>
+  <ConformityWithTSI>
+    <Characteristic>
+      <Name>Conformity with TSI and Sections not complied with:</Name>
+      <Code>2.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>1435mm / AC 15kV-16.7Hz / PZB 90</Name>
+          <TSI>PRM (Regulation (EU) No 1300/2014 amended by Regulation (EU) 2019/772)</TSI>
+          <TSI>LOC &amp; PAS (Regulation (EU) No 1302/2014) amended by Reg.(EU)2016/919 amended by Reg.(EU)2018/868 amended by Reg.(EU) 2019/776 amended by Reg.(EU) 2020/387)</TSI>
+          <TSI>Noise (Regulation (EU) No 1304/2014 amended by Regulation (EU) 2019/774)</TSI>
+          <TSI>CCS TSI (Regulation (EU) N° 2023/1695)</TSI>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Applicable specific cases (specific cases conformity with which has been assessed)</Name>
+      <Code>2.3</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>1435mm / AC 15kV-16.7Hz / PZB 90</Name>
+          <Value>PRM (Regulation (EU) No 1300/2014 amended by Regulation (EU) 2019/772)</Value>
+          <Value>7.3.2.1. Priority seats (point 4.2.2.1). Specific cases Germany and Denmark 'P'</Value>
+          <Value>7.3.2.6. Step position for vehicle access and egress (point 4.2.2.11). Specific case Austria and Germany 'P' for all rolling stock intended to stop, in normal operation, at platforms below 550 mm height</Value>
+          <Value>LOC &amp; PAS (Regulation (EU) No 1302/2014) amended by Reg.(EU)2016/919 amended by Reg.(EU)2018/868 amended by Reg.(EU) 2019/776 amended by Reg.(EU) 2020/387)</Value>
+          <Value>7.4. Specific environmental conditions Specific conditions Germany</Value>
+          <Value>Noise (Regulation (EU) No 1304/2014 amended by Regulation (EU) 2019/774)</Value>
+          <Value>CCS TSI (Regulation (EU) N° 2023/1695)</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Reference of ‘EC type examination certificates’</Name>
+      <Code>2.2</Code>
+      <Value>1991/1/SB/2024/RST/DEEN/CRF-10410/V01</Value>
+      <Value>1991/1/SB/2024/RST/DEEN/PRM-10411/V02</Value>
+      <Value>1991/1/SB/2024/RST/DEEN/NOI-10412/V01</Value>
+      <Value>1991/1/SB/2020/RST/DEEN/CRF-10027/V02</Value>
+      <Value>0893/1/SB/2023/CCO/DE EN/3708/V02</Value>
+    </Characteristic>
+  </ConformityWithTSI>
+  <Authorisations>
+    <Authorisation Title="European Union">
+      <Characteristic>
+        <Code>3.0 Area Of Use:</Code>
+        <Value>DE(Germany)</Value>
+      </Characteristic>
+      <Characteristic>
+        <Code>3.1.1 Member state of authorisation:</Code>
+        <Value>Germany(DE)</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Status</Name>
+        <Code>3.1.2.1</Code>
+        <Value>Valid</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Validity of Authorisation (until)</Name>
+        <Code>3.1.2.2</Code>
+      </Characteristic>
+      <Characteristic>
+        <Name>Coded Restrictions</Name>
+        <Code>3.1.2.3</Code>
+        <Configurations />
+      </Characteristic>
+      <Characteristic>
+        <Name>Non Coded Restrictions</Name>
+        <Code>3.1.2.4</Code>
+        <Value>1435mm / AC 15kV-16.7Hz / PZB 90</Value>
+        <Value>Die für den MIREO 4-Teiler 15kV PZB Midi (Mireo Netz Regensburg Donautal) weiterhin gültigen Einsatzbedingungen/-beschränkungen des Referenztyps MIREO S-Bahn Rhein-Neckar:</Value>
+        <Value>- Steilstreckenbetrieb mit Fahrzeugen dieses Typs ist nicht zulässig.</Value>
+        <Value>- Der minimale befahrbare vertikale Ausrundungshalbmesser für das Fahrzeug beträgt 500m.</Value>
+        <Value>- Das Fahrzeug ist für den Betrieb auf Ablaufbergen sowie Rangier- und Bremseinrichtungen in Arbeitsstellung nicht geeignet.</Value>
+        <Value>- Die maximale Bahnsteighöhe für das Öffnen der Türen beträgt 960mm.</Value>
+        <Value>Die folgenden Einsatzbedingungen/-beschränkungen werden für den MIREO 4-Teiler 15kV PZB Midi (Mireo Netz Regensburg Donautal) gegenüber denen des Referenztyps MIREO S-Bahn Rhein-Neckar wie folgt geändert:</Value>
+        <Value>- Das Fahrzeug kann nur Strecken befahren, welche mindestens der Bezugslinie G1 für den oberen Bereich, sowie GI2 für den unteren Bereich genügen.</Value>
+        <Value>- Der Einsatzbereich der Fahrzeuge darf nicht mehr als 150 km eines Streckenabschnitts umfassen, der bereits mit ETCS ausgerüstet ist oder binnen fünf Jahren nach Erteilung der Genehmigung für das Inverkehrbringen für diese Fahrzeuge mit ETCS ausgerüstet werden soll. Kommt es zu einer Änderung des Einsatzbereiches des Fahrzeugs, welche die o.g. Bedingung verletzt, so ist das Fahrzeug mit ETCS nachzurüsten. Auf ausschließlich mit ETCS ausgerüsteten Strecken dürfen die Fahrzeuge dieses Fahrzeugtyps nicht verkehren.</Value>
+        <Value>Für den MIREO 4-Teiler 15kV PZB Midi (Mireo Netz Regensburg Donautal) neu hinzugekommene Einsatzbedingungen/-beschränkungen:</Value>
+        <Value>- Der Betrieb der Fahrzeuge dieses Fahrzeugtyps ist in Einfach- und Mehrfachtraktion artrein mit bis zu 3 Fahrzeugen im Zugverband zulässig.</Value>
+        <Value>- Die Genehmigung gilt für folgende Konfiguration: SW: Zug-SW V1.3.0; Baseline: 1-3-3; Fzg.Steuerung: 45.0.3; BSG: V20.031; ASG (TCU): V 01.03.01; ASG (T4QS): SW-Paket V 01.03.01; Zugsicherung: TGB Indusi 03.02.00.</Value>
+        <Value>- Der Einsatz von Fahrzeugen dieses Typs ist beschränkt auf: a. alle Streckenabschnitte mit oder ohne Tunnel und Streckenhöchstgeschwindigkeit bis einschließlich 200 km/h oder b. alle Streckenabschnitte ohne Tunnel und Streckenhöchstgeschwindigkeit über 200 km/h bis einschließlich 300 km/h oder c. Streckenabschnitte mit ausschließlich eingleisigen Tunneln und Streckenhöchstgeschwindigkeit über 200 km/h bis einschließlich 300 km/h.</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Date of the original authorisation</Name>
+        <Code>3.1.3.1.1</Code>
+        <Value>14-06-2024</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Date of the last modification</Name>
+        <Code>3.1.3.2.2</Code>
+        <Value>01-07-2024</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Authorisation holder</Name>
+        <Code>3.1.3.2.3</Code>
+        <Characteristic>
+          <Name>Authorisation holder identification data</Name>
+          <Code>3.1.3.2.3.1</Code>
+          <Characteristic>
+            <Name>Name of organisation</Name>
+            <Code>3.1.3.2.3.1.1</Code>
+            <Value>Siemens Mobility GmbH</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>Registered business number</Name>
+            <Code>3.1.3.2.3.1.2</Code>
+            <Value>HRB 237219</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>Organisation code</Name>
+            <Code>3.1.3.2.3.1.3</Code>
+            <Value>P0EL</Value>
+          </Characteristic>
+        </Characteristic>
+        <Characteristic>
+          <Name>Authorisation holder contact data</Name>
+          <Code>3.1.3.2.3.2</Code>
+          <Characteristic>
+            <Name>Address of organisation, street and number</Name>
+            <Code>3.1.3.2.3.2.1</Code>
+            <Value>Otto-Hahn-Ring 6</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>Town</Name>
+            <Code>3.1.3.2.3.2.2</Code>
+            <Value>München</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>Country code</Name>
+            <Code>3.1.3.2.3.2.3</Code>
+            <Value>DE</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>Post code</Name>
+            <Code>3.1.3.2.3.2.4</Code>
+            <Value>81739</Value>
+          </Characteristic>
+          <Characteristic>
+            <Name>E-mail address</Name>
+            <Code>3.1.3.2.3.2.5</Code>
+            <Value>register.mobility@siemens.com</Value>
+          </Characteristic>
+        </Characteristic>
+      </Characteristic>
+      <Characteristic>
+        <Name>Authorisation document reference</Name>
+        <Code>3.1.3.2.4</Code>
+        <Value>EU8020240152</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Certificate of verification : Reference of type examination or design examination type</Name>
+        <Code>3.1.3.2.5</Code>
+        <Value>DE008/1/SB/2024/RST/DE/RST-20056/V01</Value>
+        <Value>004/1/NNTR/2023/CCO/DE EN/3708.1U/V01</Value>
+        <Value>004/1/NNTR/2023/CCO/DE EN/3708.1/V01</Value>
+        <Value>004/1/NNTR/2023/CCO/DE EN/3708.2/V01</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Parameters for which conformity to applicable national rules has been assessed</Name>
+        <Code>3.1.3.2.6</Code>
+        <Value>1435mm / AC 15kV-16.7Hz / PZB 90</Value>
+        <Value>2.1.1 Strength and integrity</Value>
+        <Value>3.1 Vehicle gauge</Value>
+        <Value>3.2.1 Running safety and dynamics</Value>
+        <Value>3.3.5 Sanding system</Value>
+        <Value>3.3.7 Axle shaft</Value>
+        <Value>4.1 Functional requirements for braking at train level</Value>
+        <Value>4.5 Brake performance</Value>
+        <Value>4.5.4 Parking brake performance</Value>
+        <Value>4.6.2 Wheel slide protection system (“WSP”)</Value>
+        <Value>4.7.1.3 Brake pads</Value>
+        <Value>6.1.2.1 Crosswind effects</Value>
+        <Value>7 External warning, signalling, marking functions and software integrity requirements</Value>
+        <Value>7.2.1 Vehicle marking</Value>
+        <Value>8.2.2.6 Arrangement of pantographs</Value>
+        <Value>8.4.2.1.1 Rail return current</Value>
+        <Value>8.4.2.2.1 Electro-magnetic fields/Induced voltages in the track/under the vehicle</Value>
+        <Value>8.4.2.2.2 Electro-magnetic fields/Induced voltages outside the track</Value>
+        <Value>8.4.3.1 Maximum electro-magnetic fields</Value>
+        <Value>10.2.2 Rescue services' information, equipment and access</Value>
+        <Value>12.1.2.2 Other GSM-R requirements</Value>
+        <Value>12.2.1 National on-board signalling systems</Value>
+      </Characteristic>
+      <Characteristic>
+        <Name>Comments</Name>
+        <Code>3.1.3.2.7</Code>
+        <Value>− A note concerning ERATV parameter 4.7.6 For general operation: Brake weight percentage (lambda) or Braked mass: “This type is not designed and assessed for general operation. In line with the provisions of clause 4.2.4.5.2 Emergency braking of the applicable TSI LOC&amp;PAS (EU) 1302/2014 is it not required to determine a value for the brake weight percentage (lambda) or braked mass for such type. ERATV parameter 4.7.6 is marked with “0” in this case.”
+-  There are no coded restrictions. This is because all applicable values for a coded condition for use and other restrictions are the same as the respective values for the technical parameter in ERATV section 4, which means there is no actual condition for use or restriction as compared to the nominal design value.
+− Disclaimer: “As this was an authorisation case “New Authorisation” was the scope of the assessment limited to the parts of the vehicle type that are changed and their impacts on the unchanged parts of the vehicle type in line with article 39(4) and 40(3) of (EU) 2018/545. Checks already carried out at the previous authorisation of reference type 13-178-0002-5-001-001 were not repeated.”</Value>
+      </Characteristic>
+      <Characteristic>
+        <Code>3.1.3.2.8 Reference to the written declaration by the proposer referred to in Article 3(11) of Regulation (EU) 402/2013:</Code>
+        <Value>Erklärung des Antragstellers zur Berücksichtigung der CSM-RA Referenznummer  PM2/A6Z00057740131/000/B, freigegeben am 23.05.2024</Value>
+      </Characteristic>
+    </Authorisation>
+  </Authorisations>
+  <TechnicalCharacteristics>
+    <Characteristic>
+      <Name>Wheel set gauge TC</Name>
+      <Code>4.1.3</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>1435</Value>
+          <Unit>mm</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Number of vehicles composing the fixed formation (for fixed formation only)</Name>
+      <Code>4.1.12</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>4</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>ETCS equipment on-board and the set of specifications from CCS TSI Appendix A</Name>
+      <Code>4.13.1.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>None</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Class B or other train protection, control and warning legacy systems installed (system and, if applicable, version) TC</Name>
+      <Code>4.13.1.5</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>PZB 90</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>ETCS System Compatibility TC</Name>
+      <Code>4.13.1.8</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>Not applicable</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Safe consist length information from on-board necessary to access the line and corresponding SIL TC</Name>
+      <Code>4.13.1.10</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>None</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Envelope of legally operated ETCS system versions TC</Name>
+      <Code>4.13.1.11</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>None</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>GSM-R Radio voice on board and its Baseline</Name>
+      <Code>4.13.2.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>Implementing Regulation (EU) 2023/1695, Appendix B transition regime Baseline 1</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Class B or other radio legacy systems installed (system and, if applicable, version) TC</Name>
+      <Code>4.13.2.3</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>None</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Radio Voice System Compatibility TC</Name>
+      <Code>4.13.2.5</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>RSC-DE-01-V</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>GSM-R Voice and operational communication implementation</Name>
+      <Code>4.13.2.6</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>TRS6000 i.V.m. der Software 4.2.0</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>GSM-R Radio Data communication on board and its Baseline</Name>
+      <Code>4.13.2.7</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>None</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Radio Data System Compatibility TC</Name>
+      <Code>4.13.2.8</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>Not applicable</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Voice SIM Card GSM-R Home Network TC</Name>
+      <Code>4.13.2.10</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>GSM-R D (Germany)</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>GSM-R Voice SIM Card support of Group ID 555 TC</Name>
+      <Code>4.13.2.12</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>True</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>On-board ATO system version</Name>
+      <Code>4.13.3.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>None</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Energy supply system (voltage and frequency) TC</Name>
+      <Code>4.10.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>AC 15kV-16.7Hz</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Height of interaction of pantograph with contact wires (over top of rail) (to be indicated for each energy supply system the vehicle is equipped for) TC</Name>
+      <Code>4.10.5</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>AC 15kV-16.7Hz</Name>
+          <Value>0004.70</Value>
+          <Unit>m</Unit>
+          <Value>0006.50</Value>
+          <Unit>m</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Pantograph head geometry (to be indicated for each energy supply system the vehicle is equipped for) TC</Name>
+      <Code>4.10.6</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>AC 15kV-16.7Hz</Name>
+          <Value>1950  sc DE and AT</Value>
+          <Unit>mm</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Number of pantographs in contact with the overhead contact line (OCL) (to be indicated for each energy supply system the vehicle is equipped for) TC</Name>
+      <Code>4.10.7</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>AC 15kV-16.7Hz</Name>
+          <Value>1</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Material of pantograph contact strip the vehicle may be equipped with (to be indicated for each energy supply system the vehicle is equipped for) TC</Name>
+      <Code>4.10.10</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>AC 15kV-16.7Hz</Name>
+          <Value>Plain carbon</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Automatic dropping device (ADD) fitted (to be indicated for each energy supply system the vehicle is equipped for) TC</Name>
+      <Code>4.10.11</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>AC 15kV-16.7Hz</Name>
+          <Value>True</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Electric units equipped with power or current limitation function TC</Name>
+      <Code>4.10.14</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>AC 15kV-16.7Hz</Name>
+          <Value>True</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Mean contact force TC</Name>
+      <Code>4.10.15</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>AC 15kV-16.7Hz</Name>
+          <Value>97</Value>
+          <Unit> Ν</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Vehicle equipped with electric energy storage for traction purposes and with the function of charging with OCL at standstill TC</Name>
+      <Code>4.10.16</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>AC 15kV-16.7Hz</Name>
+          <Value>False</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Maximum design speed</Name>
+      <Code>4.1.2.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>160</Value>
+          <Unit> km/h</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Maximum number of trainsets or locomotives coupled together in multiple operation.</Name>
+      <Code>4.1.5</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>3</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Reference profile TC</Name>
+      <Code>4.2.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>G1</Value>
+          <Value>Gl2</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Temperature range</Name>
+      <Code>4.3.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>T1 (-25 to +40)</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Snow, ice and hail conditions</Name>
+      <Code>4.3.3</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>Nominal</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Fire safety category TC</Name>
+      <Code>4.4.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>A</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>EN line category(ies) TC</Name>
+      <Code>4.5.1.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>C2</Value>
+          <Unit>t</Unit>
+          <Value>C3</Value>
+          <Unit>t</Unit>
+          <Value>C4</Value>
+          <Unit>t</Unit>
+          <Value>D2</Value>
+          <Unit>t</Unit>
+          <Value>D3</Value>
+          <Unit>t</Unit>
+          <Value>D4</Value>
+          <Unit>t</Unit>
+          <Value>E4</Value>
+          <Unit>t</Unit>
+          <Value>E5</Value>
+          <Unit>t</Unit>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Design mass in working order</Name>
+      <Code>4.5.2.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>138000</Value>
+          <Unit> kg</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Design mass under normal payload</Name>
+      <Code>4.5.2.2</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>176100</Value>
+          <Unit> kg</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Design mass under exceptional payload TC</Name>
+      <Code>4.5.2.3</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>181800</Value>
+          <Unit> kg</Unit>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Static axle load in working order</Name>
+      <Code>4.5.3.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>15900</Value>
+          <Unit> kg</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Static axle load under normal payload</Name>
+      <Code>4.5.3.2</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>18700</Value>
+          <Unit> kg</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Static axle load under exceptional payload TC</Name>
+      <Code>4.5.3.3</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>19300</Value>
+          <Unit> kg</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Position of the axles along the unit (axle spacing) : a: Distance between axles  b: Distance from end axle to the end of the nearest coupling plane  c: distance between  two inside axles</Name>
+      <Code>4.5.3.4</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>a: 0002.30 m b: 0004.20 m c: 0019.68 m</Value>
+          <Explanations>value a refers to outer bogies; value b refers to end car body (end axle - coupling plane); value c refers to end car body</Explanations>
+          <Value>a: 0002.60 m b: 0004.20 m c: 0019.80 m</Value>
+          <Explanations>value a refers to inner Jakobs-bogies; value b refers to end car body (end axle - coupling plane); value c refers to middle car body</Explanations>
+        </Characteristic>
+      </Configurations>
+      <Name>Total vehicle mass (for each vehicle of the unit)</Name>
+      <Code>4.5.5</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>138000</Value>
+          <Unit> kg</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Mass per wheel TC</Name>
+      <Code>4.5.6</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>9700</Value>
+          <Unit> kg</Unit>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Combination of maximum speed and maximum cant deficiency for which the vehicle was assessed TC</Name>
+      <Code>4.6.4</Code>
+      <Configurations>
+        <Characteristic>
+          <Name>1435mm</Name>
+          <Value>0160.00</Value>
+          <Unit>km/h</Unit>
+          <Value>0150.00</Value>
+          <Unit>mm</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Rail inclination TC</Name>
+      <Code>4.6.5</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>1/40</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Maximum average deceleration</Name>
+      <Code>4.7.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>1,5</Value>
+          <Unit>m/s²</Unit>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Reference case of TSI</Name>
+      <Code>4.7.2.1.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>Reference case of (80 km/h, 21‰ (mm/m), 46 km)</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Maximum brake thermal energy capacity</Name>
+      <Code>4.7.2.1.6</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>83460</Value>
+          <Unit>kJ</Unit>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Maximum gradient on which the unit is kept immobilized by the parking brake alone (if the vehicle is fitted with it)</Name>
+      <Code>4.7.3.3</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>40</Value>
+          <Unit>‰ (mm/m)</Unit>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Eddy current track brake fitted TC</Name>
+      <Code>4.7.4.1.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>False</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Magnetic track brake fitted TC</Name>
+      <Code>4.7.4.2.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>True</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Possibility of preventing the use of the magnetic track brake (only if fitted with magnetic brake) TC</Name>
+      <Code>4.7.4.2.2</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>True</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Regenerative brake fitted TC</Name>
+      <Code>4.7.4.3.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>True</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Possibility of preventing the use of the regenerative brake (only if fitted with regenerative brake) TC</Name>
+      <Code>4.7.4.3.2</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>True</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Emergency brake : Stopping distance and deceleration profile for each load condition per design maximum speed a: Load condition: working order
+b: Load condition: normal payload
+c: Load condition: exceptional payload</Name>
+      <Code>4.7.5</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>a: 0702.00</Value>
+          <Unit>m</Unit>
+          <Value>0001.41</Value>
+          <Unit>m/s²</Unit>
+          <Value>b: 0724.00</Value>
+          <Unit>m</Unit>
+          <Value>0001.36</Value>
+          <Unit>m/s²</Unit>
+          <Value>c: 0735.00</Value>
+          <Unit>m</Unit>
+          <Value>0001.34</Value>
+          <Unit>m/s²</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>For general operation : 
+Brake weight percentage (lambda) or Braked mass</Name>
+      <Code>4.7.6</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>000.00</Value>
+          <Unit>(%) or</Unit>
+          <Value>00000.00</Value>
+          <Unit>tonnes</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Service brake: At maximum service brake: 
+Stopping distance, 
+Maximum deceleration, for the load condition ‘design mass under normal payload’ at the design maximum speed.</Name>
+      <Code>4.7.7</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>0986.00</Value>
+          <Unit>m</Unit>
+          <Value>0001.04</Value>
+          <Unit>m/s²</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Wheel slide protection system</Name>
+      <Code>4.7.8</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>True</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Vehicle length</Name>
+      <Code>4.8.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>89,66</Value>
+          <Unit>m</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Minimum in-service wheel diameter TC</Name>
+      <Code>4.8.2</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>810</Value>
+          <Unit> mm</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Minimum horizontal curve radius capability TC</Name>
+      <Code>4.8.4</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>125</Value>
+          <Unit>m</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Minimum vertical convex curve radius capability</Name>
+      <Code>4.8.5</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>500</Value>
+          <Unit>m</Unit>
+        </Characteristic>
+      </Configurations>
+      <Name>Minimum vertical concave curve radius capability</Name>
+      <Code>4.8.6</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>500</Value>
+          <Unit>m</Unit>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Type of end coupling</Name>
+      <Code>4.9.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>Automatic Type 10 / Scharfenberg<Characteristic>Tensile force<Value>1000.0000</Value><Unit>kN</Unit></Characteristic><Characteristic>Compressive force<Value>1500.0000</Value><Unit>kN</Unit></Characteristic></Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Axle bearing condition monitoring (hot axles box detection) TC</Name>
+      <Code>4.9.2</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>Onboard equipped (OP)</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Flange lubrication fitted TC</Name>
+      <Code>4.9.3.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>True</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Possibility of preventing the use of the lubrication device (only if fitted with flange lubrication) TC</Name>
+      <Code>4.9.3.2</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>True</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Platform heights for which the vehicle is designed. TC</Name>
+      <Code>4.12.3.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>with 800 mm floor and single moveable step: 960mm, 900mm, 760mm, 750mm, 550mm, 540mm, 460mm; with 800 mm floor and dual moveable step: 960mm, 900mm, 760mm, 750mm, 550mm, 540mm, 460mm, 380mm, 350mm, 300mm</Value>
+          <Unit>mm</Unit>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Type of train detection systems for which the vehicle has been designed and assessed TC</Name>
+      <Code>4.14.1</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>Track circuits</Value>
+          <Value>Axle counters</Value>
+          <Value>Loops</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+    <Characteristic>
+      <Name>Presence of derailment prevention and detection function</Name>
+      <Code>4.15.2</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>False</Value>
+        </Characteristic>
+      </Configurations>
+      <Name>Presence of derailment prevention and detection signal processing</Name>
+      <Code>4.15.3</Code>
+      <Configurations>
+        <Characteristic>
+          <Value>False</Value>
+        </Characteristic>
+      </Configurations>
+    </Characteristic>
+  </TechnicalCharacteristics>
+</VehicleType>
