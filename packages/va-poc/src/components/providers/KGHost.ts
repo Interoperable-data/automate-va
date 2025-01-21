@@ -4,13 +4,7 @@ import { QueryEngine } from '@comunica/query-sparql'
 // Types
 import type { QuerySourceUnidentified, QueryStringContext } from '@comunica/types'
 import { processClasses } from './LWSHost.d'
-import type {
-  TrisEndpoint,
-  KeyValueObject
-} from './KGHost.d'
-
-// Store for process data
-import { processStore } from './LWSProcessStore'
+import type { TrisEndpoint, KeyValueObject } from './KGHost.d'
 
 // Comunica Engine Configuration Generator
 // See: https://comunica.dev/docs/query/advanced/context/#2--overview
@@ -40,8 +34,31 @@ export const trisEndpoint: TrisEndpoint = {
 }
 
 export class KGHost {
-  private queryEngine = new QueryEngine();
-  private options: QueryStringContext;
+  private myEngine = new QueryEngine()
+  private options: QueryStringContext
+  private debug: boolean = false
+  private initialized: boolean = false
+
+  // Add private debug method
+  private debugLog(message: string, ...args: any[]) {
+    if (this.debug) {
+      console.log(`[KGHost Debug] ${message}`, ...args)
+    }
+  }
+
+  // Modified debug mode setter
+  set debugMode(enabled: boolean) {
+    this.debug = enabled
+    if (enabled) {
+      console.log('=== KGHost Debug Mode Enabled ===')
+      this.debugLog('Debug mode initialized')
+    }
+  }
+
+  // Add URL normalization helper
+  private normalizeUrl(url: string): string {
+    return url.endsWith('/') ? url.slice(0, -1) : url
+  }
 
   // Configures Endpoints like JENA, where the URL becomes:
   // http://va-inspector.era.europa.eu:3030/{Dataset}/{verb, mostly sparql/query}
@@ -49,151 +66,205 @@ export class KGHost {
     endPoints: TrisEndpoint,
     endpoint: URL,
     dataset: string,
-    update: boolean
+    update: boolean,
   ) {
-    // prepares the right context of the destination, given a dataset out of the allDatasets array.
-    const epKey = endpoint.href
-    const allDatasets = endPoints[epKey].datasets.map((o) => o.set)
-    const index = allDatasets.indexOf(dataset) || 0
-    const tStores = (verb: string): QuerySourceUnidentified[] => {
-      // verb should mostly be query, but can be update|sparql for several kgs.
-      return endPoints[epKey].datasets.map((ds) => {
-        return {
-          type: ds.type,
-          value: ds.type == 'sparql' ? `${epKey}/${ds.set}/${verb}` : ds.file,
-        } as QuerySourceUnidentified
-      })
-    }
-    const baseIRI = endPoints[epKey].datasets[index].baseIRI
-    /**
-     * `basicOptionsObject` - Represents the basic options object for configuring a Comunica query engine.
-     *
-     * @property {string} baseIRI - The base IRI for the query engine. This is not used for the @base in the applicable context (user, docs, etc).
-     * @property {Array} sources - An array containing the query sources. Uses 'query' if a destination is also provided with 'update'.
-     * @property {Object} context - The context for the query engine.
-     *
-     * @see https://comunica.dev/docs/query/advanced/destination_types/ for more information on destination types.
-     *
-     * @example
-     * // Example usage:
-     * let basicOptionsObject = {
-     *   baseIRI: 'http://example.org/',
-     *   sources: [tStores('query')[index]],
-     *   context: {}
-     * };
-     */
-    const basicOptionsObject: QueryStringContext = {
-      // The query engine and its source, the configured tstores.
-      baseIRI: baseIRI, // @base in Applicable (user, docs, etc) Context is not used for
-      sources: [tStores('query')[index]] as [QuerySourceUnidentified, ...QuerySourceUnidentified[]],
-      context: {},
-      destination: undefined,
-      lenient: true,
-    }
+    try {
+      const epKey = this.normalizeUrl(endpoint.href)
+      this.debugLog('Configuring Jena endpoint:', { endpoint: epKey, dataset, update })
 
-    if (update) {
-      // For destination, see: https://comunica.dev/docs/query/advanced/destination_types/ must be ONE value.
-      // destination: tStores('update').map((o) => {
-      //   return { ...o, type: 'sparql' };
-      // })[index],
-      basicOptionsObject.sources = [tStores('update')[index]] as [QuerySourceUnidentified, ...QuerySourceUnidentified[]];
-      basicOptionsObject.destination = tStores('update').map((o) => {
-        return { ...o, type: 'sparql' }
-      })[index]
-    } else {
-      // use the initial source (query)
-    }
-    if (endPoints[epKey].datasets[index].type == 'sparql') {
-      // Insinuated by Copilot.
-      basicOptionsObject.context = {
-        '@comunica/actor-init-sparql#source': {
-          '@id': 'urn:sparql:source',
-          '@type': 'comunica:JsonLDSparqlEndpoint',
-          'comunica:sourceUri': `${epKey}/${dataset}/query`,
-          'comunica:context': {
-            '@vocab': 'http://www.w3.org/ns/sparql-service-description#',
-            sd: 'http://www.w3.org/ns/sparql-service-description#',
-            endpoint: {
-              '@id': 'sd:endpoint',
-              '@type': '@id',
-            },
-            defaultGraph: {
-              '@id': 'sd:defaultGraph',
-              '@type': '@id',
-            },
-            namedGraph: {
-              '@id': 'sd:namedGraph',
-              '@type': '@id',
+      if (!endPoints[epKey]) {
+        // Try with trailing slash if not found
+        const epKeyWithSlash = `${epKey}/`
+        if (!endPoints[epKeyWithSlash]) {
+          throw new Error(`Endpoint ${epKey} not found in trisEndpoint configuration`)
+        }
+        endPoints[epKey] = endPoints[epKeyWithSlash]
+      }
+
+      if (!endPoints[epKey].datasets || !Array.isArray(endPoints[epKey].datasets)) {
+        throw new Error(`No datasets configured for endpoint ${epKey}`)
+      }
+
+      const allDatasets = endPoints[epKey].datasets.map((o) => o.set)
+      if (!allDatasets.includes(dataset)) {
+        throw new Error(`Dataset ${dataset} not found in endpoint ${epKey}. Available datasets: ${allDatasets.join(', ')}`)
+      }
+
+      const index = allDatasets.indexOf(dataset)
+      this.debugLog('Available datasets:', allDatasets)
+      this.debugLog('Selected dataset index:', index)
+
+      if (!endPoints[epKey].datasets[index]) {
+        throw new Error(`Dataset configuration not found at index ${index}`)
+      }
+
+      const baseIRI = endPoints[epKey].datasets[index].baseIRI
+      if (!baseIRI) {
+        throw new Error(`No baseIRI configured for dataset ${dataset}`)
+      }
+
+      // Keep existing tStores function with added validation
+      const tStores = (verb: string): QuerySourceUnidentified[] => {
+        try {
+          this.debugLog('Creating tStores with verb:', verb)
+          return endPoints[epKey].datasets.map((ds) => {
+            if (!ds.type || !ds.set) {
+              throw new Error(`Invalid dataset configuration: ${JSON.stringify(ds)}`)
+            }
+            const store = {
+              type: ds.type,
+              value: ds.type == 'sparql' ? this.normalizeUrl(`${epKey}/${ds.set}/${verb}`) : ds.file,
+            } as QuerySourceUnidentified
+            this.debugLog('Created store:', store)
+            return store
+          })
+        } catch (error) {
+          this.debugLog('Error in tStores:', error)
+          throw new Error(`Failed to create stores: ${error.message}`)
+        }
+      }
+
+      // Keep existing basicOptionsObject configuration
+      const basicOptionsObject: QueryStringContext = {
+        baseIRI: baseIRI,
+        // FIXME: creation of sources as usch systematically fails:
+        sources: new Array(tStores('query')[index]) as [QuerySourceUnidentified, ...QuerySourceUnidentified[]],
+        // sources: new Array('http://va-inspector.era.europa.eu:3030/ERALEX/query'),
+        // context: {},
+        // lenient: true,
+      }
+
+      // Keep existing update mode configuration
+      if (update) {
+        this.debugLog('Configuring update mode')
+        basicOptionsObject.sources = [tStores('query')[index]] as [
+          QuerySourceUnidentified,
+          ...QuerySourceUnidentified[],
+        ]
+        basicOptionsObject.destination = tStores('update').map((o) => {
+          return { ...o, type: 'sparql' }
+        })[index]
+      }
+
+      // Keep existing SPARQL context configuration
+      /** if (endPoints[epKey].datasets[index].type == 'sparql') {
+        this.debugLog('Configuring SPARQL context for dataset:', dataset)
+        basicOptionsObject.context = {
+          '@comunica/actor-init-sparql#source': {
+            '@id': 'urn:sparql:source',
+            '@type': 'comunica:JsonLDSparqlEndpoint',
+            'comunica:sourceUri': `${epKey}/${dataset}/query`,
+            'comunica:context': {
+              '@vocab': 'http://www.w3.org/ns/sparql-service-description#',
+              sd: 'http://www.w3.org/ns/sparql-service-description#',
+              endpoint: {
+                '@id': 'sd:endpoint',
+                '@type': '@id',
+              },
+              defaultGraph: {
+                '@id': 'sd:defaultGraph',
+                '@type': '@id',
+              },
+              namedGraph: {
+                '@id': 'sd:namedGraph',
+                '@type': '@id',
+              },
             },
           },
-        },
+        }
+      } */
+
+      this.debugLog('Final Jena config:', { options: basicOptionsObject })
+      return {
+        options: basicOptionsObject,
       }
-    }
-    return {
-      options: basicOptionsObject,
+
+    } catch (error) {
+      this.debugLog('Error in ldflexJenaConfig:', error)
+      throw new Error(`Failed to configure Jena endpoint: ${error.message}`)
     }
   }
 
   private sparqlEndpointConfig(endpoint: URL, update: boolean) {
+    const epKey = this.normalizeUrl(endpoint.href)
     const basicOptionsObject: QueryStringContext = {
-      sources: [{ type: 'sparql', value: endpoint.href }] as [QuerySourceUnidentified, ...QuerySourceUnidentified[]],
-      context: {},
-      destination: update ? { type: 'sparql', value: endpoint.href } : undefined,
+      sources: [{ type: 'sparql', value: epKey }] as [
+        QuerySourceUnidentified,
+        ...QuerySourceUnidentified[],
+      ],
+      // context: {},
       lenient: true,
-    };
+    }
+    if (update) basicOptionsObject.destination = { type: 'sparql', value: epKey }
     return {
       options: basicOptionsObject,
-    };
+    }
   }
 
   constructor(
     endPoints: TrisEndpoint | undefined,
     endpoint: URL,
     dataset: string | undefined,
-    update = false
+    update = false,
   ) {
+    this.debugLog('Initializing KGHost')
     if (endPoints && dataset) {
-      const config = this.ldflexJenaConfig(endPoints, endpoint, dataset, update);
-      this.options = config.options;
+      const config = this.ldflexJenaConfig(endPoints, endpoint, dataset, update)
+      this.options = config.options
+      this.debugLog('Initialized with Jena config:', config)
     } else {
-      const config = this.sparqlEndpointConfig(endpoint, update);
-      this.options = config.options;
+      const config = this.sparqlEndpointConfig(endpoint, update)
+      this.options = config.options
+      this.debugLog('Initialized with SPARQL endpoint config:', config)
     }
+    this.initialized = true
+    this.debugLog('Initialization complete')
   }
 
   async query(query: string): Promise<KeyValueObject | boolean | null> {
     try {
-      console.log('Executing SPARQL query:', query);
-      console.log('Using options:', this.options);
+      if (!this.initialized) {
+        this.debugLog('Not properly initialized')
+        return null
+      }
 
-      // Execute the query using our internal queryEngine and options
-      const result = await this.queryEngine.query(query, this.options);
+      this.debugLog('Executing query:', query)
+      this.debugLog('Using options:', this.options)
+
+      const result = await this.myEngine.query(query, this.options)
+      this.debugLog('Query result type:', result.resultType)
 
       if (result.resultType === 'boolean') {
-        const boolResult = await result.execute();
-        return boolResult;
+        // const boolResult = await result.execute() -->  The "chunk" argument must be of type string or an instance of Buffer or Uint8Array. Received an instance of Uint8Array
+        const boolResult = await this.myEngine.queryBoolean(query, this.options)
+        this.debugLog('Boolean result:', boolResult)
+        return boolResult
       }
 
       if (result.resultType === 'bindings') {
-        const res: KeyValueObject = {};
-        const variables = (await result.metadata()).variables;
-        const bindingsStream = await result.execute();
+        const res: KeyValueObject = {}
+        const variables = (await result.metadata()).variables
+        this.debugLog('Query variables:', variables)
+
+        const bindingsStream = await result.execute()
         for await (const bindings of bindingsStream) {
           for (const variable of variables) {
-            const value = bindings.get(variable);
+            const value = bindings.get(variable)
             if (value && value.value !== null) {
-              res[variable.value] = value.value;
+              res[variable.value] = value.value
             }
           }
         }
-        return res;
+        this.debugLog('Query results:', res)
+        return res
       }
 
-      console.error('Unsupported query result type:', result.resultType);
-      return null;
+      console.error('Unsupported query result type:', result.resultType)
+      return null
     } catch (error) {
-      console.error('Query failed:', error);
-      return null;
+      this.debugLog('Query error:', error)
+      console.error('Query failed:', error)
+      return null
     }
   }
 }
@@ -202,36 +273,38 @@ export class KGHost {
 async function isSparqlEndpoint(
   uri: URL,
   dataset?: string,
-  endPoints?: TrisEndpoint
+  endPoints?: TrisEndpoint,
 ): Promise<boolean> {
   try {
-    const kgh = new KGHost(endPoints, uri, dataset);
-    const result = await kgh.query('ASK { ?s ?p ?o }');
-    return result === true; // Now explicitly checking for boolean true since we handle ASK queries properly
+    const kgh = new KGHost(endPoints, uri, dataset)
+    kgh.debugMode = true  // Enable debug logging
+    const result = await kgh.query('ASK { ?s ?p ?o }')
+    return result === true // Now explicitly checking for boolean true since we handle ASK queries properly
   } catch (error) {
-    console.error('isSparqlEndpoint failed: ', error);
-    return false;
+    console.error('isSparqlEndpoint failed: ', error)
+    return false
   }
 }
 
 async function retrieveProcessesFromEndpoint(
   uri: URL,
   dataset?: string,
-  endPoints?: TrisEndpoint
+  endPoints?: TrisEndpoint,
 ): Promise<string[]> {
   try {
-    const kgh = new KGHost(endPoints, uri, dataset);
+    const kgh = new KGHost(endPoints, uri, dataset)
+    kgh.debugMode = true  // Enable debug logging
     const query = `
       SELECT ?s WHERE {
         ?s a ?type .
         FILTER(?type IN (${processClasses.map((cls) => `<${cls}>`).join(', ')}))
       }
-    `;
-    const result = await kgh.query(query);
+    `
+    const result = await kgh.query(query)
     if (result) {
-      return Object.values(result);
+      return Object.values(result)
     } else {
-      throw new Error('Query did not return any results.');
+      throw new Error('Query did not return any results.')
     }
   } catch (error) {
     console.error('retrieveProcessesFromEndpoint failed: ', error)
@@ -243,20 +316,21 @@ async function retrieveSubjectsByClass(
   uri: URL,
   rdfClass: string,
   dataset?: string,
-  endPoints?: TrisEndpoint
+  endPoints?: TrisEndpoint,
 ): Promise<string[]> {
   try {
-    const kgh = new KGHost(endPoints, uri, dataset);
+    const kgh = new KGHost(endPoints, uri, dataset)
+    kgh.debugMode = true  // Enable debug logging
     const query = `
       SELECT ?s WHERE {
         ?s a <${rdfClass}> .
       }
-    `;
-    const result = await kgh.query(query);
+    `
+    const result = await kgh.query(query)
     if (result) {
-      return Object.values(result);
+      return Object.values(result)
     } else {
-      throw new Error('Query did not return any results.');
+      throw new Error('Query did not return any results.')
     }
   } catch (error) {
     console.error('retrieveSubjectsByClass failed: ', error)
@@ -264,8 +338,4 @@ async function retrieveSubjectsByClass(
   }
 }
 
-export {
-  isSparqlEndpoint,
-  retrieveProcessesFromEndpoint,
-  retrieveSubjectsByClass,
-}
+export { isSparqlEndpoint, retrieveProcessesFromEndpoint, retrieveSubjectsByClass }

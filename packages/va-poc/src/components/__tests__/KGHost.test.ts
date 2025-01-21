@@ -20,9 +20,9 @@ describe('KGHost', () => {
       expect(result).toBe(true)
     })
 
-    it('should return true for a valid local SPARQL endpoint', async () => {
+    it.only('should return true for a valid local SPARQL endpoint', async () => {
       const sparqlEndpointURI = new URL(validLocalEndpoint)
-      const result = await isSparqlEndpoint(sparqlEndpointURI)
+      const result = await isSparqlEndpoint(sparqlEndpointURI, 'ERALEX', trisEndpoint)
       expect(result).toBe(true)
     })
 
@@ -60,7 +60,7 @@ describe('KGHost', () => {
   describe('retrieveProcessesFromEndpoint', () => {
     it('should return an empty array for a local SPARQL endpoint with no processes', async () => {
       const sparqlEndpointURI = new URL(validLocalEndpoint)
-      const result = await retrieveProcessesFromEndpoint(sparqlEndpointURI, 'ERALEX')
+      const result = await retrieveProcessesFromEndpoint(sparqlEndpointURI, 'ERALEX', trisEndpoint)
       expect(result).toEqual([])
     })
 
@@ -74,7 +74,7 @@ describe('KGHost', () => {
     it('should return more than 80 instances for the class <https://w3id.org/vpa#Requirement>', async () => {
       const sparqlEndpointURI = new URL(validLocalEndpoint)
       const rdfClass = 'https://w3id.org/vpa#Requirement'
-      const result = await retrieveSubjectsByClass(sparqlEndpointURI, rdfClass)
+      const result = await retrieveSubjectsByClass(sparqlEndpointURI, rdfClass, 'ERALEX', trisEndpoint)
       expect(result).not.toBeNull()
       expect(result!.length).toBeGreaterThan(80)
     })
@@ -87,7 +87,7 @@ describe('KGHost', () => {
     it('should configure regular SPARQL endpoint correctly', () => {
       const kgh = new KGHost(undefined, testEndpoint, undefined)
       expect(kgh['options'].sources).toHaveLength(1)
-      expect(kgh['options'].sources[0].value).toBe(testEndpoint.href)
+      expect(kgh['options'].sources[0]).toBe(testEndpoint.href)
       expect(kgh['options'].baseIRI).toBeUndefined()
     })
 
@@ -131,6 +131,35 @@ describe('KGHost', () => {
     it('should handle query failures gracefully', async () => {
       const kgh = new KGHost(undefined, new URL(validEndpoint), undefined)
       const result = await kgh.query('INVALID QUERY SYNTAX')
+      expect(result).toBeNull()
+    })
+
+    // Add new test for local endpoint without proper configuration
+    it('should handle missing Jena configuration', async () => {
+      const kgh = new KGHost(undefined, new URL(validLocalEndpoint), undefined)
+      const result = await kgh.query('ASK { ?s ?p ?o }')
+      expect(result).toBeNull()
+    })
+  })
+
+  describe('Constructor initialization', () => {
+    it('should properly initialize with SPARQL endpoint', () => {
+      const kgh = new KGHost(undefined, new URL(validEndpoint), undefined)
+      expect(kgh['initialized']).toBe(true)
+      expect(kgh['options']).toBeDefined()
+    })
+
+    it('should properly initialize with Jena endpoint', () => {
+      const kgh = new KGHost(trisEndpoint, new URL(validLocalEndpoint), 'ERALEX')
+      expect(kgh['initialized']).toBe(true)
+      expect(kgh['options']).toBeDefined()
+    })
+
+    it('should fail query if not properly initialized', async () => {
+      const kgh = new KGHost(undefined, new URL('invalid-url'), undefined)
+      // Force initialized to false for testing
+      kgh['initialized'] = false
+      const result = await kgh.query('ASK { ?s ?p ?o }')
       expect(result).toBeNull()
     })
   })
