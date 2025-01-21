@@ -1,8 +1,10 @@
 // Generic SPARQL query function
 import { QueryEngine } from '@comunica/query-sparql'
+import { literal, namedNode } from '@rdfjs/data-model'
 
 // Types
-import type { QuerySourceUnidentified, QueryStringContext } from '@comunica/types'
+// import QuerySourceUnidentified from '@comunica/types'
+import type { BindingsStream, QuerySourceUnidentified, QueryStringContext } from '@comunica/types'
 import { processClasses } from './LWSHost.d'
 import type { TrisEndpoint, KeyValueObject } from './KGHost.d'
 
@@ -87,7 +89,9 @@ export class KGHost {
 
       const allDatasets = endPoints[epKey].datasets.map((o) => o.set)
       if (!allDatasets.includes(dataset)) {
-        throw new Error(`Dataset ${dataset} not found in endpoint ${epKey}. Available datasets: ${allDatasets.join(', ')}`)
+        throw new Error(
+          `Dataset ${dataset} not found in endpoint ${epKey}. Available datasets: ${allDatasets.join(', ')}`,
+        )
       }
 
       const index = allDatasets.indexOf(dataset)
@@ -104,7 +108,8 @@ export class KGHost {
       }
 
       // Keep existing tStores function with added validation
-      const tStores = (verb: string): QuerySourceUnidentified[] => {
+      const tStores = (verb: string) => {
+        // Array of sources as per datasets
         try {
           this.debugLog('Creating tStores with verb:', verb)
           return endPoints[epKey].datasets.map((ds) => {
@@ -113,8 +118,9 @@ export class KGHost {
             }
             const store = {
               type: ds.type,
-              value: ds.type == 'sparql' ? this.normalizeUrl(`${epKey}/${ds.set}/${verb}`) : ds.file,
-            } as QuerySourceUnidentified
+              value:
+                ds.type == 'sparql' ? this.normalizeUrl(`${epKey}/${ds.set}/${verb}`) : ds.file,
+            }
             this.debugLog('Created store:', store)
             return store
           })
@@ -178,7 +184,6 @@ export class KGHost {
       return {
         options: basicOptionsObject,
       }
-
     } catch (error) {
       this.debugLog('Error in ldflexJenaConfig:', error)
       throw new Error(`Failed to configure Jena endpoint: ${error.message}`)
@@ -232,13 +237,14 @@ export class KGHost {
       this.debugLog('Using options:', this.options)
 
       const result = await this.myEngine.query(query, this.options)
+      const qRes = await result.execute()
       this.debugLog('Query result type:', result.resultType)
 
       if (result.resultType === 'boolean') {
         // const boolResult = await result.execute() -->  The "chunk" argument must be of type string or an instance of Buffer or Uint8Array. Received an instance of Uint8Array
-        const boolResult = await this.myEngine.queryBoolean(query, this.options)
-        this.debugLog('Boolean result:', boolResult)
-        return boolResult
+        // const boolResult = await this.myEngine.queryBoolean(query, this.options)
+        this.debugLog('Boolean result:', qRes)
+        return qRes as boolean
       }
 
       if (result.resultType === 'bindings') {
@@ -246,8 +252,8 @@ export class KGHost {
         const variables = (await result.metadata()).variables
         this.debugLog('Query variables:', variables)
 
-        const bindingsStream = await result.execute()
-        for await (const bindings of bindingsStream) {
+        // const bindingsStream = await result.execute()
+        for await (const bindings of qRes as BindingsStream) {
           for (const variable of variables) {
             const value = bindings.get(variable)
             if (value && value.value !== null) {
@@ -267,6 +273,67 @@ export class KGHost {
       return null
     }
   }
+
+  async directQuery(
+    q: string,
+    ds: string,
+    endpoint: URL,
+  ): Promise<KeyValueObject | boolean | null> {
+    /**
+     * Jena direct query - (C) JFD - Sends JENA-endpoints a direct query.
+     * @param
+     * FIXME: UNTESTED,
+     * FIXME: does not handle other than JENA endpoints --> Should read from this.options!
+     * FIXME: XMLHttpRequest not installed in the project
+     * @returns KeyValueObject containing namedNodes/literals(data bindings results)
+     */
+    const res: KeyValueObject = {}
+
+    try {
+      const epKey = this.normalizeUrl(endpoint.href)
+
+      const sparqlQ = q
+      const queryUrl = `${epKey}/${ds}/sparql?query=${encodeURIComponent(sparqlQ)}&format=JSON` // &format=JSON
+
+      const request = new XMLHttpRequest()
+      request.open('GET', queryUrl, false) // asynchronous
+      request.send()
+      if (request.status == 200) {
+        // FIXME: ASK query will return a boolean and not bindings
+        const data = JSON.parse(request.responseText)
+        if (data['results']['bindings'].length > 0) {
+          const bindings = data['results']['bindings']
+          const variables = data['results']['variables']
+          for (const binding of bindings) {
+            for (const variable of variables) {
+              const value = binding.get(variable)
+              if (value && value.value !== null) {
+                res[variable.value] =
+                  value.type === 'uri' ? namedNode(value.value) : literal(value.value)
+              }
+            }
+          }
+        }
+        // // console.log(bindings);
+        // for (const binding of bindings) {
+        //   // push the bindings onto a stack
+        //   let bdata = binding.s.type == 'uri' ? namedNode(binding.s.value) : literal(binding.s.value);
+        //   nodesFound.push(bdata);
+        // }
+      } else {
+        this.debugLog(`Problem while querying ${queryUrl} returned statusCode ${request.status}.`)
+        console.error(request.statusText)
+      }
+    } catch (err) {
+      this.debugLog(
+        `Error running direct JENA query (${err}) with directQuery(${q}) in dataset ${ds}`,
+      )
+    } finally {
+      // const end = performance.now();
+      // console.log(`Function (JENA)sparqlQuery "${commentQ}" took ${Math.round(end - start)} ms...`);
+      return res
+    }
+  }
 }
 
 // isSparqlEndpoint function
@@ -277,7 +344,7 @@ async function isSparqlEndpoint(
 ): Promise<boolean> {
   try {
     const kgh = new KGHost(endPoints, uri, dataset)
-    kgh.debugMode = true  // Enable debug logging
+    kgh.debugMode = true // Enable debug logging
     const result = await kgh.query('ASK { ?s ?p ?o }')
     return result === true // Now explicitly checking for boolean true since we handle ASK queries properly
   } catch (error) {
@@ -293,7 +360,7 @@ async function retrieveProcessesFromEndpoint(
 ): Promise<string[]> {
   try {
     const kgh = new KGHost(endPoints, uri, dataset)
-    kgh.debugMode = true  // Enable debug logging
+    kgh.debugMode = true // Enable debug logging
     const query = `
       SELECT ?s WHERE {
         ?s a ?type .
@@ -320,7 +387,7 @@ async function retrieveSubjectsByClass(
 ): Promise<string[]> {
   try {
     const kgh = new KGHost(endPoints, uri, dataset)
-    kgh.debugMode = true  // Enable debug logging
+    kgh.debugMode = true // Enable debug logging
     const query = `
       SELECT ?s WHERE {
         ?s a <${rdfClass}> .
