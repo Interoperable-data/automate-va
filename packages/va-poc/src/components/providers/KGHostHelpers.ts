@@ -81,7 +81,10 @@ export function ldflexJenaConfig(
 
     const basicOptionsObject: QueryStringContext = {
       baseIRI: baseIRI,
-      sources: new Array(tStores('query')[index]) as [QuerySourceUnidentified, ...QuerySourceUnidentified[]],
+      sources: new Array(tStores('query')[index]) as [
+        QuerySourceUnidentified,
+        ...QuerySourceUnidentified[],
+      ],
     }
 
     if (update) {
@@ -106,7 +109,7 @@ export function ldflexJenaConfig(
 }
 
 // Configure regular SPARQL endpoints
-export function sparqlEndpointConfig(
+export function ldflexNonJenaConfig(
   endpoint: URL,
   update: boolean,
 ): { options: QueryStringContext } {
@@ -183,9 +186,7 @@ export async function executeDirectQuery(
     const epKey = normalizeUrl(endpoint.href)
     const sparqlQ = q
     const queryString = `?query=${encodeURIComponent(sparqlQ)}&format=JSON`
-    const queryUrl = ds
-      ? `${epKey}/${ds}/sparql${queryString}`
-      : `${epKey}/${queryString}`
+    const queryUrl = ds ? `${epKey}/${ds}/sparql${queryString}` : `${epKey}/${queryString}`
 
     debugLog(debug, 'Executing direct query:', sparqlQ)
     debugLog(debug, 'Query URL:', queryUrl)
@@ -197,27 +198,35 @@ export async function executeDirectQuery(
     if (request.status == 200) {
       const data = JSON.parse(request.responseText)
       debugLog(debug, 'Query response data:', data)
-      if (data['results']['bindings'].length > 0) {
-        const bindings = data['results']['bindings']
-        debugLog(debug, 'Bindings:', bindings)
-        const variables = data['head']['vars']
-        for (const binding of bindings) {
-          for (const variable of variables) {
-            const value = binding[variable] || binding.get(variable)
-            if (value && value.value !== null) {
-              res[variable] =
-                value.type === 'uri' ? namedNode(value.value) : literal(value.value)
+      if (data['results']) {
+        if (data['results']['bindings'].length > 0) {
+          const bindings = data['results']['bindings']
+          debugLog(debug, 'Bindings:', bindings)
+          const variables = data['head']['vars']
+          for (const binding of bindings) {
+            for (const variable of variables) {
+              const value = binding[variable] || binding.get(variable)
+              if (value && value.value !== null) {
+                res[variable] = value.type === 'uri' ? namedNode(value.value) : literal(value.value)
+              }
             }
           }
         }
+      } else if (data['boolean']) {
+        debugLog(debug, 'Boolean result (ASK):', data.boolean)
+        return data.boolean
+      } else {
+        debugLog(debug, 'No results found for query:', sparqlQ)
+        return {}
       }
     } else {
       debugLog(debug, `Problem while querying ${queryUrl} returned statusCode ${request.status}.`)
       console.error(request.statusText)
-      return {}
+      return null
     }
   } catch (err) {
     debugLog(debug, `Error running direct query (${err}) with directQuery(${q}) in dataset ${ds}`)
+    return null
   }
 
   debugLog(debug, 'Direct query results:', res)

@@ -1,6 +1,7 @@
-// Generic SPARQL query function
 import { QueryEngine } from '@comunica/query-sparql'
 import { literal, namedNode } from '@rdfjs/data-model'
+
+import { executeDirectQuery } from './KGHostHelpers'
 
 // Types
 // import QuerySourceUnidentified from '@comunica/types'
@@ -57,7 +58,7 @@ export class KGHost {
     }
   }
 
-  // Add URL normalization helper
+  // URL normalization helper
   private normalizeUrl(url: string): string {
     return url.endsWith('/') ? url.slice(0, -1) : url
   }
@@ -190,7 +191,7 @@ export class KGHost {
     }
   }
 
-  private sparqlEndpointConfig(endpoint: URL, update: boolean) {
+  private ldflexNonJenaConfig(endpoint: URL, update: boolean) {
     const epKey = this.normalizeUrl(endpoint.href)
     const basicOptionsObject: QueryStringContext = {
       sources: [{ type: 'sparql', value: epKey }] as [
@@ -218,7 +219,7 @@ export class KGHost {
       this.options = config.options
       this.debugLog('Initialized with Jena config:', config)
     } else {
-      const config = this.sparqlEndpointConfig(endpoint, update)
+      const config = this.ldflexNonJenaConfig(endpoint, update)
       this.options = config.options
       this.debugLog('Initialized with SPARQL endpoint config:', config)
     }
@@ -276,63 +277,10 @@ export class KGHost {
 
   async directQuery(
     q: string,
-    ds: string,
     endpoint: URL,
+    ds?: string,
   ): Promise<KeyValueObject | boolean | null> {
-    /**
-     * Jena direct query - (C) JFD - Sends JENA-endpoints a direct query.
-     * @param
-     * FIXME: UNTESTED,
-     * FIXME: does not handle other than JENA endpoints --> Should read from this.options!
-     * FIXME: XMLHttpRequest not installed in the project
-     * @returns KeyValueObject containing namedNodes/literals(data bindings results)
-     */
-    const res: KeyValueObject = {}
-
-    try {
-      const epKey = this.normalizeUrl(endpoint.href)
-
-      const sparqlQ = q
-      const queryUrl = `${epKey}/${ds}/sparql?query=${encodeURIComponent(sparqlQ)}&format=JSON` // &format=JSON
-
-      const request = new XMLHttpRequest()
-      request.open('GET', queryUrl, false) // asynchronous
-      request.send()
-      if (request.status == 200) {
-        // FIXME: ASK query will return a boolean and not bindings
-        const data = JSON.parse(request.responseText)
-        if (data['results']['bindings'].length > 0) {
-          const bindings = data['results']['bindings']
-          const variables = data['results']['variables']
-          for (const binding of bindings) {
-            for (const variable of variables) {
-              const value = binding.get(variable)
-              if (value && value.value !== null) {
-                res[variable.value] =
-                  value.type === 'uri' ? namedNode(value.value) : literal(value.value)
-              }
-            }
-          }
-        }
-        // // console.log(bindings);
-        // for (const binding of bindings) {
-        //   // push the bindings onto a stack
-        //   let bdata = binding.s.type == 'uri' ? namedNode(binding.s.value) : literal(binding.s.value);
-        //   nodesFound.push(bdata);
-        // }
-      } else {
-        this.debugLog(`Problem while querying ${queryUrl} returned statusCode ${request.status}.`)
-        console.error(request.statusText)
-      }
-    } catch (err) {
-      this.debugLog(
-        `Error running direct JENA query (${err}) with directQuery(${q}) in dataset ${ds}`,
-      )
-    } finally {
-      // const end = performance.now();
-      // console.log(`Function (JENA)sparqlQuery "${commentQ}" took ${Math.round(end - start)} ms...`);
-      return res
-    }
+    return await executeDirectQuery(q, endpoint, this.debug, ds)
   }
 }
 
@@ -345,7 +293,7 @@ async function isSparqlEndpoint(
   try {
     const kgh = new KGHost(endPoints, uri, dataset)
     kgh.debugMode = true // Enable debug logging
-    const result = await kgh.query('ASK { ?s ?p ?o }')
+    const result = await kgh.directQuery('ASK { ?s ?p ?o }', uri, dataset)
     return result === true // Now explicitly checking for boolean true since we handle ASK queries properly
   } catch (error) {
     console.error('isSparqlEndpoint failed: ', error)
@@ -362,12 +310,12 @@ async function retrieveProcessesFromEndpoint(
     const kgh = new KGHost(endPoints, uri, dataset)
     kgh.debugMode = true // Enable debug logging
     const query = `
-      SELECT ?s WHERE {
-        ?s a ?type .
+      SELECT DISTINCT ?class WHERE {
+        ?class a ?type .
         FILTER(?type IN (${processClasses.map((cls) => `<${cls}>`).join(', ')}))
       }
     `
-    const result = await kgh.query(query)
+    const result = await kgh.directQuery(query, uri, dataset)
     if (result) {
       return Object.values(result)
     } else {
@@ -389,11 +337,11 @@ async function retrieveSubjectsByClass(
     const kgh = new KGHost(endPoints, uri, dataset)
     kgh.debugMode = true // Enable debug logging
     const query = `
-      SELECT ?s WHERE {
-        ?s a <${rdfClass}> .
+      SELECT ?sNode WHERE {
+        ?sNode a <${rdfClass}> .
       }
     `
-    const result = await kgh.query(query)
+    const result = await kgh.directQuery(query, uri, dataset)
     if (result) {
       return Object.values(result)
     } else {
