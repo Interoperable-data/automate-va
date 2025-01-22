@@ -114,8 +114,9 @@ export function ldflexNonJenaConfig(
   update: boolean,
 ): { options: QueryStringContext } {
   const epKey = normalizeUrl(endpoint.href)
+  const isFile = epKey.endsWith('.ttl')
   const basicOptionsObject: QueryStringContext = {
-    sources: [{ type: 'sparql', value: epKey }] as [
+    sources: [{ type: isFile ? 'file' : 'sparql', value: epKey }] as [
       QuerySourceUnidentified,
       ...QuerySourceUnidentified[],
     ],
@@ -132,33 +133,37 @@ export async function executeQuery(
   query: string,
   options: QueryStringContext,
   debug: boolean = false,
-): Promise<KeyValueObject | boolean | null> {
+): Promise<KeyValueObject[] | boolean | null> {
   try {
     debugLog(debug, 'Executing query:', query)
     debugLog(debug, 'Using options:', options)
 
     const engine = new QueryEngine()
     const result = await engine.query(query, options)
-    const qRes = await result.execute()
     debugLog(debug, 'Query result type:', result.resultType)
 
     if (result.resultType === 'boolean') {
+      const qRes = await result.execute()
       debugLog(debug, 'Boolean result:', qRes)
       return qRes as boolean
     }
 
     if (result.resultType === 'bindings') {
-      const res: KeyValueObject = {}
+      const bAsObject: KeyValueObject = {}
+      const res: KeyValueObject[] = []
+      // const res: KeyValueObject = {}
       const variables = (await result.metadata()).variables
       debugLog(debug, 'Query variables:', variables)
 
-      for await (const bindings of qRes as BindingsStream) {
+      for await (const bindings of await result.execute()) {
+        debugLog(debug, 'Bindings:', bindings)
         for (const variable of variables) {
           const value = bindings.get(variable)
           if (value && value.value !== null) {
-            res[variable.value] = value.value
+            bAsObject[variable.value] = value.value
           }
         }
+        res.push(bAsObject)
       }
       debugLog(debug, 'Query results:', res)
       return res
@@ -174,13 +179,16 @@ export async function executeQuery(
 }
 
 // Direct query execution (for JENA and non-JENA endpoints)
+// This function must return an ARRAY of objects, each object representing a row of the query result
 export async function executeDirectQuery(
   q: string,
   endpoint: URL,
   debug: boolean = false,
   ds?: string,
-): Promise<KeyValueObject | boolean | null> {
-  const res: KeyValueObject = {}
+): Promise<KeyValueObject[] | boolean | null> {
+  const bAsObject: KeyValueObject = {}
+  const res: KeyValueObject[] = []
+
 
   try {
     const epKey = normalizeUrl(endpoint.href)
@@ -207,9 +215,10 @@ export async function executeDirectQuery(
             for (const variable of variables) {
               const value = binding[variable] || binding.get(variable)
               if (value && value.value !== null) {
-                res[variable] = value.type === 'uri' ? namedNode(value.value) : literal(value.value)
+                bAsObject[variable] = value.type === 'uri' ? namedNode(value.value) : literal(value.value)
               }
             }
+            res.push(bAsObject)
           }
         }
       } else if (data['boolean']) {
@@ -217,7 +226,7 @@ export async function executeDirectQuery(
         return data.boolean
       } else {
         debugLog(debug, 'No results found for query:', sparqlQ)
-        return {}
+        return []
       }
     } else {
       debugLog(debug, `Problem while querying ${queryUrl} returned statusCode ${request.status}.`)

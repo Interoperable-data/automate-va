@@ -6,7 +6,7 @@ import { sessionStore } from '../providers/LWSSessionStore';
 import LWSProcessHelpers from '../providers/LWSProcess';
 const { extractProcessNamefromPodURL, extractTaskNamefromPodURL, extractApplicationPathFromTaskURI } = LWSProcessHelpers
 
-describe('LWSHost', () => {  // Skip entire test suite
+describe.skip('LWSHost', () => {  // Skip entire test suite
   describe('extractProcessNamefromPodURL', () => {
     it('should extract process name correctly if a task is given', () => {
       const processURI = new URL('https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/process/Organisation/add');

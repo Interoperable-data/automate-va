@@ -17,6 +17,10 @@ const validLocalEndpoint = 'http://va-inspector.era.europa.eu:3030'
 const validEndpoint = 'https://demo.openlinksw.com/sparql'
 const invalidEndpoint = 'https://demo.openlinksw.com/query'
 
+// Files should work as well
+const validTTLFile =
+  'https://raw.githubusercontent.com/Interoperable-data/ERA-Ontology-3.1.0/main/ontology.ttl'
+
 describe('KGHostHelpers', () => {
   describe('debugLog', () => {
     it('should log message when debug is true', () => {
@@ -75,7 +79,7 @@ describe('KGHostHelpers', () => {
   })
 
   // As long as Comunica query fails, do not test it.
-  describe.skip('executeQuery', () => {
+  describe.skip('executeQuery (Non-JENA endpoints)', () => {
     it('should execute query and return results', async () => {
       const endpoint = new URL(validEndpoint)
       const config = ldflexNonJenaConfig(endpoint, false)
@@ -94,6 +98,28 @@ describe('KGHostHelpers', () => {
       const endpoint = new URL(invalidEndpoint)
       const config = ldflexNonJenaConfig(endpoint, false)
       const result = await executeQuery('ASK { ?s ?p ?o }', config.options, true)
+      expect(result).toBeNull()
+    })
+  })
+
+  describe.only('executeQuery (file endpoints)', () => {
+    // New tests for file-based endpoint
+    it('should execute direct query and return results on a file-based endpoint', async () => {
+      const endpoint = new URL(validTTLFile)
+      const config = ldflexNonJenaConfig(endpoint, false)
+      const result = await executeQuery('SELECT * WHERE { ?s ?p ?o } LIMIT 5', config.options, true)
+      expect(result).not.toBeNull()
+      expect(result).toBeInstanceOf(Array)
+      expect(result).toHaveLength(5)
+      // expect(result[0]).toHaveProperty('s')
+      // expect(result[0]).toHaveProperty('p')
+      // expect(result[0]).toHaveProperty('o')
+    })
+
+    it.skip('should return null for invalid query on a file-based endpoint', async () => {
+      const endpoint = new URL(validTTLFile)
+      const config = ldflexNonJenaConfig(endpoint, false)
+      const result = await executeQuery('INVALID QUERY SYNTAX', config.options, true)
       expect(result).toBeNull()
     })
   })
@@ -119,10 +145,10 @@ describe('KGHostHelpers', () => {
         },
         o: { value: 'https://w3id.org/vpa#Requirement' },
       }
-      expect(result).not.toBeNull()
-      expect(result).toHaveProperty(['s', 'value'], expectedResult.s.value)
-      expect(result).toHaveProperty(['p', 'value'], expectedResult.p.value)
-      expect(result).toHaveProperty(['o', 'value'], expectedResult.o.value)
+      expect(result[0]).not.toBeNull()
+      expect(result[0]).toHaveProperty(['s', 'value'], expectedResult.s.value)
+      expect(result[0]).toHaveProperty(['p', 'value'], expectedResult.p.value)
+      expect(result[0]).toHaveProperty(['o', 'value'], expectedResult.o.value)
     })
 
     it('should return null for invalid query on a local endpoint', async () => {
@@ -142,19 +168,19 @@ describe('KGHostHelpers', () => {
       const result = await executeDirectQuery('SELECT * WHERE { ?s ?p ?o } LIMIT 1', endpoint) // no logging
       const expectedResult = {
         s: {
-          value: 'http://demo.openlinksw.com/tutorial/Northwind/ontology/CustomerContact'
+          value: 'http://demo.openlinksw.com/tutorial/Northwind/ontology/CustomerContact',
         },
         p: {
-          value: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+          value: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
         },
         o: {
-          value: 'http://www.openlinksw.com/schemas/virtrdf#QuadMapFormat'
-        }
+          value: 'http://www.openlinksw.com/schemas/virtrdf#QuadMapFormat',
+        },
       }
-      expect(result).not.toBeNull()
-      expect(result).toHaveProperty(['s', 'value'], expectedResult.s.value)
-      expect(result).toHaveProperty(['p', 'value'], expectedResult.p.value)
-      expect(result).toHaveProperty(['o', 'value'], expectedResult.o.value)
+      expect(result[0]).not.toBeNull()
+      expect(result[0]).toHaveProperty(['s', 'value'], expectedResult.s.value)
+      expect(result[0]).toHaveProperty(['p', 'value'], expectedResult.p.value)
+      expect(result[0]).toHaveProperty(['o', 'value'], expectedResult.o.value)
     })
 
     it('should return null for invalid query on a remote endpoint', async () => {

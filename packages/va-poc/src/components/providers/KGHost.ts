@@ -23,12 +23,12 @@ export const trisEndpoint: TrisEndpoint = {
       { set: 'ORGS', type: 'sparql', baseIRI: 'http://data.europa.eu/949/taxonomies/org#' },
       { set: 'OSSLIB', type: 'sparql', baseIRI: 'http://data.europa.eu/949/taxonomies/eva#' },
       { set: 'ERAVOC', type: 'sparql', baseIRI: 'http://data.europa.eu/949/' },
-      {
-        set: 'ERAVOC',
-        type: 'file',
-        baseIRI: 'http://data.europa.eu/949/',
-        file: 'https://raw.githubusercontent.com/Interoperable-data/ERA-Ontology-3.1.0/main/ontology.ttl',
-      },
+      // {
+      //   set: 'ERAVOC',
+      //   type: 'file',
+      //   baseIRI: 'http://data.europa.eu/949/',
+      //   file: 'https://raw.githubusercontent.com/Interoperable-data/ERA-Ontology-3.1.0/main/ontology.ttl',
+      // },
     ],
   },
   'https://demo.openlinksw.com/sparql': {
@@ -135,7 +135,10 @@ export class KGHost {
       const basicOptionsObject: QueryStringContext = {
         baseIRI: baseIRI,
         // FIXME: creation of sources as usch systematically fails:
-        sources: new Array(tStores('query')[index]) as [QuerySourceUnidentified, ...QuerySourceUnidentified[]],
+        sources: new Array(tStores('query')[index]) as [
+          QuerySourceUnidentified,
+          ...QuerySourceUnidentified[],
+        ],
         // sources: new Array('http://va-inspector.era.europa.eu:3030/ERALEX/query'),
         // context: {},
         // lenient: true,
@@ -193,8 +196,9 @@ export class KGHost {
 
   private ldflexNonJenaConfig(endpoint: URL, update: boolean) {
     const epKey = this.normalizeUrl(endpoint.href)
+    const isFile = epKey.endsWith('.ttl')
     const basicOptionsObject: QueryStringContext = {
-      sources: [{ type: 'sparql', value: epKey }] as [
+      sources: [{ type: isFile ? 'file' : 'sparql', value: epKey }] as [
         QuerySourceUnidentified,
         ...QuerySourceUnidentified[],
       ],
@@ -210,7 +214,7 @@ export class KGHost {
   constructor(
     endPoints: TrisEndpoint | undefined,
     endpoint: URL,
-    dataset: string | undefined,
+    dataset?: string | undefined,
     update = false,
   ) {
     this.debugLog('Initializing KGHost')
@@ -332,15 +336,15 @@ async function retrieveSubjectsByClass(
   rdfClass: string,
   dataset?: string,
   endPoints?: TrisEndpoint,
+  limit: number = 5,
 ): Promise<string[]> {
   try {
     const kgh = new KGHost(endPoints, uri, dataset)
     kgh.debugMode = true // Enable debug logging
-    const query = `
-      SELECT ?sNode WHERE {
+    const query =
+      `SELECT ?sNode WHERE {
         ?sNode a <${rdfClass}> .
-      }
-    `
+      }` + (limit ? ` LIMIT ${limit}` : '')
     const result = await kgh.directQuery(query, uri, dataset)
     if (result) {
       return Object.values(result)

@@ -21,7 +21,7 @@
   "author": "Certiman",
   "license": "MIT",
   "dependencies": {
-    "@comunica/query-sparql": "^2.10.2",
+    "@comunica/query-sparql": "^4.0.2",
     "@inrupt/solid-client": "^2.1.2",
     "@inrupt/solid-client-authn-browser": "^2.3.0",
     "@inrupt/vocab-common-rdf": "^1.0.5",
