@@ -18,10 +18,13 @@
 @prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
-
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+@prefix era-org: <http://data.europa.eu/949/organisations/> .
 eratv:vt-11-057-0018-9-001 a era:VehicleType ; # Uses: era:VehicleType subClassOf vpa:Scope
     dcterms:identifier "11-057-0018-9-001";
-    dcterms:issued "2020-02-07"^^xsd:date ; # the entry of record in ERATV
+    dcterms:issued "2020-02-07T10:30:00Z"^^xsd:dateTime ; # the entry of record in ERATV using Date time UTC
     dcterms:created "2024-12-17"^^xsd:date ; # this resource in the KG
     rdfs:label "X4-E-Lok-AB (MS-Lokomotiven) Korridor D-A-CH-I-NL_Rel. E1.11"@de ;
     era:alternativeName "E193 DE-AT-CH-IT-NL_Rel. E1.11" ;
