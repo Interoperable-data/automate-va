@@ -7,6 +7,7 @@ import {
   retrieveProcessesFromEndpoint,
   retrieveSubjectsByClass,
 } from '../providers/KGHost'
+import { badQuery } from '../providers/KGHostHelpers'
 
 // local ones, launch to http://va-inspector.era.europa.eu:3030/ERALEX/sparql
 const validLocalEndpoint = 'http://va-inspector.era.europa.eu:3030'
@@ -147,7 +148,7 @@ describe.skip('KGHost', () => {
     it('should handle query failures gracefully', async () => {
       const ep = new URL(validEndpoint)
       const kgh = new KGHost(undefined, ep, undefined)
-      const result = await kgh.directQuery('INVALID QUERY SYNTAX', ep)
+      const result = await kgh.directQuery(badQuery, ep)
       expect(result).toBeNull()
     })
 

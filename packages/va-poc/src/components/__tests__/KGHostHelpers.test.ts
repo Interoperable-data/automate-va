@@ -1,6 +1,7 @@
 // import { namedNode } from '@rdfjs/data-model'
 import { describe, it, expect, vi } from 'vitest'
 import {
+  badQuery,
   debugLog,
   normalizeUrl,
   ldflexJenaConfig,
@@ -79,35 +80,35 @@ describe('KGHostHelpers', () => {
   })
 
   // As long as Comunica query fails, do not test it.
-  describe.skip('executeQuery (Non-JENA endpoints)', () => {
+  describe('executeQuery (Non-JENA endpoints)', () => {
     it('should execute query and return results', async () => {
       const endpoint = new URL(validEndpoint)
       const config = ldflexNonJenaConfig(endpoint, false)
-      const result = await executeQuery('ASK { ?s ?p ?o }', config.options, true)
+      const result = await executeQuery('ASK { ?s ?p ?o }', config.options)
       expect(result).not.toBeNull()
     })
 
     it('should return null for invalid query', async () => {
       const endpoint = new URL(validEndpoint)
       const config = ldflexNonJenaConfig(endpoint, false)
-      const result = await executeQuery('INVALID QUERY SYNTAX', config.options, true)
+      const result = await executeQuery(badQuery, config.options)
       expect(result).toBeNull()
     })
 
     it('should return null for invalid endpoint', async () => {
       const endpoint = new URL(invalidEndpoint)
       const config = ldflexNonJenaConfig(endpoint, false)
-      const result = await executeQuery('ASK { ?s ?p ?o }', config.options, true)
+      const result = await executeQuery('ASK { ?s ?p ?o }', config.options)
       expect(result).toBeNull()
     })
   })
 
-  describe.only('executeQuery (file endpoints)', () => {
+  describe('executeQuery (file endpoints)', () => {
     // New tests for file-based endpoint
     it('should execute direct query and return results on a file-based endpoint', async () => {
       const endpoint = new URL(validTTLFile)
       const config = ldflexNonJenaConfig(endpoint, false)
-      const result = await executeQuery('SELECT * WHERE { ?s ?p ?o } LIMIT 5', config.options, true)
+      const result = await executeQuery('SELECT * WHERE { ?s ?p ?o } LIMIT 5', config.options)
       expect(result).not.toBeNull()
       expect(result).toBeInstanceOf(Array)
       expect(result).toHaveLength(5)
@@ -119,7 +120,7 @@ describe('KGHostHelpers', () => {
     it.skip('should return null for invalid query on a file-based endpoint', async () => {
       const endpoint = new URL(validTTLFile)
       const config = ldflexNonJenaConfig(endpoint, false)
-      const result = await executeQuery('INVALID QUERY SYNTAX', config.options, true)
+      const result = await executeQuery(badQuery, config.options)
       expect(result).toBeNull()
     })
   })
@@ -153,7 +154,7 @@ describe('KGHostHelpers', () => {
 
     it('should return null for invalid query on a local endpoint', async () => {
       const endpoint = new URL(validLocalEndpoint)
-      const result = await executeDirectQuery('INVALID QUERY SYNTAX', endpoint, true, 'ERALEX')
+      const result = await executeDirectQuery(badQuery, endpoint, true, 'ERALEX')
       expect(result).toBeNull()
     })
 
@@ -185,7 +186,7 @@ describe('KGHostHelpers', () => {
 
     it('should return null for invalid query on a remote endpoint', async () => {
       const endpoint = new URL(validEndpoint)
-      const result = await executeDirectQuery('INVALID QUERY SYNTAX', endpoint)
+      const result = await executeDirectQuery(badQuery, endpoint)
       expect(result).toBeNull()
     })
   })
