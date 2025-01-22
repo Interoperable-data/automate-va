@@ -2,6 +2,19 @@ import { QueryEngine } from '@comunica/query-sparql'
 import { literal, namedNode } from '@rdfjs/data-model'
 import type { BindingsStream, QuerySourceUnidentified, QueryStringContext } from '@comunica/types'
 import type { TrisEndpoint, KeyValueObject } from './KGHost.d'
+import { Transform } from 'stream';
+
+// Create a transform stream to convert data to the expected type
+const transformStream = new Transform({
+  objectMode: true, // Enable object mode to handle objects
+  transform(chunk, encoding, callback) {
+    // Convert the chunk to a string if it is not already a string
+    const data = typeof chunk === 'string' ? chunk : chunk.toString();
+    callback(null, data);
+  }
+});
+
+const myEngine = new QueryEngine()
 
 // Debug logging helper
 export function debugLog(debug: boolean, message: string, ...args: any[]) {
@@ -120,6 +133,11 @@ export function ldflexNonJenaConfig(
       QuerySourceUnidentified,
       ...QuerySourceUnidentified[],
     ],
+    // sources: [{ type: 'file', value: epKey }] as [
+    //   QuerySourceUnidentified,
+    //   ...QuerySourceUnidentified[],
+    // ],
+    // sources: [epKey],
     lenient: true,
   }
   if (update) basicOptionsObject.destination = { type: 'sparql', value: epKey }
@@ -135,38 +153,63 @@ export async function executeQuery(
   debug: boolean = false,
 ): Promise<KeyValueObject[] | boolean | null> {
   try {
-    debugLog(debug, 'Executing query:', query)
-    debugLog(debug, 'Using options:', options)
+    debugLog(debug, '(executeQuery) Executing query:', query)
+    debugLog(debug, '(executeQuery) Using options:', options)
+    const isAsk = query.trim().toUpperCase().startsWith('ASK')
 
-    const engine = new QueryEngine()
-    const result = await engine.query(query, options)
-    debugLog(debug, 'Query result type:', result.resultType)
-
-    if (result.resultType === 'boolean') {
-      const qRes = await result.execute()
-      debugLog(debug, 'Boolean result:', qRes)
-      return qRes as boolean
-    }
-
-    if (result.resultType === 'bindings') {
+    // FIXME: https://stackoverflow.com/questions/78205098/node-js-typeerror-err-invalid-arg-type-the-chunk-argument-must-be-of-type-s
+    if (isAsk) {
+      const result = await myEngine.queryBoolean(query, options)
+      // debugLog(debug, 'Query result type:', result.resultType)
+      // const qRes = await result.execute()
+      debugLog(debug, 'Boolean result:', result)
+      return result
+    } else {
+      // TODO - there is still a third case when doing UPDATE queries
+      // if (result.resultType === 'bindings') {
       const bAsObject: KeyValueObject = {}
       const res: KeyValueObject[] = []
       // const res: KeyValueObject = {}
-      const variables = (await result.metadata()).variables
-      debugLog(debug, 'Query variables:', variables)
+      const result = (await myEngine.queryBindings(query, options)) as BindingsStream
 
-      for await (const bindings of await result.execute()) {
-        debugLog(debug, 'Bindings:', bindings)
-        for (const variable of variables) {
-          const value = bindings.get(variable)
-          if (value && value.value !== null) {
-            bAsObject[variable.value] = value.value
-          }
-        }
-        res.push(bAsObject)
-      }
-      debugLog(debug, 'Query results:', res)
-      return res
+      // Only with .query: const variables = (await result.metadata()).variables
+      // debugLog(debug, 'Query variables:', variables)
+
+      return new Promise((resolve, reject) => {
+        result // .pipe(transformStream)
+          .on('data', (binding) => {
+            debugLog(debug, 'Binding:', binding)
+            binding.forEach((value, variable) => {
+              if (value && value.value !== null) {
+                bAsObject[variable.value] =
+                  value.type === 'uri' ? namedNode(value.value) : literal(value.value)
+              }
+            })
+            res.push(bAsObject)
+          })
+          .on('end', () => {
+            // console.log(`${fIdentifier} - Done.`);
+            debugLog(debug, 'Query results:', res)
+            resolve(res)
+          })
+          .on('error', (error) => {
+            reject(error)
+          })
+      })
+
+      // NO RESULTS for await result.execute()
+      // for await (const bindings of await result.execute()) {
+      //   debugLog(debug, 'Bindings:', bindings)
+      //   for (const variable of variables) {
+      //     const value = bindings.get(variable)
+      //     if (value && value.value !== null) {
+      //       bAsObject[variable.value] = value.value
+      //     }
+      //   }
+      //   res.push(bAsObject)
+      // }
+      // debugLog(debug, 'Query results:', res)
+      // return res
     }
 
     console.error('Unsupported query result type:', result.resultType)
@@ -188,7 +231,6 @@ export async function executeDirectQuery(
 ): Promise<KeyValueObject[] | boolean | null> {
   const bAsObject: KeyValueObject = {}
   const res: KeyValueObject[] = []
-
 
   try {
     const epKey = normalizeUrl(endpoint.href)
@@ -215,7 +257,8 @@ export async function executeDirectQuery(
             for (const variable of variables) {
               const value = binding[variable] || binding.get(variable)
               if (value && value.value !== null) {
-                bAsObject[variable] = value.type === 'uri' ? namedNode(value.value) : literal(value.value)
+                bAsObject[variable] =
+                  value.type === 'uri' ? namedNode(value.value) : literal(value.value)
               }
             }
             res.push(bAsObject)
