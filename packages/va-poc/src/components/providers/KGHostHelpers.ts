@@ -1,5 +1,5 @@
 import { QueryEngine } from '@comunica/query-sparql'
-import { literal, namedNode } from '@rdfjs/data-model'
+import { literal, namedNode, blankNode } from '@rdfjs/data-model'
 import type { BindingsStream, QuerySourceUnidentified, QueryStringContext } from '@comunica/types'
 import type { TrisEndpoint, KeyValueObject } from './KGHost.d'
 import { Transform } from 'stream'
@@ -188,7 +188,7 @@ export async function executeQuery(
                     ? namedNode(value.value)
                     : value.termType === 'Literal'
                       ? literal(value.value)
-                      : value.value
+                      : blankNode(value.value)
               }
             })
             res.push(bAsObject)
@@ -264,7 +264,11 @@ export async function executeDirectQuery(
               const value = binding[variable] || binding.get(variable)
               if (value && value.value !== null) {
                 bAsObject[variable] =
-                  value.type === 'uri' ? namedNode(value.value) : literal(value.value)
+                  value.type === 'uri'
+                    ? namedNode(value.value)
+                    : value.type === 'bnode'
+                      ? blankNode(value.value)
+                      : literal(value.value)
               }
             }
             res.push(bAsObject)

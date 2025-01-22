@@ -16,7 +16,7 @@ const validLocalEndpoint = 'http://va-inspector.era.europa.eu:3030'
 const validEndpoint = 'https://demo.openlinksw.com/sparql'
 const invalidEndpoint = 'https://demo.openlinksw.com/query'
 
-describe.skip('KGHost', () => {
+describe('KGHost', () => {
   describe('isSparqlEndpoint', () => {
     // https://demo.openlinksw.com/sparql, , 'https://dbpedia.org/sparql', https://fragments.dbpedia.org/2015/en
 
