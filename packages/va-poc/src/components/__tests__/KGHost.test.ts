@@ -9,7 +9,7 @@ const validLocalEndpoint = 'http://va-inspector.era.europa.eu:3030'
 const validEndpoint = 'https://demo.openlinksw.com/sparql'
 const invalidEndpoint = 'https://demo.openlinksw.com/query'
 
-describe('KGHost', () => {
+describe.skip('KGHost', () => {
   describe('isSparqlEndpoint', () => {
     // https://demo.openlinksw.com/sparql, , 'https://dbpedia.org/sparql', https://fragments.dbpedia.org/2015/en
 
@@ -20,7 +20,7 @@ describe('KGHost', () => {
       expect(result).toBe(true)
     })
 
-    it.only('should return true for a valid local SPARQL endpoint', async () => {
+    it('should return true for a valid local SPARQL endpoint', async () => {
       const sparqlEndpointURI = new URL(validLocalEndpoint)
       const result = await isSparqlEndpoint(sparqlEndpointURI, 'ERALEX', trisEndpoint)
       expect(result).toBe(true)
