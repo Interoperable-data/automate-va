@@ -1,0 +1,70 @@
+@base <http://data.europa.eu/949/> .
+@prefix : <http://data.europa.eu/949/cld/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix eralex: <http://data.europa.eu/949/eli/> .
+@prefix eva: <http://data.europa.eu/949/eva/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+
+eratv:vt-13-178-0010-8-001-001 a era:VehicleType ;
+    dcterms:identifier "13-178-0010-8-001-001" ;
+    dcterms:issued "2024-06-14"^^xsd:date ;  # From XML: Date of record
+    dcterms:created "2025-01-21"^^xsd:date ;
+    rdfs:label "MIREO 4-Teiler 15kV PZB Midi"@en ;
+    era:alternativeName "MIREO Regensburg Donautal" ;
+    era:category era-vehicle-types-eratv:tractionVehicles ;
+    era:subCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
+    vpa:definesCase eva:vac-13-178-0010-8-001-001-1 ;
+    era:manufacturer era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH
+    era:vehicleTypePlatform "MIREO" .
+
+# GERMANY - See all authorisation data under 3.1.X.X
+eva:vac-13-178-0010-8-001-001-1 a era:VAAuthorisationCase ;
+    vpa:permissionType era-va-authcase:NEW ;
+    era:typeRegistrationMethod era-vehicle-types-regmethod:NewType ;
+    era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
+    vpa:supports eva:va-20240202-004 .
+
+eva:va-20240202-004 a era:VAApplication, vpa:Request ;
+    vpa:requestFor eva:20240202-004 .
+
+eva:20240202-004 a era:VAAuthorisation, vpa:Permission ;
+    dcterms:identifier "EU8020240152" ;
+    dcterms:issued "2024-06-14"^^xsd:date ;
+    era:vehicleTypeAuthorisationHolder era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH
+    vpa:valid [
+        a time:ProperInterval ;
+        time:hasBeginning "2024-06-14"^^xsd:date ;
+        time:hasDurationDescription [
+            time:years "10" ;  # Assuming standard duration if not specified in XML
+        ]
+    ].
+
+# For the C2T application following 20240202-004: this was V-20240621-009 (Data must be deduced from Program Mgmt Excel)
+eva:vac-13-178-0010-8-001-001-2 a era:VAAuthorisationCase ;
+    vpa:permissionType era-va-authcase:C2T ;
+    # TODO - OSS data on the auth case can be placed here
+    vpa:supports eva:va-20240621-009 .
+
+eva:va-20240621-009 a era:VAApplication, vpa:Request ;
+    # TODO - OSS data can be placed here
+    vpa:requestFor eva:20240621-009 .
+
+eva:20240621-009 a era:VAAuthorisation, vpa:Permission ;
+    dcterms:identifier "EU8120241578" ;
+    dcterms:issued "2024-06-26"^^xsd:date .
+
+
