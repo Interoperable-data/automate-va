@@ -1,4 +1,9 @@
-# Data model for EC Certificates, QMS Approvals and Intermediate Statements (CLDs)
+---
+next:
+  text: 'EC Declarations'
+  link: './DECLARATIONS.md'
+---
+# EC Certificates, QMS Approvals and Intermediate Statements (CLDs)
 
 ## Scope
 
@@ -111,6 +116,9 @@ Because different certificates sometimes treat the same IC but produced at diffe
 |               |                           RFU-STR-001  [R3.a,R33] |                                              |               |
 
 #### The [INF, ENE, CCS]-combination
+
+> [!WARNING] 
+> Needs update given `era:CommonCharacteristicsSubset`
 
 Finally, some certificates are inherently specifying a limited application, regarding [ENE, INF, CCS]-combinations. The `era:hasSetOfParameters` could in that case be used, be it through the relevant classes as in the following table. More information is available in the [ERA Vocabulary](https://linkedvocabs.org/data/era-ontology/3.1.0/doc/index-en.html).
 
