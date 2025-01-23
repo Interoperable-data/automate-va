@@ -4,7 +4,7 @@
 
 The EU Agency for Railways has introduced the [ontology for Verified Permissions](https://w3id.org/vpa). This ontology is not detailing - on purpose - the Datatype- and ObjectProperties which can be added in order to model CLDs and EC Declarations, the first of which exists in the current ERA vocabulary.
 
-> `Documented evidence` allows permission seekers to ask these permissions to permission providers. Instances of documented evidence are resources, potentially having a physical/electronic document as its presentation.
+> `Documented evidence` allows permission seekers to ask these permissions to permission providers (permitting bodies). Instances of documented evidence are resources, potentially having a physical/electronic document as its presentation.
 
 Stakeholders wanting to represent this `vpa:DocumentedEvidence` as linked data, in order to achieve the objectives as described elsewhere, are invited to examine and return comments on the following proposal.
 
@@ -15,13 +15,13 @@ Stakeholders wanting to represent this `vpa:DocumentedEvidence` as linked data, 
 
 For EC Declarations, [see this document](DECLARATIONS.md).
 
-`era:Certificate a vpa:DocumentedEvidence ;` are instantiated from ERADIS data, and will be complemented by verifiable credentials (assumption).
+`era:Certificate a vpa:DocumentedEvidence ;` are instantiated from ERADIS data, and will be complemented by verifiable credentials (open point).
 
 A CLD has the following properties. For the use cases, please consult [this document](../USE%20CASES/CLD.md).
 
 ### ERADIS URL (public)
 
-- [X] For archiving purpose, and as long as the ERADIS data exists on the website, this ?p will contain the URL:
+- [X] For archiving purpose, and as long as the ERADIS data exists on the website, this property will contain the URL:
   - DatatypeProperty `rdfs:seeAlso`
   - range: `xsd:anyURI` of the ERADIS URL
 
@@ -56,7 +56,7 @@ We reuse the following ontologies and namespaces:
 
 #### XSD durations
 
-We wish to avoid using the datatype `xsd:yearMonthDuration`. We also note that `dct:valid` can only express the eventual expiration date, while a validity interval is more suited.
+We wish to avoid using the datatype `xsd:yearMonthDuration`. We also note that `dct:valid` can only express the eventual expiration date, while a validity interval might be more suited.
 
 #### W3C Time ontology
 
@@ -69,7 +69,7 @@ An unnamed subClass (implemented through blank nodes) of `time:Interval` is need
 An example will make this clear for a certificate which is valid for two years, issued on April 5th, 2020:
 
 ```js
-era:doc-uuid_of_document a era:ECCertificate ;
+era:doc-uuid_of_document a era:CLD ;
         dct:issued "2020-04-05"^^xsd:date ;
         vpa:valid [ 
             # TemporalEntity
@@ -88,7 +88,7 @@ era:doc-uuid_of_document a era:ECCertificate ;
 ```
 
 > [!WARNING]
-> CLD's SHALL express their validity expiration by using the Duration method, as this period is reset to 0 in the case of Withdrawn CLD's! Other properties are not allowed and applications must calculate valid expiration dates themselves.
+> CLD's SHALL express their validity expiration by using the Duration method, as this period is reset to 0 in the case of Withdrawn CLD's! Other properties are not allowed and applications must calculate valid expiration dates themselves. See also issue #19.
 
 ### Refinement of Certificate Subsystem (SS) and Interoperability Constituent (IC)
 
@@ -103,7 +103,7 @@ The legal subject of the certificates can be documented using links to instances
 
 #### The spatial range (public)
 
-Because different certificates sometimes treat the same IC but produced at different sites, the spatial applicability is in some cases required:
+Because different certificates sometimes treat the same IC or SS but produced or manufactured at different sites, the spatial applicability is in some cases required to distinguish this aspect:
 
 | Property      |                                              Data | Datatype/ObjectProperty                      | dataset @ ERA |
 | :------------ | ------------------------------------------------: | :------------------------------------------- | :-----------: |
@@ -112,27 +112,27 @@ Because different certificates sometimes treat the same IC but produced at diffe
 
 #### The [INF, ENE, CCS]-combination
 
-Finally, some certificates are inherently specifying a limited application, regarding [ENE, INF, CCS]-combinations. The `era:hasSetOfParameters` could in that case be used, be it through the relevant classes as in the following table. More information is available in the [ERA Vocabulary](https://linkedvocabs.org/data/era-ontology/3.1.0/doc/index-en.html).
+Finally, some certificates are inherently specifying a limited application, regarding [ENE, INF, CCS]-combinations. The `era:CommonCharacteristicsSubset` could in that case be used, be it through the relevant classes as in the following table. More information is available in the [ERA Vocabulary](https://linkedvocabs.org/data/era-ontology/3.1.0/doc/index-en.html).
 
 | Property                        |                                     Data | Datatype/ObjectProperty                                          | dataset @ ERA |
 | :------------------------------ | ---------------------------------------: | :--------------------------------------------------------------- | :-----------: |
-| `era:hasSetOfParameters`        |                                          | `era:SubSetWithCommonCharacteristics`                            |               |
-| `era:parameter`                 |                                          | `era:InfraSubSystem`, `era:EnergySubsystem` & `era:CCSSubsystem` |               |
-| `era:wheetsetGauge`             | Validity limited to a certain INF gauge, | (IRI to the SKOS Concept representing the gauge)                 |     /RINF     |
+| `era:belongsTo`        |                                          | `era:CommonCharacteristicsSubset`                            |               |
+| `era:parameter`                 |                                          | `era:InfrastructureSubsystem`, `era:EnergySubsystem` & `era:CCSSubsystem` |               |
+| `era:wheelsetGauge`             | Validity limited to a certain INF gauge, | (IRI to the SKOS Concept representing the gauge)                 |     /RINF     |
 | `era:energySupplySystem`        |                       ENE supply system, | (IRI to the SKOS Concept representing the supply)                |     /RINF     |
 | `era:etcsEquipmentOnBoardLevel` |             CCS train protection system. | (IRI to the SKOS Concept representing the ATP)                   |     /RINF     |
 
 ### Other properties of Certificates
 
-CLDs can only have versions by using the ERADIS Identifier, and by adding `/V_version_number_` at the end.
+CLDs must only have versions consistent with the ERADIS Identifier, which has `/V_version_number_` at the end.
 
 To clarify that a certificate has:
 
-- a version, `dct:hasVersion` can be used additionally, only if it is consistent with its ERADIS Identifier.
+- a version, `dct:hasVersion` must be used additionally, only if it is consistent with its ERADIS Identifier. If in older CLDs no version is present in the ERADIS ID, and a CLD replacing it exists with `/V01`, then the first has to encode a `dct:hasVersion "0"` exceptionally.
 - a language, `dct:language` can be used, only if it is consistent with the languages encoded in the ERADIS identifier. The languages must be IRI's and not strings.
 
 > [!WARNING]
-> The following is not made explicit in the /ERALEX dataset.
+> The following is not made explicit in the /ERALEX dataset, and must be refined in the [specification](../ERALEX/LEGISLATION.md).
 > The (optional) use of `dct:conformsTo` requires the ?o IRI of TSI's used to be a subClassOf `dct:Standard`. We assume the annexes of the TSI to have held the verified requirement sections, as such Standards.
 > The (mandatory) use of `dct:coverage` equally requires the ?o IRI of Applied Modules and Directives to be a subClassOf `dct:Jurisdiction`.
 
@@ -172,14 +172,18 @@ For Applicant, Manufacturer and NoBo the IRI to those /ORGS instances MUST be us
 | Property          | Organization (IRI)                                                                          |
 | :---------------- | :------------------------------------------------------------------------------------------ |
 | `dct:creator`     | For a certificate, this is the issuing **NoBo**                                             |
-| `dct:contributor` | For a certificate, the **manufacturer** of the IC/SS in scope of the vertification process. |
+| `dct:contributor` | For a certificate, the **manufacturer** of the IC/SS in scope of the verification process. |
 | `dct:audience`    | the **applicant** who uses the certificate in a permission-achieving process.               |
 
 If in ERADIS, 'supplementary information' contains certificate numbers, they must be linked as IRI's under Previous or Replacing Certificate.
 
-Certificates should **not** link to the declarations they support, the link is created inversely.
+Certificates should **never** link to the declarations they support, the link is created inversely.
 
 See also [EC Declarations](DECLARATIONS.md).
+
+## Links between CLD's
+
+OPEN POINT
 
 ## Non-disclosed properties
 
@@ -187,11 +191,11 @@ See also [Restrictions](./RESTRICTION.md) for the non-disclosed data regarding t
 
 The following data should be stored in non-disclosed graphs.
 
-- ASSESSMENT REQUIREMENTS: In combination with those Harmonised Standards, Voluntary Standards (or parts thereof), other European or national rules authorized by the TSI and Alternative Solutions as identified in the EC Technical [File/Documentation]
+- ASSESSMENT REQUIREMENTS: In combination with those Harmonised Standards, Voluntary Standards (or parts thereof), other European or national rules authorized by the TSI and Alternative Solutions as identified in the EC NoBo [File/Documentation]
 - STANDARD USED [optional]
-- ASSESSMENT RESULT: This is the core statement of the Certificate. NoBo statement that the object of assessment (Interoperability Constituent/Subsystem, or its phase/part/Quality Management System), was shown to comply with the assessment requirements, subject to any restrictions and conditions as listed in the relevant field. The essential requirements have been assessed as being met through compliance with the requirements of the relevant TSI only. The details of the assessment results are provided within the documentation part of the NoBo Technical File and/or NoBo Assessment Report.
+- ASSESSMENT RESULT: This is the core statement of the Certificate. NoBo statement that the object of assessment (Interoperability Constituent/Subsystem, or its phase/part/Quality Management System), was shown to comply with the assessment requirements, subject to any restrictions and conditions as listed in the relevant field. The essential requirements have been assessed as being met through compliance with the requirements of the relevant TSI only. The details of the assessment results are provided within the documentation part of the NoBo File and/or NoBo Assessment Report.
 - RESTRICTIONS / CONDITIONS FOR USE [optional]
 - ANNEXES (each with [identifier, revision-if used, date]):
   - [optional]
   - [optional - NOBO ASSESSMENT REPORT]
-  - [optional - NOBO TECHNICAL FILE/DOCUMENTATION]
+  - [optional - NOBO FILE/TECHNICAL DOCUMENTATION]
