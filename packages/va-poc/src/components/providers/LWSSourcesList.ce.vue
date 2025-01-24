@@ -29,4 +29,21 @@ import { processStore } from './LWSProcessStore';
 .mb-3 {
   margin-bottom: 1rem;
 }
+
+h2 {
+  font-size: 1.5em;
+  margin-top: 1em;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 1em;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 </style>

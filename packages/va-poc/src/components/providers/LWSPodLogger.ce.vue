@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { sessionStore } from './LWSSessionStore';
 import { i18nStore } from '@/components/providers/i18nHost'
@@ -57,7 +57,7 @@ li {
     "noDatasets": "No datasets have been analysed yet."
   },
   "fr": {
-    "analysedDatasets": "Jeux de données analysés",
+    "analysedDatasets": "Datasets analysés",
     "url": "URL",
     "description": "Description",
     "noDatasets": "Aucun jeu de données n'a encore été analysé."
