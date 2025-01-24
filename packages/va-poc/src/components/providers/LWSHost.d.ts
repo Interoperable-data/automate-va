@@ -29,7 +29,7 @@ export type KeyValueObject = Record<string, string>;
 
 export type TaskRegistration = {
   label: string;
-  tasks: any[];
+  steps: any[] | null; // Use steps instead of tasks
 };
 
 // Array of possible property names where type indices can hide
