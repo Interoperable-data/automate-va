@@ -1,16 +1,21 @@
 <template>
-  <div v-if="analysedDatasets.length">
-    <h2>{{ t('analysedDatasets') }}</h2>
-    <ul>
-      <li v-for="(dataset, index) in analysedDatasets" :key="index">
-        <strong>{{ t('url') }}:</strong> {{ dataset.url }}<br>
-        <strong>{{ t('description') }}:</strong> {{ dataset.description }}
-      </li>
-    </ul>
+  <div class="container mb-3">
+    <div v-if="analysedDatasets.length">
+      <h2>{{ t('analysedDatasets') }}</h2>
+      <ol class="list-group list-group-numbered">
+        <li v-for="(dataset, index) in analysedDatasets" :key="index" class="list-group-item">
+          ({{ dataset.url }}) {{ dataset.description }}
+        </li>
+      </ol>
+    </div>
+    <div v-else>
+      <p>{{ t('noDatasets') }}</p>
+    </div>
   </div>
-  <div v-else>
-    <p>{{ t('noDatasets') }}</p>
-  </div>
+  <!-- <div>
+      <h2>Process Store Contents:</h2>
+      <pre>{{ processContents }}</pre>
+    </div> -->
 </template>
 
 <script setup lang="ts">
@@ -18,6 +23,9 @@ import { computed, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { sessionStore } from './LWSSessionStore';
 import { i18nStore } from '@/components/providers/i18nHost'
+
+import { processStore } from './LWSProcessStore';
+const processContents = computed(() => processStore); // Correct computed property
 
 // Translation
 const { t, locale } = useI18n();
@@ -30,22 +38,7 @@ const analysedDatasets = computed(() => sessionStore.analysedDatasets);
 </script>
 
 <style scoped>
-h2 {
-  font-size: 1.5em;
-  margin-top: 1em;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  margin-bottom: 1em;
-  padding: 0.5em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+@import './LWSStyles.css';
 </style>
 
 <i18n>

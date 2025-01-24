@@ -4,6 +4,8 @@
     <lws-pod-logger />
     <lws-process-list />
     <lws-task-list />
+    <lws-source-adder />
+    <lws-sources-list />
     <!-- {{ sessionStore.ownPodURLs }} -->
   </div>
 </template>
@@ -20,6 +22,8 @@ import { i18nStore } from '../components/providers/i18nHost'
 import LWSPodLogger from '@/components/providers/LWSPodLogger.ce.vue'
 import LWSProcessList from '@/components/providers/LWSProcessList.ce.vue'
 import LWSTaskList from '@/components/providers/LWSTaskList.ce.vue'
+import LWSSourceAdder from "@/components/providers/LWSSourceAdder.ce.vue";
+import LWSSourcesList from "@/components/providers/LWSSourcesList.ce.vue";
 
 // Register the custom elements
 if (!customElements.get('lws-pod-logger')) {
@@ -30,6 +34,12 @@ if (!customElements.get('lws-process-list')) {
 }
 if (!customElements.get('lws-task-list')) {
   customElements.define('lws-task-list', defineCustomElement(LWSTaskList))
+}
+if (!customElements.get('lws-source-adder')) {
+  customElements.define('lws-source-adder', defineCustomElement(LWSSourceAdder));
+}
+if (!customElements.get('lws-sources-list')) {
+  customElements.define('lws-sources-list', defineCustomElement(LWSSourcesList));
 }
 
 // Translation

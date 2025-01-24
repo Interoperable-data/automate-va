@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-3">
+  <div class="container mb-3">
     <div class="input-group d-flex align-items-center">
       <input v-model="sourceUri" @blur="addSource" placeholder="Enter WebId, SparqlEndpoint URL, or Turtle File URI"
         class="form-control flex-grow-1" />
@@ -73,8 +73,7 @@ const addSource = async () => {
 </script>
 
 <style scoped>
-@import 'bootstrap/dist/css/bootstrap.min.css';
-@import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
+@import './LWSStyles.css';
 
 .text-danger {
   color: red;

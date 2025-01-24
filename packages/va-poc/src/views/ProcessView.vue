@@ -8,7 +8,6 @@ import { processStore } from "../components/providers/LWSProcessStore"; // Corre
 
 const { t, locale } = useI18n();
 const newLocale = computed(() => i18nStore.selectedLocale);
-const processContents = computed(() => processStore); // Correct computed property
 
 watchEffect(() => {
   console.log(
@@ -22,10 +21,6 @@ watchEffect(() => {
   <section>
     <h1>{{ t("welcome") }}</h1>
     <p>{{ t("message") }}</p>
-    <div>
-      <h2>Process Store Contents:</h2>
-      <pre>{{ processContents }}</pre>
-    </div>
   </section>
 </template>
 

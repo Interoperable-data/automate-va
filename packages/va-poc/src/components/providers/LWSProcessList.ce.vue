@@ -1,35 +1,37 @@
 <template>
-  <div v-if="Object.keys(processRegistrations).length">
-    <h2>{{ t('processRegistrations') }}</h2>
-    <ul>
-      <li v-for="(registrations, key) in processRegistrations" :key="key">
-        <strong>{{ key }}:</strong>
-        <ul>
-          <li v-for="(registration, index) in registrations" :key="index">
-            {{ registration.href }}
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </div>
-  <div v-else>
-    <p>{{ t('noProcessRegistrations') }}</p>
-  </div>
-  <div v-for="(containers, webId) in typeIndexContainers" :key="webId" class="card mb-3">
-    <div class="card-header">
-      {{ webId }}
-    </div>
-    <div class="card-body">
+  <div class="container mb-3">
+    <div v-if="Object.keys(processRegistrations).length">
+      <h2>{{ t('processRegistrations') }}</h2>
       <ul class="list-group">
-        <li v-for="container in containers" :key="container.href" class="list-group-item">
-          <h5 class="card-title">{{ container.href }}</h5>
+        <li v-for="(registrations, key) in processRegistrations" :key="key" class="list-group-item">
+          <strong>{{ key }}:</strong>
           <ul class="list-group">
-            <li v-for="registration in typeRegistrations[container.href]" :key="registration.forClass" class="list-group-item">
-              <b>{{ registration.forClass }}</b> - {{ registration.inContainer }}
+            <li v-for="(registration, index) in registrations" :key="index" class="list-group-item">
+              {{ registration.href }}
             </li>
           </ul>
         </li>
       </ul>
+    </div>
+    <div v-else>
+      <p>{{ t('noProcessRegistrations') }}</p>
+    </div>
+    <div v-for="(containers, webId) in typeIndexContainers" :key="webId" class="card my-3">
+      <div class="card-header">
+        {{ webId }}
+      </div>
+      <div class="card-body">
+        <ul class="list-group">
+          <li v-for="container in containers" :key="container.href" class="list-group-item">
+            <h5 class="card-title">{{ container.href }}</h5>
+            <ul class="list-group">
+              <li v-for="registration in typeRegistrations[container.href]" :key="registration.forClass" class="list-group-item">
+                <b>{{ registration.forClass }}</b> - {{ registration.inContainer }}
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -53,26 +55,7 @@ const typeRegistrations = computed(() => processStore.typeRegistrations);
 </script>
 
 <style scoped>
-h2 {
-  font-size: 1.5em;
-  margin-top: 1em;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  margin-bottom: 1em;
-  padding: 0.5em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.mb-3 {
-  margin-bottom: 1rem;
-}
+@import './LWSStyles.css';
 </style>
 
 <i18n>
@@ -87,7 +70,7 @@ li {
   },
   "de": {
     "processRegistrations": "Prozessregistrierungen",
-    "noProcessRegistrations": "Keine Prozessregistrierungen verfügbar."
+    "noProcessRegistrierungen verfügbar."
   },
   "es": {
     "processRegistrations": "Registros de procesos",

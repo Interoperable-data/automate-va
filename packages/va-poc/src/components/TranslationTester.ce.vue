@@ -48,11 +48,13 @@ watchEffect(async () => {
 </script>
 
 <template>
-  <h3>{{ props.name }}</h3>
-  <div>
-    {{ solidProfileName || props.name }} says [{{ locale }}]: {{ t('hello') + ' ' + t('world') }}
+  <div class="container">
+    <h3>{{ props.name }}</h3>
+    <div>
+      {{ solidProfileName || props.name }} says [{{ locale }}]: {{ t('hello') + ' ' + t('world') }}
+    </div>
+    <slot id="first">Loading...</slot>
   </div>
-  <slot id="first">Loading...</slot>
 </template>
 
 <i18n>
@@ -71,3 +73,7 @@ watchEffect(async () => {
     }
   }
 </i18n>
+
+<style scoped>
+@import './providers/LWSStyles.css';
+</style>

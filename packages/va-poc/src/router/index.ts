@@ -4,6 +4,7 @@ import ProfileView from "../views/ProfileView.vue";
 import AboutView from "../views/AboutView.vue";
 import ProcessView from "../views/ProcessView.vue";
 import DebugDashboard from '../views/DebugDashboard.vue'; // Import the new view
+import { sessionStore } from '../components/providers/LWSSessionStore'; // Import sessionStore
 
 const routes = [
   {
@@ -20,6 +21,13 @@ const routes = [
     path: "/processes",
     name: "processes",
     component: ProcessView,
+    beforeEnter: (to, from, next) => {
+      if (!sessionStore.loggedInWebId) {
+        next('/');
+      } else {
+        next();
+      }
+    }
   },
   {
     path: "/auth",
@@ -43,7 +51,14 @@ const routes = [
   {
     path: '/debug',
     name: 'DebugDashboard',
-    component: DebugDashboard
+    component: DebugDashboard,
+    beforeEnter: (to, from, next) => {
+      if (!sessionStore.loggedInWebId) {
+        next('/');
+      } else {
+        next();
+      }
+    }
   }
 ];
 
