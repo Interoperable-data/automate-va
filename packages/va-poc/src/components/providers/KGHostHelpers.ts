@@ -1,18 +1,7 @@
 import { QueryEngine } from '@comunica/query-sparql'
-import { literal, namedNode, blankNode } from '@rdfjs/data-model'
-import type { BindingsStream, QuerySourceUnidentified, QueryStringContext } from '@comunica/types'
+// import { literal, namedNode, blankNode } from '@rdfjs/data-model'
+import type { BindingsStream, QueryBindings, QuerySourceUnidentified, QueryStringContext } from '@comunica/types'
 import type { TrisEndpoint, KeyValueObject } from './KGHost.d'
-import { Transform } from 'stream'
-
-// Create a transform stream to convert data to the expected type
-const transformStream = new Transform({
-  objectMode: true, // Enable object mode to handle objects
-  transform(chunk, encoding, callback) {
-    // Convert the chunk to a string if it is not already a string
-    const data = typeof chunk === 'string' ? chunk : chunk.toString()
-    callback(null, data)
-  },
-})
 
 const myEngine = new QueryEngine()
 export const badQuery = 'SELECT NODE V > 18 (lol)'
@@ -171,24 +160,24 @@ export async function executeQuery(
       const bAsObject: KeyValueObject = {}
       const res: KeyValueObject[] = []
       // const res: KeyValueObject = {}
-      const result = await myEngine.queryBindings(query, options)
+      const result: BindingsStream = await myEngine.queryBindings(query, options)
 
       // Only with .query: const variables = (await result.metadata()).variables
       // debugLog(debug, 'Query variables:', variables)
 
       return new Promise((resolve, reject) => {
         result // .pipe(transformStream)
-          .on('data', (binding) => {
+          .on('data', (binding: QueryBindings) => {
             // debugLog(debug, 'Binding:', binding)
             binding.forEach((value, variable) => {
               if (value && value.value !== null) {
                 debugLog(debug, 'Binding value:', value)
-                bAsObject[variable.value] =
-                  value.termType === 'NamedNode'
-                    ? namedNode(value.value)
-                    : value.termType === 'Literal'
-                      ? literal(value.value)
-                      : blankNode(value.value)
+                bAsObject[variable.value] = value
+                  // value.termType === 'NamedNode'
+                  //   ? namedNode(value.value)
+                  //   : value.termType === 'Literal'
+                  //     ? literal(value.value)
+                  //     : blankNode(value.value)
               }
             })
             res.push(bAsObject)
@@ -263,12 +252,12 @@ export async function executeDirectQuery(
             for (const variable of variables) {
               const value = binding[variable] || binding.get(variable)
               if (value && value.value !== null) {
-                bAsObject[variable] =
-                  value.type === 'uri'
-                    ? namedNode(value.value)
-                    : value.type === 'bnode'
-                      ? blankNode(value.value)
-                      : literal(value.value)
+                bAsObject[variable] = value
+                  // value.type === 'uri'
+                  //   ? namedNode(value.value)
+                  //   : value.type === 'bnode'
+                  //     ? blankNode(value.value)
+                  //     : literal(value.value)
               }
             }
             res.push(bAsObject)

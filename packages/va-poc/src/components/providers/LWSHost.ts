@@ -9,14 +9,15 @@ import {
   getStringNoLocale,
   getContainedResourceUrlAll,
   isContainer,
+  type ThingPersisted,
 } from '@inrupt/solid-client'
 
 // Vocabularies
-import { FOAF, RDF } from '@inrupt/vocab-common-rdf'
+import { FOAF, RDF, RDFS } from '@inrupt/vocab-common-rdf' // Add RDFS
 import { SOLID } from '@inrupt/vocab-solid'
 
 // Types
-import type { TypeRegistration } from './LWSHost.d'
+import type { TypeRegistration, TaskRegistration } from './LWSHost.d'
 import { TargetType, typeIndexProperties, processClasses } from './LWSHost.d'
 
 // Store for process data
@@ -177,9 +178,47 @@ export async function addProcessSubContainers(webId: URL, instanceContainer: str
     }
 
     processStore.processRegistrations[webId.href].push(...subContainers);
+    processStore.processProviders.push(instanceContainer); // Add container to processProviders array
     console.log(`Added sub-containers for WebID ${webId.href}:`, subContainers);
+
+    // Add task resources for each sub-container
+    for (const subContainer of subContainers) {
+      await addTaskResources(subContainer);
+    }
   } catch (error) {
     console.error(`Error adding sub-containers for WebID ${webId.href}:`, error);
+  }
+}
+
+// Helper function to add task resources to processStore
+export async function addTaskResources(processContainer: URL): Promise<void> {
+  try {
+    const dataset = await getSolidDataset(processContainer.href, { fetch: fetch });
+    const resourceUrls = getContainedResourceUrlAll(dataset);
+    const taskResources: Record<string, TaskRegistration> = {};
+
+    for (const resourceUrl of resourceUrls) {
+      if (!isContainer(resourceUrl)) {
+        const taskDataset = await getSolidDataset(resourceUrl, { fetch: fetch });
+        const taskThing = getThing(taskDataset, resourceUrl) as ThingPersisted;
+        const label = getStringNoLocale(taskThing, RDFS.comment) || "No label"; // Use RDFS.comment
+
+        taskResources[resourceUrl] = {
+          label,
+          tasks: [], // Initialize tasks array
+        };
+        console.log(`Stored task content for ${resourceUrl}:`, taskResources[resourceUrl]);
+      }
+    }
+
+    if (!processStore.taskRegistrations[processContainer.href]) {
+      processStore.taskRegistrations[processContainer.href] = {};
+    }
+
+    processStore.taskRegistrations[processContainer.href] = taskResources;
+    console.log(`Added task resources for process container ${processContainer.href}:`, taskResources);
+  } catch (error) {
+    console.error(`Error adding task resources for process container ${processContainer.href}:`, error);
   }
 }
 
