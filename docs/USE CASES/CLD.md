@@ -1,3 +1,8 @@
+---
+next:
+  text: 'EC Declarations'
+  link: './ECDECLARATION.md'
+---
 # Use Cases for CLD
 
 Source: RFU-STR-001.
@@ -25,11 +30,11 @@ Possible URI's of ?s when making use of Triple Stores:
 
 The URI of any CLD below must also be stored centrally, as [explained here](../COMPONENTS/app-core.md#search). The central search platform should be accessible publicly.
 
-## Other functions realised by use cases
+## Details elsewhere
 
 ### Presentation
 
-This document does not treat the approach to implement a [`Presenter for CLD's`](../COMPONENTS/app-core.md#presenters) as this module ony displays the CLD resource, in formats as configured outside of the scope of Use Cases.
+This document does not treat the approach to implement a [`Presenter for CLD's`](../COMPONENTS#presenters) as this module ony displays the CLD resource, in formats as configured outside of the scope of Use Cases.
 
 ### Subscriptions
 
@@ -42,11 +47,12 @@ More info is available [here](../COMPONENTS/app-subscriptions.md).
 ### Issue new CLD
 
 URI: `/process/CLD/add`
+
 SHACL: (LWS) `process/CLD/add#shape` or any URI which resolves to the shape of a new CLD, which SHOULD be used to generate the form(s).
 
 Displays a sequence of forms, for storage of the CLD as sets of public and private linked data:
 
-- [Public data](../ERADIS/CERTIFICATES.md), with [Shape](../TTL/Certificate.ttl). Its initial status must be '`Issued`' or `Refused`.
+- [Public data](../ERADIS/CERTIFICATES.md), with [Shape](../TTL/Certificate.ttl). Its initial status must be `Issued` or `Refused`.
 - Confidential data, like [Restrictions](../ERADIS/RESTRICTION.md), linked to by the public instance.
 
 Requires a [search function](../COMPONENTS/process-sources.md) retrieving the URI's for the ObjectProperties in the above models.

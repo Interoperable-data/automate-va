@@ -1,1 +1,4 @@
 *.json
+node_modules/
+packages/
+cache/
