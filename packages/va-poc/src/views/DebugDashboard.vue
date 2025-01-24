@@ -56,6 +56,8 @@
     <div v-else>
       <p>{{ t('noTaskRegistrations') }}</p>
     </div>
+    {{ sessionStore.ownPodURLs }}
+
   </div>
 </template>
 

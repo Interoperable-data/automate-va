@@ -27,6 +27,7 @@ export const sessionStore = reactive({
   loggedInWebId: '', // falsy
   rerouting: false,
   authProvidersSessionData: { inrupt: {} },
+  analysedDatasets: [] as { url: string, description: string }[], // New property to store analysed datasets
 
   /**
    * Returns the root URL of the storage pod.
@@ -94,6 +95,15 @@ export const sessionStore = reactive({
     const prefix = await this.findPrefixFor(url);
     console.log(`(prefixify) Prefix found using findPrefixFor: ${prefix}`);
     return prefix;
+  },
+
+  /**
+   * Logs the analysis of a dataset.
+   * @param {string} url - The URL of the dataset.
+   * @param {string} description - A description of what was hoped to be found.
+   */
+  logDatasetAnalysis(url: string, description: string) {
+    this.analysedDatasets.push({ url, description });
   },
 
   /**

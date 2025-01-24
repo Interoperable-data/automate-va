@@ -25,6 +25,7 @@ const { extractTaskNamefromPodURL } = LWSProcessHelpers // Import extractTaskNam
 
 // Store for process data
 import { processStore } from './LWSProcessStore'
+import { sessionStore } from './LWSSessionStore'; // Import sessionStore
 
 // Fetch data function
 export async function fetchData(uri: URL, type: TargetType) {
@@ -84,10 +85,11 @@ export async function getTypeIndexContainers(webId: URL, reload: boolean = false
   }
 
   try {
+    sessionStore.logDatasetAnalysis(webId.href, 'Fetching type index containers for WebID'); // Log dataset analysis
     const dataset = await getWebIdDataset(webId.href)
     console.log('WebID dataset retrieved successfully.')
     const things = getThingAll(dataset)
-    console.log(`Found ${things.length} things in the dataset.`, things)
+    console.log(`Found ${things.length} things in the WebID dataset.`, things)
 
     let typeIndexContainers = extractTypeIndexes(things)
 
@@ -98,13 +100,14 @@ export async function getTypeIndexContainers(webId: URL, reload: boolean = false
       for (const property of typeIndexProperties) {
         const primaryTopicUrl = getUrl(things[0], property)
         if (primaryTopicUrl) {
+          sessionStore.logDatasetAnalysis(primaryTopicUrl, `Checking primary topic resource for type index containers, using ${property}`); // Log dataset analysis
           const primaryTopicDataset = await getSolidDataset(primaryTopicUrl, { fetch: fetch })
           const primaryTopicThings = getThingAll(primaryTopicDataset)
 
           typeIndexContainers = extractTypeIndexes(primaryTopicThings)
           break
         } else {
-          console.log(`No ${property} URL found in the WebID dataset.`)
+          console.warn(`No ${property} URL found in the WebID dataset.`)
         }
       }
     }
@@ -123,6 +126,7 @@ export async function getPropertiesFromTypeRegistration(
   registration: TypeRegistration,
 ): Promise<TypeRegistration> {
   try {
+    sessionStore.logDatasetAnalysis(registration.inContainer, 'Fetching properties from type registration'); // Log dataset analysis
     const dataset = await getSolidDataset(registration.inContainer, { fetch: fetch })
     const things = getThingAll(dataset)
     console.log(`Found ${things.length} things in the container dataset.`, things)
@@ -168,6 +172,7 @@ export async function addProcessSubContainers(
   instanceContainer: string,
 ): Promise<void> {
   try {
+    sessionStore.logDatasetAnalysis(instanceContainer, 'Adding sub-containers for process'); // Log dataset analysis
     const dataset = await getSolidDataset(instanceContainer, { fetch: fetch })
     const resourceUrls = getContainedResourceUrlAll(dataset)
     const subContainers: URL[] = []
@@ -198,12 +203,14 @@ export async function addProcessSubContainers(
 // Helper function to add task resources to processStore
 export async function addTaskResources(processContainer: URL): Promise<void> {
   try {
+    sessionStore.logDatasetAnalysis(processContainer.href, 'Adding task resources for process container'); // Log dataset analysis
     const dataset = await getSolidDataset(processContainer.href, { fetch: fetch })
     const resourceUrls = getContainedResourceUrlAll(dataset)
     const taskResources: Record<string, TaskRegistration> = {}
 
     for (const resourceUrl of resourceUrls) {
       if (!isContainer(resourceUrl)) {
+        sessionStore.logDatasetAnalysis(resourceUrl, 'Fetching task resource'); // Log dataset analysis
         const taskDataset = await getSolidDataset(resourceUrl, { fetch: fetch })
         const taskThing = getThing(taskDataset, resourceUrl) as ThingPersisted
 
@@ -262,6 +269,7 @@ export async function getTypeRegistrationsFromContainers(
 
     try {
       console.log(`Fetching dataset from container: ${container.href}`)
+      sessionStore.logDatasetAnalysis(container.href, 'Fetching type registrations from container'); // Log dataset analysis
       const dataset = await getSolidDataset(container.href, { fetch: fetch })
       const things = getThingAll(dataset)
       console.log(`Found ${things.length} things in the container dataset.`)
@@ -310,6 +318,7 @@ export async function getTypeRegistrationsFromContainers(
 export async function getProfileInfo(webId: URL): Promise<{ name: string | null }> {
   try {
     const dataset = await getWebIdDataset(webId.href)
+    sessionStore.logDatasetAnalysis(webId.href, 'Retrieving profile info'); // Log dataset analysis
     const profile = getThing(dataset, webId.href)
 
     const name = profile ? getStringNoLocale(profile, FOAF.name) : null

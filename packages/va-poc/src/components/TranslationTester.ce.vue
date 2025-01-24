@@ -52,19 +52,6 @@ watchEffect(async () => {
   <div>
     {{ solidProfileName || props.name }} says [{{ locale }}]: {{ t('hello') + ' ' + t('world') }}
   </div>
-  <ul>
-    <li v-for="container in typeIndexContainers" :key="container.href">
-      {{ container.href }}
-      <ul>
-        <li
-          v-for="registration in typeRegistrations.filter((reg) => reg.foundIn === container.href)"
-          :key="registration.forClass"
-        >
-          {{ registration.forClass }} in {{ registration.inContainer }}.
-        </li>
-      </ul>
-    </li>
-  </ul>
   <slot id="first">Loading...</slot>
 </template>
 

@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import AboutView from "../views/AboutView.vue";
 import ProcessView from "../views/ProcessView.vue";
+import DebugDashboard from '../views/DebugDashboard.vue'; // Import the new view
 
 const routes = [
   {
@@ -39,6 +40,11 @@ const routes = [
       next("/");
     },
   },
+  {
+    path: '/debug',
+    name: 'DebugDashboard',
+    component: DebugDashboard
+  }
 ];
 
 const router = createRouter({

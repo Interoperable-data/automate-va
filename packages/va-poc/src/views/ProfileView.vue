@@ -42,7 +42,6 @@ if (!customElements.get('lws-process-list')) {
     <h1>{{ t("welcome") }}</h1>
     <p>{{ t("message") }}</p>
     <BContainer>
-      {{ sessionStore.ownPodURLs }}
       <lws-source-adder />
       <lws-sources-list />
       <lws-process-list />
