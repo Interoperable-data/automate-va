@@ -94,5 +94,17 @@ export const sessionStore = reactive({
     const prefix = await this.findPrefixFor(url);
     console.log(`(prefixify) Prefix found using findPrefixFor: ${prefix}`);
     return prefix;
+  },
+
+  /**
+   * Resets the session store to its initial state.
+   */
+  reset() {
+    this.canReadPODURLs = false;
+    this.ownPodURLs = [];
+    this.selectedPodURL = '';
+    this.loggedInWebId = '';
+    this.rerouting = false;
+    this.authProvidersSessionData = { inrupt: {} };
   }
 });

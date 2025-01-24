@@ -30,6 +30,15 @@ const routes = [
     name: "about",
     component: AboutView,
   },
+  {
+    path: "/logout",
+    name: "logout",
+    beforeEnter: async (to, from, next) => {
+      const { logoutFromSolidPod } = await import("../components/providers/LWSAuth");
+      await logoutFromSolidPod();
+      next("/");
+    },
+  },
 ];
 
 const router = createRouter({

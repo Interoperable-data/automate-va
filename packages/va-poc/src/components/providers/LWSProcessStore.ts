@@ -10,4 +10,11 @@ export const processStore = reactive({
   canProcessData() {
     return this.processProviders.length > 0;
   },
+  reset() {
+    this.typeIndexContainers = {};
+    this.typeRegistrations = {};
+    this.processProviders = [];
+    this.processRegistrations = {};
+    this.taskRegistrations = {};
+  },
 });
