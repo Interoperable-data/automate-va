@@ -2,6 +2,8 @@
 
 The `/examples` folder contains `.ttl`-files of resources expected to be critical in the automated authorisation process. These examples show some important aspects of CLD, EC declarations and Vehicle Types. Only some are repeted here.
 
+The introduction of new Vehicle Types must follow internal procedure [INS_VEA_011](../INS_VEA_011%20Registration%20in%20ERATV.pdf).
+
 ### CLD and EC Declaration
 
 The following guidelines follow from the documentation on CLDs and EC Declarations.
