@@ -48,24 +48,13 @@ watchEffect(async () => {
 </script>
 
 <template>
-  <h3>{{ props.name }}</h3>
-  <div>
-    {{ solidProfileName || props.name }} says [{{ locale }}]: {{ t('hello') + ' ' + t('world') }}
+  <div class="container">
+    <h3>{{ props.name }}</h3>
+    <div>
+      {{ solidProfileName || props.name }} says [{{ locale }}]: {{ t('hello') + ' ' + t('world') }}
+    </div>
+    <slot id="first">Loading...</slot>
   </div>
-  <ul>
-    <li v-for="container in typeIndexContainers" :key="container.href">
-      {{ container.href }}
-      <ul>
-        <li
-          v-for="registration in typeRegistrations.filter((reg) => reg.foundIn === container.href)"
-          :key="registration.forClass"
-        >
-          {{ registration.forClass }} in {{ registration.inContainer }}.
-        </li>
-      </ul>
-    </li>
-  </ul>
-  <slot id="first">Loading...</slot>
 </template>
 
 <i18n>
@@ -84,3 +73,7 @@ watchEffect(async () => {
     }
   }
 </i18n>
+
+<style scoped>
+@import './providers/LWSStyles.css';
+</style>

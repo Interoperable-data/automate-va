@@ -51,7 +51,7 @@ import LWSHost from './providers/LWSHost'
 const { isWebId, isTurtleFile, loadProcessesFrom } = LWSHost
 import KGHostHelpers from '../providers/KGHost';
 const {  isSparqlEndpoint } = KGHostHelpers;
-import type { TargetType } from './providers/LWSHost.d'
+import { TargetType } from './providers/LWSHost.d'
 
 const sourceURI = ref('')
 const errorMessage = ref('')

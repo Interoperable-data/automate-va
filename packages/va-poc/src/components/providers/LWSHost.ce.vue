@@ -19,20 +19,7 @@ import {
   type RouteLocationNormalizedLoadedGeneric,
 } from 'vue-router'
 // const router = useRouter();
-import {
-  login,
-  handleIncomingRedirect,
-  getDefaultSession,
-  Session,
-  fetch,
-} from '@inrupt/solid-client-authn-browser'
-import { getPodUrlAll } from '@inrupt/solid-client'
-
-import {
-  getTypeIndexContainers,
-  getTypeRegistrationsFromContainers,
-} from './LWSHost'
-import { processStore } from './LWSProcessStore'
+import { loginToSelectedIdP, logoutFromSolidPod, tryIncomingRedirect } from './LWSAuth'; // Import login and logout functions
 
 // Stores
 import { sessionStore } from './LWSSessionstore'
@@ -54,76 +41,29 @@ const { t } = useI18n({
 })
 
 // login function
-const loginToSelectedIdP = () => {
-  return login({
-    oidcIssuer: SELECTED_IDP.value,
-    redirectUrl: new URL('/auth', window.location.href).toString(),
-    clientName: 'VA Automate',
-  })
+const login = () => {
+  return loginToSelectedIdP(SELECTED_IDP.value);
+}
+
+// logout function
+const logout = async () => {
+  await logoutFromSolidPod();
 }
 
 // Component stores the Session it is own memory
 const setSession = async (session: Session) => {
-  console.log(`(setSession) Session:`, session)
-  const routeInfo = props.routeInfo.query
-  if (routeInfo.code && routeInfo.state) {
-    console.warn(`Storing session return values`)
-
-    // Inrupt token returned, then store the token and reroute the application
-    sessionStore.rerouting = true
-    sessionStore.addSolidPodAuthData({
-      token: routeInfo.code,
-      state: routeInfo.state,
-    })
-
-    // CE's do not have the router from App
-    // const home = new URL("/", window.location.href).toString()
-    // setTimeout(() => window.location.assign(home), 10000); // reloads and destroys session
-    // FIXME: the page reload CAN be caught using a correct use of { restorePreviousSession: true }
-  } else {
-    console.warn(`No session return values found.`)
-  }
-  if (session.info.isLoggedIn) {
-    sessionStore.canReadPODURLs = true
-    sessionStore.loggedInWebId = session.info.webId!
-    sessionStore.ownPodURLs = await getPodUrlAll(session.info.webId!, {
-      fetch: fetch,
-    })
-
-    // Fetch type indices and update processStore
-    const webIdUri = new URL(session.info.webId!)
-    const typeIndexContainers = await getTypeIndexContainers(webIdUri);
-    await getTypeRegistrationsFromContainers(webIdUri, typeIndexContainers);
-  } else {
-    console.warn(`No active session found`)
-  }
+  await setSession(session, props.routeInfo.query);
 }
 
 // Login
-const tryIncomingRedirect = async () => {
-  try {
-    const currentSession = getDefaultSession()
-    console.log(`(tryIncomingRedirect) Current session:`, currentSession)
-    if (!currentSession.info.sessionId) {
-      //  && !currentSession.info.isLoggedIn should not be checked
-      console.log(`Not logged in.`)
-      await handleIncomingRedirect({ restorePreviousSession: true })
-    } else {
-      console.log(`Logged in.`)
-      await handleIncomingRedirect() // no-op if not part of login redirect
-    }
-    await setSession(currentSession)
-  } catch (err) {
-    console.error(`Relogin failed with error ${err}`)
-  } finally {
-    sessionStore.rerouting = false
-  }
+const tryRedirect = async () => {
+  await tryIncomingRedirect(props.routeInfo.query);
 }
 
 onMounted(async () => {
   sessionStore.rerouting = true
   // When the component is mounted, it should check the session
-  await tryIncomingRedirect()
+  await tryRedirect()
   // await nextTick();
   // BUTTON_TARGET.value = "#lws-button";
 })
@@ -143,10 +83,17 @@ onMounted(async () => {
   <!-- IS LAUNCHED TOO EARLY <Teleport defer :to="props.target"> -->
   <BButton
     v-if="!sessionStore.loggedInWebId"
-    @click="loginToSelectedIdP"
+    @click="login"
     variant="primary outline-warning"
   >
     {{ t('login') }}
+  </BButton>
+  <BButton
+    v-if="sessionStore.loggedInWebId"
+    @click="logout"
+    variant="primary outline-danger"
+  >
+    {{ t('logout') }}
   </BButton>
   <!-- </Teleport> -->
   <slot />
@@ -156,16 +103,20 @@ onMounted(async () => {
 <i18n>
   {
     "en": {
-      "login": "Login to Solid Pod"
+      "login": "Login to Solid Pod",
+      "logout": "Logout from Solid Pod"
     },
     "fr": {
-      "login": "Connexion au Solid Pod"
+      "login": "Connexion au Solid Pod",
+      "logout": "Déconnexion du Solid Pod"
     },
     "de": {
-      "login": "Anmeldung beim Solid Pod"
+      "login": "Anmeldung beim Solid Pod",
+      "logout": "Abmeldung vom Solid Pod"
     },
     "es": {
-      "login": "Iniciar sesión en Solid Pod"
+      "login": "Iniciar sesión en Solid Pod",
+      "logout": "Cerrar sesión en Solid Pod"
     }
   }
 </i18n>

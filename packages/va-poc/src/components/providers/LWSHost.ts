@@ -9,19 +9,23 @@ import {
   getStringNoLocale,
   getContainedResourceUrlAll,
   isContainer,
+  type ThingPersisted,
 } from '@inrupt/solid-client'
 
 // Vocabularies
-import { FOAF, RDF } from '@inrupt/vocab-common-rdf'
+import { FOAF, RDF, RDFS } from '@inrupt/vocab-common-rdf' // Add RDFS
 import { SOLID } from '@inrupt/vocab-solid'
 
 // Types
-import type { TypeRegistration } from './LWSHost.d'
+import type { TypeRegistration, TaskRegistration } from './LWSHost.d'
 import { TargetType, typeIndexProperties, processClasses } from './LWSHost.d'
+
+import LWSProcessHelpers from '../providers/LWSProcess';
+const { extractTaskNamefromPodURL } = LWSProcessHelpers // Import extractTaskNamefromPodURL
 
 // Store for process data
 import { processStore } from './LWSProcessStore'
-
+import { sessionStore } from './LWSSessionStore'; // Import sessionStore
 
 // Fetch data function
 export async function fetchData(uri: URL, type: TargetType) {
@@ -81,10 +85,11 @@ export async function getTypeIndexContainers(webId: URL, reload: boolean = false
   }
 
   try {
+    sessionStore.logDatasetAnalysis(webId.href, 'Fetching type index containers for WebID'); // Log dataset analysis
     const dataset = await getWebIdDataset(webId.href)
     console.log('WebID dataset retrieved successfully.')
     const things = getThingAll(dataset)
-    console.log(`Found ${things.length} things in the dataset.`, things)
+    console.log(`Found ${things.length} things in the WebID dataset.`, things)
 
     let typeIndexContainers = extractTypeIndexes(things)
 
@@ -95,13 +100,14 @@ export async function getTypeIndexContainers(webId: URL, reload: boolean = false
       for (const property of typeIndexProperties) {
         const primaryTopicUrl = getUrl(things[0], property)
         if (primaryTopicUrl) {
+          sessionStore.logDatasetAnalysis(primaryTopicUrl, `Checking primary topic resource for type index containers, using ${property}`); // Log dataset analysis
           const primaryTopicDataset = await getSolidDataset(primaryTopicUrl, { fetch: fetch })
           const primaryTopicThings = getThingAll(primaryTopicDataset)
 
           typeIndexContainers = extractTypeIndexes(primaryTopicThings)
           break
         } else {
-          console.log(`No ${property} URL found in the WebID dataset.`)
+          console.warn(`No ${property} URL found in the WebID dataset.`)
         }
       }
     }
@@ -120,6 +126,7 @@ export async function getPropertiesFromTypeRegistration(
   registration: TypeRegistration,
 ): Promise<TypeRegistration> {
   try {
+    sessionStore.logDatasetAnalysis(registration.inContainer, 'Fetching properties from type registration'); // Log dataset analysis
     const dataset = await getSolidDataset(registration.inContainer, { fetch: fetch })
     const things = getThingAll(dataset)
     console.log(`Found ${things.length} things in the container dataset.`, things)
@@ -160,26 +167,83 @@ export async function getPropertiesFromTypeRegistration(
 }
 
 // Helper function to add sub-containers to processStore
-export async function addProcessSubContainers(webId: URL, instanceContainer: string): Promise<void> {
+export async function addProcessSubContainers(
+  webId: URL,
+  instanceContainer: string,
+): Promise<void> {
   try {
+    sessionStore.logDatasetAnalysis(instanceContainer, 'Adding sub-containers for process'); // Log dataset analysis
     const dataset = await getSolidDataset(instanceContainer, { fetch: fetch })
-    const resourceUrls = getContainedResourceUrlAll(dataset);
-    const subContainers: URL[] = [];
+    const resourceUrls = getContainedResourceUrlAll(dataset)
+    const subContainers: URL[] = []
 
     for (const resourceUrl of resourceUrls) {
       if (isContainer(resourceUrl)) {
-        subContainers.push(new URL(resourceUrl));
+        subContainers.push(new URL(resourceUrl))
       }
     }
 
     if (!processStore.processRegistrations[webId.href]) {
-      processStore.processRegistrations[webId.href] = [];
+      processStore.processRegistrations[webId.href] = []
     }
 
-    processStore.processRegistrations[webId.href].push(...subContainers);
-    console.log(`Added sub-containers for WebID ${webId.href}:`, subContainers);
+    processStore.processRegistrations[webId.href].push(...subContainers)
+    processStore.processProviders.push(instanceContainer) // Add container to processProviders array
+    console.log(`Added sub-containers for WebID ${webId.href}:`, subContainers)
+
+    // Add task resources for each sub-container
+    for (const subContainer of subContainers) {
+      await addTaskResources(subContainer)
+    }
   } catch (error) {
-    console.error(`Error adding sub-containers for WebID ${webId.href}:`, error);
+    console.error(`Error adding sub-containers for WebID ${webId.href}:`, error)
+  }
+}
+
+// Helper function to add task resources to processStore
+export async function addTaskResources(processContainer: URL): Promise<void> {
+  try {
+    sessionStore.logDatasetAnalysis(processContainer.href, 'Adding task resources for process container'); // Log dataset analysis
+    const dataset = await getSolidDataset(processContainer.href, { fetch: fetch })
+    const resourceUrls = getContainedResourceUrlAll(dataset)
+    const taskResources: Record<string, TaskRegistration> = {}
+
+    for (const resourceUrl of resourceUrls) {
+      if (!isContainer(resourceUrl)) {
+        sessionStore.logDatasetAnalysis(resourceUrl, 'Fetching task resource'); // Log dataset analysis
+        const taskDataset = await getSolidDataset(resourceUrl, { fetch: fetch })
+        const taskThing = getThing(taskDataset, resourceUrl) as ThingPersisted
+
+        let label =
+          extractTaskNamefromPodURL(new URL(resourceUrl), processContainer, false) || 'No label'
+        if (taskThing) {
+          label = getStringNoLocale(taskThing, RDFS.comment) || label // Use RDFS.comment
+        } else {
+          console.warn(`Task resource ${resourceUrl} is empty. Using extracted label from URI.`)
+        }
+
+        taskResources[resourceUrl] = {
+          label,
+          steps: taskThing ? [] : null, // Use steps instead of tasks
+        }
+        console.log(`Stored task content for ${resourceUrl}:`, taskResources[resourceUrl])
+      }
+    }
+
+    if (!processStore.taskRegistrations[processContainer.href]) {
+      processStore.taskRegistrations[processContainer.href] = {}
+    }
+
+    processStore.taskRegistrations[processContainer.href] = taskResources
+    console.log(
+      `Added task resources for process container ${processContainer.href}:`,
+      taskResources,
+    )
+  } catch (error) {
+    console.error(
+      `Error adding task resources for process container ${processContainer.href}:`,
+      error,
+    )
   }
 }
 
@@ -205,6 +269,7 @@ export async function getTypeRegistrationsFromContainers(
 
     try {
       console.log(`Fetching dataset from container: ${container.href}`)
+      sessionStore.logDatasetAnalysis(container.href, 'Fetching type registrations from container'); // Log dataset analysis
       const dataset = await getSolidDataset(container.href, { fetch: fetch })
       const things = getThingAll(dataset)
       console.log(`Found ${things.length} things in the container dataset.`)
@@ -253,6 +318,7 @@ export async function getTypeRegistrationsFromContainers(
 export async function getProfileInfo(webId: URL): Promise<{ name: string | null }> {
   try {
     const dataset = await getWebIdDataset(webId.href)
+    sessionStore.logDatasetAnalysis(webId.href, 'Retrieving profile info'); // Log dataset analysis
     const profile = getThing(dataset, webId.href)
 
     const name = profile ? getStringNoLocale(profile, FOAF.name) : null
@@ -273,8 +339,6 @@ export async function isWebId(uri: URL): Promise<boolean> {
     return false
   }
 }
-
-
 
 export default {
   fetchData,

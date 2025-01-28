@@ -6,6 +6,7 @@
       <BNavbarNav>
         <BNavItem to="/processes">{{ t('processes') }}</BNavItem>
         <BNavItem to="/about">{{ t('about') }}</BNavItem>
+        <BNavItem to="/debug">{{ t('debug') }}</BNavItem> <!-- Add link to DebugDashboard -->
       </BNavbarNav>
       <!-- Right aligned nav items -->
       <BNavbarNav class="ms-auto mb-2 mb-lg-0">
@@ -70,21 +71,25 @@ onMounted(() => {
     "en": {
       "processes": "Processes",
       "about": "About",
+      "debug": "Debug Dashboard", // Add translation for Debug Dashboard
       "noStorage": "Please Connect to LWS"
     },
     "fr": {
       "processes": "Processus",
       "about": "À propos",
+      "debug": "Tableau de bord de débogage", // Add translation for Debug Dashboard
       "noStorage": "Veuillez vous connecter à LWS"
     },
     "de": {
       "processes": "Prozesse",
       "about": "Über",
+      "debug": "Debug-Dashboard", // Add translation for Debug Dashboard
       "noStorage": "Bitte verbinden Sie sich mit LWS"
     },
     "es": {
       "processes": "Procesos",
       "about": "Acerca de",
+      "debug": "Panel de depuración", // Add translation for Debug Dashboard
       "noStorage": "Por favor, conéctese a LWS"
     }
   }
