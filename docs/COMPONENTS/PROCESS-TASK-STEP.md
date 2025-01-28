@@ -15,7 +15,7 @@ The processes, tasks and steps can be created using a Process Manager component.
 Depending on the storage systems, the URI's to Processes may be:
 
 - (JENA TS) `http://{JENA-server:port}/#/dataset/{DATASET Containing the Process Task Graphs}/{verb}`, with verbs `[get|data|query|sparql|shacl|update]` as for JENA endpoints;
-- (LWS) `https://{LWS-provider}/{Pod-identifier}/{Type Index Path to prov:Action}/{ProcessLabel}/`-container;
+- (LWS) `https://{LWS-provider}/{Pod-identifier}/{Type Index Path to the Process class}/{ProcessLabel}/`-container;
 - (FILE) `{ProcessLabel}.ttl` with the Tasks grouped in Graphs and the Steps as triples in these graphs.
 
 In all cases:

@@ -1,0 +1,98 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0" version="26.0.9">
+  <diagram name="Page-1" id="e7e014a7-5840-1c2e-5031-d8a46d1fe8dd">
+    <mxGraphModel dx="1072" dy="775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="Create/Refuse New CLD" style="swimlane;whiteSpace=wrap" parent="1" vertex="1">
+          <mxGeometry x="164.5" y="128" width="280" height="570" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-42" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="2">
+          <mxGeometry x="125.5" y="52" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-43" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;" edge="1" source="ApjYGYmdzbRrGeJbvhUZ-42" parent="2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="140.5" y="142" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-46" value="«interface»&lt;br&gt;&lt;b&gt;New&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="2">
+          <mxGeometry x="85" y="142" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="Amend/update CLD" style="swimlane;whiteSpace=wrap;startSize=23;" parent="1" vertex="1">
+          <mxGeometry x="444.5" y="128" width="280" height="570" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-47" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="3">
+          <mxGeometry x="75.5" y="53" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-48" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;" edge="1" source="ApjYGYmdzbRrGeJbvhUZ-47" parent="3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="90.5" y="143" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-49" value="«interface»&lt;br&gt;&lt;b&gt;Find CLD&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="3">
+          <mxGeometry x="35.5" y="142" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-56" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="3">
+          <mxGeometry x="215.5" y="152" width="10" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-57" value="dispatch" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;entryX=0;entryY=0;entryDx=0;entryDy=5;" edge="1" target="ApjYGYmdzbRrGeJbvhUZ-56" parent="3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="145.5" y="157" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-58" value="return" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=-5;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="ApjYGYmdzbRrGeJbvhUZ-56" parent="3" target="ApjYGYmdzbRrGeJbvhUZ-59">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="145.5" y="227" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-59" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Amend/Update&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ [amendable fields]: CLD&lt;br&gt;+ [updatable fields]: CLD&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ amend(CLD, CLD): CLD (amended)&lt;br&gt;+ update(CLD, CLD): CLD (updated)&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" vertex="1" parent="3">
+          <mxGeometry x="35.5" y="272" width="190" height="158" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="Suspend/Restrict CLD" style="swimlane;whiteSpace=wrap" parent="1" vertex="1">
+          <mxGeometry x="724.5" y="128" width="280" height="570" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-50" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="4">
+          <mxGeometry x="75.5" y="53" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-51" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;" edge="1" parent="4" source="ApjYGYmdzbRrGeJbvhUZ-50">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="90.5" y="143" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-52" value="«interface»&lt;br&gt;&lt;b&gt;Find CLD&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="4">
+          <mxGeometry x="35.5" y="142" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-60" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="4">
+          <mxGeometry x="215.5" y="152" width="10" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-61" value="dispatch" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;entryX=0;entryY=0;entryDx=0;entryDy=5;" edge="1" target="ApjYGYmdzbRrGeJbvhUZ-60" parent="4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="145.5" y="157" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-62" value="return" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=-5;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="ApjYGYmdzbRrGeJbvhUZ-60" parent="4" target="ApjYGYmdzbRrGeJbvhUZ-63">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="145.5" y="227" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-63" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Suspend/Restrict&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ [Suspendable]: CLD&lt;br&gt;+ [Restrictable]: CLD&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ suspend(Type): CLD&lt;br&gt;+ restrict(Type, Type): CLD&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" vertex="1" parent="4">
+          <mxGeometry x="35.5" y="272" width="190" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-44" value="Withdraw CLD" style="swimlane;whiteSpace=wrap" vertex="1" parent="1">
+          <mxGeometry x="1004.5" y="128" width="280" height="570" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-53" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="ApjYGYmdzbRrGeJbvhUZ-44">
+          <mxGeometry x="125" y="52" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-54" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;" edge="1" parent="ApjYGYmdzbRrGeJbvhUZ-44" source="ApjYGYmdzbRrGeJbvhUZ-53">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="140" y="142" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ApjYGYmdzbRrGeJbvhUZ-55" value="«interface»&lt;br&gt;&lt;b&gt;Find CLD&lt;/b&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="ApjYGYmdzbRrGeJbvhUZ-44">
+          <mxGeometry x="85" y="141" width="110" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

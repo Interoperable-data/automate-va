@@ -17,7 +17,7 @@ Given rules on GDPR, organisational data should be managed preferably using LWS 
 
 Experimental [EUAR's LWS](https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/organisation/org).
 
-See also: [Organisations](../ORG/ORGANISATION.md).
+See also: [Organisations](../ORG/index.md).
 
 ## Agents
 
@@ -38,4 +38,5 @@ Experimental [EUAR's LWS](https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa
 Internally available as linked data (JENA/ERALEX).
 
 Experimental IC-list [EUAR's LWS](https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/requirements/ics)
+
 Experimental SS-list [EUAR's LWS](https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/requirements/sss)
