@@ -4,8 +4,11 @@ import { computed, watchEffect } from "vue";
 // translation
 import { useI18n } from "vue-i18n";
 import { i18nStore } from "../components/providers/i18nHost";
+import { processStore } from "../components/providers/LWSProcessStore"; // Correct import path
+
 const { t, locale } = useI18n();
 const newLocale = computed(() => i18nStore.selectedLocale);
+
 watchEffect(() => {
   console.log(
     `Language captured in ProfileView watcher, changed to ${newLocale.value}!`

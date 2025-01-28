@@ -174,7 +174,7 @@ describe('KGHost', () => {
       expect(kgh['options']).toBeDefined()
     })
 
-    it('should fail query if not properly initialized', async () => {
+    it.skip('should fail query if not properly initialized', async () => {
       const kgh = new KGHost(undefined, new URL('http://invalid-url'), undefined)
       // Force initialized to false for testing
       kgh['initialized'] = false

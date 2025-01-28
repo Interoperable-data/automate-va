@@ -27,6 +27,11 @@ export type LWSAuth = {
 
 export type KeyValueObject = Record<string, string>;
 
+export type TaskRegistration = {
+  label: string;
+  steps: any[] | null; // Use steps instead of tasks
+};
+
 // Array of possible property names where type indices can hide
 export const typeIndexProperties: string[] = [
   FOAF.isPrimaryTopicOf,

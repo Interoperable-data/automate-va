@@ -1,6 +1,4 @@
 import { QueryEngine } from '@comunica/query-sparql'
-import { literal, namedNode } from '@rdfjs/data-model'
-
 import { executeDirectQuery } from './KGHostHelpers'
 
 // Types
