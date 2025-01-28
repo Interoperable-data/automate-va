@@ -48,3 +48,16 @@ The following example contains properties of the `Dublin Core TERMS`-ontology (p
         wp:withRestriction :clou-{uuid} 
 .
 ```
+
+## Example with Section 2 of a VehicleType
+
+The link between the VehicleType and the (non)-Compliance with TSI Sections happens through the mandatory `EC TEC`/`EC DEC`, linked to by `era:certificate`.
+
+
+```
+2.2 EC certificate of verification:
+Reference of ‘EC type examination certificates’ (if module SB applied) and/or ‘EC design examination certificates’ (if module SH1 applied)
+[character string] (possibility to indicate several certificates, e.g. certificate for rolling stock subsystem, certificate for CCS, etc.)
+```
+
+

@@ -6,7 +6,8 @@ Using a reference to these named nodes, this separate display shape file `{Displ
 
 As such, their is no double information, with the Class separated from its possible presentations as a form.
 
-Example:
+### Example
+
 The class defining `Certificate.ttl` and `ConditionLimitOfUse.ttl` MUST have the presentation forms:
 
 - `AddCertificateForm - step 1.ttl`, `AddCertificateForm - step 2.ttl`, ``AddCLOUForm - step 1.ttl`, etc

@@ -1,3 +1,8 @@
+---
+next:
+  text: 'VA Applications'
+  link: './VA-APPLICATION.md'
+---
 # Use Cases for EC Declarations
 
 Source: current EC DoV and DoC use cases.

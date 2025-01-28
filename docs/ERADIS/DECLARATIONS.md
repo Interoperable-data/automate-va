@@ -1,10 +1,17 @@
+---
+next:
+  text: 'How to model TSI, IC, SS'
+  link: './REQUIREMENTS.md'
+---
 # Data model for EC Declarations
 
 ## Scope
 
 The EU Agency for Railways has introduced the [ontology for Verified Permissions](https://w3id.org/vpa). This ontology is not detailing - on purpose - the Datatype- and ObjectProperties which can be added in order to model EC Certificates and EC Declarations.
 
-EC Declarations must be seen as fundamentally supported by EC Certificates. As such, they materialize the intent of a Manufacturer, in the role of Applicant, to achieve Permission to place an IC or SS on the market, for integration or further operation by another stakeholder. A Declaration of Conformity should be able to cover a large collection of IC's, all supported by one or multiple QMSC (for instance based on production sites). The data model must therefore provide for the grouped reference of these certificates, such that it is always clear what combinations allow the declaration to support the scope of the document.
+EC Declarations must be seen as fundamentally supported by EC Certificates. As such, they materialize the intent of a Manufacturer, in the role of Applicant, to achieve Permission to place an IC or SS on the market, for integration or further operation by another stakeholder.
+
+A Declaration of Conformity should be able to cover a large collection of IC's, all supported by one or multiple QMSC (for instance based on production sites). The data model must therefore provide for the grouped reference of these certificates, such that it is always clear what combinations allow the declaration to support the scope of the document.
 
 ## Data model
 

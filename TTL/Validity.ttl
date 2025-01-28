@@ -1,0 +1,90 @@
+@base <http://data.europa.eu/949/> .
+@prefix : <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+
+# For inclusion in the ERA ontology
+:TimeBoundDocument a 
+    owl:Class , sh:NodeShape ;
+    dcterms:created "2024-10-25"^^xsd:date ;
+    # dcterms:modified "_RESERVED_"^^xsd:date ;
+    rdfs:comment """Resources with a specific validity (start date, and period of validity or end date):
+
+    - Documented Evidence as issued by an Appropriate Body.
+    - Permissions as issued by an permitting body."""@en;
+    rdfs:label "Resource with limited validity";
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:issued ;
+        sh:datatype xsd:date ;
+        sh:nodeKind sh:Literal ;
+        sh:description "The date, on which the CLD was issued by the NoBo.";
+        sh:maxCount 1 
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:valid ;
+        sh:description "The validity range, during which the CLD was originally declared valid by the assessment body.";
+        sh:maxCount 1 ;
+        sh:nodeKind sh:BlankNode, sh:IRI ; 
+        sh:class :ValidityInterval
+    ].
+
+# The expression of the start and end of validity of any DocumentedEvidence, Permission.
+:ValidityInterval a 
+    time:ProperInterval, sh:NodeShape ;
+    ## shape: beginning and duration are mandatory.
+    rdfs:comment """"""@en;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:description "The starting date from which the CLD was originally declared valid by the assessment body."@en ;
+        sh:path time:hasBeginning ;
+        sh:class time:Instant ;
+        sh:minCount 1;
+        sh:maxCount 1
+    ];
+    sh:or (
+        [    
+            sh:property [
+                a sh:PropertyShape ;
+                sh:description "The duration during which the CLD was originally declared valid by the assessment body."@en ;
+                sh:path time:hasDurationDescription ;
+                sh:class :ValidityInYears ;
+                # sh:minCount 1; Without a duration, the CLD is assumed to be valid without limitations.
+                sh:maxCount 1
+            ]
+        ]
+        [   sh:property [
+                a sh:PropertyShape ;
+                sh:description "The ending date after which the CLD was originally declared to be no longer valid by the assessment body."@en ;
+                sh:path time:hasEnd ;
+                sh:class time:Instant ;
+                sh:minCount 1;
+                sh:maxCount 1
+            ]
+        ]
+    ).
+
+:ValidityInYears a 
+    time:DurationDescription , sh:NodeShape ;
+    # only a duration expressed in time:years can be accepted. A value of 2.5 can be accepted.
+    sh:closed "true"^^xsd:boolean ; # no other properties can be used.
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path time:years ;
+        sh:datatype xsd:decimal ;
+        sh:description "Number expressing the duration of validity period in years."@en ;
+    ].
