@@ -25,6 +25,10 @@ Possible URI's of ?s when making use of Triple Stores:
 
 The URI of any CLD below must also be stored centrally, as [explained here](../COMPONENTS/app-core.md#search). The central search platform should be accessible publicly.
 
+### Initial version
+
+For new CLD's, the initial version will always be 1. For historical CLD's, for which it is clear that a version 01 has been created after the first CLD appeared, the initial of that latter must be set at 0.
+
 ## Other functions realised by use cases
 
 ### Presentation
@@ -42,6 +46,7 @@ More info is available [here](../COMPONENTS/app-subscriptions.md).
 ### Issue new CLD
 
 URI: `/process/CLD/add`
+
 SHACL: (LWS) `process/CLD/add#shape` or any URI which resolves to the shape of a new CLD, which SHOULD be used to generate the form(s).
 
 Displays a sequence of forms, for storage of the CLD as sets of public and private linked data:
@@ -52,24 +57,27 @@ Displays a sequence of forms, for storage of the CLD as sets of public and priva
 Requires a [search function](../COMPONENTS/process-sources.md) retrieving the URI's for the ObjectProperties in the above models.
 The issuing of a new CLD with an existing ERADIS ID and version should be prohibited. The data to do so is available at each Appropriate Body, as the identifiers contain an organisational ID.
 
+For CLD's which are to be 'Refused', the reason of refusal should be added under `dct:description`.
+
 ### Issue a new version of a CLD (update)
 
 URI: `/process/CLD/update`
+
 SHACL: (LWS) `process/CLD/update#shape`, which contains ONLY the properties which MAY be changed during an update and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
 
 The user must first search for and select the CLD to update (from the collection of Issued but not any other CLD's) and displays **part** of its current data in a form. The updated CLD's other properties will be copied into the updating CLD.
 
-The updated CLD is linked and as such identified (RFU-STR-001 R.37) via `dct:replaces`, and the updating CLD further keeps the ERADIS ID, with the version number `dct:hasVersion` increased by one. Note that new CLD's may have been amended as version 1 (version 0 being amended), their updates will then have version 2.
+The updated CLD is linked and as such identified (RFU-STR-001 R.37) via `dct:replaces`, and the updating CLD further keeps the ERADIS ID, with the version number `dct:hasVersion` increased by one. See above.
 
 The updating CLD, like all new CLD's, MUST have `dct:issued`, the date of the issue, which may not be the publication date in the KG. Its status will be 'Issued'.
 
 The updated CLD:
 
 - SHOULD have the property `dct:isReplacedBy` linking to the updating CLD;
-- SHALL be marked as updated using `dct:modified` to the DATE of amendment;
+- SHALL be marked as `dct:modified` on the DATE of update;
 - SHALL have its status 'Issued' not changed, as it remains issued.
 
-### Amend existing CLD
+### Amend an existing CLD
 
 URI: `/process/CLD/amend`
 SHACL: `/process/CLD/amend#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
@@ -92,7 +100,7 @@ The amending CLD must have:
 The amended CLD:
 
 - SHOULD be updated by adding `dct:isReplacedBy` linking to the amending CLD;
-- SHALL be marked as updated using `dct:modified` to the DATE of amendment;
+- SHALL be marked as `dct:modified` on the DATE of amendment;
 - SHALL have its status be changed into `Suspended` (Potential Issue When Restoring!).
 
 > [!WARNING]
@@ -109,7 +117,7 @@ SHACL: `/process/CLD/restrict#shape`, which contains ONLY the properties which M
 
 Allows the user to search for and select the CLD (from the collection of Issued, but not the Amended/Suspended/Restricted and other CLD's) to be restricted and displays **part of** the current data in a form, which will be copied into the restricting CLD, with all its other non-edited properties.
 
-The restricted CLD is linked and as such identified (RFU-STR-001 R.37) via `dct:replaces`, and the restricting CLD receives a new ERADIS ID, with the version number `dct:hasVersion` back at 0 (no version visually) and further:
+The restricted CLD is linked and as such identified (RFU-STR-001 R.37) via `dct:replaces`, and the restricting CLD receives a new ERADIS ID, with the version number `dct:hasVersion` back at 1 (initial version) and further:
 
 - `dct:issued`, the date of the restriction;
 - its status being 'Issued' (issue) or if needed 'Issued, Restricting'.
@@ -117,7 +125,7 @@ The restricted CLD is linked and as such identified (RFU-STR-001 R.37) via `dct:
 The restricted CLD:
 
 - SHOULD be updated by adding `dct:isReplacedBy` linking to the restricting CLD;
-- SHALL be marked as updated using `dct:modified` to the DATE of restriction;
+- SHALL be marked as `dct:modified` on the DATE of restriction;
 - SHALL have its status be changed into `Restricted`.
 - SHALL NOT BE CHANGED in regard to its `vpa:valid` property.
 
@@ -137,7 +145,7 @@ The suspended CLD is linked via `dct:replaces` in a new, compact instance of a C
 The suspended CLD itself:
 
 - SHOULD be updated by adding `dct:isReplacedBy` linking to the suspending CLD;
-- SHALL be marked as updated using `dct:modified` to the DATE of the suspension;
+- SHALL be marked as `dct:modified` on the DATE of the suspension;
 - SHALL have its status be changed into `Suspended`.
 - SHALL NOT BE CHANGED in regard to its original `vpa:valid` property, but applications MUST comply with RFU-STR-001 in regard to the usage of suspended CLDs.
 
@@ -159,7 +167,7 @@ Allows for the user to search for the CLD to be restored (from the collection of
 The restored CLD itself:
 
 - SHOULD be updated by adding `dct:isReplacedBy` linking to the restoring CLD;
-- SHALL be marked as updated using `dct:modified` to the DATE of restoring;
+- SHALL be marked as `dct:modified` on the DATE of restoring;
 - SHALL have its status be changed into `Amended`, which blocks it from ever being restored again.
 - SHALL NOT BE CHANGED in regard to its `vpa:valid` property, which must be corrected if needed in the restoring CLD.
 
@@ -171,11 +179,14 @@ URI: `/process/CLD/withdraw`
 
 Allows for the user to search for the CLD to be withdrawn (from the collection of Issued/Suspended/Restricted, but not the Amended CLD's). The user cannot edit any of the properties of the CLD, and no copy will be made in the KG, but the withdrawn CLD itself:
 
-- SHALL be marked as updated using `dct:modified` to the DATE of withdrawal;
+- SHALL be marked as `dct:modified` on the DATE of withdrawal;
 - SHALL have its status be changed into `Withdrawn`, which blocks it from ever being restored again.
 - SHALL BE CHANGED in regard to its `vpa:valid` property, whereby the Period of Validity is set to 0 ([more info here](../ERADIS/CERTIFICATES.md#w3c-time-ontology)).
 
-All withdrawals must lead to the appropriate notifications.
+> [!WARNING]
+> When using expiration dates instead of validity periods, another action is needed.
+
+All withdrawals must lead to the appropriate [notifications](./#Subscriptions). Any explanation on the withdrawal must be added through `dct:description`.
 
 ## Deduced States of a CLD
 
@@ -190,3 +201,7 @@ From the above lifecycle, we can deduce the need for the Concepts representing S
 7. Restricted
 8. Suspended
 9. Withdrawn
+
+## State diagram
+
+A state diagram of the life cycle of a CLD is here (link to be provided).
