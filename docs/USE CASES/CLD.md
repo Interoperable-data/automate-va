@@ -180,7 +180,7 @@ The restored CLD itself:
 - SHALL have its status be changed into `Amended`, which blocks it from ever being restored again.
 - SHALL NOT BE CHANGED in regard to its `vpa:valid` property, which must be corrected if needed in the restoring CLD.
 
-The restoring CLD SHOULD state 'the reason of lifting the restriction' in an addition to its `dct:description` and links to the restored CLD using `dct:replaces`.
+The restoring CLD SHOULD state 'the reason of lifting the restriction/suspension' in an addition to its `dct:description` and links to the restored CLD using `dct:replaces`.
 
 ### Withdraw a CLD
 
