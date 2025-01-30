@@ -2,7 +2,11 @@
 
 Source: RFU-STR-001.
 
-Main objective: any application/process using CLD's should be able to retrieve the data of any CLD that has not been replaced (no `dct:isReplacedBy`) by any superseded CLD;
+## Main objective
+
+Any application/process using CLD's should be able to easily retrieve the data of the most recent CLD, which is the one that has not been replaced (no `dct:isReplacedBy`) by a newer CLD; on the other hand, any change as described below, will lead to a new CLD-resource in the lifecycle chain, whereby the URI of any of the CLD's in that chain can be a reference in the mentioned process, and whereby both the `<new> dct:replaces <old>` as the `<old> dct:isReplacedBy <new>` properties are used.
+
+The stakeholders allowed to modify the CLD knowledge graph are only those `era:Body` 's, which have the role `era-organisation-roles:CAB` or `:
 
 ## Parameters
 
