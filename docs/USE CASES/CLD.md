@@ -33,7 +33,7 @@ For new CLD's, the initial version will always be 1. For historical CLD's, for w
 
 ### Presentation
 
-This document does not treat the approach to implement a [`Presenter for CLD's`](../COMPONENTS/app-core.md#presenters) as this module ony displays the CLD resource, in formats as configured outside of the scope of Use Cases.
+This document does not treat the approach to implement a [`Presenter for CLD's`](../COMPONENTS/app-core.md#presenters) as this module only displays the CLD resource, in formats as configured outside of the scope of Use Cases.
 
 ### Subscriptions
 
