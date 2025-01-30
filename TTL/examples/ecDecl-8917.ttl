@@ -1,0 +1,95 @@
+@base <http://data.europa.eu/949/> .
+@prefix : <http://data.europa.eu/949/eradis/> .
+@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix eralex: <http://data.europa.eu/949/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+
+# FIXME: the Amended and Revoked status should not come from an ERATV SKOS CS.
+# REFERENCES ARE INCOMPLETE vav ERADIS, as this EC DoC covers a lot of EC DECLs
+
+:ecd-ecDecl-8917 
+    a era:ECDeclaration ;
+    dcterms:created "2024-12-18"^^xsd:date ; # the creation of this resource in the KG
+    dcterms:issued "2021-04-27"^^xsd:date ; # the document issue date
+    dcterms:available "2021-04-28"^^xsd:date ; # the availability of this resource in the ERADIS db
+    dcterms:creator era-org:MF-AT-4822-62 ;
+    dcterms:contributor era-org:NoBo-1714 ;
+    dcterms:coverage eralex:dir-2016-797 ,
+                     eralex:reg-2014-1302 ;
+    dcterms:description "" ; # Amendment description not given
+    rdfs:label "Pantograph contact strips" ;
+    rdfs:comment "For detailed info, please see ANNEX" ;
+    dcterms:subject eralex:ic-1302-2014-5_3.11 ; # The URI of the exact IC in scope
+    dcterms:identifier "AT/000000FN93653a/2021/001714" ;
+    rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=8917"^^xsd:anyURI ;
+    dcterms:hasVersion "1";
+    dcterms:isReplacedBy :ecd-ecDecl-9627 ;
+    era:status era-states-eratv:ammended ; # typo is in the SKOS CS
+    dcterm:references [
+         a era:CertificateSet ;
+         dct:hasPart 
+            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3474" ], # NOT IN eradis?
+            :cld-NoBoCert-12325 # equals [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
+         ;
+    ], [
+         a era:CertificateSet ;
+         dct:hasPart 
+            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3480" ], 
+            :cld-NoBoCert-12325 # equals [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
+    ], [
+         a era:CertificateSet ;
+         dct:hasPart 
+            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3482" ],
+            :cld-NoBoCert-12325 # equals [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
+         
+    ] .
+
+# The latest EC Declaration, an example of a revoked resource.
+:ecd-ecDecl-12411 
+    a era:ECDeclaration ;
+    dcterms:created "2024-12-18"^^xsd:date ; # the creation of this resource in the KG
+    dcterms:issued "2021-12-09"^^xsd:date ; # the document issue date
+    dcterms:available "2022-01-24"^^xsd:date ; # the availability of this resource in the ERADIS db
+    dcterms:creator era-org:MF-AT-4822-62 ;
+    dcterms:contributor era-org:NoBo-1714 ;
+    dcterms:coverage eralex:dir-2016-797 ,
+                     eralex:reg-2014-1302 ;
+    rdfs:label "Pantograph contact strips" ;
+    rdfs:comment "For detailed info, please see ANNEX" ;
+    dcterms:subject eralex:ic-1302-2014-5_3.11 ; # The URI of the exact IC in scope
+    dcterms:identifier "AT/000000FN93653a/2021/001714" ;
+    rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=12411"^^xsd:anyURI ;
+    dcterms:hasVersion "11";
+    dcterms:replaces :ecd-ecDecl-12000 ;
+    era:status era-states-eratv:revoked ; # !! 
+    dcterm:references [
+         a era:CertificateSet ;
+         dct:hasPart 
+            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3474" ], # 
+            :cld-NoBoCert-17158 # equals[ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
+         ;
+    ], [
+         a era:CertificateSet ;
+         dct:hasPart 
+            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3480" ],
+            :cld-NoBoCert-17158 # equals[ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
+    ], [
+         a era:CertificateSet ;
+         dct:hasPart 
+            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3482" ],
+            :cld-NoBoCert-17158 # equals[ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]        
+    ] .

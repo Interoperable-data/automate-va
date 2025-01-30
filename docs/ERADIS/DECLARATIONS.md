@@ -62,7 +62,7 @@ era:doc-uuid_of_document a era:ECDeclaration ;
 EC Declarations can have several versions without impact on their "Document ID number", and must therefore have a version.
 
 - DatatypeProperty `dct:hasVersion`
-- range: `xsd:number`
+- range: `xsd:integer`
 
 #### Language
 

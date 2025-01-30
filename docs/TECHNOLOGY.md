@@ -34,7 +34,7 @@ In conclusion, all data enabling to link (numbers of) vehicles with the underlyi
 - For ERADIS' IO documents, use the available KG's, which will need to be extended with the file hashes. This allows assessors to easily collect the data of ERADIS, based on OSS files.
 - For ERATV data, idem.
 
-The Agency's OPD Unit collecting available technologies is examining the [Solid Project](https://solidproject.org/about) technology, as detailed [here](STORAGE.md) in order to store the confidential info, which nevertheless may need to be shared with colleagues.
+The Agency's OPD Unit collecting available technologies is examining the [Solid Project](https://solidproject.org/about) technology, as it implements the Linked Storage Web technology. As detailed [here](./STORAGE.md), these "pods" allow to store public and confidential information resources, whereby any need to share some resource data with colleagues is fully controlled by the Pod Owner.
 
 ### UI
 
@@ -48,8 +48,8 @@ In summary, the following approach seems to lead to the most reusable operation 
 - Use the linked data knowledge graphs of the Agency for ERADIS and ERATV data. See below for libraries enabling i/o without SPARQL.
 - Use the OSS API for the data related to applications. A document will be made available with the supported endpoints.
 - Design a _common_ RESTFUL API in order to translate the collected data into HTML fragments.
-- Use HTMX in the frontend to collect these HTML fragments, and update the data in a KG with authentication, using Solid Pods.
+- Use HTMX in the frontend to collect these HTML fragments, and update the data in a KG with authentication, using Linked Web Storage.
 
 ### Use linked data to the fullest
 
-The generation of the assessment (and all checks involved) is possible in an OPEN way, if data from the applications is stored as RDF, upon which SHACL or SHEX shapes are validated. Recommendations regarding the approach are in a [separate recommendation](STORAGE.md) in this repository.
+The generation of the assessment (and all checks involved) is possible in an OPEN way, if data from the applications is stored as RDF, upon which SHACL or SHEX shapes are validated. Recommendations regarding the approach are in a [separate recommendation](./STORAGE.md) in this repository.

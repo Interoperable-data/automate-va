@@ -5,7 +5,7 @@ Automating assessments requires a set of general information from each Applicati
 To inform the assessor of the application as a whole, general information should in principle be available in most views, so as to:
 
 - [ ] display basic information about
-  - [ ] the authorisation cases (EVN's per case, vehicle type per case, etc),
+  - [ ] the authorisation cases (EVN's & vehicle type per authorisation case, etc),
   - [ ] involved parties (applicant, nobo, debo, asbo) and
   - [ ] milestones (dates) of the Application.
 - [ ] display the subsystems (and IC's) which the applicant declared applicable for the change/application, and allow for this collection to be updated. This updated collection will serve the linking of documents with the SS/IC they cover in step 2.
@@ -24,7 +24,7 @@ The following functions are required:
   - [ ] allow to mark the document as "not applicable" if such would be the case in this specific application. Note that the status "obsolete" or "expired" is managed through the expiration dates or through the version of the document as submitted (older DOC for instance).
   - [ ] assign a document type from a fixed list
   - [ ] depending on this document type, allow for further properties to be added and stored for later reuse:
-    - [ ] Subsystem and IC [EC declarations](DECLARATIONS.md) and [EC certificates](CERTIFICATES.md): issue & expiration dates (to double check ERADIS data), and (as a link) their representation in the ERADIS knowledge graph. This allows for the assessor to immediately receive the actual status of this document in ERADIS. Storing the ERADIS ID should in practice not be required.
+    - [ ] Subsystem and IC [EC declarations](./ERADIS/DECLARATIONS.md) and [EC certificates](./ERADIS/CERTIFICATES.md): issue & expiration dates (to double check ERADIS data), and (as a link) their representation in the ERADIS knowledge graph. This allows for the assessor to immediately receive the actual status of this document in ERADIS. Storing the ERADIS ID should in practice not be required.
     - [ ] Certificates per other legislation: issue & expiration dates.
     - [ ] Certificates per EVN (like RID): issue date & EVN to which it is applicable.
     - [ ] declarations of C2T: issue date, location of signature. If possible, EVN's are extracted from the document and compared with the EVN's as mentioned in the authorisation case.
@@ -43,7 +43,7 @@ The following function is required:
   - a special addressing system can be used to store this information in the document.
   - a separate user interface is mostly required to execute this specific function.
 
-The EU Agency for Railways will make available all relevant railway legislation, and the subsystems+IC's defined therein, available as Open Linked Data. This enables further automated checks and richer querying.
+The EU Agency for Railways will make available all relevant railway legislation, and the subsystems+IC's defined therein, available as Open Linked Data. This enables further automated checks and richer querying. [Information about legislation as linked data](./ERALEX/LEGISLATION.md).
 
 ## 3. Generate the Assessments
 
@@ -55,4 +55,4 @@ The following functions are required:
   - [ ] Generate the fixed phrases which appear in these assessments.
   - [ ] Allow for the easy conversion of this data into a Word file which can be submitted into OSS, after separate signing process as executed by the assessor.
 
-The assessment information may only be stored in private data stores: see [recommendations on storage](STORAGE.md).
+The assessment information may only be stored in private data stores: see [recommendations on storage](./STORAGE.md).
