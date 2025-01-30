@@ -51,7 +51,7 @@ More info is available [here](../COMPONENTS/app-subscriptions.md).
 
 URI: `/process/CLD/add`
 
-SHACL: (LWS) `process/CLD/add#shape` or any URI which resolves to the shape of a new CLD, which SHOULD be used to generate the form(s).
+SHACL-FORM: (LWS) `process/CLD/add#shape` or any URI which resolves to the shape of a new CLD, which SHOULD be used to generate the form(s).
 
 Displays a sequence of forms, for storage of the CLD as sets of public and private linked data:
 
@@ -67,7 +67,7 @@ For CLD's which are to be 'Refused', the reason of refusal should be added under
 
 URI: `/process/CLD/update`
 
-SHACL: (LWS) `process/CLD/update#shape`, which contains ONLY the properties which MAY be changed during an update and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
+SHACL-FORM: (LWS) `process/CLD/update#shape`, which contains ONLY the properties which MAY be changed during an update and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
 
 The user must first search for and select the CLD to update (from the collection of Issued but not any other CLD's) and displays **part** of its current data in a form. The updated CLD's other properties will be copied into the updating CLD.
 
@@ -84,7 +84,8 @@ The updated CLD:
 ### Amend an existing CLD
 
 URI: `/process/CLD/amend`
-SHACL: `/process/CLD/amend#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
+
+SHACL-FORM: `/process/CLD/amend#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
 
 `
 This case is used when a certificate must be amended. The “amend”
@@ -98,8 +99,8 @@ The amended CLD is linked and as such identified (RFU-STR-001 R.37) via `dct:rep
 
 The amending CLD must have:
 
-- `dct:issued`, the date of the restriction.
-- its status being 'Issued', given the Amending CLD has been issued by the NoBo on the same basis as the corrected CLD and with the full intention to replace it (and not restore it).
+- `dct:issued`, the date of issue of the amendment.
+- its status being 'Issued', given the amending CLD has been issued by the NoBo on the same basis as the corrected CLD and with the full intention to replace it (and not restore it).
 
 The amended CLD:
 
@@ -117,13 +118,14 @@ The amending CLD must state 'the nature of the amendment' in an addition to its 
 ### Restrict an existing CLD
 
 URI: `/process/CLD/restrict`
-SHACL: `/process/CLD/restrict#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
+
+SHACL-FORM: `/process/CLD/restrict#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
 
 Allows the user to search for and select the CLD (from the collection of Issued, but not the Amended/Suspended/Restricted and other CLD's) to be restricted and displays **part of** the current data in a form, which will be copied into the restricting CLD, with all its other non-edited properties.
 
 The restricted CLD is linked and as such identified (RFU-STR-001 R.37) via `dct:replaces`, and the restricting CLD receives a new ERADIS ID, with the version number `dct:hasVersion` back at 1 (initial version) and further:
 
-- `dct:issued`, the date of the restriction;
+- `dct:issued`, the date of issue of the restriction;
 - its status being 'Issued' (issue) or if needed 'Issued, Restricting'.
 
 The restricted CLD:
@@ -139,11 +141,13 @@ The restricting CLD must state 'the nature of the restriction' in an addition to
 
 URI: `/process/CLD/suspend`
 
+SHACL-FORM: Not Applicable, as no properties are to be changed.
+
 Allows the user to search for the CLD (from the collection of Amended/Issued/Restricted but not the Suspended CLD's) to be suspended, but displays no data of the suspended CLD which can be modified.
 
 The suspended CLD is linked via `dct:replaces` in a new, compact instance of a CLD (same type as the CLD), which further has:
 
-- `dct:issued`, the date of the suspension.
+- `dct:issued`, the date of issue of the suspension.
 - its status being 'Issued' (issue) or if needed 'Issued, Suspending'.
 
 The suspended CLD itself:
@@ -158,7 +162,8 @@ The suspending CLD SHOULD not have any other properties, like ERADIS ID or Versi
 ### Restore a suspended/restricted CLD
 
 URI: `/process/CLD/restore`
-SHACL: `/process/CLD/restore#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
+
+SHACL-FORM: `/process/CLD/restore#shape`, which contains ONLY the properties which MAY be changed and SHALL NOT contain properties which MAY NOT be changed according to RFU-STR-001.
 
 Allows for the user to search for the CLD to be restored (from the collection of Suspending/Restricting, but not the other CLD's) and displays **most of** the current data in a form, which will be copied into the restoring CLD (the ERADIS ID and Version do not change). The restoring CLD `dct:replaces` the restored CLD and further has:
 
@@ -181,7 +186,9 @@ The restoring CLD SHOULD state 'the reason of lifting the restriction' in an add
 
 URI: `/process/CLD/withdraw`
 
-Allows for the user to search for the CLD to be withdrawn (from the collection of Issued/Suspended/Restricted, but not the Amended CLD's). The user cannot edit any of the properties of the CLD, and no copy will be made in the KG, but the withdrawn CLD itself:
+SHACL-FORM: Not applicable, as the user cannot edit any of the properties of the CLD, and no copy will be made in the KG.
+
+Allows for the user to search for the CLD to be withdrawn (from the collection of Issued/Suspended/Restricted, but not the Amended CLD's). The withdrawn CLD itself:
 
 - SHALL be marked as `dct:modified` on the DATE of withdrawal;
 - SHALL have its status be changed into `Withdrawn`, which blocks it from ever being restored again.
