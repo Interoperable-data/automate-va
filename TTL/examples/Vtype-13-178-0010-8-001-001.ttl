@@ -20,6 +20,7 @@
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 
 eratv:vt-13-178-0010-8-001-001 a era:VehicleType ;
+    ##### GENERAL INFO
     dcterms:identifier "13-178-0010-8-001-001" ;
     dcterms:issued "2024-06-14"^^xsd:date ;  # From XML: Date of record
     dcterms:created "2025-01-21"^^xsd:date ;
@@ -27,9 +28,57 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ;
     era:alternativeName "MIREO Regensburg Donautal" ;
     era:category era-vehicle-types-eratv:tractionVehicles ;
     era:subCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
-    vpa:definesCase eva:vac-13-178-0010-8-001-001-1 ;
     era:manufacturer era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH
+
+    ##### LINKED AUTHORISATIONS
+    vpa:definesCase eva:vac-13-178-0010-8-001-001-1 ;
+
+    ##### CONFIGURATION
+    era:hasWheelSetGauge era-ntg-rinf:30 ;
+    era:protectionLegacySystem era-tpls-rinf:40 ;
+    era:energySupplySystem era-ess-rinf:AC20 ;
+
+    # Non-configuration dependent parameters
+    era:drivingCabs "2";
+    era:vehiclesComposingFixedFormation "4" ;
+    era:gsmRVersion "Implementing Regulation (EU) 2023/1695, Appendix B transition regime Baseline 1" ;
+    era:voiceRadioCompatible era-rscv-rinf:140 ;
+    era:voiceOperationalCommImpl "TRS6000 i.V.m. der Software 4.2.0" ;
+    era:voiceGSMRNetwork era-gsmr-rinf:90 ;
+    era:usesGroup555 "true"^^<xsd:boolean> ;
+    era:maximumDesignSpeed "160" ;
+    era:maximumLocomotivesCoupled "3" ;
+    era:gaugingProfile era-gaugings-rinf:40 , era-gaugings-rinf:350 ;
+    era:temperatureRange era-tr:10 ;
+    era:snowIceHailConditions era-ic-eratv:nominal ;
+    era:fireSafetyCategory era-rsf-rinf:10 ;
+    # many other non-config dependent parameters to be extracted from ERATV
+
+    # Parameters linked with a Configuration
+    era:configDependentParameter [ 
+        a era:VTConfigParameterSet ;
+        era:forConfiguration era-ess-rinf:AC20 ;
+        era:maximumContactWireHeight "0004.70 m to 0006.50 m" ;
+        era:vehiclePantographHead "1950 sc DE and AT mm" ;
+        era:numberOfPantographsInContactWithOCL "1" ;
+        # other parameters as in 4.10.X
+    ] , [
+        a era:VTConfigParameterSet ;
+        era:forConfiguration era-ntg-rinf:30 ;
+        era:vehicleTypeMaximumSpeedAndCantDeficiency [
+            a era:MaximumSpeedAndCantDeficiency ;
+            era:vehicleTypeMaximumCantDeficiency "150" ;
+            era:vehicleTypeMaximumSpeed "160" ;  
+        ] ;
+    ];
     era:vehicleTypePlatform "MIREO" .
+
+# Configuration only used in 3.1.2.4 (auth)
+eratv:ConfigA a era:VTConfiguration ;
+    rdfs:label "1435mm / AC 15kV-16.7Hz / PZB 90" ;
+    era:hasWheelSetGauge era-ntg-rinf:30 ;
+    era:energySupplySystem era-ess-rinf:AC20 ;
+    era:protectionLegacySystem era-tpls-rinf:40 .
 
 # GERMANY - See all authorisation data under 3.1.X.X
 eva:vac-13-178-0010-8-001-001-1 a era:VAAuthorisationCase ;
@@ -45,6 +94,7 @@ eva:20240202-004 a era:VAAuthorisation, vpa:Permission ;
     dcterms:identifier "EU8020240152" ;
     dcterms:issued "2024-06-14"^^xsd:date ;
     era:vehicleTypeAuthorisationHolder era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH
+    dcterms:isReplacedBy eva:20240621-009 ;
     vpa:valid [
         a time:ProperInterval ;
         time:hasBeginning "2024-06-14"^^xsd:date ;
@@ -53,18 +103,33 @@ eva:20240202-004 a era:VAAuthorisation, vpa:Permission ;
         ]
     ].
 
-# For the C2T application following 20240202-004: this was V-20240621-009 (Data must be deduced from Program Mgmt Excel)
+# For the first C2T application following 20240202-004: this was V-20240621-009
 eva:vac-13-178-0010-8-001-001-2 a era:VAAuthorisationCase ;
     vpa:permissionType era-va-authcase:C2T ;
-    # TODO - OSS data on the auth case can be placed here
+    # Non-disclosed - OSS data on the auth case can be placed here
     vpa:supports eva:va-20240621-009 .
 
 eva:va-20240621-009 a era:VAApplication, vpa:Request ;
-    # TODO - OSS data can be placed here
+    # Non-disclosed - OSS data can be placed here
     vpa:requestFor eva:20240621-009 .
 
 eva:20240621-009 a era:VAAuthorisation, vpa:Permission ;
     dcterms:identifier "EU8120241578" ;
+    dcterms:isReplacedBy eva:20241219-012 ;
     dcterms:issued "2024-06-26"^^xsd:date .
+
+# For the C2T application following 20240621-009: this was V-20241219-012
+eva:vac-13-178-0010-8-001-001-3 a era:VAAuthorisationCase ;
+    vpa:permissionType era-va-authcase:C2T ;
+    # Non-disclosed - OSS data on the auth case can be placed here
+    vpa:supports eva:va-20241219-012 .
+
+eva:va-20241219-012 a era:VAApplication, vpa:Request ;
+    # Non-disclosed - OSS data can be placed here
+    vpa:requestFor eva:20241219-012 .
+
+eva:20241219-012 a era:VAAuthorisation, vpa:Permission ;
+    dcterms:identifier "EU8120250002" ;
+    dcterms:issued "2025-01-03"^^xsd:date .
 
 
