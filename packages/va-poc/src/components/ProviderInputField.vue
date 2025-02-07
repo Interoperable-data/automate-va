@@ -46,12 +46,10 @@
  * NOTE: Special classes representing a process, like a workflow, will be stored in the state of the application as well. No distinction is made.
  */
 import { ref } from 'vue'
-import { processStore } from './providers/LWSProcessStore'
-import LWSHost from './providers/LWSHost'
-const { isWebId, isTurtleFile, loadProcessesFrom } = LWSHost
-import KGHostHelpers from '../providers/KGHost';
-const {  isSparqlEndpoint } = KGHostHelpers;
-import { TargetType } from './providers/LWSHost.d'
+import { processStore } from '@va-automate/lws-manager'
+import { isWebId, loadProcessesFrom } from '@va-automate/lws-manager'
+import { isSparqlEndpoint } from '@va-automate/kg-session'
+import { TargetType } from '@va-automate/lws-manager'
 
 const sourceURI = ref('')
 const errorMessage = ref('')

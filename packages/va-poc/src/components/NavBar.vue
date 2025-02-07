@@ -6,7 +6,8 @@
       <BNavbarNav>
         <BNavItem to="/processes">{{ t('processes') }}</BNavItem>
         <BNavItem to="/about">{{ t('about') }}</BNavItem>
-        <BNavItem to="/debug">{{ t('debug') }}</BNavItem> <!-- Add link to DebugDashboard -->
+        <BNavItem to="/debug">{{ t('debug') }}</BNavItem>
+        <!-- Add link to DebugDashboard -->
       </BNavbarNav>
       <!-- Right aligned nav items -->
       <BNavbarNav class="ms-auto mb-2 mb-lg-0">
@@ -38,23 +39,16 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { sessionStore } from '@va-automate/lws-manager'
+import { i18nStore } from '@va-automate/i18n-provider'
+import I18nSelector from './I18nSelector.vue';
 
-// OPTION 1 - As a component, translation is done using the plugin
+// Translation is done using the plugin
 const { t, locale } = useI18n()
-
-// OPTION 2 FAILS - Direct import does not work in normal components
-// const i18n = inject(I18nInjectionKey);
-// const t = i18n!.global.t;
-// const locale = i18n!.global.locale;
-
-import I18nSelector from './providers/I18nSelector.vue'
-import { sessionStore } from './providers/LWSSessionstore'
-
 const emit = defineEmits(['update:locale'])
 const emitNewLocale = (newLocale: string) => {
-  // Update the locale in the CURRENT component
-  // OPTION 2 - i18n.global.locale = newLocale;
-  locale.value = newLocale // OPTION 1
+  // Update the locale in the NavBar
+  locale.value = newLocale
   // update the locale in the PARENT component
   emit('update:locale', newLocale)
 }

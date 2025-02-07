@@ -6,10 +6,10 @@ import {
   getProfileInfo,
   getPropertiesFromTypeRegistration,
   getTypeRegistrationsFromContainers,
-} from './providers/LWSHost'
+} from '@va-automate/lws-manager'
 
-import { sessionStore } from './providers/LWSSessionStore'
-import { type TypeRegistration } from './providers/LWSHost.d'
+import { sessionStore } from '@va-automate/lws-manager'
+import { type TypeRegistration } from '@va-automate/lws-manager'
 
 const props = defineProps<{ name: string }>()
 
@@ -32,7 +32,10 @@ watchEffect(async () => {
     solidProfileName.value = profileInfo.name
 
     typeIndexContainers.value = await getTypeIndexContainers(webId)
-    typeRegistrations.value = await getTypeRegistrationsFromContainers(webId, typeIndexContainers.value)
+    typeRegistrations.value = await getTypeRegistrationsFromContainers(
+      webId,
+      typeIndexContainers.value,
+    )
 
     for (const registration of typeRegistrations.value) {
       const properties = await getPropertiesFromTypeRegistration(registration)
@@ -74,6 +77,4 @@ watchEffect(async () => {
   }
 </i18n>
 
-<style scoped>
-@import './providers/LWSStyles.css';
-</style>
+<style scoped></style>

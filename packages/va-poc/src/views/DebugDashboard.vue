@@ -11,36 +11,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watchEffect, defineCustomElement } from 'vue'
+import { computed, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { i18nStore } from '@va-automate/i18n-provider'
+
 const { t, locale } = useI18n()
-
-// Stores
-import { i18nStore } from '../components/providers/i18nHost'
-
-// Import the custom elements
-import LWSPodLogger from '@/components/providers/LWSPodLogger.ce.vue'
-import LWSProcessList from '@/components/providers/LWSProcessList.ce.vue'
-import LWSTaskList from '@/components/providers/LWSTaskList.ce.vue'
-import LWSSourceAdder from "@/components/providers/LWSSourceAdder.ce.vue";
-import LWSSourcesList from "@/components/providers/LWSSourcesList.ce.vue";
-
-// Register the custom elements
-if (!customElements.get('lws-pod-logger')) {
-  customElements.define('lws-pod-logger', defineCustomElement(LWSPodLogger))
-}
-if (!customElements.get('lws-process-list')) {
-  customElements.define('lws-process-list', defineCustomElement(LWSProcessList))
-}
-if (!customElements.get('lws-task-list')) {
-  customElements.define('lws-task-list', defineCustomElement(LWSTaskList))
-}
-if (!customElements.get('lws-source-adder')) {
-  customElements.define('lws-source-adder', defineCustomElement(LWSSourceAdder));
-}
-if (!customElements.get('lws-sources-list')) {
-  customElements.define('lws-sources-list', defineCustomElement(LWSSourcesList));
-}
 
 // Translation
 const newLocale = computed(() => i18nStore.selectedLocale)

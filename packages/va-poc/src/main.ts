@@ -2,11 +2,11 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
 
-import { createApp, defineCustomElement } from "vue";
+import { createApp } from "vue";
 import { createI18n, I18nInjectionKey } from "vue-i18n";
 // import { createPinia } from 'pinia'
 import { createBootstrap } from "bootstrap-vue-next";
-import { i18nStore } from "./components/providers/i18nHost";
+import { i18nStore } from "@va-automate/i18n-provider";
 
 import App from "./App.vue";
 import router from "./router";

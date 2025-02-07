@@ -1,26 +1,23 @@
 <script setup lang="ts">
-import { computed, watchEffect } from "vue";
+import { computed, watchEffect } from 'vue'
 
 // translation
-import { useI18n } from "vue-i18n";
-import { i18nStore } from "../components/providers/i18nHost";
-import { processStore } from "../components/providers/LWSProcessStore"; // Correct import path
+import { useI18n } from 'vue-i18n'
+import { i18nStore } from '@va-automate/i18n-provider'
 
-const { t, locale } = useI18n();
-const newLocale = computed(() => i18nStore.selectedLocale);
+const { t, locale } = useI18n()
+const newLocale = computed(() => i18nStore.selectedLocale)
 
 watchEffect(() => {
-  console.log(
-    `Language captured in ProfileView watcher, changed to ${newLocale.value}!`
-  );
-  locale.value = newLocale.value;
-});
+  console.log(`Language captured in ProfileView watcher, changed to ${newLocale.value}!`)
+  locale.value = newLocale.value
+})
 </script>
 
 <template>
   <section>
-    <h1>{{ t("welcome") }}</h1>
-    <p>{{ t("message") }}</p>
+    <h1>{{ t('welcome') }}</h1>
+    <p>{{ t('message') }}</p>
   </section>
 </template>
 

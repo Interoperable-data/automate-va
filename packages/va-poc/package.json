@@ -21,16 +21,14 @@
   "author": "Certiman",
   "license": "MIT",
   "dependencies": {
-    "@comunica/query-sparql": "^4.0.2",
-    "@inrupt/solid-client": "^2.1.2",
-    "@inrupt/solid-client-authn-browser": "^2.3.0",
-    "@inrupt/vocab-common-rdf": "^1.0.5",
-    "@inrupt/vocab-solid": "^1.0.4",
-    "@rdfjs/data-model": "^2.1.0",
+    "@va-automate/i18n-provider": "workspace:*",
+    "@va-automate/kg-session": "workspace:*", 
+    "@va-automate/lws-manager": "workspace:*",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.26.19",
-    "pinia": "^2.2.6",
     "vue": "^3.5.13",
+    "vue-router": "^4.5.0",
+    "pinia": "^2.2.6",
     "vue-i18n": "^10.0.5"
   },
   "devDependencies": {

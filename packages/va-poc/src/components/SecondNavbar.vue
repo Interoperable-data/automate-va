@@ -19,8 +19,8 @@
 
 <script setup lang="ts">
 import { computed, watchEffect } from 'vue'
-import { sessionStore } from './providers/LWSSessionstore'
-import { i18nStore } from './providers/i18nHost'
+import { sessionStore } from '@va-automate/lws-manager'
+import { i18nStore } from '@va-automate/i18n-provider'
 
 // translate
 import { useI18n } from 'vue-i18n'

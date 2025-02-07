@@ -1,10 +1,19 @@
 {
+  "name": "va-automate",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
+    "lerna": "^8.1.9",
     "vitepress": "^1.5.0"
   },
   "scripts": {
+    "dev": "lerna run dev",
+    "build": "lerna run build",
+    "test": "lerna run test",
     "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress dev docs", 
+    "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   }
 }

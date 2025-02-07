@@ -32,7 +32,7 @@
     # dcterms:modified "_RESERVED_"^^xsd:date ;
 
     ## definitions ----------
-    rdfs:label "Vehicle (type) Authorisation Application"@en;
+    rdfs:label "Application for Vehicle (type) Authorisation"@en;
     rdfs:isDefinedBy <http://data.europa.eu/949/> ;
     dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/cpt_5/oj> , <http://data.europa.eu/eli/reg_impl/2018/545/anx_I/oj> ;
     rdfs:seeAlso "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#cpt_5";
@@ -226,15 +226,15 @@
 
 # VehicleType - OPERATIONAL MODE
 # Restricts the value of a property to an operation under ENE or [ENE, CCS, INF].
-:VTOperationalMode a
+:VehicleTypeConfiguration a
     sh:NodeShape , owl:Class ;
     dcterms:created "2024-10-25"^^xsd:date ;
     # dcterms:modified "_RESERVED_"^^xsd:date ;
 
     ## definitions ----------
-    rdfs:label "Vehicle Type operational mode"@en ;
+    rdfs:label "Vehicle Type Configuration"@en ;
     rdfs:comment """Technical properties of a vehicle type, or even the applicable specific cases as certified, sometimes depend on specific values of:
-    - the operational power system (era:era:energySupplySystem)
+    - the provided power system (era:era:energySupplySystem)
     - a combination of [era:energySupplySystem, the ATP system and the track gauge]"""@en;
 
 
