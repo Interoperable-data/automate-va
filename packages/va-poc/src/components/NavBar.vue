@@ -10,13 +10,13 @@
 
     <BCollapse id="nav-collapse" is-nav>
       <BNavbarNav>
-        <BNavItem to="/processes">{{ t('processes') }}</BNavItem>
+        <BNavItem to="/processes" v-if="sessionStore.loggedInWebId != ''">{{ t('processes') }}</BNavItem>
         <BNavItem to="/about">{{ t('about') }}</BNavItem>
-        <BNavItem to="/debug">{{ t('debug') }}</BNavItem>
+        <BNavItem to="/debug" v-if="sessionStore.loggedInWebId != ''">{{ t('debug') }}</BNavItem>
       </BNavbarNav>
 
       <BNavbarNav class="ms-auto">
-        <BNavItemDropdown class="me-2">
+        <BNavItemDropdown class="me-2" v-if="sessionStore.loggedInWebId != ''">
           <template #button-content>
             <em>{{ sessionStore.loggedInWebId === '' ? t('noStorage') : t('menu') }}</em>
           </template>
@@ -24,7 +24,7 @@
             {{ t('storageProfile') }}
           </BDropdownItem>
           <BDropdownItem to="/id-profile" disabled>{{ t('identityProfile') }}</BDropdownItem>
-          <BDropdownItem to="/logout" v-if="sessionStore.loggedInWebId != ''">
+          <BDropdownItem to="/logout">
             {{ t('signOut') }}
           </BDropdownItem>
         </BNavItemDropdown>
@@ -94,7 +94,7 @@ onMounted(() => {
     "en": {
       "processes": "Processes",
       "about": "About",
-      "debug": "Debug Dashboard", // Add translation for Debug Dashboard
+      "debug": "Debug", // Add translation for Debug Dashboard
       "noStorage": "Please Connect to LWS",
       "menu": "Menu",
       "storageProfile": "Storage Profile",
@@ -104,7 +104,6 @@ onMounted(() => {
     "fr": {
       "processes": "Processus",
       "about": "À propos",
-      "debug": "Tableau de bord de débogage", // Add translation for Debug Dashboard
       "noStorage": "Veuillez vous connecter à LWS",
       "menu": "Menu",
       "storageProfile": "Profil de stockage",
@@ -114,7 +113,6 @@ onMounted(() => {
     "de": {
       "processes": "Prozesse",
       "about": "Über",
-      "debug": "Debug-Dashboard", // Add translation for Debug Dashboard
       "noStorage": "Bitte verbinden Sie sich mit LWS",
       "menu": "Menü",
       "storageProfile": "Speicherprofil",
@@ -124,7 +122,6 @@ onMounted(() => {
     "es": {
       "processes": "Procesos",
       "about": "Acerca de",
-      "debug": "Panel de depuración", // Add translation for Debug Dashboard
       "noStorage": "Por favor, conéctese a LWS",
       "menu": "Menú",
       "storageProfile": "Perfil de almacenamiento",
