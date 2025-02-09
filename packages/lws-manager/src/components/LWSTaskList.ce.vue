@@ -1,24 +1,26 @@
 <template>
   <div class="container mb-3">
+    <h4>{{ t('taskRegistrations') }}</h4>
     <div v-if="Object.keys(taskRegistrations).length">
-      <h2>{{ t('taskRegistrations') }}</h2>
       <ul class="list-group">
-        <li
+        <div
           v-for="(tasks, key) in taskRegistrations"
           :key="key"
-          class="list-group-item"
+          class="card"
         >
-          <strong>{{ key }}:</strong>
-          <ul class="list-group">
-            <li
-              v-for="(task, taskKey) in tasks"
-              :key="taskKey"
-              class="list-group-item"
-            >
-              <strong>{{ taskKey }}:</strong> {{ task.label }}
-            </li>
-          </ul>
-        </li>
+          <div class="card-header">{{ key }}</div>
+          <div class="card-body">
+            <ul class="list-group">
+              <li
+                v-for="(task, taskKey) in tasks"
+                :key="taskKey"
+                class="list-group-item"
+              >
+                <strong>{{ taskKey }}:</strong> {{ task.label }}
+              </li>
+            </ul>
+          </div>
+        </div>
       </ul>
     </div>
     <div v-else>
@@ -39,3 +41,16 @@ const taskRegistrations = computed(() => processStore.taskRegistrations)
 <style scoped>
 @import '../LWSStyles.css';
 </style>
+
+<i18n>
+{
+  "en": {
+    "taskRegistrations": "Task Registrations",
+    "noTaskRegistrations": "No Task Registration found"
+  },
+  "es": {
+    "taskRegistrations": "Registro de tareas",
+    "noTaskRegistrations": "No se encontraron registros de tareas"
+  }
+}
+</i18n>

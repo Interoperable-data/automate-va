@@ -4,8 +4,8 @@
     <lws-pod-logger />
     <lws-process-list />
     <lws-task-list />
-    <lws-source-adder />
     <lws-sources-list />
+    <lws-source-adder />
     <!-- {{ sessionStore.ownPodURLs }} -->
   </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <div class="container mb-3">
     <div v-if="Object.keys(processRegistrations).length">
-      <h2>{{ t('processRegistrations') }}</h2>
+      <h2>LPL-1 {{ t('processRegistrations') }}</h2>
       <ul class="list-group">
         <li
           v-for="(registrations, key) in processRegistrations"
@@ -22,37 +22,41 @@
       </ul>
     </div>
     <div v-else>
-      <p>{{ t('noProcessRegistrations') }}</p>
+      <p>LPL-1 {{ t('noProcessRegistrations') }}</p>
     </div>
-    <div
-      v-for="(containers, webId) in typeIndexContainers"
-      :key="webId"
-      class="card my-3"
-    >
-      <div class="card-header">
-        {{ webId }}
+    <div v-if="Object.keys(typeIndexContainers).length">
+      <div
+        v-for="(containers, webId) in typeIndexContainers"
+        :key="webId"
+        class="card my-3"
+      >
+        <div class="card-header">{{ webId }}</div>
+        <div class="card-body">
+          <ul class="list-group" v-if="containers.length">
+            <li
+              v-for="container in containers"
+              :key="container.href"
+              class="list-group-item"
+            >
+              <h5 class="card-title">{{ container.href }}</h5>
+              <ul class="list-group">
+                <li
+                  v-for="registration in typeRegistrations[container.href]"
+                  :key="registration.forClass"
+                  class="list-group-item"
+                >
+                  <b>{{ registration.forClass }}</b> -
+                  {{ registration.inContainer }}
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <span v-else> {{ t('noTypeIndexContainers') + ` [WebId: ${webId}]` }}</span>
+        </div>
       </div>
-      <div class="card-body">
-        <ul class="list-group">
-          <li
-            v-for="container in containers"
-            :key="container.href"
-            class="list-group-item"
-          >
-            <h5 class="card-title">{{ container.href }}</h5>
-            <ul class="list-group">
-              <li
-                v-for="registration in typeRegistrations[container.href]"
-                :key="registration.forClass"
-                class="list-group-item"
-              >
-                <b>{{ registration.forClass }}</b> -
-                {{ registration.inContainer }}
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
+    </div>
+    <div v-else>
+      <p>LPL-1 {{ t('noTypeIndexContainers') }}</p>
     </div>
   </div>
 </template>
@@ -85,19 +89,23 @@ const typeRegistrations = computed(() => processStore.typeRegistrations)
 {
   "en": {
     "processRegistrations": "Process Registrations",
-    "noProcessRegistrations": "No process registrations available."
+    "noProcessRegistrations": "No process registrations available.",
+    "noTypeIndexContainers": "No type index containers available."
   },
   "fr": {
     "processRegistrations": "Enregistrements de processus",
-    "noProcessRegistrations": "Aucun enregistrement de processus disponible."
+    "noProcessRegistrations": "Aucun enregistrement de processus disponible.",
+    "noTypeIndexContainers": "Aucun conteneur d'index de type disponible."
   },
   "de": {
     "processRegistrations": "Prozessregistrierungen",
-    "noProcessRegistrierungen verfügbar."
+    "noProcessRegistrations": "Keine Prozessregistrierungen verfügbar.",
+    "noTypeIndexContainers": "Keine Typindexcontainer verfügbar."
   },
   "es": {
     "processRegistrations": "Registros de procesos",
-    "noProcessRegistrations": "No hay registros de procesos disponibles."
+    "noProcessRegistrations": "No hay registros de procesos disponibles.",
+    "noTypeIndexContainers": "No hay contenedores de índice de tipo disponibles."
   }
 }
 </i18n>

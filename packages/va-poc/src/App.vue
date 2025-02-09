@@ -47,12 +47,22 @@ declare module 'vue' {
 <template>
   <i18n-provider .locale="locale">
     <lws-provider :routeInfo="$route" target="#lws-btn">
-      <NavBar @update:locale="updateLocale" />
-      <SecondNavbar />
-      <main class="container mt-10">
-        <!-- <section><h3>Custom element locale: {{ locale }}</h3></section> -->
-        <RouterView />
-      </main>
+      <div class="d-flex h-100 text-center" :data-bs-theme="isDark ? 'dark' : 'light'">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+          <header class="mb-auto">
+            <NavBar @update:locale="updateLocale" />
+          </header>
+          <SecondNavbar />
+
+          <main class="px-3">
+            <RouterView />
+          </main>
+
+          <footer class="mt-auto text-white-50">
+            <p>JOSEPHA - ERA VA POC</p>
+          </footer>
+        </div>
+      </div>
     </lws-provider>
   </i18n-provider>
 </template>

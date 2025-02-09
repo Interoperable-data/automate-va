@@ -6,7 +6,7 @@
       class="card mb-3"
     >
       <div class="card-header">
-        {{ webId }}
+        LSL-1 {{ webId }}
       </div>
       <div class="card-body">
         <ul class="list-group">
