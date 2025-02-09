@@ -1,38 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { BNavbar, BContainer } from 'bootstrap-vue-next'
+import { ref } from 'vue'
+import { BNavbar, BContainer, useColorMode } from 'bootstrap-vue-next'
 
-const isDark = ref(document.documentElement.getAttribute('data-bs-theme') === 'dark')
-
-// Watch for theme changes
-const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    if (mutation.attributeName === 'data-bs-theme') {
-      isDark.value = document.documentElement.getAttribute('data-bs-theme') === 'dark'
-    }
-  })
-})
-
-onMounted(() => {
-  observer.observe(document.documentElement, { attributes: true })
+// In simple components, the ref target approach for darkmode works.
+const target = ref<HTMLElement | null>(null)
+useColorMode({
+  selector: target,
 })
 </script>
 
 <template>
-  <BNavbar
-    fixed="bottom"
-    :variant="isDark ? 'dark' : 'light'"
-    :class="['footer-bar py-2', isDark ? 'bg-dark' : 'bg-light']"
-  >
+  <BNavbar fixed="bottom" ref="target" variant>
     <BContainer>
-      <small :class="isDark ? 'text-light' : 'text-muted'">JOSEPHA - ERA VA POC</small>
+      <small>JOSEPHA - ERA VA POC</small>
     </BContainer>
   </BNavbar>
 </template>
 
-<style scoped>
-.footer-bar {
-  background-color: var(--bs-body-bg);
-  border-top: 1px solid var(--bs-border-color);
-}
-</style>
+<style scoped></style>

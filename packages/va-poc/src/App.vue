@@ -48,7 +48,7 @@ declare module 'vue' {
 <template>
   <i18n-provider .locale="locale">
     <lws-provider :routeInfo="$route" target="#lws-btn">
-      <div class="d-flex h-100 text-center" :data-bs-theme="isDark ? 'dark' : 'light'">
+      <div class="d-flex h-10" data-bs-theme>
         <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
           <header class="mb-auto">
             <NavBar @update:locale="updateLocale" />

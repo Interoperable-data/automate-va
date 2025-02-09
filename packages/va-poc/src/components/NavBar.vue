@@ -3,7 +3,8 @@
     toggleable="md"
     :variant="isDark ? 'dark' : 'light'"
     :class="['nav-bar px-3', isDark ? 'bg-dark' : 'bg-light']"
-  >
+    >
+    <!-- ref="target" FAILS -->
     <BNavbarBrand to="/">JOSEPHA</BNavbarBrand>
 
     <BNavbarToggle target="nav-collapse" />
@@ -50,15 +51,21 @@ import {
   BNavbarNav,
   BNavItem,
   BNavItemDropdown,
-  BDropdown,
   BDropdownItem,
   BNavbarToggle,
   BCollapse,
+  useColorMode
 } from 'bootstrap-vue-next'
 import I18nSelector from './I18nSelector.vue'
 import DarkModeSwitch from './DarkModeSwitch.vue'
 
 const isDark = ref(document.documentElement.getAttribute('data-bs-theme') === 'dark')
+
+// Only in simple components, the ref target approach for darkmode works. In this NavBar, it does not.
+const target = ref<HTMLElement | null>(null)
+useColorMode({
+  selector: target,
+})
 
 // Watch for theme changes
 const observer = new MutationObserver((mutations) => {
@@ -83,10 +90,6 @@ const emitNewLocale = (newLocale: string) => {
   // update the locale in the PARENT component
   emit('update:locale', newLocale)
 }
-
-onMounted(() => {
-  console.log(`NavBar mounted with locale: ${locale.value}`)
-})
 </script>
 
 <i18n>

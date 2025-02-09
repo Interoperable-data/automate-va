@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import { BButton } from 'bootstrap-vue-next'
+import { BButton, useColorMode } from 'bootstrap-vue-next'
 
 const isDark = ref(false)
+// const target = ref<HTMLElement | null>(null)
+const mode = useColorMode()
 
 onMounted(() => {
   isDark.value =
     localStorage.getItem('theme') === 'dark' ||
-    window.matchMedia('(prefers-color-scheme: dark)').matches
+    window.matchMedia('(prefers-color-scheme: dark)').matches ||
+    mode.value === 'dark'
   applyTheme()
 })
 
 const toggleDarkMode = () => {
+  mode.value = mode.value === 'dark' ? 'light' : 'dark'
   isDark.value = !isDark.value
   applyTheme()
 }
