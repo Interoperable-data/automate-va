@@ -7,6 +7,7 @@ import TranslationTester from './components/TranslationTester.ce.vue'
 import { register as registerI18n } from '@va-automate/i18n-provider'
 import { register as registerLWS } from '@va-automate/lws-manager'
 import { register as registerTypeIndex } from '@va-automate/lws-manager'
+import AppFooter from './components/AppFooter.vue'
 
 // Register all custom elements
 registerI18n()
@@ -51,16 +52,14 @@ declare module 'vue' {
         <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
           <header class="mb-auto">
             <NavBar @update:locale="updateLocale" />
+            <SecondNavbar />
           </header>
-          <SecondNavbar />
 
-          <main class="px-3">
+          <main class="px-3 mb-5">
             <RouterView />
           </main>
 
-          <footer class="mt-auto text-white-50">
-            <p>JOSEPHA - ERA VA POC</p>
-          </footer>
+          <AppFooter />
         </div>
       </div>
     </lws-provider>

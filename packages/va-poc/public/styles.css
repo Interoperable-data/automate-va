@@ -27,7 +27,7 @@ body {
   --theme-body-color: #333;
   --theme-link-color: rgba(33, 37, 41, .5);
   --theme-link-hover-color: rgba(33, 37, 41, .75);
-  --theme-active-color: #333;
+  --theme-active-color: #555;
   --theme-border-color: rgba(33, 37, 41, .25);
   --theme-shadow-color: rgba(0, 0, 0, .1);
 }
@@ -73,6 +73,10 @@ body {
   align-items: center;
   transform: translateY(3px); /* This will move dropdowns down by 3px */
   color: var(--theme-link-color);
+}
+
+.dropdown {
+  margin-top: 4px; /* This will move the dropdowns down by 3px */
 }
 
 /* Specifically target right-side dropdowns if needed */
@@ -145,6 +149,7 @@ body {
 .cover-container {
   max-width: 1140px;
   padding: 0 1.5rem;
+  margin-left: 2rem; /* Add left margin instead of auto margins */
 }
 
 /* Brand styling */
@@ -202,17 +207,20 @@ body {
 @media (min-width: 768px) {
   .cover-container {
     max-width: 960px;
+    margin-left: 3rem;
   }
 }
 
 @media (min-width: 992px) {
   .cover-container {
     max-width: 1140px;
+    margin-left: 4rem;
   }
 }
 
 @media (min-width: 1200px) {
   .cover-container {
     max-width: 1320px;
+    margin-left: 5rem;
   }
 }

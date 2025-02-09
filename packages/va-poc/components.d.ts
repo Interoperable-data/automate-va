@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppFooter: typeof import('./src/components/AppFooter.vue')['default']
     BButton: typeof import('bootstrap-vue-next/components/BButton')['BButton']
     BCollapse: typeof import('bootstrap-vue-next/components/BCollapse')['BCollapse']
     BContainer: typeof import('bootstrap-vue-next/components/BContainer')['BContainer']
@@ -21,6 +22,7 @@ declare module 'vue' {
     BNavItem: typeof import('bootstrap-vue-next/components/BNav')['BNavItem']
     BNavItemDropdown: typeof import('bootstrap-vue-next/components/BNav')['BNavItemDropdown']
     DarkModeSwitch: typeof import('./src/components/DarkModeSwitch.vue')['default']
+    Footer: typeof import('./src/components/Footer.vue')['default']
     I18nSelector: typeof import('./src/components/I18nSelector.vue')['default']
     IMdiLanguage: typeof import('~icons/mdi/language')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
