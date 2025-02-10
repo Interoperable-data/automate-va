@@ -34,7 +34,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ;
     vpa:definesCase eva:vac-13-178-0010-8-001-001-1 ;
 
     ##### CONFIGURATION
-    era:hasWheelSetGauge era-ntg-rinf:30 ;
+    era:wheelSetGauge era-ntg-rinf:30 ;
     era:protectionLegacySystem era-tpls-rinf:40 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
 
@@ -76,15 +76,34 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ;
 # Configuration only used in 3.1.2.4 (auth)
 eratv:ConfigA a era:VTConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / PZB 90" ;
-    era:hasWheelSetGauge era-ntg-rinf:30 ;
+    era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
     era:protectionLegacySystem era-tpls-rinf:40 .
+
+# Non-coded CfU & restrictions
+eratv:nccfu-13-178-0010-8-001-001-1 a vpa:Restriction ;
+    vpa:regarding eratv:ConfigA ;
+    rdfs:comment """Die für den MIREO 4-Teiler 15kV PZB Midi (Mireo Netz Regensburg Donautal) weiterhin gültigen Einsatzbedingungen/-beschränkungen des Referenztyps MIREO S-Bahn Rhein-Neckar:
+- Steilstreckenbetrieb mit Fahrzeugen dieses Typs ist nicht zulässig.
+- Der minimale befahrbare vertikale Ausrundungshalbmesser für das Fahrzeug beträgt 500m.
+- Das Fahrzeug ist für den Betrieb auf Ablaufbergen sowie Rangier- und Bremseinrichtungen in Arbeitsstellung nicht geeignet.
+- Die maximale Bahnsteighöhe für das Öffnen der Türen beträgt 960mm.
+..."""@de .
 
 # GERMANY - See all authorisation data under 3.1.X.X
 eva:vac-13-178-0010-8-001-001-1 a era:VAAuthorisationCase ;
     vpa:permissionType era-va-authcase:NEW ;
     era:typeRegistrationMethod era-vehicle-types-regmethod:NewType ;
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
+
+    # Conditions linked to a Configuration
+    era:configDependentConditions [ 
+        a era:VehicleTypeCompliance ; # subClassOf vpa:Compliance
+        vpa:checkedSection <IRI to the NNTR causing the restriction> ; # Rarely available
+        vpa:withRestriction eratv:NCCFU-13-178-0010-8-001-001-1 ;
+    ] ;
+
+    # Links to the application, as it exists.
     vpa:supports eva:va-20240202-004 .
 
 eva:va-20240202-004 a era:VAApplication, vpa:Request ;
