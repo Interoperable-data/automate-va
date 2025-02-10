@@ -74,7 +74,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ;
     era:vehicleTypePlatform "MIREO" .
 
 # Configuration only used in 3.1.2.4 (auth)
-eratv:ConfigA a era:VTConfiguration ;
+eratv:ConfigA a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / PZB 90" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
