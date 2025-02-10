@@ -29,6 +29,24 @@ eratv:vt-31-110-0008-3-001-001 a era:VehicleType ;
     era:manufacturer era-org:WaggonUnionLinkeHoffmannBusch ; # only possible reference, given no more data
     era:vehicleTypePlatform "DB RIC" .
 
+# One special VehicleType Config
+eratv:config1435Hauled a era:VehicleTypeConfiguration ;
+    rdfs:label "1435mm / None (for hauled passenger vehicles and special vehicles)"@en ;
+    era:wheelSetGauge era-ntg-rinf:30 ;
+    era:energySupplySystem era-ess-rinf:None .
+
+# Coded and Non-coded CfU & restrictions
+eratv:nccfu-31-110-0008-3-001-001-1 a vpa:Restriction ;
+    vpa:regarding eratv:config1435Hauled ;
+    era:minimumHorizontalRadius 150 ;
+    era:gaugingProfile era-gaugings-rinf:40 ;
+    era:maximumDesignSpeed 200 ;
+    rdfs:comment """1. The vehicles are verified for operation in existing long tunnels in area of use Denmark meaning tunnels with a length of more than 1 km.
+2. The vehicles are not allowed to be used in night train service due to missing fire detection system.
+3. Staff is required in the coach configuration during passenger traffic in order to ensure communication in emergencies and operation of safety equipment
+4. The coaches shall be hauled by a locomotive with an EBO function that has been tested to by fully functional with a configuration of these coaches"""@en .
+    
+
 # Link with the underlying authorisation case in which this was submitted in OSS.
 # The case {type}-1 must compile the data of authorisation 3.1
 
@@ -37,6 +55,14 @@ eva:vac-31-110-0008-3-001-001-1 a era:VAAuthorisationCase ;             # Uses: 
     vpa:permissionType era-va-authcase:EXT ;                            # implies presence of a era:VehicleAuthorisation in OSS
     era:typeRegistrationMethod era-vehicle-types-regmethod:NewType ;    # see: https://github.com/Certiman/automate-va/issues/2
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DNK> ; # Whole memberstate
+
+    # Conditions linked to a Configuration
+    era:configDependentConditions [ 
+        a era:VehicleTypeCompliance ; # subClassOf vpa:Compliance
+        vpa:checkedSection <IRI to the NNTR causing the restriction> ; # Rarely available
+        vpa:withRestriction eratv:nccfu-31-110-0008-3-001-001-1 ;
+    ] ;
+
     vpa:supports eva:va-V20230413021 .                                  # A real VA application
 
 eva:va-V20230413021 a era:VAApplication, vpa:Request ; # named node as it was physically submitted in OSS
