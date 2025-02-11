@@ -24,19 +24,19 @@
 @prefix era-org: <http://data.europa.eu/949/organisations/> .
 
 ### VehicleType
-eratv:vt-11-057-0003-1-003 a era:VehicleType ;
+eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
   dcterms:identifier "11-057-0003-1-003" ;
   dcterms:issued "2019-03-27T00:00:00Z"^^xsd:dateTime ; # Date of Record
   rdfs:label "X4-E-Lok-AB (MS-Lokomotiven) Korridor D-A-I_Rel. E1.03" ;
   era:alternativeVehicleTypeName "E193 DAI_Rel. E1.03" ; # current property is too general
   era:category era-vehicle-types-eratv:tractionVehicles ;
   era:subCategory era-vehicle-types-eratv:locomotive ;
-  vpa:definesCase eva:vac-11-057-0003-1-003-1 , eva:vac-11-057-0003-1-003-1 ;
+  vpa:definesCase eva:vac-11-057-0003-1-003-1 , eva:vac-11-057-0003-1-003-2 ; # DE, AT
   ...
   era:vehicleTypePlatform "X4" .
 
 ### VehicleTypeConfigurations
-### Note, these are IDENTICAL as those definedin the type 11-057-0018-9-001
+### Note, these are IDENTICAL as those defined in the type 11-057-0018-9-001
 # 1435mm / AC 15kV-16.7Hz / Indusi/PZB
 eratv:Config1435IndusiPZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / Indusi/PZB" ;
@@ -60,8 +60,10 @@ eratv:nccfu-11-057-0003-1-003-1-1 a vpa:Restriction ;
   era:minimumHorizontalRadius 140 ;
   era:gaugingProfile era-gaugings-rinf:40 ;
   # ... coded 2.4, 2.5 as they are identical for both configs.
-  era:etcsEquipmentOnBoardLevel <> ;
-  era:protectionLegacySystem <> .
+  era:etcsEquipmentOnBoardLevel era-etcslevel:30 ; # L2, without details on what TSI
+  era:protectionLegacySystem <> . # ERA DOC needed to convert codes to:
+  # correct SKOS CS, check whether era-tpls:TrainProtectionLegacySystems is as per 
+  # TSI CCS - Annex II.3.3.   List of Class B train protection systems
 
 eratv:nccfu-11-057-0003-1-003-1-2 a vpa:Restriction ;
   vpa:regarding eratv:Config1435LZB ;
