@@ -4,6 +4,7 @@
 @prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
 @prefix era: <http://data.europa.eu/949/> .
 @prefix eralex: <http://data.europa.eu/949/eli/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
 @prefix eva: <http://data.europa.eu/949/eva/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix org: <http://www.w3.org/ns/org#> .
@@ -19,7 +20,10 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 
-eratv:vt-13-178-0010-8-001-001 a era:VehicleType ;
+era-org:MF-DE-81739-1 a era:Body ;
+    foaf:name "Siemens Mobility GmbH" .
+
+eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     ##### GENERAL INFO
     dcterms:identifier "13-178-0010-8-001-001" ;
     dcterms:issued "2024-06-14"^^xsd:date ;  # From XML: Date of record
@@ -28,10 +32,14 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ;
     era:alternativeName "MIREO Regensburg Donautal" ;
     era:category era-vehicle-types-eratv:tractionVehicles ;
     era:subCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
-    era:manufacturer era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH
+    era:manufacturer [
+        a era:OrganisationRole ;
+        era:roleOf era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH (era:Body, see above)
+        era:hasOrganisationRole era-organisation-roles:Manufacturer
+    ] ;
 
     ##### LINKED AUTHORISATIONS
-    vpa:definesCase eva:vac-13-178-0010-8-001-001-1 ;
+    vpa:definesCase eva:vac-13-178-0010-8-001-001-1 ; 
 
     ##### CONFIGURATION
     era:wheelSetGauge era-ntg-rinf:30 ;
@@ -57,14 +65,14 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ;
     # Parameters linked with a Configuration
     era:configDependentParameter [ 
         a era:VTConfigParameterSet ;
-        era:forConfiguration era-ess-rinf:AC20 ;
-        era:maximumContactWireHeight "0004.70 m to 0006.50 m" ;
+        era:forConfiguration eratv:ConfigC ; # ONLY SKOS CS era-ess-rinf:AC20 ;
+        era:maximumContactWireHeight "4.70"^^xsd:double, "6.50"^^xsd:double ;
         era:vehiclePantographHead "1950 sc DE and AT mm" ;
         era:numberOfPantographsInContactWithOCL "1" ;
         # other parameters as in 4.10.X
     ] , [
         a era:VTConfigParameterSet ;
-        era:forConfiguration era-ntg-rinf:30 ;
+        era:forConfiguration eratv:ConfigB ; # ONLY SKOS CS era-ntg-rinf:30 ;
         era:vehicleTypeMaximumSpeedAndCantDeficiency [
             a era:MaximumSpeedAndCantDeficiency ;
             era:vehicleTypeMaximumCantDeficiency "150" ;
@@ -74,30 +82,39 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ;
     era:vehicleTypePlatform "MIREO" .
 
 # Configuration only used in 3.1.2.4 (auth)
-eratv:ConfigA a era:VehicleTypeConfiguration ;
+eratv:ConfigA a era:VehicleTypeConfiguration ; # NOT a subClass of vpa:Requirement
     rdfs:label "1435mm / AC 15kV-16.7Hz / PZB 90" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
     era:protectionLegacySystem era-tpls-rinf:40 .
 
-# Non-coded CfU & restrictions
-eratv:nccfu-13-178-0010-8-001-001-1 a vpa:Restriction ;
-    vpa:regarding eratv:ConfigA ;
-    rdfs:comment """Die für den MIREO 4-Teiler 15kV PZB Midi (Mireo Netz Regensburg Donautal) weiterhin gültigen Einsatzbedingungen/-beschränkungen des Referenztyps MIREO S-Bahn Rhein-Neckar:
+eratv:ConfigB a era:VehicleTypeConfiguration ;
+    rdfs:label "1435mm" ;
+    era:wheelSetGauge era-ntg-rinf:30 .
+
+eratv:ConfigC a era:VehicleTypeConfiguration ;
+    rdfs:label "AC 15kV-16.7Hz" ;
+    era:energySupplySystem era-ess-rinf:AC20 .
+
+# Non-coded CfU & restrictions (See https://eur-lex.europa.eu/eli/dec_impl/2011/665/2023-09-08#anx_I part 6)
+eratv:nccfu-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationRestriction ; # MAYBE subClassOf vpa:Restriction ;
+    # DO NOT USE vpa:regarding eratv:ConfigA as configs cannot be vpa:Requirement's ;
+    era:forConfiguration eratv:ConfigA ;
+    era:nonCodedRestrictions """Die für den MIREO 4-Teiler 15kV PZB Midi (Mireo Netz Regensburg Donautal) weiterhin gültigen Einsatzbedingungen/-beschränkungen des Referenztyps MIREO S-Bahn Rhein-Neckar:
 - Steilstreckenbetrieb mit Fahrzeugen dieses Typs ist nicht zulässig.
 - Der minimale befahrbare vertikale Ausrundungshalbmesser für das Fahrzeug beträgt 500m.
 - Das Fahrzeug ist für den Betrieb auf Ablaufbergen sowie Rangier- und Bremseinrichtungen in Arbeitsstellung nicht geeignet.
 - Die maximale Bahnsteighöhe für das Öffnen der Türen beträgt 960mm.
-..."""@de .
+..."""@de . # existing property
 
 # GERMANY - See all authorisation data under 3.1.X.X
-eva:vac-13-178-0010-8-001-001-1 a era:VAAuthorisationCase ;
+eva:vac-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:NEW ;
     era:typeRegistrationMethod era-vehicle-types-regmethod:NewType ;
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
 
     # Conditions linked to a Configuration
-    era:configDependentConditions [ 
+    era:configurationDependentConditions [ 
         a era:VehicleTypeCompliance ; # subClassOf vpa:Compliance
         vpa:checkedSection <IRI to the NNTR causing the restriction> ; # Rarely available
         vpa:withRestriction eratv:NCCFU-13-178-0010-8-001-001-1 ;
@@ -106,13 +123,17 @@ eva:vac-13-178-0010-8-001-001-1 a era:VAAuthorisationCase ;
     # Links to the application, as it exists.
     vpa:supports eva:va-20240202-004 .
 
-eva:va-20240202-004 a era:VAApplication, vpa:Request ;
+eva:va-20240202-004 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
     vpa:requestFor eva:20240202-004 .
 
-eva:20240202-004 a era:VAAuthorisation, vpa:Permission ;
+eva:20240202-004 a era:VehicleTypeAuthorisation; # subClassOf vpa:Permission ;
     dcterms:identifier "EU8020240152" ;
     dcterms:issued "2024-06-14"^^xsd:date ;
-    era:vehicleTypeAuthorisationHolder era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH
+    era:vehicleTypeAuthorisationHolder [
+        a era:OrganisationRole ;
+        era:roleOf era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH
+        era:hasOrganisationRole era-organisation-roles:Holder ;
+    ] ;
     dcterms:isReplacedBy eva:20240621-009 ;
     vpa:valid [
         a time:ProperInterval ;
@@ -123,31 +144,31 @@ eva:20240202-004 a era:VAAuthorisation, vpa:Permission ;
     ].
 
 # For the first C2T application following 20240202-004: this was V-20240621-009
-eva:vac-13-178-0010-8-001-001-2 a era:VAAuthorisationCase ;
+eva:vac-13-178-0010-8-001-001-2 a era:VehicleAuthorisationCase ;
     vpa:permissionType era-va-authcase:C2T ;
     # Non-disclosed - OSS data on the auth case can be placed here
     vpa:supports eva:va-20240621-009 .
 
-eva:va-20240621-009 a era:VAApplication, vpa:Request ;
+eva:va-20240621-009 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request ;
     # Non-disclosed - OSS data can be placed here
     vpa:requestFor eva:20240621-009 .
 
-eva:20240621-009 a era:VAAuthorisation, vpa:Permission ;
+eva:20240621-009 a era:VehicleAuthorisation ; # subClassOf vpa:Permission ;
     dcterms:identifier "EU8120241578" ;
     dcterms:isReplacedBy eva:20241219-012 ;
     dcterms:issued "2024-06-26"^^xsd:date .
 
 # For the C2T application following 20240621-009: this was V-20241219-012
-eva:vac-13-178-0010-8-001-001-3 a era:VAAuthorisationCase ;
+eva:vac-13-178-0010-8-001-001-3 a era:VehicleAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:C2T ;
     # Non-disclosed - OSS data on the auth case can be placed here
     vpa:supports eva:va-20241219-012 .
 
-eva:va-20241219-012 a era:VAApplication, vpa:Request ;
+eva:va-20241219-012 a era:VehicleAuthorisationApplication # subClassOf vpa:Request ;
     # Non-disclosed - OSS data can be placed here
     vpa:requestFor eva:20241219-012 .
 
-eva:20241219-012 a era:VAAuthorisation, vpa:Permission ;
+eva:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission ;
     dcterms:identifier "EU8120250002" ;
     dcterms:issued "2025-01-03"^^xsd:date .
 
