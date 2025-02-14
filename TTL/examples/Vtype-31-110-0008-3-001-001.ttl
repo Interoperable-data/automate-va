@@ -36,12 +36,12 @@ eratv:config1435Hauled a era:VehicleTypeConfiguration ;
     era:energySupplySystem era-ess-rinf:None .
 
 # Coded and Non-coded CfU & restrictions
-eratv:nccfu-31-110-0008-3-001-001-1 a vpa:Restriction ;
-    vpa:regarding eratv:config1435Hauled ;
+eratv:nccfu-31-110-0008-3-001-001-1 a era:VehicleTypeAuthorisationRestriction ;
+    era:forConfig eratv:config1435Hauled ;
     era:minimumHorizontalRadius 150 ;
     era:gaugingProfile era-gaugings-rinf:40 ;
     era:maximumDesignSpeed 200 ;
-    rdfs:comment """1. The vehicles are verified for operation in existing long tunnels in area of use Denmark meaning tunnels with a length of more than 1 km.
+    era:nonCodedRestrictions """1. The vehicles are verified for operation in existing long tunnels in area of use Denmark meaning tunnels with a length of more than 1 km.
 2. The vehicles are not allowed to be used in night train service due to missing fire detection system.
 3. Staff is required in the coach configuration during passenger traffic in order to ensure communication in emergencies and operation of safety equipment
 4. The coaches shall be hauled by a locomotive with an EBO function that has been tested to by fully functional with a configuration of these coaches"""@en .
