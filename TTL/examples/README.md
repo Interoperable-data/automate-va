@@ -1,10 +1,10 @@
-## On the examples
+# On the examples
 
 The `/examples` folder contains `.ttl`-files of resources expected to be critical in the automated authorisation process. These examples show some important aspects of CLD, EC declarations and Vehicle Types. Only some are repeted here.
 
 The introduction of new Vehicle Types must follow internal procedure [INS_VEA_011](../INS_VEA_011%20Registration%20in%20ERATV.pdf).
 
-### CLD and EC Declaration
+## CLD and EC Declaration
 
 The following guidelines follow from the documentation on CLDs and EC Declarations.
 
@@ -16,11 +16,11 @@ The following guidelines follow from the documentation on CLDs and EC Declaratio
   - (for one specific certificate) through the path `?decl dcterms:references/dct:hasPart ?cert`, combined with `?cert vpa:valid/time:hasBeginning ?begin`, and using the same as above duration.
 - Given the non-disclosed nature of some properties, the `vpa:checked` property must link to triples stored in a private graph or container.
 
-### VA Applications
+## VA Applications
 
-The data model confirms what is registered in ERATV: a vehicleType must be supported by a `era:VVTAuthorisation`, which is a subClassOf `vpa:Permission`. 
+The data model confirms what is registered in ERATV: a vehicleType must be supported by  `era:VehicleAuthorisation` (for C2T or placing in service authorisations) and `era:VehicleTypeAuthorisation`, both of which are a subClassOf `vpa:Permission`. 
 
-#### Fourth Railway Package: link with authorising entities' authorisations
+### From Fourth Railway Package (2016/979, 2018/545): link with authorising entities' authorisations
 
 Each type which was authorised under the 4th Railway Package ((EU) 2016/797, detailed in (EU)2018/545), must be linked to the authorisation case for which it was the scope:
 
@@ -29,31 +29,31 @@ eratv:{vehicle type identifier} a era:VehicleType ;
     ...
     vpa:definesCase eva:{authorisation case identified by type id + index} , ... ;
 
-eva:{authorisation case identified by type id + index} a era:VAAuthorisationCase ;
+eva:{authorisation case identified by type id + index} a era:VehicleTypeAuthorisationCase ;
     vpa:permissionType era{SKOS-CS} ;
     ...
     # 4RP means the application exists
     vpa:supports eva:va-{OSSID} | eva:va-{NATIONAL AUTH ID} ; 
     ...
 
-eva:va-{OSS_ID} | eva:va-{NATIONAL AUTH ID} a era:VAApplication ; 
+eva:va-{OSS_ID} | eva:va-{NATIONAL AUTH ID} a era:VehicleTypeAuthorisationApplication ; 
     # if possible add more properties when known, using dcterms.
     vpa:requestFor eva:{OSSID} | eva:{NATIONAL AUTH} .
 
-eva:{OSSID} a era:VAAuthorisation ;
+eva:{OSSID} a era:VehicleTypeAuthorisation ;
     # other properties as colected from the Authorisation-section in ERATV
 ```
 
 [Example type: 13-178-0010-8-001-001](https://eratv.era.europa.eu/Eratv/Home/View/13-178-0010-8-001-001)
 
-#### Before the fourth Railway Package
+### Before 2018/545 (3RP, 2016/797): types as introduced with 2008/57
 
-It can generally be assumed that several information on types authorised under pre-4RP is not present. Comparing with a 4RP vehicle type:
+It can generally be assumed that some information on types authorised under 3RP is not present. Comparing with a 4RP vehicle type:
 
 - The Manufacturer is only identified by one Literal (string)
 - The vehicle type holder: same
-- The "area of use" not legally existing, authorisations were given for a membse state.
-- There is no trace with OSS, as this application did not exist and all "APIS" were delivered nationally.
+- The "area of use" not legally existing, authorisations were given for a member state.
+- There is no trace in OSS, as this application did not exist and all "APIS" were delivered nationally.
 
 In this case, the above structure is reduced as follows:
 
