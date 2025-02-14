@@ -55,8 +55,8 @@ eratv:Config1435LZB a era:VehicleTypeConfiguration ;
     era:protectionLegacySystem era-tpls-rinf:34 .
 
 #### Restrictions
-eratv:NCCFU-11-057-0018-9-001-1 a vpa:Restriction ;
-    vpa:regarding eratv:Config1435LZB , eratv:Config1435IndusiPZB ;
+eratv:NCCFU-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationRestriction ;
+    era:forConfig eratv:Config1435LZB , eratv:Config1435IndusiPZB ;
     # ... both are identical and coded only.
 
 #### AuthorisationCase
@@ -102,7 +102,7 @@ eva:auth-11-057-0018-9-001-DE-2 a era:VehicleTypeAuthorisation  ;
 
 # SWITZERLAND - See all authorisation data under 3.2.X.X
 eva:vac-11-057-0018-9-001-2 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VAAuthorisationCase subClassOf vpa:Case
-    vpa:permissionType era-skos-va:HistoricalAuthCase ;  # implies absence of a era:VehicleAuthorisation
+    vpa:permissionType era-skos-va:HistoricalAuthorisationCase ;  # implies absence of a era:VehicleAuthorisation
     era:typeRegistrationMethod era-vehicle-types-regmethod:NewTypeOfRegisteredPlatform ; # does not yet exist, see issue on CS
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/CHE> ; # Whole memberstate
     vpa:supports [
@@ -114,7 +114,12 @@ eva:vac-11-057-0018-9-001-2 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VA
 eva:auth-11-057-0018-9-001-CH-1 a era:VehicleTypeAuthorisation ;
     dcterms:identifier "CH5920191114" ;
     dcterms:issued "2019-12-16"^^xsd:date ; # the document issue date
-    era:vehicleTypeAuthorisationHolder era-org:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
+    era:vehicleTypeAuthorisationHolder 
+        [    
+            a era:OrganisationRole ;
+            era:roleOf era-org:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
+            era:hasRole <Holder> .
+        ];
     dcterms:isReplacedBy eva:auth-11-057-0018-9-001-2-2 ;
     vpa:valid [
         a time:ProperInterval ;
