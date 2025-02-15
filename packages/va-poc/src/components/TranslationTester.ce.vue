@@ -1,18 +1,13 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { ref, watchEffect } from 'vue'
-import { useRouter } from 'vue-router'
 import {
-  getTypeIndexContainers,
-  getProfileInfo,
-  getPropertiesFromTypeRegistration,
-  getTypeRegistrationsFromContainers,
+  getPodProfileAndRegistrations,
+  type PodProfileAndRegistrations,
 } from '@va-automate/lws-manager'
 import { sessionStore } from '@va-automate/lws-manager'
-import { type TypeRegistration } from '@va-automate/lws-manager'
 import { BContainer, BAlert } from 'bootstrap-vue-next'
 
-const router = useRouter()
 const props = defineProps<{ name: string }>()
 
 const { t, locale } = useI18n({
@@ -20,52 +15,23 @@ const { t, locale } = useI18n({
   useScope: 'local',
 })
 
-// Read the profile
-const solidProfileName = ref<string | null>(null)
-const typeIndexContainers = ref<URL[]>([])
-const typeRegistrations = ref<TypeRegistration[]>([])
-const hasNoProfile = ref(false)
+// Profile state
+const profile = ref<PodProfileAndRegistrations | null>(null)
 
 watchEffect(async () => {
   if (!sessionStore.loggedInWebId) return
-  const webId = new URL(sessionStore.loggedInWebId)
 
   try {
-    const profileInfo = await getProfileInfo(webId)
-    if (!profileInfo.name) {
-      hasNoProfile.value = true
-      console.warn('No profile name found, user should create a profile')
-      // Optional: Automatically redirect to profile page
-      // router.push('/profile')
-      return
-    }
-
-    solidProfileName.value = profileInfo.name
-    hasNoProfile.value = false
-
-    // Only fetch type information if we have a profile
-    typeIndexContainers.value = await getTypeIndexContainers(webId)
-    typeRegistrations.value = await getTypeRegistrationsFromContainers(
-      webId,
-      typeIndexContainers.value,
-    )
-
-    for (const registration of typeRegistrations.value) {
-      const properties = await getPropertiesFromTypeRegistration(registration)
-      console.log('Properties for', registration.forClass, ':', properties)
-    }
+    profile.value = await getPodProfileAndRegistrations(new URL(sessionStore.loggedInWebId))
   } catch (error) {
-    console.error(
-      'Error fetching profile info, type index containers, or type registrations:',
-      error,
-    )
+    console.error('Error fetching profile and registration info:', error)
   }
 })
 </script>
 
 <template>
   <BContainer>
-    <BAlert v-if="hasNoProfile" variant="warning" dismissible :model-value="true">
+    <BAlert v-if="profile && !profile.hasProfile" variant="warning" dismissible :model-value="true">
       <h4 class="alert-heading">{{ t('noProfileTitle') }}</h4>
       <p class="mb-0">
         {{ t('noProfile') }}
@@ -76,7 +42,7 @@ watchEffect(async () => {
     <template v-else>
       <h3>{{ props.name }}</h3>
       <div>
-        {{ solidProfileName || props.name }} says [{{ locale }}]:
+        {{ profile?.name || props.name }} says [{{ locale }}]:
         {{ t('hello') + ' ' + t('world') }}
       </div>
       <slot id="first">Loading...</slot>

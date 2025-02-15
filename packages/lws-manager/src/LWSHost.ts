@@ -1,28 +1,4 @@
-import {
-  getWebIdDataset,
-  getThing,
-  getStringNoLocale,
-} from '@inrupt/solid-client'
-import { FOAF } from '@inrupt/vocab-common-rdf'
-import { sessionStore } from './stores/LWSSessionStore'
-
-// Function to retrieve profile info from a WebID
-export async function getProfileInfo(
-  webId: URL
-): Promise<{ name: string | null }> {
-  try {
-    const dataset = await getWebIdDataset(webId.href)
-    sessionStore.logDatasetAnalysis(webId.href, 'Retrieving profile info') // Log dataset analysis
-    const profile = getThing(dataset, webId.href)
-
-    const name = profile ? getStringNoLocale(profile, FOAF.name) : null
-
-    return { name }
-  } catch (error) {
-    console.error('Error retrieving profile info:', error)
-    return { name: null }
-  }
-}
+import { getWebIdDataset } from '@inrupt/solid-client'
 
 // isWebId function
 export async function isWebId(uri: URL): Promise<boolean> {
