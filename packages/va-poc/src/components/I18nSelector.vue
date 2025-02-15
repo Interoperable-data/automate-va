@@ -22,7 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <BNavItemDropdown class="me-2">
+  <BNavItemDropdown class="me-2 i18n-selector">
     <template #button-content>
       <i class="bi bi-globe me-1"></i>
       {{ selectedLocale.toUpperCase() }}
@@ -38,4 +38,8 @@ onMounted(() => {
   </BNavItemDropdown>
 </template>
 
-<style scoped></style>
+<style scoped>
+.i18n-selector :deep(.dropdown-menu) {
+  z-index: var(--app-navbar-dropdown-z-index) !important;
+}
+</style>
