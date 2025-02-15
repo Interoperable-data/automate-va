@@ -3,18 +3,16 @@ import {
   getThing,
   getStringNoLocale,
 } from '@inrupt/solid-client'
-
-// Vocabularies
-import { FOAF } from '@inrupt/vocab-common-rdf' // Add RDFS
-
-// Store for process data
-import { sessionStore } from './stores/LWSSessionStore'; // Import sessionStore
+import { FOAF } from '@inrupt/vocab-common-rdf'
+import { sessionStore } from './stores/LWSSessionStore'
 
 // Function to retrieve profile info from a WebID
-export async function getProfileInfo(webId: URL): Promise<{ name: string | null }> {
+export async function getProfileInfo(
+  webId: URL
+): Promise<{ name: string | null }> {
   try {
     const dataset = await getWebIdDataset(webId.href)
-    sessionStore.logDatasetAnalysis(webId.href, 'Retrieving profile info'); // Log dataset analysis
+    sessionStore.logDatasetAnalysis(webId.href, 'Retrieving profile info') // Log dataset analysis
     const profile = getThing(dataset, webId.href)
 
     const name = profile ? getStringNoLocale(profile, FOAF.name) : null

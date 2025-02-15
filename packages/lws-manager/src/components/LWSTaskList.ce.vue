@@ -10,7 +10,7 @@
         >
           <div class="card-header">{{ key }}</div>
           <div class="card-body">
-            <ul class="list-group">
+            <ul class="list-group" v-if="tasks.length">
               <li
                 v-for="(task, taskKey) in tasks"
                 :key="taskKey"
@@ -19,6 +19,10 @@
                 <strong>{{ taskKey }}:</strong> {{ task.label }}
               </li>
             </ul>
+            <span v-else> {{ t('noTaskRegistrationsForWebId') + ` [WebId: ${key}]` }}</span>
+          </div>
+          <div class="card-footer">
+            {{ taskRegistrations  }}
           </div>
         </div>
       </ul>
@@ -45,8 +49,9 @@ const taskRegistrations = computed(() => processStore.taskRegistrations)
 <i18n>
 {
   "en": {
-    "taskRegistrations": "Task Registrations",
-    "noTaskRegistrations": "No Task Registration found"
+    "taskRegistrations": "Task Registrations List",
+    "noTaskRegistrations": "No Task Registration found",
+    "noTaskRegistrationsForWebId": "No Task Registration found for"
   },
   "es": {
     "taskRegistrations": "Registro de tareas",

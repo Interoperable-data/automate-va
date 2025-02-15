@@ -1,6 +1,6 @@
 <template>
   <BNavbar variant="secondary" type="light" id="second-navbar">
-    <BNavbarBrand href="#">Session Info</BNavbarBrand>
+    <BNavbarBrand href="#">{{ $route.fullPath }} </BNavbarBrand>
     <BNavbarNav>
       <BNavItem v-if="sessionStore.rerouting">
         {{ t('redirecting') }}
@@ -14,7 +14,6 @@
       </BNavItem>
     </BNavbarNav>
   </BNavbar>
-  <BContainer> <strong>Current route path:</strong> {{ $route.fullPath }} </BContainer>
 </template>
 
 <script setup lang="ts">

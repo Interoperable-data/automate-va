@@ -1,2 +1,27 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
-/* @import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'; */
+
+/* LWS Navbar styles */
+.lws-navbar {
+  min-height: 48px;
+  background-color: var(--theme-body-bg);
+  border-bottom: 1px solid var(--theme-border-color);
+}
+
+.lws-navbar .dropdown-menu {
+  margin-top: 0.5rem;
+}
+
+.lws-navbar .dropdown-item {
+  color: var(--theme-link-color);
+}
+
+.lws-navbar .dropdown-item:hover,
+.lws-navbar .dropdown-item:focus {
+  color: var(--theme-active-color);
+  background-color: var(--theme-border-color);
+}
+
+.lws-navbar .dropdown-item.active {
+  color: var(--theme-active-color);
+  background-color: var(--theme-border-color);
+}

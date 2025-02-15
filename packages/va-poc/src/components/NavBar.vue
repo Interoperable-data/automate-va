@@ -5,7 +5,7 @@
     :class="['nav-bar px-3', isDark ? 'bg-dark' : 'bg-light']"
     >
     <!-- ref="target" FAILS -->
-    <BNavbarBrand to="/">JOSEPHA</BNavbarBrand>
+    <BNavbarBrand to="/"><h1>JOSEPHA</h1></BNavbarBrand>
 
     <BNavbarToggle target="nav-collapse" />
 

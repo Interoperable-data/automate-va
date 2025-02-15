@@ -13,16 +13,16 @@
 
 import { useI18n } from 'vue-i18n'
 import { onMounted, ref } from 'vue'
-import {
-  //   CE's do not have the router
-  //   useRouter,
-  type RouteLocationNormalizedLoadedGeneric,
-} from 'vue-router'
-// const router = useRouter();
+import type { Session } from '@inrupt/solid-client-authn-browser'
+import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import {
   loginToSelectedIdP,
   logoutFromSolidPod,
   tryIncomingRedirect,
+  getStoredIdP,
+  setStoredIdP,
+  SOLID_PROVIDERS,
+  getSelectedProviderName,
 } from '../auth/LWSAuth' // Import login and logout functions
 
 // Stores
@@ -30,7 +30,15 @@ import { sessionStore } from '../stores/LWSSessionStore'
 
 // Refs
 // TODO: values should be props
-const SELECTED_IDP = ref('https://login.inrupt.com') // More options needed
+const SELECTED_IDP = ref(getStoredIdP()) // Initialize with stored value
+
+// Add new ref for dropdown state
+const isDropdownOpen = ref(false)
+
+// Add dropdown toggle function
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value
+}
 
 // props
 const props = defineProps<{
@@ -48,6 +56,15 @@ const { t } = useI18n({
 const login = () => {
   return loginToSelectedIdP(SELECTED_IDP.value)
 }
+
+const selectProvider = (provider: string) => {
+  SELECTED_IDP.value = provider
+  setStoredIdP(provider) // Store selection
+  isDropdownOpen.value = false // Close dropdown after selection
+}
+
+// Get provider name for display
+const getProviderName = () => getSelectedProviderName(SELECTED_IDP.value)
 
 // logout function
 const logout = async () => {
@@ -84,44 +101,105 @@ onMounted(async () => {
 </script>
 
 <template>
-  <button
-    v-if="!sessionStore.loggedInWebId"
-    @click="login"
-    class="btn btn-primary"
-  >
-    {{ t('login') }}
-  </button>
-  <button
-    v-if="sessionStore.loggedInWebId"
-    @click="logout"
-    class="btn btn-danger"
-  >
-    {{ t('logout') }}
-  </button>
+  <nav class="navbar navbar-expand fixed-top py-1 lws-navbar">
+    <div class="container-fluid">
+      <span class="navbar-brand">
+        <template v-if="sessionStore.loggedInWebId">
+          {{ t('connectedTo') }} {{ getProviderName() }}
+        </template>
+        <template v-else>
+          {{ t('connectTo') }}
+        </template>
+      </span>
+
+      <div class="me-auto" v-if="!sessionStore.loggedInWebId">
+        <div class="dropdown">
+          <button
+            class="btn btn-outline-secondary dropdown-toggle"
+            type="button"
+            id="providerDropdown"
+            @click="toggleDropdown"
+            :aria-expanded="isDropdownOpen"
+          >
+            {{ t('selectProvider') }}
+          </button>
+          <ul
+            class="dropdown-menu"
+            :class="{ show: isDropdownOpen }"
+            aria-labelledby="providerDropdown"
+          >
+            <li v-for="(url, name) in SOLID_PROVIDERS" :key="url">
+              <a
+                class="dropdown-item"
+                href="#"
+                @click.prevent="selectProvider(url)"
+                :class="{ active: SELECTED_IDP === url }"
+              >
+                {{ name }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ms-auto">
+        <button
+          v-if="!sessionStore.loggedInWebId"
+          @click="login"
+          class="btn btn-primary"
+        >
+          {{ t('loginTo') }} {{ getProviderName() }}
+        </button>
+        <button
+          v-if="sessionStore.loggedInWebId"
+          @click="logout"
+          class="btn btn-danger"
+        >
+          {{ t('logout') }}
+        </button>
+      </div>
+    </div>
+  </nav>
   <slot />
 </template>
 
-<style scoped>
+<style>
 @import '../LWSStyles.css';
 </style>
 
 <i18n>
-  {
-    "en": {
-      "login": "Login to Solid Pod",
-      "logout": "Logout from Solid Pod"
-    },
-    "fr": {
-      "login": "Connexion au Solid Pod",
-      "logout": "Déconnexion du Solid Pod"
-    },
-    "de": {
-      "login": "Anmeldung beim Solid Pod",
-      "logout": "Abmeldung vom Solid Pod"
-    },
-    "es": {
-      "login": "Iniciar sesión en Solid Pod",
-      "logout": "Cerrar sesión en Solid Pod"
-    }
+{
+  "en": {
+    "login": "Login to Solid Pod",
+    "loginTo": "Login using",
+    "logout": "Logout from Solid Pod",
+    "selectProvider": "Select Provider",
+    "connectedTo": "Connected to",
+    "connectTo": "Connect to:"
+  },
+  "fr": {
+    "login": "Connexion au Solid Pod",
+    "loginTo": "Connexion via",
+    "logout": "Déconnexion du Solid Pod",
+    "selectProvider": "Sélectionner un fournisseur",
+    "connectedTo": "Connecté à",
+    "connectTo": "Se connecter à:"
+  },
+  "de": {
+    "login": "Anmeldung beim Solid Pod",
+    "loginTo": "Anmelden über",
+    "logout": "Abmeldung vom Solid Pod",
+    "selectProvider": "Provider auswählen",
+    "connectedTo": "Verbunden mit",
+    "connectTo": "Verbinden mit:"
+  },
+  "es": {
+    "login": "Iniciar sesión en Solid Pod",
+    "loginTo": "Iniciar sesión con",
+    "logout": "Cerrar sesión en Solid Pod",
+    "selectProvider": "Seleccionar proveedor",
+    "connectedTo": "Conectado a",
+    "connectTo": "Conectar a:"
   }
+}
 </i18n>

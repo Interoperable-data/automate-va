@@ -6,10 +6,10 @@
       class="card mb-3"
     >
       <div class="card-header">
-        LSL-1 {{ webId }}
+        {{ webId }}
       </div>
       <div class="card-body">
-        <ul class="list-group">
+        <ul class="list-group" v-if="containers.length">
           <li
             v-for="container in containers"
             :key="container.href"
@@ -30,6 +30,7 @@
             </ul>
           </li>
         </ul>
+        <span v-else>{{ t('noTypeIndexContainers') + ` [WebId: ${webId}]` }}</span>
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="container mb-3">
+    <h4>{{ t('processRegistrations') }}</h4>
     <div v-if="Object.keys(processRegistrations).length">
-      <h2>LPL-1 {{ t('processRegistrations') }}</h2>
       <ul class="list-group">
         <li
           v-for="(registrations, key) in processRegistrations"
@@ -22,7 +22,7 @@
       </ul>
     </div>
     <div v-else>
-      <p>LPL-1 {{ t('noProcessRegistrations') }}</p>
+      <p>{{ t('noProcessRegistrations') }}</p>
     </div>
     <div v-if="Object.keys(typeIndexContainers).length">
       <div
@@ -88,7 +88,7 @@ const typeRegistrations = computed(() => processStore.typeRegistrations)
 <i18n>
 {
   "en": {
-    "processRegistrations": "Process Registrations",
+    "processRegistrations": "Process Registrations List",
     "noProcessRegistrations": "No process registrations available.",
     "noTypeIndexContainers": "No type index containers available."
   },
