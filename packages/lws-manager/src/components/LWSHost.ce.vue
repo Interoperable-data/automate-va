@@ -71,11 +71,6 @@ const logout = async () => {
   await logoutFromSolidPod()
 }
 
-// Component stores the Session it is own memory
-const setSession = async (session: Session) => {
-  await setSession(session, props.routeInfo.query)
-}
-
 // Login
 const tryRedirect = async () => {
   await tryIncomingRedirect(props.routeInfo.query)
