@@ -4,6 +4,12 @@
   --bs-light-rgb: 248, 249, 250;
 }
 
+/* Reset default body padding */
+body {
+  padding: 0 !important;
+  margin: 0;
+}
+
 /* Typography */
 html, 
 body {
@@ -34,8 +40,10 @@ body {
 
 /* Bootstrap-Vue-Next component styles */
 .nav-bar {
-  padding: .25rem 0;
+  padding: .25rem 4px;
   background-color: transparent !important;
+  z-index: 1020; /* Below LWS navbar which is typically 1030 */
+  width: 100%;
 }
 
 .navbar-brand {
@@ -143,13 +151,19 @@ body {
   color: var(--theme-body-color);
   text-shadow: 0 .05rem .1rem var(--theme-shadow-color);
   box-shadow: inset 0 0 5rem var(--theme-shadow-color);
+  padding-top: 96px !important; /* 48px LWS navbar + 48px our navbar */
+}
+
+/* Container adjustments for fixed navbars */
+.container-fluid {
+  padding-top: 0px !important; /* 48px LWS navbar + 48px our navbar */
 }
 
 /* Cover container */
 .cover-container {
   max-width: 1140px;
-  padding: 0 1.5rem;
-  margin-left: 2rem; /* Add left margin instead of auto margins */
+  padding: 0; /* Remove the 1.5rem padding */
+  margin-left: auto; /* Add left margin instead of auto margins */
 }
 
 /* Brand styling */
@@ -201,6 +215,18 @@ body {
   color: var(--theme-active-color);
   background-color: transparent;
   border-color: var(--theme-active-color);
+}
+
+/* Utility class for positioning below LWS navbar */
+.top-48 {
+  top: 48px !important;
+}
+
+/* Position SecondNavbar below the main navbar */
+header .nav-bar + * {  /* Targets the element right after .nav-bar within header */
+  margin-top: 48px;    /* Match the height of the main navbar */
+  position: relative;  /* Ensure proper stacking */
+  z-index: 1019;      /* Below main navbar but above content */
 }
 
 /* Responsive breakpoints */

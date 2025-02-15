@@ -3,12 +3,14 @@
 /* LWS Navbar styles */
 .lws-navbar {
   min-height: 48px;
-  background-color: var(--theme-body-bg);
+  z-index: 1031 !important; /* Higher than the default 1030 */
+  background-color: var(--bs-body-bg);
   border-bottom: 1px solid var(--theme-border-color);
 }
 
 .lws-navbar .dropdown-menu {
   margin-top: 0.5rem;
+  z-index: 1032 !important; /* One level higher than navbar */
 }
 
 .lws-navbar .dropdown-item {

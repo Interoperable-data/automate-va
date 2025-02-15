@@ -2,8 +2,8 @@
   <BNavbar
     toggleable="md"
     :variant="isDark ? 'dark' : 'light'"
-    :class="['nav-bar px-3', isDark ? 'bg-dark' : 'bg-light']"
-    >
+    :class="['nav-bar fixed-top top-48', isDark ? 'bg-dark' : 'bg-light']"
+  >
     <!-- ref="target" FAILS -->
     <BNavbarBrand to="/"><h1>JOSEPHA</h1></BNavbarBrand>
 
@@ -11,7 +11,9 @@
 
     <BCollapse id="nav-collapse" is-nav>
       <BNavbarNav>
-        <BNavItem to="/processes" v-if="sessionStore.loggedInWebId != ''">{{ t('processes') }}</BNavItem>
+        <BNavItem to="/processes" v-if="sessionStore.loggedInWebId != ''">{{
+          t('processes')
+        }}</BNavItem>
         <BNavItem to="/about">{{ t('about') }}</BNavItem>
         <BNavItem to="/debug" v-if="sessionStore.loggedInWebId != ''">{{ t('debug') }}</BNavItem>
       </BNavbarNav>
@@ -54,7 +56,7 @@ import {
   BDropdownItem,
   BNavbarToggle,
   BCollapse,
-  useColorMode
+  useColorMode,
 } from 'bootstrap-vue-next'
 import I18nSelector from './I18nSelector.vue'
 import DarkModeSwitch from './DarkModeSwitch.vue'
