@@ -112,71 +112,91 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="lws-status-bar">
-    <div class="container-fluid">
-      <div class="d-flex align-items-center">
-        <!-- Status info -->
-        <span class="lws-status-text">
-          <template v-if="sessionStore.loggedInWebId">
-            {{ t('connectedTo') }} {{ getProviderName() }}
-          </template>
-          <template v-else>
-            {{ t('connectTo') }}
-          </template>
-        </span>
+  <div class="lws-host-wrapper">
+    <div class="lws-status-bar">
+      <div class="container-fluid">
+        <div class="d-flex align-items-center">
+          <!-- Status info -->
+          <span class="lws-status-text">
+            <template v-if="sessionStore.loggedInWebId">
+              {{ t('connectedTo') }} {{ getProviderName() }}
+            </template>
+            <template v-else>
+              {{ t('connectTo') }}
+            </template>
+          </span>
 
-        <!-- Provider selection -->
-        <div class="me-auto" v-if="!sessionStore.loggedInWebId">
-          <div class="lws-custom-dropdown" ref="dropdownRef">
-            <button
-              class="btn btn-outline-secondary btn-sm"
-              type="button"
-              @click="toggleDropdown"
-            >
-              {{ t('selectProvider') }}
-              <i
-                class="bi bi-chevron-down ms-2"
-                :class="{ 'rotate-180': isDropdownOpen }"
-              ></i>
-            </button>
-            <div
-              class="lws-custom-dropdown-menu"
-              :class="{ show: isDropdownOpen }"
-            >
-              <div
-                v-for="(url, name) in SOLID_PROVIDERS"
-                :key="url"
-                class="lws-custom-dropdown-item"
-                :class="{ active: SELECTED_IDP === url }"
-                @click="(e) => selectProvider(url, e)"
+          <!-- Provider selection -->
+          <div class="me-auto" v-if="!sessionStore.loggedInWebId">
+            <div class="lws-custom-dropdown" ref="dropdownRef">
+              <button
+                class="btn btn-outline-secondary btn-sm"
+                type="button"
+                @click="toggleDropdown"
               >
-                {{ name }}
+                {{ t('selectProvider') }}
+                <i
+                  class="bi bi-chevron-down ms-2"
+                  :class="{ 'rotate-180': isDropdownOpen }"
+                ></i>
+              </button>
+              <div
+                class="lws-custom-dropdown-menu"
+                :class="{ show: isDropdownOpen }"
+              >
+                <div
+                  v-for="(url, name) in SOLID_PROVIDERS"
+                  :key="url"
+                  class="lws-custom-dropdown-item"
+                  :class="{ active: SELECTED_IDP === url }"
+                  @click="(e) => selectProvider(url, e)"
+                >
+                  {{ name }}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Login/Logout buttons -->
-        <div class="ms-auto">
-          <button
-            v-if="!sessionStore.loggedInWebId"
-            @click="login"
-            class="btn btn-primary btn-sm"
-          >
-            {{ t('loginTo') }} {{ getProviderName() }}
-          </button>
-          <button v-else @click="logout" class="btn btn-danger btn-sm">
-            {{ t('logout') }}
-          </button>
+          <!-- Login/Logout buttons -->
+          <div class="ms-auto">
+            <button
+              v-if="!sessionStore.loggedInWebId"
+              @click="login"
+              class="btn btn-primary btn-sm"
+            >
+              {{ t('loginTo') }} {{ getProviderName() }}
+            </button>
+            <button v-else @click="logout" class="btn btn-danger btn-sm">
+              {{ t('logout') }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
+    <div class="lws-host-content">
+      <slot name="above-navbar"></slot>
+      <div class="lws-navbar-spacer"></div>
+      <slot></slot>
+    </div>
   </div>
-  <slot />
 </template>
 
 <style>
 @import '../LWSStyles.css';
+
+/* Add wrapper styles */
+.lws-host-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  --lws-total-nav-space: var(--lws-navbar-height);
+}
+
+/* Add content spacing */
+.lws-host-content {
+  flex: 1;
+  margin-top: var(--lws-navbar-height);
+}
 
 .lws-custom-dropdown {
   position: relative;
@@ -216,6 +236,16 @@ onMounted(async () => {
 .rotate-180 {
   transform: rotate(180deg);
   transition: transform 0.2s;
+}
+
+/* Navbar spacer to push content down */
+.lws-navbar-spacer {
+  height: var(--lws-navbar-height);
+}
+
+/* Ensure slotted navbar gets correct positioning */
+::slotted(.navbar.fixed-top) {
+  top: var(--lws-navbar-height) !important;
 }
 </style>
 

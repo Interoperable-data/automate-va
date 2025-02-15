@@ -1,5 +1,6 @@
 <template>
   <BNavbar
+    fixed="top"
     toggleable="md"
     :variant="isDark ? 'dark' : 'light'"
     :class="[isDark ? 'bg-dark' : 'bg-light']"
