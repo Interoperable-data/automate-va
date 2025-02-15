@@ -4,9 +4,10 @@
   --bs-dark-rgb: 33, 37, 41;
   --bs-light-rgb: 248, 249, 250;
   
-  /* Heights */
-  --lws-navbar-height: 48px;
-  --app-navbar-height: 56px;
+  /* Heights - Updated to match actual component heights */
+  --lws-navbar-height: 40px;       /* Reduced from 48px */
+  --app-navbar-height: 75px;       /* Increased from 56px to match actual NavBar height */
+  --process-controls-height: 48px;  /* Keep this as is */
   
   /* Z-index hierarchy */
   --lws-z-index-base: 1090;        /* LWS components highest */
@@ -42,12 +43,20 @@
 
 /* Layout */
 body {
-  padding-top: calc(var(--lws-navbar-height) + var(--app-navbar-height)) !important;
+  padding-top: calc(var(--lws-navbar-height) + var(--app-navbar-height) + var(--process-controls-height)) !important;
   margin: 0;
   min-height: 100vh;
   background-color: var(--theme-body-bg);
   color: var(--theme-body-color);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Typography */
+html, 
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  text-shadow: 0 .05rem .1rem var(--theme-shadow-color);
+  box-shadow: inset 0 0 5rem var(--theme-shadow-color);
 }
 
 /* Navbar */
@@ -61,11 +70,31 @@ body {
   z-index: var(--app-navbar-z-index);
 }
 
+/* Nav items styling */
+.nav-item {
+  font-weight: 700;
+  color: var(--theme-link-color);
+  background-color: transparent;
+  border-bottom: .25rem solid transparent;
+  transition: color .15s ease-in-out, border-bottom-color .15s ease-in-out;
+}
+
+.nav-item:hover,
+.nav-item:focus {
+  color: var(--theme-link-hover-color);
+  border-bottom-color: var(--theme-active-color);
+}
+
+.nav-item.active {
+  color: var(--theme-active-color);
+  border-bottom-color: var(--theme-active-color);
+}
+
 .navbar-brand {
   color: var(--theme-active-color) !important;
   font-weight: 700;
+  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
   font-size: 1.5rem;
-  margin-right: 2rem;
 }
 
 /* Dropdowns */
@@ -82,7 +111,7 @@ body {
   color: var(--theme-link-color) !important;
   font-weight: 500;
   padding: .5rem 1rem;
-  transition: color .15s ease-in-out;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out;
 }
 
 .dropdown-item:hover:not(.disabled),
@@ -90,6 +119,44 @@ body {
 .dropdown-item.active {
   color: var(--theme-active-color) !important;
   background-color: var(--theme-border-color);
+}
+
+/* Dropdowns */
+.nav-item-dropdown {
+  display: flex;
+  align-items: center;
+  color: var(--theme-link-color);
+}
+
+.nav-item-dropdown:hover,
+.nav-item-dropdown:focus {
+  color: var(--theme-link-hover-color);
+}
+
+.nav-item-dropdown .dropdown-toggle {
+  font-weight: 700;
+  border-bottom: .25rem solid transparent;
+}
+
+.nav-item-dropdown .dropdown-toggle:hover,
+.nav-item-dropdown .dropdown-toggle:focus {
+  border-bottom-color: var(--theme-active-color);
+}
+
+/* Buttons */
+.btn-secondary,
+.btn-outline-secondary {
+  color: var(--theme-link-color);
+  text-shadow: none;
+  border-color: var(--theme-link-color);
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
+
+.btn-secondary:hover,
+.btn-outline-secondary:hover {
+  color: var(--theme-active-color);
+  background-color: transparent;
+  border-color: var(--theme-active-color);
 }
 
 /* Process controls */
@@ -100,12 +167,50 @@ body {
   padding: 0.5rem 0;
 }
 
+.process-controls.fixed-top {
+  position: fixed;
+  top: calc(var(--lws-navbar-height) + var(--app-navbar-height));
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: var(--app-navbar-z-index);
+  background-color: var(--theme-body-bg);
+  border-bottom: 1px solid var(--theme-border-color);
+  padding: 0.5rem 0;
+}
+
+/* Process controls visual styling */
+.process-controls .path-display {
+  color: var(--theme-link-color);
+  font-weight: 500;
+}
+
+.process-controls .status-message {
+  color: var(--theme-body-color);
+}
+
+.process-controls .btn-secondary {
+  background-color: transparent;
+  border-color: var(--theme-border-color);
+  color: var(--theme-link-color);
+}
+
+.process-controls .btn-secondary:hover {
+  background-color: var(--theme-border-color);
+  color: var(--theme-active-color);
+}
+
 /* Content container */
 .cover-container {
   max-width: 1140px;
   margin: 0 auto;
   padding: 0 1.5rem;
   flex: 1;
+}
+
+/* Footer */
+.footer {
+  color: var(--theme-link-color);
 }
 
 /* Responsive breakpoints */

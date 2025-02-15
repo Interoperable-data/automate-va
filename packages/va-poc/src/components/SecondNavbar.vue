@@ -1,6 +1,5 @@
 <template>
-  <!-- Remove the container div that might be affecting stacking -->
-  <div class="process-controls py-2">
+  <div class="process-controls fixed-top">
     <div class="d-flex justify-content-between align-items-center mx-3">
       <div class="path-display">
         {{ $route.fullPath }}
@@ -19,7 +18,6 @@
         </span>
       </div>
     </div>
-    <!-- Move process selector outside the container -->
     <div v-if="sessionStore.loggedInWebId" class="process-selector-wrapper">
       <lws-process-selector
         @process-selected="handleProcessSelected"
