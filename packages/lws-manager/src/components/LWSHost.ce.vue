@@ -108,7 +108,7 @@ onMounted(async () => {
       </span>
 
       <div class="me-auto" v-if="!sessionStore.loggedInWebId">
-        <div class="dropdown">
+        <div class="dropdown lws-dropdown">
           <button
             class="btn btn-outline-secondary dropdown-toggle"
             type="button"

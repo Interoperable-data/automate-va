@@ -1,19 +1,32 @@
 <template>
-  <BNavbar variant="secondary" type="light" id="second-navbar">
-    <BNavbarBrand href="#">{{ $route.fullPath }} </BNavbarBrand>
-    <BNavbarNav>
-      <BNavItem v-if="sessionStore.rerouting">
-        {{ t('redirecting') }}
-      </BNavItem>
-      <BNavItem v-else-if="!sessionStore.loggedInWebId">
-        <div id="lws-btn">LOG IN TO LWS</div>
-        {{ t('support') }}
-      </BNavItem>
-      <BNavItem v-else>
-        {{ t('las') }}
-      </BNavItem>
-    </BNavbarNav>
-  </BNavbar>
+  <div class="process-controls d-flex align-items-center my-3 border-bottom">
+    <BContainer class="d-flex justify-content-between align-items-center">
+      <div class="path-display">
+        {{ $route.fullPath }}
+      </div>
+
+      <div class="status-message">
+        <span v-if="sessionStore.rerouting">
+          {{ t('redirecting') }}
+        </span>
+        <span v-else-if="!sessionStore.loggedInWebId">
+          <div id="lws-btn">LOG IN TO LWS</div>
+          {{ t('support') }}
+        </span>
+        <span v-else>
+          {{ t('las') }}
+        </span>
+      </div>
+
+      <div v-if="sessionStore.loggedInWebId">
+        <lws-process-selector
+          @process-selected="handleProcessSelected"
+          @task-selected="handleTaskSelected"
+          @start-task="handleStartTask"
+        />
+      </div>
+    </BContainer>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -34,9 +47,20 @@ watchEffect(() => {
   console.log(`Language captured in SecondNavbar watcher, changed to ${newLocale.value}!`)
   locale.value = newLocale.value
 })
-</script>
 
-<style scoped></style>
+const handleProcessSelected = (process: string) => {
+  console.log('Process selected:', process)
+}
+
+const handleTaskSelected = (task: string) => {
+  console.log('Task selected:', task)
+}
+
+const handleStartTask = (data: { process: string; task: string }) => {
+  console.log('Starting task:', data)
+  // TODO: Implement task execution
+}
+</script>
 
 <i18n>
   {

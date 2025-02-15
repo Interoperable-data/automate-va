@@ -48,20 +48,16 @@ declare module 'vue' {
 <template>
   <i18n-provider .locale="locale">
     <lws-provider :routeInfo="$route" target="#lws-btn">
-      <div class="app-wrapper">
-        <div class="cover-container d-flex w-100 h-100 mx-auto flex-column">
-          <header class="mb-auto">
-            <NavBar @update:locale="updateLocale" />
-            <SecondNavbar />
-          </header>
-
-          <main class="px-3 mb-5">
-            <RouterView />
-          </main>
-
-          <AppFooter />
-        </div>
+      <!-- <div class="app-wrapper"> -->
+      <NavBar @update:locale="updateLocale" />
+      <SecondNavbar />
+      <div class="cover-container">
+        <main class="px-3 mb-5">
+          <RouterView />
+        </main>
+        <AppFooter />
       </div>
+      <!-- </div> -->
     </lws-provider>
   </i18n-provider>
 </template>

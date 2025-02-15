@@ -23,6 +23,7 @@ import LWSProcessList from './src/components/LWSProcessList.ce.vue'
 import LWSSourceAdder from './src/components/LWSSourceAdder.ce.vue'
 import LWSSourcesList from './src/components/LWSSourcesList.ce.vue'
 import LWSTaskList from './src/components/LWSTaskList.ce.vue'
+import LWSProcessSelector from './src/components/LWSProcessSelector.ce.vue'
 import { defineCustomElement } from 'vue'
 
 // Component registration function
@@ -50,5 +51,11 @@ export function register() {
   }
   if (!customElements.get('lws-task-list')) {
     customElements.define('lws-task-list', defineCustomElement(LWSTaskList))
+  }
+  if (!customElements.get('lws-process-selector')) {
+    customElements.define(
+      'lws-process-selector',
+      defineCustomElement(LWSProcessSelector)
+    )
   }
 }

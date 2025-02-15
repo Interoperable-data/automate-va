@@ -2,12 +2,18 @@
 :root {
   --bs-dark-rgb: 33, 37, 41;
   --bs-light-rgb: 248, 249, 250;
+  --lws-navbar-height: 56px;
+  --app-navbar-height: 56px;
+  --app-navbar-z-index: 1040; /* Below LWS but above other app content */
+  --app-controls-z-index: 1041;
+  --app-dropdown-z-index: 1020; /* Updated variable for app dropdowns */
 }
 
 /* Reset default body padding */
 body {
   padding: 0 !important;
   margin: 0;
+  padding-top: calc(var(--lws-navbar-height) + var(--app-navbar-height)) !important;
 }
 
 /* Typography */
@@ -42,8 +48,22 @@ body {
 .nav-bar {
   padding: .25rem 4px;
   background-color: transparent !important;
-  z-index: 1020; /* Below LWS navbar which is typically 1030 */
   width: 100%;
+}
+
+/* Override Bootstrap's fixed-top z-index for our navbar */
+.nav-bar.fixed-top {
+  z-index: var(--app-navbar-z-index) !important; /* Force our navbar below LWS */
+  top: var(--lws-navbar-height) !important;
+  position: fixed !important; /* Ensure position is explicitly set */
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+/* Ensure app dropdowns stay within app z-index hierarchy */
+.nav-bar.fixed-top .dropdown-menu {
+  z-index: calc(var(--app-navbar-z-index) + 1) !important;
 }
 
 .navbar-brand {
@@ -121,6 +141,7 @@ body {
 .dropdown-menu {
   background-color: var(--theme-body-bg);
   border-color: var(--theme-border-color);
+  z-index: var(--app-dropdown-z-index);
 }
 
 .dropdown-item {
@@ -151,7 +172,7 @@ body {
   color: var(--theme-body-color);
   text-shadow: 0 .05rem .1rem var(--theme-shadow-color);
   box-shadow: inset 0 0 5rem var(--theme-shadow-color);
-  padding-top: 96px !important; /* 48px LWS navbar + 48px our navbar */
+  padding-top: calc(var(--lws-navbar-height) + 56px) !important; /* 48px LWS navbar + 48px our navbar */
 }
 
 /* Container adjustments for fixed navbars */
@@ -164,6 +185,9 @@ body {
   max-width: 1140px;
   padding: 0; /* Remove the 1.5rem padding */
   margin-left: auto; /* Add left margin instead of auto margins */
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
 /* Brand styling */
@@ -222,11 +246,9 @@ body {
   top: 48px !important;
 }
 
-/* Position SecondNavbar below the main navbar */
+/* Remove conflicting styles */
 header .nav-bar + * {  /* Targets the element right after .nav-bar within header */
-  margin-top: 48px;    /* Match the height of the main navbar */
-  position: relative;  /* Ensure proper stacking */
-  z-index: 1019;      /* Below main navbar but above content */
+  margin-top: 0;    /* Remove this as it conflicts with proper layering */
 }
 
 /* Responsive breakpoints */
@@ -249,4 +271,52 @@ header .nav-bar + * {  /* Targets the element right after .nav-bar within header
     max-width: 1320px;
     margin-left: 5rem;
   }
+}
+
+/* These should be the single source of truth for layout */
+body {
+  padding-top: calc(var(--lws-navbar-height) + 56px) !important;
+}
+
+.process-controls {
+  position: relative;
+  /* z-index: var(--app-controls-z-index); */
+  margin-top: var(--app-navbar-height);
+  background-color: var(--theme-body-bg);
+  border-bottom: 1px solid var(--theme-border-color);
+}
+
+.process-controls .path-display {
+  color: var(--theme-link-color);
+  font-weight: 500;
+}
+
+.process-controls .status-message {
+  color: var(--theme-body-color);
+}
+
+/* Process selector overrides when inside process-controls */
+.process-controls .dropdown {
+  margin-top: 0;
+}
+
+.process-controls .btn-secondary {
+  background-color: transparent;
+  border-color: var(--theme-border-color);
+  color: var(--theme-link-color);
+}
+
+.process-controls .btn-secondary:hover {
+  background-color: var(--theme-border-color);
+  color: var(--theme-active-color);
+}
+
+.process-controls .dropdown-menu {
+  margin-top: 0.5rem;
+}
+
+/* Remove wrapper classes that affect stacking context */
+.app-wrapper {
+  min-height: 100vh;
+  padding-top: var(--lws-navbar-height);
 }

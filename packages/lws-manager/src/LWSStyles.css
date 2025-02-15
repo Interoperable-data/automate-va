@@ -1,29 +1,71 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
-/* LWS Navbar styles */
+/* LWS Common Variables */
+:root {
+  --lws-navbar-height: 48px; /* Reduced from 56px to 48px */
+  --lws-z-index-base: 1060;  /* Use consistent z-index hierarchy */
+  --lws-z-index-dropdown: 1061; /* Increased from 1051 to ensure dropdowns are always on top */
+}
+
+/* LWS Common Styles */
 .lws-navbar {
-  min-height: 48px;
-  z-index: 1031 !important; /* Higher than the default 1030 */
+  height: var(--lws-navbar-height);
+  z-index: var(--lws-z-index-base);
   background-color: var(--bs-body-bg);
   border-bottom: 1px solid var(--theme-border-color);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
 }
 
-.lws-navbar .dropdown-menu {
+/* Override Bootstrap's fixed-top for LWS navbar */
+.lws-navbar.navbar.fixed-top {
+  z-index: var(--lws-z-index-base) !important; /* Force override Bootstrap's fixed-top */
+}
+
+/* Ensure dropdowns in fixed navbar appear above */
+.lws-navbar.navbar.fixed-top .dropdown-menu {
+  z-index: var(--lws-z-index-dropdown) !important;
+}
+
+/* Add explicit z-index for container-fluid within LWS navbar */
+.lws-navbar .container-fluid {
+  z-index: inherit; /* This ensures it inherits the navbar's z-index */
+  position: relative; /* Needed for z-index to take effect */
+}
+
+/* Common LWS dropdown styles - used by all components */
+.lws-dropdown {
+  position: relative;
+}
+
+.lws-dropdown .dropdown-menu {
   margin-top: 0.5rem;
-  z-index: 1032 !important; /* One level higher than navbar */
+  z-index: var(--lws-z-index-dropdown);
+  background-color: var(--bs-body-bg);
+  border-color: var(--theme-border-color);
 }
 
-.lws-navbar .dropdown-item {
+.lws-dropdown .dropdown-item {
   color: var(--theme-link-color);
 }
 
-.lws-navbar .dropdown-item:hover,
-.lws-navbar .dropdown-item:focus {
+.lws-dropdown .dropdown-item:hover,
+.lws-dropdown .dropdown-item:focus,
+.lws-dropdown .dropdown-item.active {
   color: var(--theme-active-color);
   background-color: var(--theme-border-color);
 }
 
-.lws-navbar .dropdown-item.active {
-  color: var(--theme-active-color);
+.lws-dropdown .btn {
+  background-color: var(--bs-body-bg);
+  border-color: var (--theme-border-color);
+  color: var(--theme-link-color);
+}
+
+.lws-dropdown .btn:hover:not(:disabled) {
   background-color: var(--theme-border-color);
+  color: var(--theme-active-color);
 }
