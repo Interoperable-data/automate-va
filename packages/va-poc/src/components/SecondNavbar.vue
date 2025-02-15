@@ -1,6 +1,7 @@
 <template>
-  <div class="process-controls d-flex align-items-center my-3 border-bottom">
-    <BContainer class="d-flex justify-content-between align-items-center">
+  <!-- Remove the container div that might be affecting stacking -->
+  <div class="process-controls py-2">
+    <div class="d-flex justify-content-between align-items-center mx-3">
       <div class="path-display">
         {{ $route.fullPath }}
       </div>
@@ -17,15 +18,15 @@
           {{ t('las') }}
         </span>
       </div>
-
-      <div v-if="sessionStore.loggedInWebId">
-        <lws-process-selector
-          @process-selected="handleProcessSelected"
-          @task-selected="handleTaskSelected"
-          @start-task="handleStartTask"
-        />
-      </div>
-    </BContainer>
+    </div>
+    <!-- Move process selector outside the container -->
+    <div v-if="sessionStore.loggedInWebId" class="process-selector-wrapper">
+      <lws-process-selector
+        @process-selected="handleProcessSelected"
+        @task-selected="handleTaskSelected"
+        @start-task="handleStartTask"
+      />
+    </div>
   </div>
 </template>
 

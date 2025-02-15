@@ -5,6 +5,7 @@
   --lws-navbar-height: 48px; /* Reduced from 56px to 48px */
   --lws-z-index-base: 1060;  /* Use consistent z-index hierarchy */
   --lws-z-index-dropdown: 1061; /* Increased from 1051 to ensure dropdowns are always on top */
+  --lws-status-height: 32px; /* Reduced from 48px */
 }
 
 /* LWS Common Styles */
@@ -18,6 +19,25 @@
   left: 0;
   right: 0;
   width: 100%;
+}
+
+.lws-status-bar {
+  height: var(--lws-status-height);
+  z-index: var(--lws-z-index-base);
+  background-color: var(--bs-body-bg);
+  border-bottom: 1px solid var(--theme-border-color);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: 0.25rem 0;
+  font-size: 0.875rem;
+}
+
+.lws-status-text {
+  color: var(--theme-link-color);
+  font-weight: 500;
 }
 
 /* Override Bootstrap's fixed-top for LWS navbar */
@@ -68,4 +88,21 @@
 .lws-dropdown .btn:hover:not(:disabled) {
   background-color: var(--theme-border-color);
   color: var(--theme-active-color);
+}
+
+.lws-navbar .dropdown-menu {
+  position: fixed;
+  top: var(--lws-navbar-height);
+}
+
+.lws-custom-dropdown-menu {
+  position: absolute;
+  top: calc(var(--lws-status-height) - 2px);
+  left: 0;
+}
+
+/* Remove navbar-specific styles */
+.lws-navbar,
+.navbar {
+  display: none;
 }

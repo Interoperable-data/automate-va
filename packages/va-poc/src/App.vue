@@ -48,7 +48,7 @@ declare module 'vue' {
 <template>
   <i18n-provider .locale="locale">
     <lws-provider :routeInfo="$route" target="#lws-btn">
-      <!-- <div class="app-wrapper"> -->
+      <!-- Remove wrapper div that affects stacking -->
       <NavBar @update:locale="updateLocale" />
       <SecondNavbar />
       <div class="cover-container">
@@ -57,7 +57,6 @@ declare module 'vue' {
         </main>
         <AppFooter />
       </div>
-      <!-- </div> -->
     </lws-provider>
   </i18n-provider>
 </template>

@@ -7,13 +7,29 @@
   --app-navbar-z-index: 1040; /* Below LWS but above other app content */
   --app-controls-z-index: 1041;
   --app-dropdown-z-index: 1020; /* Updated variable for app dropdowns */
+  --app-navbar-z-index: 1040;
+  /* Override Bootstrap Vue Next variables */
+  --bs-navbar-zindex: 1030;          /* Default is 1030 */
+  --bs-dropdown-zindex: 1031;        /* Default is 1055 */
+  --bs-modal-zindex: 1059;           /* Default is 1055 */
+  --bs-popover-zindex: 1032;         /* Default is 1070 */
+  --bs-tooltip-zindex: 1033;         /* Default is 1080 */
+  --bs-offcanvas-zindex: 1034;       /* Default is 1045 */
+  /* Clear z-index hierarchy */
+  --lws-z-index-base: 1090;        /* LWS components highest */
+  --lws-z-index-dropdown: 1091;    /* LWS dropdowns above LWS */
+  --app-navbar-z-index: 1070;      /* App navbar below LWS */
+  --app-dropdown-z-index: 1071;    /* App dropdowns above app navbar */
 }
 
 /* Reset default body padding */
 body {
   padding: 0 !important;
   margin: 0;
-  padding-top: calc(var(--lws-navbar-height) + var(--app-navbar-height)) !important;
+  padding-top: var(--lws-status-height) !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Typography */
@@ -46,15 +62,20 @@ body {
 
 /* Bootstrap-Vue-Next component styles */
 .nav-bar {
-  padding: .25rem 4px;
-  background-color: transparent !important;
+  padding: .25rem 0;
+  background-color: var(--theme-body-bg);
+  border-bottom: 1px solid var(--theme-border-color);
   width: 100%;
+  position: fixed;
+  top: var(--lws-status-height);
+  z-index: var(--app-navbar-z-index);
+  --bs-navbar-zindex: var(--app-navbar-z-index) !important;
 }
 
 /* Override Bootstrap's fixed-top z-index for our navbar */
 .nav-bar.fixed-top {
   z-index: var(--app-navbar-z-index) !important; /* Force our navbar below LWS */
-  top: var(--lws-navbar-height) !important;
+  top: var(--lws-status-height) !important;
   position: fixed !important; /* Ensure position is explicitly set */
   width: 100%;
   left: 0;
@@ -64,6 +85,7 @@ body {
 /* Ensure app dropdowns stay within app z-index hierarchy */
 .nav-bar.fixed-top .dropdown-menu {
   z-index: calc(var(--app-navbar-z-index) + 1) !important;
+  --bs-dropdown-zindex: var(--app-dropdown-z-index) !important;
 }
 
 .navbar-brand {
@@ -142,6 +164,9 @@ body {
   background-color: var(--theme-body-bg);
   border-color: var(--theme-border-color);
   z-index: var(--app-dropdown-z-index);
+  position: fixed;
+  margin: 0;
+  padding: 0.5rem 0;
 }
 
 .dropdown-item {
@@ -178,6 +203,9 @@ body {
 /* Container adjustments for fixed navbars */
 .container-fluid {
   padding-top: 0px !important; /* 48px LWS navbar + 48px our navbar */
+  padding: 0;
+  margin: 0;
+  position: static;
 }
 
 /* Cover container */
@@ -188,6 +216,7 @@ body {
   width: 100%;
   margin: 0 auto;
   padding: 0 1.5rem;
+  flex: 1;
 }
 
 /* Brand styling */
@@ -244,6 +273,7 @@ body {
 /* Utility class for positioning below LWS navbar */
 .top-48 {
   top: 48px !important;
+  position: relative !important;
 }
 
 /* Remove conflicting styles */
@@ -278,12 +308,12 @@ body {
   padding-top: calc(var(--lws-navbar-height) + 56px) !important;
 }
 
+/* Remove container constraints */
 .process-controls {
   position: relative;
-  /* z-index: var(--app-controls-z-index); */
-  margin-top: var(--app-navbar-height);
   background-color: var(--theme-body-bg);
   border-bottom: 1px solid var(--theme-border-color);
+  padding: 0.5rem 0;
 }
 
 .process-controls .path-display {
@@ -315,8 +345,40 @@ body {
   margin-top: 0.5rem;
 }
 
+/* Add specific wrapper for process selector */
+.process-selector-wrapper {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 /* Remove wrapper classes that affect stacking context */
 .app-wrapper {
   min-height: 100vh;
   padding-top: var(--lws-navbar-height);
+}
+
+/* Remove problematic positioning classes */
+.fixed-top {
+  /* Remove these overrides that break positioning */
+  /* position: relative !important; */
+  /* top: auto !important; */
+}
+
+/* Force LWS components above Bootstrap components */
+.lws-status-bar {
+  z-index: calc(var(--bs-navbar-zindex) + 30) !important;
+  position: fixed !important;
+  top: 0 !important;
+  z-index: var(--lws-z-index-base) !important;
+}
+
+.lws-dropdown .dropdown-menu {
+  z-index: calc(var(--bs-dropdown-zindex) + 30) !important;
+}
+
+.lws-custom-dropdown-menu {
+  position: fixed !important;
+  z-index: var(--lws-z-index-dropdown) !important;
 }

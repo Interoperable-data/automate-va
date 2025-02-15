@@ -2,7 +2,7 @@
   <BNavbar
     toggleable="md"
     :variant="isDark ? 'dark' : 'light'"
-    :class="['nav-bar fixed-top top-48', isDark ? 'bg-dark' : 'bg-light']"
+    :class="[isDark ? 'bg-dark' : 'bg-light']"
   >
     <!-- ref="target" FAILS -->
     <BNavbarBrand to="/"><h1>JOSEPHA</h1></BNavbarBrand>

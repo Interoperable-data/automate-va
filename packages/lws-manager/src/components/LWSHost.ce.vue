@@ -34,10 +34,32 @@ const SELECTED_IDP = ref(getStoredIdP()) // Initialize with stored value
 
 // Add new ref for dropdown state
 const isDropdownOpen = ref(false)
+const dropdownRef = ref<HTMLElement | null>(null)
+
+// Close dropdown when clicking outside
+onMounted(() => {
+  document.addEventListener('click', (event) => {
+    if (
+      dropdownRef.value &&
+      !dropdownRef.value.contains(event.target as Node)
+    ) {
+      isDropdownOpen.value = false
+    }
+  })
+})
 
 // Add dropdown toggle function
-const toggleDropdown = () => {
+const toggleDropdown = (event: Event) => {
+  event.stopPropagation()
   isDropdownOpen.value = !isDropdownOpen.value
+}
+
+const selectProvider = (provider: string, event: Event) => {
+  event.preventDefault()
+  event.stopPropagation()
+  SELECTED_IDP.value = provider
+  setStoredIdP(provider) // Store selection
+  isDropdownOpen.value = false // Close dropdown after selection
 }
 
 // props
@@ -55,12 +77,6 @@ const { t } = useI18n({
 // login function
 const login = () => {
   return loginToSelectedIdP(SELECTED_IDP.value)
-}
-
-const selectProvider = (provider: string) => {
-  SELECTED_IDP.value = provider
-  setStoredIdP(provider) // Store selection
-  isDropdownOpen.value = false // Close dropdown after selection
 }
 
 // Get provider name for display
@@ -96,70 +112,111 @@ onMounted(async () => {
 </script>
 
 <template>
-  <nav class="navbar navbar-expand fixed-top py-1 lws-navbar">
+  <div class="lws-status-bar">
     <div class="container-fluid">
-      <span class="navbar-brand">
-        <template v-if="sessionStore.loggedInWebId">
-          {{ t('connectedTo') }} {{ getProviderName() }}
-        </template>
-        <template v-else>
-          {{ t('connectTo') }}
-        </template>
-      </span>
+      <div class="d-flex align-items-center">
+        <!-- Status info -->
+        <span class="lws-status-text">
+          <template v-if="sessionStore.loggedInWebId">
+            {{ t('connectedTo') }} {{ getProviderName() }}
+          </template>
+          <template v-else>
+            {{ t('connectTo') }}
+          </template>
+        </span>
 
-      <div class="me-auto" v-if="!sessionStore.loggedInWebId">
-        <div class="dropdown lws-dropdown">
-          <button
-            class="btn btn-outline-secondary dropdown-toggle"
-            type="button"
-            id="providerDropdown"
-            @click="toggleDropdown"
-            :aria-expanded="isDropdownOpen"
-          >
-            {{ t('selectProvider') }}
-          </button>
-          <ul
-            class="dropdown-menu"
-            :class="{ show: isDropdownOpen }"
-            aria-labelledby="providerDropdown"
-          >
-            <li v-for="(url, name) in SOLID_PROVIDERS" :key="url">
-              <a
-                class="dropdown-item"
-                href="#"
-                @click.prevent="selectProvider(url)"
+        <!-- Provider selection -->
+        <div class="me-auto" v-if="!sessionStore.loggedInWebId">
+          <div class="lws-custom-dropdown" ref="dropdownRef">
+            <button
+              class="btn btn-outline-secondary btn-sm"
+              type="button"
+              @click="toggleDropdown"
+            >
+              {{ t('selectProvider') }}
+              <i
+                class="bi bi-chevron-down ms-2"
+                :class="{ 'rotate-180': isDropdownOpen }"
+              ></i>
+            </button>
+            <div
+              class="lws-custom-dropdown-menu"
+              :class="{ show: isDropdownOpen }"
+            >
+              <div
+                v-for="(url, name) in SOLID_PROVIDERS"
+                :key="url"
+                class="lws-custom-dropdown-item"
                 :class="{ active: SELECTED_IDP === url }"
+                @click="(e) => selectProvider(url, e)"
               >
                 {{ name }}
-              </a>
-            </li>
-          </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Login/Logout buttons -->
+        <div class="ms-auto">
+          <button
+            v-if="!sessionStore.loggedInWebId"
+            @click="login"
+            class="btn btn-primary btn-sm"
+          >
+            {{ t('loginTo') }} {{ getProviderName() }}
+          </button>
+          <button v-else @click="logout" class="btn btn-danger btn-sm">
+            {{ t('logout') }}
+          </button>
         </div>
       </div>
-
-      <div class="ms-auto">
-        <button
-          v-if="!sessionStore.loggedInWebId"
-          @click="login"
-          class="btn btn-primary"
-        >
-          {{ t('loginTo') }} {{ getProviderName() }}
-        </button>
-        <button
-          v-if="sessionStore.loggedInWebId"
-          @click="logout"
-          class="btn btn-danger"
-        >
-          {{ t('logout') }}
-        </button>
-      </div>
     </div>
-  </nav>
+  </div>
   <slot />
 </template>
 
 <style>
 @import '../LWSStyles.css';
+
+.lws-custom-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.lws-custom-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: none;
+  min-width: 200px;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0;
+  background-color: var(--bs-body-bg);
+  border: 1px solid var(--theme-border-color);
+  border-radius: 0.375rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.lws-custom-dropdown-menu.show {
+  display: block;
+}
+
+.lws-custom-dropdown-item {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: var(--theme-link-color);
+}
+
+.lws-custom-dropdown-item:hover,
+.lws-custom-dropdown-item.active {
+  background-color: var(--theme-border-color);
+  color: var(--theme-active-color);
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+  transition: transform 0.2s;
+}
 </style>
 
 <i18n>
