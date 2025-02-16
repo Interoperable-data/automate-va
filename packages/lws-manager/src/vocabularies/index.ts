@@ -6,6 +6,7 @@ import { DUL } from './DUL' // Import DUL vocabulary
 // Array of possible property names where type indices can hide
 export const typeIndexProperties: string[] = [
   FOAF.isPrimaryTopicOf,
+  FOAF.primaryTopic, // solidweb for instance
   SOLID.publicTypeIndex,
   SOLID.privateTypeIndex
 ];

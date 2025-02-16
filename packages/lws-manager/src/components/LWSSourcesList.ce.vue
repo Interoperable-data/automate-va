@@ -38,6 +38,8 @@
 
 <script setup lang="ts">
 import { processStore } from '../stores/LWSProcessStore'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 </script>
 
 <style scoped>

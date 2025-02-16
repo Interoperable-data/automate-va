@@ -25,6 +25,7 @@ import LWSSourcesList from './src/components/LWSSourcesList.ce.vue';
 import LWSTaskList from './src/components/LWSTaskList.ce.vue';
 import LWSProcessSelector from './src/components/LWSProcessSelector.ce.vue';
 import LWSProfileList from './src/components/LWSProfileList.ce.vue';
+import LWSPodLogger from './src/components/LWSPodLogger.ce.vue'; // Add import
 import { defineCustomElement } from 'vue';
 
 // Component registration function
@@ -49,5 +50,9 @@ export function register() {
   }
   if (!customElements.get('lws-profile-list')) {
     customElements.define('lws-profile-list', defineCustomElement(LWSProfileList));
+  }
+  if (!customElements.get('lws-pod-logger')) {
+    // Add registration
+    customElements.define('lws-pod-logger', defineCustomElement(LWSPodLogger));
   }
 }

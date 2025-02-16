@@ -1,6 +1,7 @@
 <template>
   <div class="lws-profile-list">
     <h3>{{ t('profileInformation') }}</h3>
+    {{ sessionStore.profileValues }}
     <div v-if="hasProfiles">
       <div v-for="(profile, webId) in sessionStore.profileValues" :key="webId" class="card mb-3">
         <img

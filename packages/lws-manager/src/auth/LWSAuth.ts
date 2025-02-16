@@ -20,10 +20,12 @@ export const SOLID_PROVIDERS = {
   'SolidCommunity.net': 'https://solidcommunity.net',
   'SolidWeb.org': 'https://solidweb.org',
   'RedPencil.io': 'https://solid.redpencil.io',
+  'Use.id': 'https://idp.use.id',
   'Inrupt.net': 'https://inrupt.net',
   'Solidweb.me': 'https://solidweb.me',
-  'PodSpaces.net': 'https://pods.podspaces.me',
-  'Dev.inrupt.net': 'https://dev.inrupt.net',
+  'TeamId.Live': 'https://teamid.live',
+  // 'PodSpaces.net': 'https://pods.podspaces.me',
+  // 'Dev.inrupt.net': 'https://dev.inrupt.net',
 }
 
 const STORAGE_KEY = 'lws-selected-idp'

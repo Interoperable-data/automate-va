@@ -20,25 +20,67 @@ export async function getProfileInfo(webId: URL): Promise<{ name: string | null 
   try {
     const allProfileValues: Record<string, string[]> = {};
 
+    // Log start of profile retrieval
+    sessionStore.logDatasetAnalysis(
+      webId.href,
+      'Starting profile info retrieval from main and alternative profiles'
+    );
+
     // Get all profile datasets
     const profileResult = await getProfileAll(webId.href, { fetch: fetch });
-    sessionStore.logDatasetAnalysis(webId.href, 'Retrieving profile info from all sources');
+    sessionStore.logDatasetAnalysis(webId.href, 'Retrieved profile data from all sources');
 
-    // Process main profile and alternative profiles
-    if (profileResult.altProfileAll) {
-      for (const dataset of profileResult.altProfileAll) {
-        const things = getThingAll(dataset);
-        const values = extractProfileValues(things);
+    console.error(profileResult);
+    
+    // Combine all available datasets
+    const datasetsToAnalyze = [
+      profileResult.webIdProfile,
+      ...(profileResult.altProfileAll || []),
+    ].filter(Boolean); // Remove any undefined/null values
 
-        // Merge values into allProfileValues
-        Object.entries(values).forEach(([category, categoryValues]) => {
-          if (!allProfileValues[category]) {
-            allProfileValues[category] = [];
-          }
-          allProfileValues[category].push(...categoryValues);
-        });
+    // Log number of datasets found
+    sessionStore.logDatasetAnalysis(
+      webId.href,
+      `Found ${datasetsToAnalyze.length} profile dataset(s) to analyze`
+    );
+
+    // Process all datasets
+    for (const dataset of datasetsToAnalyze) {
+      // Log dataset analysis
+      sessionStore.logDatasetAnalysis(
+        dataset.internal_resourceInfo.sourceIri,
+        'Analyzing profile source'
+      );
+
+      const things = getThingAll(dataset);
+      const values = extractProfileValues(things);
+
+      // Log found values
+      if (Object.keys(values).length > 0) {
+        sessionStore.logDatasetAnalysis(
+          dataset.internal_resourceInfo.sourceIri,
+          `Found profile data: ${Object.keys(values).join(', ')}`
+        );
       }
+
+      // Merge values into allProfileValues
+      Object.entries(values).forEach(([category, categoryValues]) => {
+        if (!allProfileValues[category]) {
+          allProfileValues[category] = [];
+        }
+        allProfileValues[category].push(...categoryValues);
+      });
     }
+
+    if (datasetsToAnalyze.length === 0) {
+      sessionStore.logDatasetAnalysis(webId.href, 'No profile datasets found to analyze');
+    }
+
+    // Log storage of profile values
+    sessionStore.logDatasetAnalysis(
+      webId.href,
+      `Stored profile values for categories: ${Object.keys(allProfileValues).join(', ')}`
+    );
 
     // Store all found profile values
     sessionStore.profileValues[webId.href] = allProfileValues;
@@ -47,7 +89,11 @@ export async function getProfileInfo(webId: URL): Promise<{ name: string | null 
     const names = allProfileValues.name || [];
     return { name: names.length > 0 ? names[0] : null };
   } catch (error) {
-    console.error('Error retrieving profile info:', error);
+    // Log error
+    sessionStore.logDatasetAnalysis(
+      webId.href,
+      `Error retrieving profile info: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
     return { name: null };
   }
 }
