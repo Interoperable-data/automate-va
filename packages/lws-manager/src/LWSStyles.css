@@ -106,3 +106,40 @@
 .navbar {
   display: none;
 }
+
+/* LWS Profile List Component Styles */
+.lws-profile-list {
+  padding: 1rem;
+  background-color: var(--bs-body-bg);
+  color: var(--theme-text-color);
+}
+
+.lws-profile-list .profile-entry {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--theme-border-color);
+  border-radius: var(--bs-border-radius);
+}
+
+.lws-profile-list .category-entry {
+  margin: 0.5rem 0;
+}
+
+.lws-profile-list .category-entry ul {
+  margin: 0.25rem 0;
+  padding-left: 1.5rem;
+}
+
+.lws-profile-list .category-entry a {
+  color: var(--theme-link-color);
+  text-decoration: none;
+}
+
+.lws-profile-list .category-entry a:hover {
+  text-decoration: underline;
+}
+
+.lws-profile-list .no-profiles {
+  color: var(--theme-text-muted);
+  font-style: italic;
+}

@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { computed, watchEffect, defineCustomElement } from 'vue'
+import { computed, watchEffect, defineCustomElement, ref } from 'vue'
 
 // stores
 import { sessionStore } from '@va-automate/lws-manager'
 import { i18nStore } from '@va-automate/i18n-provider'
+
+// Add ref for profile reload
+const reloadProfile = ref(false)
 
 // translation
 import { useI18n } from 'vue-i18n'
@@ -14,10 +17,13 @@ watchEffect(() => {
   locale.value = newLocale.value
 })
 
-import TranslationTester from '@/components/TranslationTester.ce.vue'
-
-if (!customElements.get('translation-tester')) {
-  customElements.define('translation-tester', defineCustomElement(TranslationTester))
+// Optional: Add function to trigger profile reload
+const triggerProfileReload = () => {
+  reloadProfile.value = true
+  // Reset after a short delay
+  setTimeout(() => {
+    reloadProfile.value = false
+  }, 100)
 }
 </script>
 
@@ -26,8 +32,12 @@ if (!customElements.get('translation-tester')) {
     <h1>{{ t('welcome') }}</h1>
     <p>{{ t('message') }}</p>
     <BContainer>
-      <translation-tester name="Karel">Nothing to report</translation-tester>
-      Todo: allow editing orgs and sites!
+      <div v-if="sessionStore.loggedInWebId">
+        <lws-profile-list :reload-profile="reloadProfile"></lws-profile-list>
+      </div>
+      <div v-else>
+        <p class="text-warning">{{ t('notConnected') }}</p>
+      </div>
     </BContainer>
   </section>
 </template>

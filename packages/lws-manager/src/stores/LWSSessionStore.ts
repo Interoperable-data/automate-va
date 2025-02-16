@@ -27,7 +27,8 @@ export const sessionStore = reactive({
   loggedInWebId: '', // falsy
   rerouting: false,
   authProvidersSessionData: { inrupt: {} },
-  analysedDatasets: [] as { url: string, description: string }[], // New property to store analysed datasets
+  analysedDatasets: [] as { url: string; description: string }[], // New property to store analysed datasets
+  profileValues: {} as { [webId: string]: Record<string, string[]> }, // Add profileValues property to store profile information
 
   /**
    * Returns the root URL of the storage pod.
@@ -88,7 +89,7 @@ export const sessionStore = reactive({
         const res = `pod${index + 1}:${url.substring(podUrl.length)}`;
         console.log(`(prefixify) Prefix found in ownPodURLs: ${res}`);
         return res;
-      }else {
+      } else {
         console.warn(`(prefixify) URL ${url} does not start with any of the ownPodURLs`);
       }
     }
@@ -116,5 +117,7 @@ export const sessionStore = reactive({
     this.loggedInWebId = '';
     this.rerouting = false;
     this.authProvidersSessionData = { inrupt: {} };
-  }
+    this.analysedDatasets = [];
+    this.profileValues = {}; // Reset profile values
+  },
 });

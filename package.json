@@ -14,6 +14,10 @@
     "test": "lerna run test",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "format": "lerna run format --stream --concurrency 1",
+    "format:check": "lerna run format:check --stream --concurrency 1",
+    "lint": "lerna run lint --stream --concurrency 1",
+    "lint:fix": "lerna run lint:fix --stream --concurrency 1"
   }
 }
