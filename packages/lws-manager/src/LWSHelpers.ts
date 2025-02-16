@@ -13,7 +13,7 @@ import {
 } from '@inrupt/solid-client';
 
 // Vocabularies
-import { RDF, RDFS, FOAF, VCARD, SCHEMA_INRUPT } from '@inrupt/vocab-common-rdf';
+import { RDF, RDFS } from '@inrupt/vocab-common-rdf';
 import { SOLID } from '@inrupt/vocab-solid';
 
 // Store for session and process data
@@ -27,15 +27,6 @@ import { typeIndexProperties, processClasses } from './vocabularies'; // Import 
 
 import LWSProcessHelpers from './LWSProcess';
 const { extractTaskNamefromPodURL } = LWSProcessHelpers; // Import extractTaskNamefromPodURL
-
-// Common profile properties to check
-const PROFILE_PROPERTIES = {
-  name: [FOAF.name, VCARD.fn, SCHEMA_INRUPT.name],
-  email: [FOAF.mbox, VCARD.email, SCHEMA_INRUPT.email],
-  photo: [FOAF.img, VCARD.photo, SCHEMA_INRUPT.image],
-  website: [FOAF.homepage, VCARD.url, SCHEMA_INRUPT.url],
-  bio: [VCARD.note, SCHEMA_INRUPT.description],
-};
 
 // Fetch data function
 export async function fetchData(uri: URL, type: TargetType) {
@@ -82,66 +73,6 @@ function extractTypeIndexes(things: any[]): URL[] {
   });
 
   return typeIndexContainers;
-}
-
-/**
- * Extracts profile values from an array of Things based on predefined property categories.
- * Each category (name, email, photo, etc.) can have multiple predicates that are checked.
- *
- * @param things - Array of ThingPersisted objects containing profile data
- * @returns Record with categories as keys and arrays of values as values
- *
- * Example return value:
- * {
- *   name: ["John Doe"],
- *   email: ["john@example.com"],
- *   photo: ["https://example.com/photo.jpg"],
- *   website: ["https://johndoe.com"],
- *   bio: ["Software developer"]
- * }
- */
-export function extractProfileValues(things: ThingPersisted[]): Record<string, string[]> {
-  const profileValues: Record<string, string[]> = {};
-
-  // Log start of extraction
-  sessionStore.logDatasetAnalysis(
-    things[0]?.url || 'unknown',
-    `Starting profile value extraction for ${things.length} things`
-  );
-
-  things.forEach((thing) => {
-    // For each property category
-    Object.entries(PROFILE_PROPERTIES).forEach(([category, predicates]) => {
-      if (!profileValues[category]) {
-        profileValues[category] = [];
-      }
-
-      // Check each predicate in the category
-      predicates.forEach((predicate) => {
-        const literals = getStringNoLocale(thing, predicate);
-        const urls = getUrl(thing, predicate);
-
-        if (literals && !profileValues[category].includes(literals)) {
-          profileValues[category].push(literals);
-          sessionStore.logDatasetAnalysis(thing.url, `Found ${category} (literal): ${literals}`);
-        }
-        if (urls && !profileValues[category].includes(urls)) {
-          profileValues[category].push(urls);
-          sessionStore.logDatasetAnalysis(thing.url, `Found ${category} (URL): ${urls}`);
-        }
-      });
-    });
-  });
-
-  // Log summary of found values
-  sessionStore.logDatasetAnalysis(
-    things[0]?.url || 'unknown',
-    `Found profile values in categories: ${Object.entries(profileValues)
-      .map(([cat, vals]) => `${cat}(${vals.length})`)
-      .join(', ')}`
-  );
-
-  return profileValues;
 }
 
 // Function to retrieve type index containers from a WebID
