@@ -3,8 +3,10 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
 @prefix era: <http://data.europa.eu/949/> .
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
 @prefix eralex: <http://data.europa.eu/949/eli/> .
 @prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
 @prefix eva: <http://data.europa.eu/949/eva/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix org: <http://www.w3.org/ns/org#> .
@@ -19,6 +21,14 @@
 @prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix era-org: <http://data.europa.eu/949/organisation/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
+@prefix era-tpls-rinf: <http://data.europa.eu/949/concepts/train-protection-legacy-systems/rinf/> .
+@prefix era-rscv-rinf: <http://data.europa.eu/949/concepts/radio-system-compatibilities-voice/rinf/> .
+@prefix era-gsmr-rinf: <http://data.europa.eu/949/concepts/gsmr-networks/rinf/> .
+@prefix era-gaugings-rinf: <http://data.europa.eu/949/concepts/gaugings/rinf/> .
+@prefix era-tr: <http://data.europa.eu/949/concepts/temperature-ranges/> .
 
 era-org:MF-DE-81739-1 a era:Body ;
     foaf:name "Siemens Mobility GmbH" .
@@ -30,7 +40,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     dcterms:created "2025-01-21"^^xsd:date ;
     rdfs:label "MIREO 4-Teiler 15kV PZB Midi"@en ;
     era:alternativeName "MIREO Regensburg Donautal" ;
-    era:category era-vehicle-types-eratv:tractionVehicles ;
+    era:vehicleCategory era-vehicle-types-eratv:11 ; # traction vehicles
     era:subCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
     era:manufacturer [
         a era:OrganisationRole ;
@@ -47,15 +57,15 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     era:energySupplySystem era-ess-rinf:AC20 ;
 
     # Non-configuration dependent parameters
-    era:drivingCabs "2";
-    era:vehiclesComposingFixedFormation "4" ;
+    era:drivingCabs "2"^^xsd:integer;
+    era:vehiclesComposingFixedFormation "4"^^xsd:integer ;
     era:gsmRVersion "Implementing Regulation (EU) 2023/1695, Appendix B transition regime Baseline 1" ;
     era:voiceRadioCompatible era-rscv-rinf:140 ;
     era:voiceOperationalCommImpl "TRS6000 i.V.m. der Software 4.2.0" ;
     era:voiceGSMRNetwork era-gsmr-rinf:90 ;
-    era:usesGroup555 "true"^^<xsd:boolean> ;
-    era:maximumDesignSpeed "160" ;
-    era:maximumLocomotivesCoupled "3" ;
+    era:usesGroup555 "true"^^xsd:boolean ;
+    era:maximumDesignSpeed "160"^^xsd:integer ;
+    era:maximumLocomotivesCoupled "3"^^xsd:integer ;
     era:gaugingProfile era-gaugings-rinf:40 , era-gaugings-rinf:350 ;
     era:temperatureRange era-tr:10 ;
     era:snowIceHailConditions era-ic-eratv:nominal ;
@@ -75,8 +85,8 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
         era:forConfiguration eratv:ConfigB ; # ONLY SKOS CS era-ntg-rinf:30 ;
         era:vehicleTypeMaximumSpeedAndCantDeficiency [
             a era:MaximumSpeedAndCantDeficiency ;
-            era:vehicleTypeMaximumCantDeficiency "150" ;
-            era:vehicleTypeMaximumSpeed "160" ;  
+            era:vehicleTypeMaximumCantDeficiency "150"^^xsd:integer  ;
+            era:vehicleTypeMaximumSpeed "160"^^xsd:integer  ;  
         ] ;
     ];
     era:vehicleTypePlatform "MIREO" .
