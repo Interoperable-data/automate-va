@@ -28,8 +28,8 @@ eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
     ## GENERAL INFO
     dcterms:identifier "11-057-0003-1-003" ;
     dcterms:issued "2019-03-27T00:00:00Z"^^xsd:dateTime ; # Date of Record
-    rdfs:label "X4-E-Lok-AB (MS-Lokomotiven) Korridor D-A-I_Rel. E1.03" ;
-    era:alternativeVehicleTypeName "E193 DAI_Rel. E1.03" ; # current property is too general
+    era:typeName "X4-E-Lok-AB (MS-Lokomotiven) Korridor D-A-I_Rel. E1.03" ;
+    era:alternativeTypeName "E193 DAI_Rel. E1.03" ; # current property is too general
     era:vehicleTypePlatform "X4" ;
 
     era:category era-vehicle-types-eratv:tractionVehicles ;
