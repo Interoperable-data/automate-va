@@ -8,7 +8,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     dcterms:identifier "13-178-0010-8-001-001" ;
     dcterms:issued "2024-06-14"^^xsd:date ;  # From XML: Date of record
     dcterms:created "2025-01-21"^^xsd:date ;
-    rdfs:label "MIREO 4-Teiler 15kV PZB Midi"@en ;
+    era:typeName "MIREO 4-Teiler 15kV PZB Midi"@en ;
     era:alternativeTypeName "MIREO Regensburg Donautal" ;
     era:vehicleCategory era-vehicle-types-eratv:11 ; # traction vehicles
     era:subCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
