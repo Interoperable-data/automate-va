@@ -10,7 +10,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     dcterms:created "2025-01-21"^^xsd:date ;
     rdfs:label "MIREO 4-Teiler 15kV PZB Midi"@en ;
     era:alternativeTypeName "MIREO Regensburg Donautal" ;
-    era:category era-vehicle-types-eratv:tractionVehicles ;
+    era:vehicleCategory era-vehicle-types-eratv:11 ; # traction vehicles
     era:subCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
     era:manufacturer [
         a era:OrganisationRole ;
@@ -27,15 +27,15 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     era:energySupplySystem era-ess-rinf:AC20 ;
 
     # Non-configuration dependent parameters
-    era:drivingCabs "2";
-    era:vehiclesComposingFixedFormation "4" ;
+    era:drivingCabs "2"^^xsd:integer;
+    era:vehiclesComposingFixedFormation "4"^^xsd:integer ;
     era:gsmRVersion "Implementing Regulation (EU) 2023/1695, Appendix B transition regime Baseline 1" ;
     era:voiceRadioCompatible era-rscv-rinf:140 ;
     era:voiceOperationalCommImpl "TRS6000 i.V.m. der Software 4.2.0" ;
     era:voiceGSMRNetwork era-gsmr-rinf:90 ;
-    era:usesGroup555 "true"^^<xsd:boolean> ;
-    era:maximumDesignSpeed "160" ;
-    era:maximumLocomotivesCoupled "3" ;
+    era:usesGroup555 "true"^^xsd:boolean ;
+    era:maximumDesignSpeed "160"^^xsd:integer ;
+    era:maximumLocomotivesCoupled "3"^^xsd:integer ;
     era:gaugingProfile era-gaugings-rinf:40 , era-gaugings-rinf:350 ;
     era:temperatureRange era-tr:10 ;
     era:snowIceHailConditions era-ic-eratv:nominal ;
@@ -55,8 +55,8 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
         era:forConfiguration eratv:ConfigB ; # ONLY SKOS CS era-ntg-rinf:30 ;
         era:vehicleTypeMaximumSpeedAndCantDeficiency [
             a era:MaximumSpeedAndCantDeficiency ;
-            era:vehicleTypeMaximumCantDeficiency "150" ;
-            era:vehicleTypeMaximumSpeed "160" ;  
+            era:vehicleTypeMaximumCantDeficiency "150"^^xsd:integer  ;
+            era:vehicleTypeMaximumSpeed "160"^^xsd:integer  ;  
         ] ;
     ];
     era:vehicleTypePlatform "MIREO" .
