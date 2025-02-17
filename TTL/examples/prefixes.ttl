@@ -26,6 +26,7 @@
 @prefix eravr: <http://data.europa.eu/949/vehicleRegistrations/> .
 
 ### SKOS
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
 @prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
 @prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
 @prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
