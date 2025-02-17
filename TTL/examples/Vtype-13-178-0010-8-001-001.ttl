@@ -1,24 +1,4 @@
-@base <http://data.europa.eu/949/> .
-@prefix : <http://data.europa.eu/949/cld/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix eralex: <http://data.europa.eu/949/eli/> .
-@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
-@prefix eva: <http://data.europa.eu/949/eva/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix time: <http://www.w3.org/2006/time#> .
-@prefix unit: <http://qudt.org/vocab/unit/> .
-@prefix vpa: <http://w3id.org/vpa/> .
-@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+# See prefixes.ttl
 
 era-org:MF-DE-81739-1 a era:Body ;
     foaf:name "Siemens Mobility GmbH" .
@@ -29,7 +9,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     dcterms:issued "2024-06-14"^^xsd:date ;  # From XML: Date of record
     dcterms:created "2025-01-21"^^xsd:date ;
     rdfs:label "MIREO 4-Teiler 15kV PZB Midi"@en ;
-    era:alternativeName "MIREO Regensburg Donautal" ;
+    era:alternativeTypeName "MIREO Regensburg Donautal" ;
     era:category era-vehicle-types-eratv:tractionVehicles ;
     era:subCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
     era:manufacturer [
@@ -39,7 +19,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     ] ;
 
     ##### LINKED AUTHORISATIONS
-    vpa:definesCase eva:vac-13-178-0010-8-001-001-1 ; 
+    vpa:definesCase eva:vac-13-178-0010-8-001-001-1 ; # Section 2 & 3 info there
 
     ##### CONFIGURATION
     era:wheelSetGauge era-ntg-rinf:30 ;
@@ -81,6 +61,8 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     ];
     era:vehicleTypePlatform "MIREO" .
 
+### CONFIGURATIONS, RESTRICTIONS, AUTHORISATIONS
+
 # Configuration only used in 3.1.2.4 (auth)
 eratv:ConfigA a era:VehicleTypeConfiguration ; # NOT a subClass of vpa:Requirement
     rdfs:label "1435mm / AC 15kV-16.7Hz / PZB 90" ;
@@ -96,7 +78,10 @@ eratv:ConfigC a era:VehicleTypeConfiguration ;
     rdfs:label "AC 15kV-16.7Hz" ;
     era:energySupplySystem era-ess-rinf:AC20 .
 
-# Non-coded CfU & restrictions (See https://eur-lex.europa.eu/eli/dec_impl/2011/665/2023-09-08#anx_I part 6)
+# .. other configs if needed.
+
+# Non-coded CfU & restrictions 
+# See definition in https://eur-lex.europa.eu/eli/dec_impl/2011/665/2023-09-08#anx_I part 6
 eratv:nccfu-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationRestriction ; # MAYBE subClassOf vpa:Restriction ;
     # DO NOT USE vpa:regarding eratv:ConfigA as configs cannot be vpa:Requirement's ;
     era:forConfiguration eratv:ConfigA ;
@@ -164,11 +149,11 @@ eva:vac-13-178-0010-8-001-001-3 a era:VehicleAuthorisationCase ; # subClassOf vp
     # Non-disclosed - OSS data on the auth case can be placed here
     vpa:supports eva:va-20241219-012 .
 
-eva:va-20241219-012 a era:VehicleAuthorisationApplication # subClassOf vpa:Request ;
+eva:va-20241219-012 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request
     # Non-disclosed - OSS data can be placed here
     vpa:requestFor eva:20241219-012 .
 
-eva:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission ;
+eva:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission
     dcterms:identifier "EU8120250002" ;
     dcterms:issued "2025-01-03"^^xsd:date .
 
