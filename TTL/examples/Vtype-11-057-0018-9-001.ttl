@@ -28,8 +28,8 @@ eratv:vt-11-057-0018-9-001 a era:VehicleType ;
     dcterms:identifier "11-057-0018-9-001";
     dcterms:issued "2020-02-07T10:30:00Z"^^xsd:dateTime ; # the entry of record in ERATV using Date time UTC
     dcterms:created "2024-12-17"^^xsd:date ; # this resource in the KG
-    rdfs:label "X4-E-Lok-AB (MS-Lokomotiven) Korridor D-A-CH-I-NL_Rel. E1.11"@de ;
-    era:alternativeName "E193 DE-AT-CH-IT-NL_Rel. E1.11" ;
+    era:typeName "X4-E-Lok-AB (MS-Lokomotiven) Korridor D-A-CH-I-NL_Rel. E1.11"@de ;
+    era:alternativeTypeName "E193 DE-AT-CH-IT-NL_Rel. E1.11" ;
     era:category era-vehicle-types-eratv:tractionVehicles ;
     era:subCategory era-vehicle-types-eratv:locomotive ;
     vpa:definesCase eva:vac-11-057-0018-9-001-1 , eva:vac-11-057-0018-9-001-2 , eva:vac-11-057-0018-9-001-3 ;
