@@ -71,18 +71,14 @@ eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
         era:numberOfPantographsInContactWithOCL 1 ;
         # ...
     ] , [
-        ##
+        ## Other values
 
-    ] , [
-        
-        
-                                  
-        
-    
-
-    .
+    ] , [ .. ] ;
+    ...
+.
 
 ### VehicleTypeConfigurations
+### Note, some are IDENTICAL as those defined in the type 11-057-0018-9-001, and they are reused in the KG.
 # AC 15kV-16.7Hz only
 eratv:Config15kV167Hz a era:VehicleTypeConfiguration ;
     rdfs:label "AC 15kV-16.7Hz" ;
@@ -98,7 +94,6 @@ eratv:Config3kV a era:VehicleTypeConfiguration ;
     rdfs:label "DC 3kV" ;
     era:energySupplySystem era-ess-rinf:DC30 .
 
-### Note, these are IDENTICAL as those defined in the type 11-057-0018-9-001
 # 1435mm / AC 15kV-16.7Hz / Indusi/PZB
 eratv:Config1435IndusiPZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / Indusi/PZB" ;
@@ -117,7 +112,8 @@ eratv:Config1435LZB a era:VehicleTypeConfiguration ;
 
 #### Restrictions
 eratv:nccfu-11-057-0003-1-003-1-1 a era:VehicleTypeAuthorisationRestriction ;
-  vpa:regarding eratv:Config1435LZB , eratv:Config1435IndusiPZB ;
+  # vpa:regarding must link to a vpa:Requirement.
+  era:forConfiguration eratv:Config1435LZB , eratv:Config1435IndusiPZB ;
   # ... both are MOSTLY identical and coded only.
   era:minimumHorizontalRadius 140 ;
   era:gaugingProfile era-gaugings-rinf:40 ;
@@ -157,6 +153,10 @@ eva:vac-11-057-0003-1-003-1 a era:VehicleAuthorisationCase  ;   # Uses: era:VAAu
       eratv:nccfu-11-057-0003-1-003-1-2 ,
       eratv:nccfu-11-057-0003-1-003-1-3 ;
   ] ;
+  # Section 2 Conformity must be linked to the authorisation case where type appeared.
+  era:configDependentCompliance [
+      a era:VehicleTypeCompliance ;
+      vpa:checkedSection <SKOS:TSI-section> .
  ...
 
 eva:auth-11-057-0003-1-003-DE-1 a era:VehicleAuthorisation  ;
