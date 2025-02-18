@@ -60,28 +60,72 @@ In this case, the above structure is reduced as follows:
 ```js
 eratv:vt-11-057-0018-9-001 a era:VehicleType ; # Uses: era:VehicleType subClassOf vpa:Scope
     dcterms:identifier "11-057-0018-9-001";
-    era:manufacturer <era-org:BEST_GUESS> ;
+    era:manufacturer [
+      a era:OrganisationRole ;
+      era:roleOf <era-org:BEST_GUESS> ;
+      era:hasRole <skos:Manufacturer> .
+   ];
     ...
-    # ARTIFICIALLY CREATED authorisation cases
-    vpa:definesCase eva:vac-11-057-0018-9-001-1 , eva:vac-11-057-0018-9-001-2 , eva:vac-11-057-0018-9-001-3 ;
+    # ARTIFICIALLY CREATED authorisation cases per member state
+    vpa:definesCase eva:vac-11-057-0018-9-001-1 ,
+          eva:vac-11-057-0018-9-001-2 ,
+          eva:vac-11-057-0018-9-001-3 ;
 
 # MS 1
-# Uses: era:VAAuthorisationCase subClassOf vpa:Case
-eva:vac-11-057-0018-9-001-1 a era:VAAuthorisationCase ;                 
-    vpa:permissionType era-skos-va:HistoricalAuthCase ;  
+# Uses: era:VehicleTypeAuthorisationCase subClassOf vpa:Case
+eva:vac-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationCase ;                 
+    vpa:permissionType era-skos-va:HistoricalAuthorisationCase ;  
     era:areaOfUse <MemberState-1> ; # Always the whole memberstate
     ...
     vpa:supports [
         # blankNode as it was never physically submitted
-        a vpa:Request ; 
-        vpa:requestFor eva:auth-11-057-0018-9-001-1-1 ; 
+        a VehicleTypeAuthorisationApplication ; 
+        vpa:requestFor eva:auth-11-057-0018-9-001-MS1-1 ; 
         # Only the first is needed as we can find corrections by following dcterms:isReplacedBy*
     ]. 
     
-eva:auth-11-057-0018-9-001-1-1 a era:VAAuthorisation ;
-    # as retrieved from ERATV for older type authoristions
+eva:auth-11-057-0018-9-001-MS1-1 a era:VehicleTypeAuthorisation ;
+    # as retrieved from ERATV for older type authorisations
     dcterms:identifier "DE5920201005" ; 
     ...
 ```
 
 As such, a harmonized encoding is possible.
+
+## Configuration dependencies
+
+### Technical Parameters
+
+Technical parameters which depend on a configuration ?cfg are found for the VehicleType `<vt>` by using `era:configDependentParameter` as such:
+
+```
+SELECT ?vt ?val ?cfg WHERE {
+?vt a era:VehicleType ;
+    era:configDependentParameter/era:forConfiguration ?cfg ;
+    era:configDependentParameter/era:contactStripMaterial ?val .
+}
+```
+
+### (Non)Coded CfU and other restrictions
+
+Authorisation Cases will document the (N)CCFU using `era:configDependentConditions`, a subClassOf `vpa:Compliance`, which allows the condition to link to the `vpa:checkedSection` in order to trace its origin where possible. The conditions will be instantiated as `era:VehicleTypeAuthorisationRestriction`s as such:
+
+```
+SELECT ?vt ?case ?auth ?cfg ?cfu ?cprop ?cval WHERE {
+?vt a era:VehicleType ;
+  vpa:definesCase ?case .
+  FILTER {
+    ?case a era:VehicleAuthorisationCase ;
+      era:configDependentConditions/vpa:withRestriction ?cfu .
+      FILTER {
+        ?cfu a era:VehicleTypeAuthorisationRestriction ;
+          era:forConfiguration ?cfg ;
+          ?cprop ?cval .
+      }
+    }
+}
+```
+
+### Compliance with TSI (non-checked sections and applicable specific cases)
+
+Sections 2.1 and 2.3 are to be provided, but make use of subClassesOf `vpa:Requirement` and `vpa:Compliance`.
