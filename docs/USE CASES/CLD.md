@@ -1,3 +1,8 @@
+---
+next:
+  text: 'EC Declarations'
+  link: './ECDECLARATION.md'
+---
 # Use Cases for CLD
 
 Source: RFU-STR-001.
@@ -55,7 +60,7 @@ SHACL-FORM: (LWS) `process/CLD/add#shape` or any URI which resolves to the shape
 
 Displays a sequence of forms, for storage of the CLD as sets of public and private linked data:
 
-- [Public data](../ERADIS/CERTIFICATES.md), with [Shape](../TTL/Certificate.ttl). Its initial status must be '`Issued`' or `Refused`.
+- [Public data](../ERADIS/CERTIFICATES.md), with [Shape](../TTL/Certificate.ttl). Its initial status must be `Issued` or `Refused`.
 - Confidential data, like [Restrictions](../ERADIS/RESTRICTION.md), linked to by the public instance.
 
 Requires a [search function](../COMPONENTS/process-sources.md) retrieving the URI's for the ObjectProperties in the above models.

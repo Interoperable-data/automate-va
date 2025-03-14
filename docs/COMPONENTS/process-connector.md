@@ -26,7 +26,7 @@ This means the steps' contents are then available under:
 ```sql
 <https://{LWSRootContainer/}{ProcessRootContainer/}{ProcessContainers[index]/}{TaskDatasetName}#{uuid of the Thing-step}>
 
-WHERE (in the Pubic Type Index dataset):
+WHERE (in the PublicTypeIndex dataset):
 <> a solid:TypeRegistration ; 
    solid:forClass dul:Process , prov:Plan ;
    solid:instanceContainer <ProcessContainer> . 

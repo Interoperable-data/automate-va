@@ -1,0 +1,15 @@
+{
+  "name": "@va-automate/i18n-provider",
+  "version": "0.0.1",
+  "dependencies": {
+    "vue": "^3.5.13",
+    "vue-i18n": "^10.0.5"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
+    "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
+  },
+  "devDependencies": {
+    "@vue/eslint-config-typescript": "^14.1.3"
+  }
+}

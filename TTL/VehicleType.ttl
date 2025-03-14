@@ -1,0 +1,399 @@
+@base <http://data.europa.eu/949/> .
+@prefix : <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+
+# For inclusion in the ERA ontology
+
+# A VehicleType (from 3RWP onwards) results from a VVTAuthorisation, containing the VVTAuthorisationCase New, First, Renew.
+# A VehicleType can be extended in Area of Use by applying a specific AuthorisationCase: ExtAUu
+# Individual vehicles are authorised during the creation of the VehicleType, and/or in later C2T VVTAuthorisation cases.
+# VehicleTypes before the 3RWP can exist without a link to the underlying authorisation.
+# Vehicles before the 3RWP can be authorised without a link to the authorisation as formalised here.
+
+# ------------------------------ REQUEST
+:VVTAuthorisationApplication a
+    owl:Class , sh:NodeShape ;
+    rdfs:subClassOf vpa:Request ;
+    dcterms:created "2024-10-25"^^xsd:date ;
+    # dcterms:modified "_RESERVED_"^^xsd:date ;
+
+    ## definitions ----------
+    rdfs:label "Application for Vehicle (type) Authorisation"@en;
+    rdfs:isDefinedBy <http://data.europa.eu/949/> ;
+    dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/cpt_5/oj> , <http://data.europa.eu/eli/reg_impl/2018/545/anx_I/oj> ;
+    rdfs:seeAlso "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#cpt_5";
+    rdfs:comment """Application for Vehicle(type) authorisation
+    
+    Set of resources together containing the information of Annex I of the (EU)2018/545, in order to receive the Authorisation.
+
+    All information is grouped in the applications' authorisation cases and their scope, except:
+    - the issue date of the application
+    - the resulting authorisation
+    - 
+    """@en ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:issued ;
+        sh:datatype xsd:date ;
+        sh:nodekind sh:Literal ;
+        sh:description "The date of issue of the Application. Currently: submission date in OSS."
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:requestFor ;
+        sh:nodekind sh:IRI ;
+        sh:class :VVTAuthorisation ;
+        sh:description "(b) (ii) The application which was issued in order to request this authorisation."
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:inversePath vpa:supports ;
+        sh:nodekind sh:IRI ;
+        sh:class :VVTAuthorisationCase ;
+        sh:description "The application's authorisation cases."
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:inversePath vpa:submittedFor ;
+        sh:nodekind sh:IRI ;
+        sh:or (
+            [
+                 sh:nodekind sh:IRI ;
+                 sh:class era:ECCertificate
+            ]
+            [
+                 sh:nodekind sh:IRI ;
+                 sh:class era:DocumentCollection
+            ]
+            [
+                sh:nodekind sh:Literal ;
+                sh:datatype xsd:string # Only in the case of unfindable certificate references.
+            ]
+        );
+        sh:description "The certificates submitted in the context of the Application. Ideally grouped in era:DocumentCollection."
+    ].
+
+
+# ------------------------------ PERMISSION
+:VVTAuthorisation a 
+    owl:Class , sh:NodeShape ;
+    rdfs:subClassOf :TimeBoundDocument, vpa:Permission ;
+    dcterms:created "2024-10-25"^^xsd:date ;
+    # dcterms:modified "_RESERVED_"^^xsd:date ;
+
+    ## definitions ----------
+    rdfs:label "Vehicle (type) Authorisation"@en ;
+    rdfs:isDefinedBy <http://data.europa.eu/949/> ;
+    dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/art_2/oj>, 
+        <http://data.europa.eu/eli/dec/2008/768(1)/oj>, 
+        <http://data.europa.eu/eli/dir/2016/797/2020-05-28>,
+        <http://data.europa.eu/eli/reg_impl/2019/250/2020-06-16>,
+        <http://data.europa.eu/eli/dec/2010/713/oj> ;    
+    rdfs:seeAlso "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32018R0545#art_2" ;
+    rdfs:comment """Vehicle (Type) Authorisation:
+    
+    A decision issued by the authorising entity based on reasonable assurance that the applicant and the entities involved in the design, manufacture, verification and validation of the authorisation scope have fulfilled their (respective) obligations and responsibilities in order to ensure conformity with the essential requirements of the applicable legislation.
+
+    Based on definition (15):
+    Scope of ‘vehicle authorisation for placing on the market’ means an `individual vehicle` while 
+    - ensuring conformity with the authorised type enabling that the vehicle may be placed on the market; and which
+    - may be used safely in the area of use according to the conditions for use and other restrictions, when applicable, specified in the vehicle authorisation and in the vehicle type authorisation;
+    Data model: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#art_49
+
+    Based on definition (16):
+    Scope of ‘vehicle type authorisation’ means the `vehicle type` while 
+    - enabling that a vehicle manufactured according to this design may be placed on the market; and which
+    - may be used safely in the area of use of the vehicle type according to the conditions for use of the vehicle and other restrictions, when applicable, specified in the vehicle type authorisation and to be applied to all vehicle authorised in conformity to this type;
+    Data model: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#art_48"""@en ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:source ;
+        sh:nodekind sh:IRI ;
+        sh:class vpa:Requirement ;
+        sh:description "(a) the legal basis empowering the authorising entity to issue the vehicle authorisation for placing on the market OR the vehicle type authorisation;"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:identifier ;
+        sh:nodekind sh:Literal ;
+        sh:datatype xsd:string ;
+        era:eratvIndex "3.1.3.4.4" ;
+        sh:pattern "" ; # EU8020200006, in general CCNNYYYYMMMM, with CC the ISO country code
+        sh:description "As quoted in ERATV parameter 3.1.3.4.4 Authorisation document reference"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:inversePath vpa:grants ;
+        sh:nodekind sh:IRI ;
+        sh:class :PermittingOrganisation ;
+        sh:description "(b) (i) The authorising entity, issuing authority which issued this authorisation. (Annex I, point 4)"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:inversePath vpa:requestFor ;
+        sh:nodekind sh:IRI ;
+        sh:class :VVTAuthorisationApplication ;
+        sh:description "(b) (ii) The application which was issued in order to request this authorisation."
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:submittedIn ;
+        sh:nodekind sh:IRI ;
+        sh:class :VVTAuthorisationCase ;
+        sh:description "(b) (iii) The authorisation cases which supported the application, leading to this authorisation."
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:inversePath vpa:requests ;
+        sh:nodekind sh:IRI ;
+        sh:class :ApplyingOrganisation ;
+        dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/anx_I/oj> ;
+        sh:description "(b) (iv) The applicant which requested this authorisation. (Annex I, point 5)"
+    ].
+
+# ------------------------------ CASE
+:VVTAuthorisationCase a
+    owl:Class , sh:NodeShape ;
+    rdfs:subClassOf vpa:Case ;
+    dcterms:created "2024-10-25"^^xsd:date ;
+    # dcterms:modified "_RESERVED_"^^xsd:date ;
+
+    ## definitions ----------
+    rdfs:label "Vehicle (type) Authorisation Case"@en;
+    dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/art_14/oj>, <http://data.europa.eu/eli/dir/2016/797/2020-05-28> ;
+    rdfs:seeAlso "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#art_14" ;
+    rdfs:comment """Vehicle (Type) Authorisation Case
+    
+    One of 5 ways of applying for a vehicle (type) authorisation as defined in Article 14 depending on the need of the Applicant. 
+    Note that it is allowed to combine SOME application cases in one application, so several authorisation cases are allowed to be combined, each with their own scope.
+
+    Groups at least the vehicle type identifier with the possible vehicle identifiers in the scope of each case. """@en;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:concerns ;
+        sh:nodekind sh:IRI ;
+        dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/anx_I/oj> ;
+        rdfs:seeAlso "https://eur-lex.europa.eu/eli/reg_impl/2018/545/anx_I/oj" ;
+        rdfs:comment """The VVT Authorisation Case's technical scope
+
+        The contents of the case to be supporting the application are grouped per vehicle type in a Scope:
+        - the SINGLE vehicle type in scope, or the version/variant in scope, to which the following vehicles should be linked;
+        - the (set of) vehicle(s) to be authorised, expressed preferably as an IRI to a vehicle collection resource;
+        - the intended Area of Use of that specific vehicle type.
+        - other information supporting this specific set."""@en ;      
+        sh:class era:VehicleType , :AreaOfUse , era:VehicleCollection, era:Vehicle ;
+        sh:description "The detailed technical scopes which are the intended vehicle types (and vehicles) to be authorised in the application case."
+    ];
+    sh:property [
+        a sh:PropertyShape, vpa:permissionType ;
+        sh:path era:vehicleAuthorisationCaseType ;
+        dcterms:created "2024-06-26"^^xsd:date; # See 5.1.0, property had another name
+        era:inSkosConceptScheme <http://data.europa.eu/949/concepts/va-authcases/VehicleAuthorisationCase> ;
+        sh:description "Indicates one of 5 allowed authorisation cases from 2018/545"@en ;
+        sh:nodekind sh:IRI ;
+        sh:class <http://www.w3.org/2004/02/skos/core#Concept> ;
+    ].
+
+# ------------------------------ VALID SCOPES
+# Linked to the Case via vpa:concerns, see above.
+:VehicleCollection a
+    owl:Class , sh:NodeShape ;
+    rdfs:subClassOf vpa:Scope ;
+    dcterms:created "2024-10-25"^^xsd:date ;
+    # dcterms:modified "_RESERVED_"^^xsd:date ;
+
+    ## definitions ----------
+    rdfs:label "Vehicle Collection"@en;
+    rdfs:comment """Set of vehicles which is treated together in an authorisation case. MUST belong to the same Vehicle Type as that scope of the case.
+    Given that this collection is mostly also registered after authorisation, it can be reused as such in the Registration Case.""" ;
+    # TODO: incomplete
+.
+
+# VehicleType - OPERATIONAL MODE
+# Restricts the value of a property to an operation under ENE or [ENE, CCS, INF].
+:VehicleTypeConfiguration a
+    sh:NodeShape , owl:Class ;
+    dcterms:created "2024-10-25"^^xsd:date ;
+    # dcterms:modified "_RESERVED_"^^xsd:date ;
+
+    ## definitions ----------
+    rdfs:label "Vehicle Type Configuration"@en ;
+    rdfs:comment """Technical properties of a vehicle type, or even the applicable specific cases as certified, sometimes depend on specific values of:
+    - the provided power system (era:era:energySupplySystem)
+    - a combination of [era:energySupplySystem, the ATP system and the track gauge]"""@en;
+
+
+# AoU
+:AreaOfUse a 
+    owl:Class , sh:NodeShape, vpa:Scope ;
+    dcterms:created "2024-10-25"^^xsd:date ;
+    # dcterms:modified "_RESERVED_"^^xsd:date ;
+
+    ## definitions ----------
+    rdfs:label "Scope of a Vehicle (type) Authorisation Case: Area Of use"@en;
+    rdfs:comment """Each Authorisation Case must mention:
+        3.   Area of use (M):
+        3.1.Member States
+        3.2.Networks (per Member State)
+        3.3.Stations with similar network characteristics in neighbouring Member States when those stations are close to the border as specified in Article 21.8 of Directive (EU) 2016/797 (when applicable)
+        3.4.Definition of the extended area of use (only applicable for the authorisation case ‘Extended area of use’)
+        3.5.Whole EU network"""@en ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:memberStatesAoU ; # See 5.1.0, property had another name era:authorizedCountry
+        sh:description "Indicates one or more allowed Member States, or the EU as a whole (Annex I - points 3.1 & 3.5)"@en ;
+        sh:nodekind sh:IRI ;
+        era:inSkosConceptScheme <http://publications.europa.eu/resource/authority/country> ;
+        sh:class <http://www.w3.org/2004/02/skos/core#Concept> ; # see publication office
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:memberStateNetworksAoU ;
+        sh:description "Indicates one or more allowed Member State Networks (Annex I - points 3.2)"@en ;
+        sh:or (
+            # [
+                # sh:nodekind sh:IRI ;
+                # sh:class era:Network is obsolete # a class which represents a certain Network within a MS ???? 
+            # ]
+            [
+                sh:nodekind sh:Literal ;
+                sh:datatype xsd:string ;
+            ]
+        );
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:memberStateBorderStationsAoU ;
+        sh:description "Indicates one or more allowed Member State Border Stations (Annex I - points 3.3)"@en ;
+        sh:or ( 
+            [
+                sh:nodekind sh:IRI ;
+                sh:class era:NonLinearElement ;
+            ]
+            [
+                sh:nodekind sh:Literal ;
+                sh:datatype xsd:string ;
+            ]
+        )
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:isExtensionOfAoU ;
+        sh:description "Indicates whether the AoU-resource is an extension, and not an original AoU  (Annex I - `true` if point 3.4 is applicable)"@en ;
+        sh:nodekind sh:Literal ;
+        sh:datatype xsd:boolean ;
+    ].
+
+
+# VT
+:VehicleType a 
+    owl:Class , sh:NodeShape, vpa:Scope ;
+    dcterms:created "2024-10-25"^^xsd:date ;
+    # dcterms:modified "_RESERVED_"^^xsd:date ;
+
+    ## definitions ----------
+    rdfs:label "Scope of a Vehicle (type) Authorisation Case: Vehicle Type"@en;
+    rdfs:seeAlso "https://eur-lex.europa.eu/eli/dec_impl/2011/665/2023-09-08#anx_II" , "https://eur-lex.europa.eu/eli/dec_impl/2011/665/2023-09-08#anx_III" ;
+    dcterms:source <http://data.europa.eu/eli/dec_impl/2011/665/2023-09-08> ;
+
+    # Properties
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:identifier ; # # See 5.1.0, property had another name era:typeVersionNumber (highly misleading)
+        sh:datatype xsd:string ;
+        sh:pattern ""; # From VAI-API: "^(\d\d-\d\d\d-\d\d\d\d-\d-\d\d\d)(-\d\d\d)?"
+        sh:nodeKind sh:Literal ;
+        era:eratvIndex "0.1", '0.2', "0.4" ;
+        sh:description "Type number (in accordance with Annex III), variants and versions included";
+        skos:definition """For 0.1 Type number (in accordance with Annex III): [number] XX-XXX-XXXX-X-NNN
+        0.2 Variant included in this type (in accordance with Article 2(13) of Regulation (EU) 2018/545): XX-XXX-XXXX-X-NNN-TTT
+        0.4 Versions included in this type (in accordance with Article 2(14) of Regulation (EU) 2018/545): XX-XXX-XXXX-X-NNN-VVV"""@en ;
+        sh:minCount 1;
+        sh:maxCount 1
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:issued ;
+        sh:datatype xsd:date ;
+        sh:nodeKind sh:Literal ;
+        era:eratvIndex "0.3" ;
+        sh:description "Date of record in ERATV";
+        sh:maxCount 1 
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        era:eratvIndex "1.1" ;
+        sh:description "Type name [character string] (max 256 characters)";
+        sh:maxCount 1 
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:alternative ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        era:eratvIndex "1.2" ;
+        sh:description "Alternative type name [character string] (max 256 characters)";
+        sh:maxCount 1 
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:manufacturer ; # See 5.1.0
+        sh:description "Manufacturer's data"@en ;
+        era:eratvIndex "1.3" ;
+        sh:nodekind sh:IRI ;
+        sh:class era:OrganisationRole ; # see ERA Vocabulary SKOS
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:eratvCategory ; # See 5.1.0, property had another name era:category
+        sh:description "Indicates the Category of the VehicleType as defined in (Annex II - table 2 - 1.4)"@en ;
+        era:eratvIndex "1.4" ;
+        sh:nodekind sh:IRI ;
+        era:inSkosConceptScheme <http://data.europa.eu/949/concepts/vehicle-types/Categories> ;
+        sh:class <http://www.w3.org/2004/02/skos/core#Concept> ; # see ERA Vocabulary SKOS
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:eratvSubCategory ; # See 5.1.0, property had another name era:category
+        sh:description "Indicates the Subcategory of the VehicleType as defined in (Annex II - table 2 - 1.3)"@en ;
+        era:eratvIndex "1.5" ;
+        sh:nodekind sh:IRI ;
+        era:inSkosConceptScheme <http://data.europa.eu/949/concepts/vehicle-types/SubCategories> ;
+        sh:class <http://www.w3.org/2004/02/skos/core#Concept> ; # see ERA Vocabulary SKOS
+    ];
+    sh:property [
+        # Section 2.1, 2.3, 2.4 of the VType, should be originating from the ECCertificate, which itself should be in line with the Authorisations
+        a sh:PropertyShape ;
+        sh:path era:certificate ; 
+        sh:description "Conformity with TSIs - certificate"@en ;
+        era:eratvIndex "2.2" ;
+        sh:nodekind sh:IRI ;
+        sh:class :ECCertificate ; # See CLD
+    ];
+    sh:property [
+        # Sections `3.0 Area Of Use:` of the VType, MUST be originating from the Authorisation-chain
+        a sh:PropertyShape ;
+        sh:path era:currentAuthorisation ; 
+        sh:description "Most recent authorisation of the type"@en ;
+        era:eratvIndex "3.1.2" ;
+        sh:nodekind sh:IRI ;
+        sh:class :VVTAuthorisation ; # See era:VTAAuthorisation
+    ].

@@ -1,4 +1,4 @@
-# Application core component
+# Application core
 
 This document describes the *functions* to be provided by the root application. Each function should be modeled as a module. Modules could be replaced by better versions in the future.  
 

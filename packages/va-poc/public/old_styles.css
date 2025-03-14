@@ -1,0 +1,384 @@
+/* Base styles */
+:root {
+  /* Theme colors */
+  --bs-dark-rgb: 33, 37, 41;
+  --bs-light-rgb: 248, 249, 250;
+  
+  /* Heights */
+  --lws-navbar-height: 48px;
+  --app-navbar-height: 56px;
+  
+  /* Z-index hierarchy */
+  --lws-z-index-base: 1090;        /* LWS components highest */
+  --lws-z-index-dropdown: 1091;    /* LWS dropdowns above LWS */
+  --app-navbar-z-index: 1070;      /* App navbar below LWS */
+  --app-dropdown-z-index: 1071;    /* App dropdowns above app navbar */
+  
+  /* Bootstrap Vue Next overrides */
+  --bs-navbar-zindex: var(--app-navbar-z-index);
+  --bs-dropdown-zindex: var(--app-dropdown-z-index);
+}
+
+/* Reset default body padding */
+body {
+  padding: 0 !important;
+  margin: 0;
+  padding-top: calc(var(--lws-navbar-height) + var(--app-navbar-height)) !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--theme-body-bg);
+  color: var(--theme-body-color);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Typography */
+html, 
+body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Theme specific variables */
+[data-bs-theme="dark"] {
+  --theme-body-bg: #333;
+  --theme-body-color: #fff;
+  --theme-link-color: rgba(255, 255, 255, .5);
+  --theme-link-hover-color: rgba(255, 255, 255, .75);
+  --theme-active-color: #fff;
+  --theme-border-color: rgba(255, 255, 255, .25);
+  --theme-shadow-color: rgba(0, 0, 0, .5);
+}
+
+[data-bs-theme="light"] {
+  --theme-body-bg: #fff;
+  --theme-body-color: #333;
+  --theme-link-color: rgba(33, 37, 41, .5);
+  --theme-link-hover-color: rgba(33, 37, 41, .75);
+  --theme-active-color: #555;
+  --theme-border-color: rgba(33, 37, 41, .25);
+  --theme-shadow-color: rgba(0, 0, 0, .1);
+}
+
+/* Bootstrap-Vue-Next component styles */
+.nav-bar {
+  padding: .25rem 0;
+  background-color: var(--theme-body-bg);
+  border-bottom: 1px solid var(--theme-border-color);
+  width: 100%;
+  position: fixed;
+  top: var(--lws-navbar-height);
+  z-index: var(--app-navbar-z-index);
+  --bs-navbar-zindex: var(--app-navbar-z-index) !important;
+}
+
+/* Override Bootstrap's fixed-top z-index for our navbar */
+.nav-bar.fixed-top {
+  z-index: var(--app-navbar-z-index) !important; /* Force our navbar below LWS */
+  top: var(--lws-status-height) !important;
+  position: fixed !important; /* Ensure position is explicitly set */
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+/* Ensure app dropdowns stay within app z-index hierarchy */
+.nav-bar.fixed-top .dropdown-menu {
+  z-index: calc(var(--app-navbar-z-index) + 1) !important;
+  --bs-dropdown-zindex: var(--app-dropdown-z-index) !important;
+}
+
+.navbar-brand {
+  color: var(--theme-active-color) !important;
+  font-weight: 700;
+  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+  margin-right: 2rem;
+  font-size: 1.5rem;
+}
+
+.nav-item {
+  padding: .25rem 0;
+  font-weight: 700;
+  color: var(--theme-link-color);
+  background-color: transparent;
+  border-bottom: .25rem solid transparent;
+  margin-right: 1rem;
+  transition: color .15s ease-in-out, border-bottom-color .15s ease-in-out;
+}
+
+.nav-item:hover,
+.nav-item:focus {
+  color: var(--theme-link-hover-color);
+  border-bottom-color: var(--theme-active-color);
+}
+
+.nav-item.active {
+  color: var(--theme-active-color);
+  border-bottom-color: var(--theme-active-color);
+}
+
+/* Update the nav-item-dropdown styles */
+.nav-item-dropdown {
+  display: flex;
+  align-items: center;
+  transform: translateY(3px); /* This will move dropdowns down by 3px */
+  color: var(--theme-link-color);
+}
+
+.dropdown {
+  margin-top: 4px; /* This will move the dropdowns down by 3px */
+}
+
+/* Specifically target right-side dropdowns if needed */
+.ms-auto .nav-item-dropdown {
+  transform: translateY(3px); /* Adjust this value as needed */
+}
+
+/* Alternative approach using padding if transform doesn't work well */
+.ms-auto .nav-item-dropdown .dropdown-toggle {
+  padding-top: 3px; /* Adjust this value as needed */
+}
+
+.nav-item-dropdown:hover,
+.nav-item-dropdown:focus {
+  color: var(--theme-link-hover-color);
+}
+
+.nav-item-dropdown .dropdown-toggle {
+  font-weight: 700;
+  padding: .25rem 0;
+  border-bottom: .25rem solid transparent;
+}
+
+.nav-item-dropdown .dropdown-toggle:hover,
+.nav-item-dropdown .dropdown-toggle:focus {
+  border-bottom-color: var(--theme-active-color);
+}
+
+/* Dropdown specific styles */
+.dropdown {
+  color: var(--theme-link-color);
+}
+
+.dropdown-menu {
+  background-color: var(--theme-body-bg);
+  border-color: var(--theme-border-color);
+  z-index: var(--app-dropdown-z-index);
+  position: fixed;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.dropdown-item {
+  color: var(--theme-link-color) !important;
+  font-weight: 500;
+  padding: .5rem 1rem;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out;
+}
+
+.dropdown-item:hover:not(.disabled),
+.dropdown-item:focus:not(.disabled) {
+  color: var(--theme-active-color) !important;
+  background-color: var(--theme-border-color);
+}
+
+.dropdown-item.active {
+  color: var(--theme-active-color) !important;
+  background-color: var(--theme-border-color);
+}
+
+.dropdown-item.disabled {
+  color: var(--theme-link-color) !important;
+  opacity: 0.5;
+}
+
+body {
+  background-color: var(--theme-body-bg);
+  color: var(--theme-body-color);
+  text-shadow: 0 .05rem .1rem var(--theme-shadow-color);
+  box-shadow: inset 0 0 5rem var(--theme-shadow-color);
+  padding-top: calc(var(--lws-navbar-height) + 56px) !important; /* 48px LWS navbar + 48px our navbar */
+}
+
+/* Container adjustments for fixed navbars */
+.container-fluid {
+  padding-top: 0px !important; /* 48px LWS navbar + 48px our navbar */
+  padding: 0;
+  margin: 0;
+  position: static;
+}
+
+/* Cover container */
+.cover-container {
+  max-width: 1140px;
+  padding: 0; /* Remove the 1.5rem padding */
+  margin-left: auto; /* Add left margin instead of auto margins */
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  flex: 1;
+}
+
+/* Brand styling */
+.navbar-brand {
+  color: var(--theme-active-color) !important;
+  font-weight: 700;
+  text-shadow: 0 .05rem .1rem var(--theme-shadow-color);
+  margin-right: 2rem;
+  font-size: 1.5rem;
+}
+
+/* Dropdown menus */
+.dropdown-menu {
+  background-color: var(--theme-body-bg);
+  border-color: var(--theme-border-color);
+}
+
+.dropdown-item {
+  color: var(--theme-link-color);
+  transition: color .15s ease-in-out, background-color .15s ease-in-out;
+}
+
+.dropdown-item:hover:not(.disabled) {
+  background-color: var(--theme-border-color);
+  color: var (--theme-active-color);
+}
+
+/* Main content area */
+.main {
+  padding: 0 1.5rem;
+}
+
+/* Footer */
+.footer {
+  color: var(--theme-link-color);
+}
+
+/* Buttons */
+.btn-secondary,
+.btn-outline-secondary {
+  color: var(--theme-link-color);
+  text-shadow: none;
+  border-color: var(--theme-link-color);
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
+
+.btn-secondary:hover,
+.btn-outline-secondary:hover {
+  color: var(--theme-active-color);
+  background-color: transparent;
+  border-color: var(--theme-active-color);
+}
+
+/* Utility class for positioning below LWS navbar */
+.top-48 {
+  top: 48px !important;
+  position: relative !important;
+}
+
+/* Remove conflicting styles */
+header .nav-bar + * {  /* Targets the element right after .nav-bar within header */
+  margin-top: 0;    /* Remove this as it conflicts with proper layering */
+}
+
+/* Responsive breakpoints */
+@media (min-width: 768px) {
+  .cover-container {
+    max-width: 960px;
+    margin-left: 3rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .cover-container {
+    max-width: 1140px;
+    margin-left: 4rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .cover-container {
+    max-width: 1320px;
+    margin-left: 5rem;
+  }
+}
+
+/* These should be the single source of truth for layout */
+body {
+  padding-top: calc(var(--lws-navbar-height) + 56px) !important;
+}
+
+/* Remove container constraints */
+.process-controls {
+  position: relative;
+  background-color: var(--theme-body-bg);
+  border-bottom: 1px solid var(--theme-border-color);
+  padding: 0.5rem 0;
+}
+
+.process-controls .path-display {
+  color: var(--theme-link-color);
+  font-weight: 500;
+}
+
+.process-controls .status-message {
+  color: var(--theme-body-color);
+}
+
+/* Process selector overrides when inside process-controls */
+.process-controls .dropdown {
+  margin-top: 0;
+}
+
+.process-controls .btn-secondary {
+  background-color: transparent;
+  border-color: var(--theme-border-color);
+  color: var(--theme-link-color);
+}
+
+.process-controls .btn-secondary:hover {
+  background-color: var(--theme-border-color);
+  color: var(--theme-active-color);
+}
+
+.process-controls .dropdown-menu {
+  margin-top: 0.5rem;
+}
+
+/* Add specific wrapper for process selector */
+.process-selector-wrapper {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Remove wrapper classes that affect stacking context */
+.app-wrapper {
+  min-height: 100vh;
+  padding-top: var(--lws-navbar-height);
+}
+
+/* Remove problematic positioning classes */
+.fixed-top {
+  /* Remove these overrides that break positioning */
+  /* position: relative !important; */
+  /* top: auto !important; */
+}
+
+/* Force LWS components above Bootstrap components */
+.lws-status-bar {
+  z-index: calc(var(--bs-navbar-zindex) + 30) !important;
+  position: fixed !important;
+  top: 0 !important;
+  z-index: var(--lws-z-index-base) !important;
+}
+
+.lws-dropdown .dropdown-menu {
+  z-index: calc(var(--bs-dropdown-zindex) + 30) !important;
+}
+
+.lws-custom-dropdown-menu {
+  position: fixed !important;
+  z-index: var(--lws-z-index-dropdown) !important;
+}

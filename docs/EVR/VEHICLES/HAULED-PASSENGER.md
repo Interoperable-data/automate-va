@@ -1,0 +1,79 @@
+# Hauled Passenger Vehicles
+
+- [ ] new class `era:HauledPassengerVehicle`, subClass of `era:Vehicle`, with properties:
+  - [ ] `era:withAutonomousAirCo`, a `xsd:boolean`. Vehicles requiring a generator van to supply air conditioning have this value `False`.
+  - [ ] `era:withTrainBusElectricitySupply`, a `xsd:boolean`
+  - [ ] `era:pressureTight`, a `xsd:boolean`
+  - [ ] `era:eratvSubCategory`, for which a stubbed CS must contain:
+    - [ ] Coach
+    - [ ] Van
+    - [ ] Car carrier
+    - [ ] Driving Coach
+    - [ ] Driving Van
+    - [ ] Fixed Rake of coaches
+    - [ ] Reserved
+  - [ ] `era:fixedGauge` with range a *stubbed* SKOS CS with values:
+    - [ ] "TEN (a) and/or COTIF (b) and/or PPV/PPW"
+    - [ ] "PVV/PPW"
+  - [ ] `era:adjustableGauge` with range a *stubbed* SKOS CS with values:
+    - [ ] "(1435/1520) vehicles with change of bogies"
+    - [ ] "(1435/1520) vehicles with gauge-adjustable axles"
+    - [ ] "(1435/1668)"
+  - [ ] The two previous parameters are mutually exclusive and cannot appear both at the same time.
+  - [ ] The energy supply system MUST be modeled via the ERATV type (see below).
+  - [ ] `era:marking`, with range a stubClass `era:HauledVehicleCategory`, which itself has the following properties:
+    - [ ] `era:hauledPassengerVehicleCategory` with range a SKOS Concept Scheme with the categories from [Part X](TBC):
+      - VEHICLES With FIRST CLASS SEATS
+      - VEHICLES WITH SECOND CLASS SEATS
+      - VEHICLES WITH 1ST OR 1ST/2ND CLASS SEATS
+      - COUCHETTE CARS 1ST OR 1ST/2ND CLASS
+      - COUCHETTE CARS 2ND CLASS
+      - SLEEPING CARS
+      - VEHICLES OF SPECIAL DESIGN AND VANS
+    - [ ] For the VEHICLES above, a property `era:vehicleSpaces` (side-corridor compartments or equivalent open-saloon space with centre aisle) having range a SKOS CS with values:
+      - [ ] 8
+      - [ ] 9
+      - [ ] 10
+      - [ ] 11
+      - [ ] 7 or more
+      - [ ] 8 or more
+      - [ ] 12 or more  
+    - [ ] For the VEHICLES above, a property `era:vehicleConfiguration`, with range SKOS CS containing:
+      - [ ] Three axles
+      - [ ] Two axles
+      - [ ] Two or three axles
+      - [ ] Only for OSJD, double-deck coaches
+      - [ ] Double-deck coaches
+    - [ ] For the mixed couchette cars, a property `era:vehicleMixedClassCompartments`, with range a SKOS CS containing:
+      - [ ] 9 or less
+      - [ ] 10
+    - [ ] For the 2nd class couchette cars, a property `era:vehicle2NDClassCompartments`, with range a SKOS CS containing:
+      - [ ] 9 or less
+      - [ ] 10
+      - [ ] 11
+      - [ ] 12
+    - [ ] For the sleeping cars, reuse property `era:vehicleSpaces` (compartments), although only [10, 11, 12 and '12 or more' are allowed].
+    - [ ] For the vehicles of special design/vans, a property `era:specialHauledPassengerVehicleCategory`, with range a SKOS CS containing:
+      - [ ] Driving coach with seats, all classes, with or without luggage compartment, with driving cab for reversible working
+      - [ ] Luggage vans
+      - [ ] Luggage vans with mail compartment
+      - [ ] Luggage vans and two or three-axle 2nd class vehicles with seats, with luggage or mail compartment
+      - [ ] Side-corridor luggage vans, with or without compartment under customs seal
+      - [ ] Mail vans
+      - [ ] Vehicles with 1st or 1st/2nd class seats with luggage or mail compartment
+      - [ ] Vehicles with 2nd class seats with luggage or mail compartment
+      - [ ] Vehicles with seats, all classes with specially-fitted areas, e.g. children’s play area
+      - [ ] Coaches with seats and couchette cars, all classes, with bar or buffet area
+      - [ ] Double-deck driving coach with seats, all classes, with or without luggage compartment, with driving cab for reversible working
+      - [ ] Dining cars or coaches with bar or buffet area, with luggage compartment
+      - [ ] Dining cars
+      - [ ] Other special coaches (conference, disco, bar, cinema, video, ambulance coaches)
+      - [ ] Two or three-axle luggage vans with mail compartment
+      - [ ] Two or three-axle car-carrying wagons
+      - [ ] Car-carrying wagons
+      - [ ] Service vehicles
+  - [ ] A SKOS Concept Scheme with the `era:speedRange` ranges, expressed using the conventions:
+    - [ ] maxInclusive "120"^^qudt:km/h,
+    - [ ] minInclusive "161"^^qudt:km/h,
+    - [ ] minInclusive "121"^^qudt:km/h, maxInclusive "140"^^qudt:km/h,
+    - [ ] minInclusive "141"^^qudt:km/h, maxInclusive "160"^^qudt:km/h,
