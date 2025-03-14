@@ -1,0 +1,26 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix era: <http://data.europa.eu/949/> .
+
+# Domain-specific
+@prefix eracld: <http://data.europa.eu/949/eradis/cld/> .
+@prefix eracfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
+@prefix eradec: <http://data.europa.eu/949/eradis/declaration/> .
+@prefix eralex: <http://data.europa.eu/949/eli/> .
+@prefix eraorg: <http://data.europa.eu/949/organisations/> .
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix erava: <http://data.europa.eu/949/vehicleAuthorisations/> .
+@prefix eravr: <http://data.europa.eu/949/vehicleRegistrations/> .
