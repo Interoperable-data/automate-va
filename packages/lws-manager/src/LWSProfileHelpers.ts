@@ -3,6 +3,7 @@ import {
   getThing,
   getThingAll,
   getStringNoLocale,
+  getStringNoLocaleAll,
   getProfileAll,
   getUrlAll,
   getUrl,
@@ -26,6 +27,8 @@ const PROFILE_PROPERTIES = {
   photo: [FOAF.img, VCARD.photo, SCHEMA_INRUPT.image],
   website: [FOAF.homepage, VCARD.url, SCHEMA_INRUPT.url],
   bio: [VCARD.note, SCHEMA_INRUPT.description],
+  phone: [VCARD.tel, VCARD.hasTelephone],
+  address: [VCARD.Address, VCARD.hasAddress],
 };
 
 // Move and refactor profile-related functions
@@ -45,6 +48,87 @@ async function processVCardValue(thing: ThingPersisted, category: string): Promi
       values.push(`Work ${category}: ${vcardValue}`);
     } else {
       values.push(vcardValue);
+    }
+  }
+
+  return values;
+}
+
+// Helper function to extract literals from a node with type context
+async function extractNodeValue(thing: ThingPersisted, category: string): Promise<string[]> {
+  const values: string[] = [];
+  const types = getUrlAll(thing, RDF.type);
+
+  // Get both literal and URL values (URLs might be mailto: or tel: scheme)
+  const directValue = getStringNoLocale(thing, VCARD.value);
+  const urlValue = getUrl(thing, VCARD.value);
+  const urlValueShouldBePushed = !urlValue?.startsWith('http') && !directValue;
+
+  const finalValue = directValue || urlValue;
+  if (finalValue) {
+    const prefix = types.includes(VCARD.Home) ? 'Home' : types.includes(VCARD.Work) ? 'Work' : '';
+
+    if (directValue || urlValueShouldBePushed) {
+      // Push the value if it's a direct literal or a non-HTTP URL
+      values.push(prefix ? `${prefix} ${category}: ${finalValue}` : finalValue);
+      sessionStore.logDatasetAnalysis(
+        thing.url,
+        `Found ${prefix ? prefix + ' ' : ''}${category} value: ${finalValue}`
+      );
+    }
+
+    if (urlValue && urlValue.startsWith('http')) {
+      // Add recursion if urlValue is a valid Pod URI
+      sessionStore.logDatasetAnalysis(
+        thing.url,
+        `Cannot recursively search for ${prefix ? prefix + ' ' : ''}${category} URI: ${urlValue}`
+      );
+      // try {
+      //   const nestedDataset = await getSolidDataset(urlValue, { fetch });
+      //   const nestedThings = getThingAll(nestedDataset);
+      //   // Recursively call extractNodeValue on each nestedThing
+      //   for (const nestedThing of nestedThings) {
+      //     const subValues = await extractNodeValue(nestedThing, category);
+      //     if (subValues.length) {
+      //       values.push(...subValues);
+      //     }
+      //   }
+      // } catch (error) {
+      //   sessionStore.logDatasetAnalysis(
+      //     thing.url,
+      //     `Error fetching nested URI for recursion: ${
+      //       error instanceof Error ? error.message : 'Unknown error'
+      //     }`
+      //   );
+      // }
+    }
+  }
+
+  // For address nodes, collect all address-related literals
+  if (types.includes(VCARD.Address)) {
+    const addressParts: string[] = [];
+
+    // Street address
+    const street = getStringNoLocaleAll(
+      thing,
+      'http://www.w3.org/2000/10/swap/pim/contact#address'
+    );
+    if (street.length) addressParts.push(...street);
+
+    // Postal code
+    const postalCode = getStringNoLocaleAll(thing, VCARD.hasPostalCode);
+    if (postalCode.length) addressParts.push(...postalCode);
+
+    // Locality/City
+    const locality = getStringNoLocaleAll(thing, VCARD.locality);
+    if (locality.length) addressParts.push(...locality);
+
+    // Country
+    const country = getStringNoLocaleAll(thing, VCARD.hasCountryName);
+    if (country.length) addressParts.push(...country);
+
+    if (addressParts.length) {
+      values.push(addressParts.join(', '));
     }
   }
 
@@ -79,26 +163,58 @@ export async function extractProfileValues(
   );
 
   for (const thing of things) {
+    // Skip if we've already processed this thing
+    if (processedUrls.has(thing.url)) continue;
+    processedUrls.add(thing.url);
+
     for (const [category, predicates] of Object.entries(PROFILE_PROPERTIES)) {
       if (!profileValues[category]) {
         profileValues[category] = [];
       }
 
       for (const predicate of predicates) {
-        const literals = getStringNoLocale(thing, predicate);
-        const urls = getUrl(thing, predicate);
-
-        if (literals && !profileValues[category].includes(literals)) {
-          profileValues[category].push(literals);
-          sessionStore.logDatasetAnalysis(thing.url, `Found ${category} (literal): ${literals}`);
+        // First check direct literals
+        const literal = getStringNoLocale(thing, predicate);
+        if (literal && !profileValues[category].includes(literal)) {
+          profileValues[category].push(literal);
+          sessionStore.logDatasetAnalysis(
+            thing.url,
+            `Found direct ${category} literal: ${literal} (predicate: ${predicate})`
+          );
+        } else {
+          // sessionStore.logDatasetAnalysis(
+          //   thing.url, `No direct ${category} literal found (predicate: ${predicate})`
+          // );
         }
 
-        if (urls) {
-          const isInPod = sessionStore.ownPodURLs.some((podUrl) => urls.startsWith(podUrl));
-          if (isInPod && !processedUrls.has(urls)) {
-            await processNestedProfile(urls, category, profileValues, processedUrls);
-          } else if (!profileValues[category].includes(urls)) {
-            profileValues[category].push(urls);
+        // Then check for linked nodes (e.g., VCARD.hasEmail -> node -> VCARD.value)
+        const linkedNodeUrls = getUrlAll(thing, predicate);
+        for (const nodeUrl of linkedNodeUrls) {
+          if (!processedUrls.has(nodeUrl)) {
+            try {
+              const dataset = await getSolidDataset(nodeUrl, { fetch });
+              const linkedThing = getThing(dataset, nodeUrl);
+              if (linkedThing) {
+                const values = await extractNodeValue(linkedThing, category);
+                values.forEach((value) => {
+                  if (!profileValues[category].includes(value)) {
+                    profileValues[category].push(value);
+                  }
+                });
+              } else {
+                sessionStore.logDatasetAnalysis(
+                  thing.url,
+                  `No Thing found under ${nodeUrl} (predicate: ${predicate})`
+                );
+              }
+            } catch (error) {
+              sessionStore.logDatasetAnalysis(
+                nodeUrl,
+                `Error fetching linked node: ${
+                  error instanceof Error ? error.message : 'Unknown error'
+                }`
+              );
+            }
           }
         }
       }
@@ -155,20 +271,29 @@ function mergeProfileValues(
   });
 }
 
+// Enhanced logging helper
+const logProfileInfo = (message: string, data?: any) => {
+  console.log(`[Profile Debug] ${message}`, data || '');
+  sessionStore.logDatasetAnalysis(message, data ? JSON.stringify(data) : '');
+};
+
 // Basic profile operations
 export async function getProfileInfo(webId: URL): Promise<{ name: string | null }> {
   try {
     const allProfileValues: Record<string, string[]> = {};
 
     // Log start of profile retrieval
-    sessionStore.logDatasetAnalysis(
+    logProfileInfo(
       webId.href,
       'Starting profile info retrieval from main and alternative profiles'
     );
 
+    // Add this log at the beginning
+    logProfileInfo(`Starting profile retrieval for ${webId.href}`);
+
     // Get all profile datasets
     const profileResult = await getProfileAll(webId.href, { fetch: fetch });
-    sessionStore.logDatasetAnalysis(webId.href, 'Retrieved profile data from all sources');
+    logProfileInfo(webId.href, 'Retrieved profile data from all sources');
 
     console.error(profileResult);
 
@@ -179,27 +304,27 @@ export async function getProfileInfo(webId: URL): Promise<{ name: string | null 
     ].filter(Boolean); // Remove any undefined/null values
 
     // Log number of datasets found
-    sessionStore.logDatasetAnalysis(
-      webId.href,
-      `Found ${datasetsToAnalyze.length} profile dataset(s) to analyze`
-    );
+    logProfileInfo(webId.href, `Found ${datasetsToAnalyze.length} profile dataset(s) to analyze`);
 
     // Process all datasets
     for (const dataset of datasetsToAnalyze) {
       // Log dataset analysis
-      sessionStore.logDatasetAnalysis(
-        dataset.internal_resourceInfo.sourceIri,
-        'Analyzing profile source'
+      logProfileInfo(dataset.internal_resourceInfo.sourceIri, 'Analyzing profile source');
+
+      logProfileInfo(
+        `Processing dataset from: ${dataset.internal_resourceInfo?.sourceIri || 'unknown'}`
       );
 
       const things = getThingAll(dataset);
+      logProfileInfo(`Found ${things.length} things in dataset`);
+
       const values = await extractProfileValues(things);
 
       // Log found values
       if (Object.keys(values).length > 0) {
-        sessionStore.logDatasetAnalysis(
+        logProfileInfo(
           dataset.internal_resourceInfo.sourceIri,
-          `Found profile data: ${Object.keys(values).join(', ')}`
+          `Examined profile keys: ${Object.keys(values).join(', ')}`
         );
       }
 
@@ -213,11 +338,11 @@ export async function getProfileInfo(webId: URL): Promise<{ name: string | null 
     }
 
     if (datasetsToAnalyze.length === 0) {
-      sessionStore.logDatasetAnalysis(webId.href, 'No profile datasets found to analyze');
+      logProfileInfo(webId.href, 'No profile datasets found to analyze');
     }
 
     // Log storage of profile values
-    sessionStore.logDatasetAnalysis(
+    logProfileInfo(
       webId.href,
       `Stored profile values for categories: ${Object.keys(allProfileValues).join(', ')}`
     );
@@ -225,12 +350,15 @@ export async function getProfileInfo(webId: URL): Promise<{ name: string | null 
     // Store all found profile values
     sessionStore.profileValues[webId.href] = allProfileValues;
 
+    // Add a final log
+    logProfileInfo(`Final profile values for ${webId.href}:`, allProfileValues);
+
     // Return name for backward compatibility
     const names = allProfileValues.name || [];
     return { name: names.length > 0 ? names[0] : null };
   } catch (error) {
     // Log error
-    sessionStore.logDatasetAnalysis(
+    logProfileInfo(
       webId.href,
       `Error retrieving profile info: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
