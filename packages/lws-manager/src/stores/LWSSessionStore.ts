@@ -108,6 +108,15 @@ export const sessionStore = reactive({
   },
 
   /**
+   * Checks if a URL is internal to the user's pod(s)
+   * @param {string} url - The URL to check
+   * @returns {boolean} True if URL is within one of user's pods
+   */
+  isInternalPodUrl(url: string): boolean {
+    return this.ownPodURLs.some((podUrl) => url.startsWith(podUrl));
+  },
+
+  /**
    * Resets the session store to its initial state.
    */
   reset() {

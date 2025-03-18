@@ -109,10 +109,7 @@ async function extractNodeValue(thing: ThingPersisted, category: string): Promis
     const addressParts: string[] = [];
 
     // Street address
-    const street = getStringNoLocaleAll(
-      thing,
-      'http://www.w3.org/2000/10/swap/pim/contact#address'
-    );
+    const street = getStringNoLocaleAll(thing, 'http://www.w3.org/2000/10/swap/pim/contact#address');
     if (street.length) addressParts.push(...street);
 
     // Postal code
@@ -133,6 +130,60 @@ async function extractNodeValue(thing: ThingPersisted, category: string): Promis
   }
 
   return values;
+}
+
+async function extractLiteralsFromThing(
+  thing: ThingPersisted,
+  category: string
+): Promise<{ literals: string[]; nodesToExamine: string[] }> {
+  const literals: string[] = [];
+  const nodesToExamine: string[] = [];
+  const types = getUrlAll(thing, RDF.type);
+
+  // Handle Address nodes specifically
+  if (types.includes(VCARD.Address)) {
+    const addressParts: string[] = [];
+
+    // Collect all address components
+    const street = getStringNoLocaleAll(thing, PIM.address);
+    const postalCode = getStringNoLocaleAll(thing, VCARD.hasPostalCode);
+    const locality = getStringNoLocaleAll(thing, VCARD.locality);
+    const country = getStringNoLocaleAll(thing, VCARD.hasCountryName);
+
+    if (street.length) addressParts.push(...street);
+    if (postalCode.length) addressParts.push(...postalCode);
+    if (locality.length) addressParts.push(...locality);
+    if (country.length) addressParts.push(...country);
+
+    if (addressParts.length) {
+      literals.push(addressParts.join(', '));
+    }
+    return { literals, nodesToExamine };
+  }
+
+  // Get direct value (literal or URL scheme like mailto: or tel:)
+  const directValue = getStringNoLocale(thing, VCARD.value);
+  const urlValue = getUrl(thing, VCARD.value);
+
+  if (directValue || urlValue) {
+    const value = directValue || urlValue;
+    const prefix = types.includes(VCARD.Home) ? 'Home' : types.includes(VCARD.Work) ? 'Work' : '';
+
+    // If it's a URL and it's internal, add to nodes to examine
+    if (urlValue && sessionStore.isInternalPodUrl(urlValue)) {
+      nodesToExamine.push(urlValue);
+      sessionStore.logDatasetAnalysis(thing.url, `Found internal node to examine: ${urlValue}`);
+    } else {
+      // If it's a literal or external URL, add to literals
+      literals.push(prefix ? `${prefix} ${category}: ${value}` : value);
+      sessionStore.logDatasetAnalysis(
+        thing.url,
+        `Found ${prefix ? prefix + ' ' : ''}${category} value: ${value}`
+      );
+    }
+  }
+
+  return { literals, nodesToExamine };
 }
 
 /**
@@ -156,6 +207,7 @@ export async function extractProfileValues(
   processedUrls: Set<string> = new Set()
 ): Promise<Record<string, string[]>> {
   const profileValues: Record<string, string[]> = {};
+  const nodesToProcess: string[] = [];
 
   sessionStore.logDatasetAnalysis(
     things[0]?.url || 'unknown',
@@ -195,10 +247,22 @@ export async function extractProfileValues(
               const dataset = await getSolidDataset(nodeUrl, { fetch });
               const linkedThing = getThing(dataset, nodeUrl);
               if (linkedThing) {
-                const values = await extractNodeValue(linkedThing, category);
-                values.forEach((value) => {
+                const { literals, nodesToExamine } = await extractLiteralsFromThing(
+                  linkedThing,
+                  category
+                );
+
+                // Add found literals
+                literals.forEach((value) => {
                   if (!profileValues[category].includes(value)) {
                     profileValues[category].push(value);
+                  }
+                });
+
+                // Add new nodes to process
+                nodesToExamine.forEach((url) => {
+                  if (!processedUrls.has(url)) {
+                    nodesToProcess.push(url);
                   }
                 });
               } else {
@@ -217,6 +281,25 @@ export async function extractProfileValues(
             }
           }
         }
+      }
+    }
+  }
+
+  // Process any additional nodes found
+  for (const nodeUrl of nodesToProcess) {
+    if (!processedUrls.has(nodeUrl)) {
+      try {
+        const dataset = await getSolidDataset(nodeUrl, { fetch });
+        const newThings = getThingAll(dataset);
+        const nestedValues = await extractProfileValues(newThings, processedUrls);
+        mergeProfileValues(profileValues, nestedValues);
+      } catch (error) {
+        sessionStore.logDatasetAnalysis(
+          nodeUrl,
+          `Error processing additional node: ${
+            error instanceof Error ? error.message : 'Unknown error'
+          }`
+        );
       }
     }
   }
