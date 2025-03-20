@@ -15,9 +15,14 @@ The  [`Ontology for Verified Permissions`](https://w3id.org/vpa/) allows to stor
 
 To identify a VR, the Keeper's orgCode could be chosen, followed by a sequence number. Of course, a unique identifier could be chosen as well.
 
-```csharp
+```js
 eravr:NNNN-n a era:VehicleRegistration ; # vpa:Permission
   dcterms:issued "{date_of_issue_by_RE}"^^xsd:date ;
+  vpa:status <{SKOS CS of Registration Status}> ;
+  vpa:valid [
+    a time:Interval ;
+    # validity of the Permission
+  ] ;
   vpa:grantedBy [
     a era:OrganisationRole ;
     era:hasOrganisationRole <{SKOS Concept for RE}> ;
@@ -32,13 +37,14 @@ eravr:NNNN-n a era:VehicleRegistration ; # vpa:Permission
   .
 
 eravr:vr-NNNN-n a era:VehicleRegistrationApplication ; # vpa:Request
+  vpa:status <{status of the application as a whole}> ;
   vpa:requestFor eravr:NNNN-n ;
   
 ```
 
 The registration cases are defined in 3.2.2 of Annex II, Appendix 4 and will be available as SKOS Concepts. They merge the Registration Case type, with the Registration Case, e.g. as `rdfs:label "New - New Registration"` or `rdfs:label "Update - Change of Owner"`.
 
-```csharp
+```js
 # The registration case itself documents the type of registration which is executed, and contains the core data of the registration.
 eravr:vrc-NNNN-n-0 a era:VehicleRegistrationCase ;
   vpa:permissionType <era-vr-regcase:{from the SKOS CS}> . # era-skos-VehicleRegistrationCase.ttl
@@ -50,12 +56,12 @@ eravr:vrc-NNNN-n-0 a era:VehicleRegistrationCase ;
 
 In most circumstances, individual vehicles (having a manufacturing year and serial number), and a vehicle type (5.3 ERATV Reference), will be the Scope of every Registration Case:
 
-```csharp
+```js
 eravr:vrc-NNNN-n-0 a era:VehicleRegistrationCase ;
   # ... as above
   vpa:concerns evr:{Vehicle-Number} , evr:{Vehicle-Number} , ... ;
   vpa:concerns evr:{VehicleSeries} ; # alternative for a set of vehicles.
-  vpa:concerns eratv:{VehicleType} ;
+  vpa:concerns eratv:{VehicleType} ; # Automatic link to 6, 
 ```
 
 ### Reuse of authorisation data 
@@ -70,7 +76,7 @@ erava:vac-V-YYYYMMDD-NNN-0 vpa:supports eravr:vr-NNN-n ; # allows to reuse the l
 
 ## Data model
 
-The data model for Vehicle Registrations is deduced from the e-form.
+The data model for Vehicle Registrations is deduced from the e-form. The properties are mostly connected to the underlying `RegistrationCase`.
 
 ### (12) Additional fields
 
@@ -98,17 +104,33 @@ In the last case, a property should be added.
 
 ### Additional conditions
 
+We reuse the approach as supported by the `vpa:` ontology, in which a Restriction originates from a Compliance check:
+
+```js
+eravr:vrc-NNNN-n-0 a era:VehicleRegistrationCase ;
+  # ... as above
+  era:vehicleDependentCondition [                      # New property for VehicleRegistrationCase to VehicleCompliance
+    a era:VehicleRegistrationCheck ;                    # New Class,subClassOf vpa:Compliance
+    vpa:withRestriction evr:NCCFU-uuid(NNNN-n) ;
+    # optional vpa:checkedSection <{where the condition comes from}>
+  ] .
+
+evr:NCCFU-uuid(NNNN-n) a era:VehicleRegistrationRestriction ;
+  {coded-restriction-property} {coded-restriction-literal-value} ; # see the approach as in authorisations
+  era:nonCodedRestrictions "{any non-coded ones}" .
+```
+
 ### Manufacturing details
 
 The parameters 5.1 (Manufacturing Year), 5.2 (serial number) and 5.4 (`era:inVehicleSeries`) will be linked to the individual vehicle
 
 ### EC DoV
 
-An automatic link with the EC DOV's is possible, through the VehicleType, which must have been the scope of an AuthorisationCase, in which the DOV was submitted as a `vpa:EvidenceDocument`.
+An automatic link with the EC DOV's is possible, through the VehicleType, which must have been the scope of an AuthorisationCase, in which the DOV was submitted as a `vpa:EvidenceDocument`. The Keeper should not be able to enter manually the EC DOV.
 
 ### Owner, Keeper and ECM
 
-Link to the URI of that organisation (through the Organisation Role). 
+Link to the URI of that organisation (through the Organisation Role) as shown above. 
 
 > [!WARNING]
 > The process requires the Keeper to request for the Registration, by issuing a Vehicle Registration Application, but the link will be stored inversely, as we do not update the instances of the organisations themselves. The following triples will need to be avoided.
@@ -120,4 +142,4 @@ keeper:KE-NNNN vpa:requests eravr:NNNN-n ; # the keeper, with its org Id.
 
 ### Registration Status
 
-A SKOS Concept Scheme
+A SKOS Concept Scheme has been added based on [Appendix 3](https://eur-lex.europa.eu/eli/dec_impl/2018/1614/oj#anx_II.app_3) of Annex II of the EVR Regulation. We use `vpa:status`, as the `era:VehicleRegistration` is a subClassOf `vpa:Permission`. 
