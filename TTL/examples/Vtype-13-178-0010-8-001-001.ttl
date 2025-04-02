@@ -8,18 +8,18 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     dcterms:identifier "13-178-0010-8-001-001" ;
     dcterms:issued "2024-06-14"^^xsd:date ;  # From XML: Date of record
     dcterms:created "2025-01-21"^^xsd:date ;
-    era:typeName "MIREO 4-Teiler 15kV PZB Midi"@en ;
+    rdfs:label "MIREO 4-Teiler 15kV PZB Midi"@de ;
     era:alternativeTypeName "MIREO Regensburg Donautal" ;
-    era:vehicleCategory era-vehicle-types-eratv:11 ; # traction vehicles
-    era:subCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
-    era:manufacturer [
+    era:vehicleTypeCategory era-vehicle-types-eratv:11 ; # traction vehicles
+    era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
+    era:vehicleTypeManufacturer [
         a era:OrganisationRole ;
         era:roleOf era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH (era:Body, see above)
         era:hasOrganisationRole era-organisation-roles:Manufacturer
     ] ;
 
     ##### LINKED AUTHORISATIONS
-    vpa:definesCase eva:vac-13-178-0010-8-001-001-1 ; # Section 2 & 3 info there
+    vpa:definesCase erava:vac-13-178-0010-8-001-001-1 ; # Section 2 & 3 info there
 
     ##### CONFIGURATION
     era:wheelSetGauge era-ntg-rinf:30 ;
@@ -44,14 +44,14 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
 
     # Parameters linked with a Configuration
     era:configDependentParameter [ 
-        a era:VTConfigParameterSet ;
+        a era:VehicleTypeConfigParameterSet ;
         era:forConfiguration eratv:ConfigC ; # ONLY SKOS CS era-ess-rinf:AC20 ;
         era:maximumContactWireHeight "4.70"^^xsd:double, "6.50"^^xsd:double ;
         era:vehiclePantographHead "1950 sc DE and AT mm" ;
         era:numberOfPantographsInContactWithOCL "1" ;
         # other parameters as in 4.10.X
     ] , [
-        a era:VTConfigParameterSet ;
+        a era:VehicleTypeConfigParameterSet ;
         era:forConfiguration eratv:ConfigB ; # ONLY SKOS CS era-ntg-rinf:30 ;
         era:vehicleTypeMaximumSpeedAndCantDeficiency [
             a era:MaximumSpeedAndCantDeficiency ;
@@ -82,7 +82,7 @@ eratv:ConfigC a era:VehicleTypeConfiguration ;
 
 # Non-coded CfU & restrictions 
 # See definition in https://eur-lex.europa.eu/eli/dec_impl/2011/665/2023-09-08#anx_I part 6
-eratv:nccfu-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationRestriction ; # MAYBE subClassOf vpa:Restriction ;
+eratv:nccfu-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
     # DO NOT USE vpa:regarding eratv:ConfigA as configs cannot be vpa:Requirement's ;
     era:forConfiguration eratv:ConfigA ;
     era:nonCodedRestrictions """Die für den MIREO 4-Teiler 15kV PZB Midi (Mireo Netz Regensburg Donautal) weiterhin gültigen Einsatzbedingungen/-beschränkungen des Referenztyps MIREO S-Bahn Rhein-Neckar:
@@ -93,25 +93,63 @@ eratv:nccfu-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationRestriction ; 
 ..."""@de . # existing property
 
 # GERMANY - See all authorisation data under 3.1.X.X
-eva:vac-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
+erava:vac-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:NEW ;
     era:typeRegistrationMethod era-vehicle-types-regmethod:NewType ;
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
+    era:authorisingMemberState <http://publications.europa.eu/resource/authority/country/DEU> ; 
 
     # Conditions linked to a Configuration
-    era:configurationDependentConditions [ 
-        a era:VehicleTypeCompliance ; # subClassOf vpa:Compliance
+    era:configDependentCondition [ 
+        a era:VehicleTypeAuthorisationCheck ; # subClassOf vpa:Compliance
         vpa:checkedSection <IRI to the NNTR causing the restriction> ; # Rarely available
         vpa:withRestriction eratv:NCCFU-13-178-0010-8-001-001-1 ;
     ] ;
 
+    # Section 2.3 Applicable specific cases (specific cases conformity with which has been assessed)
+    # LOC&PAS
+    era:configDependentCompliance [ 
+        a era:VehicleTypeAuthorisationCheck ; # subClassOf vpa:Compliance
+        vpa:isCompliant "true"^^xsd:boolean ; 
+        vpa:checkedRequirement <http://data.europa.eu/eli/reg/2014/1302/2020-03-11> ; 
+        vpa:checkedSection 
+            <SKOS Concept for 7.4. Specific environmental conditions Specific conditions Germany> ;
+        vpa:withRestriction [
+            a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
+            era:forConfiguration eratv:ConfigA  ;
+        ]
+    ] ;
+
+    # NOI: <http://data.europa.eu/eli/reg/2014/1304/2019-06-16>, no sections checked
+    # CCS: <http://data.europa.eu/eli/reg_impl/2023/1695/oj>, no sections checked
+
+    # PRM
+    era:configDependentCompliance [ 
+        a era:VehicleTypeAuthorisationCheck ; # subClassOf vpa:Compliance
+        vpa:isCompliant "true"^^xsd:boolean ; 
+        vpa:checkedRequirement <http://data.europa.eu/eli/reg/2014/1300/2019-06-16> ; 
+        vpa:checkedSection 
+            <SKOS Concept for 7.3.2.1. Priority seats.... Specific cases Germany and Denmark 'P'>,
+            <SKOS Concept for 7.3.2.6. Step position for vehicle access and egress...at platforms below 550 mm height> ;
+        vpa:withRestriction [
+            a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
+            era:forConfiguration eratv:ConfigA  ;
+        ]
+    ] ;
+
+    # 3.1.3.2.6 Parameters for which conformity to applicable national rules has been assessed
+    # See the approach via Evidence below.
+
+    # 3.1.3.2.8
+    era:safetyDeclaration "PM2/A6Z00057740131/000/B, freigegeben am 23.05.2024"@de ;
+
     # Links to the application, as it exists.
-    vpa:supports eva:va-20240202-004 .
+    vpa:supports erava:va-20240202-004 .
 
-eva:va-20240202-004 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
-    vpa:requestFor eva:20240202-004 .
+erava:va-20240202-004 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
+    vpa:requestFor erava:20240202-004 .
 
-eva:20240202-004 a era:VehicleTypeAuthorisation; # subClassOf vpa:Permission ;
+erava:20240202-004 a era:VehicleTypeAuthorisation; # subClassOf vpa:Permission ;
     dcterms:identifier "EU8020240152" ;
     dcterms:issued "2024-06-14"^^xsd:date ;
     era:vehicleTypeAuthorisationHolder [
@@ -119,7 +157,13 @@ eva:20240202-004 a era:VehicleTypeAuthorisation; # subClassOf vpa:Permission ;
         era:roleOf era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH
         era:hasOrganisationRole era-organisation-roles:Holder ;
     ] ;
-    dcterms:isReplacedBy eva:20240621-009 ;
+    rdfs:comment """− A note concerning ERATV parameter 4.7.6 
+For general operation: Brake weight percentage (lambda) or Braked mass: “This type is not designed and assessed for general operation. In line with the provisions of clause 4.2.4.5.2 Emergency braking of the applicable TSI LOC&PAS (EU) 1302/2014 is it not required to determine a value for the brake weight percentage (lambda) or braked mass for such type. ERATV parameter 4.7.6 is marked with “0” in this case.” 
+- There are no coded restrictions. 
+This is because all applicable values for a coded condition for use and other restrictions are the same as the respective values for the technical parameter in ERATV section 4, which means there is no actual condition for use or restriction as compared to the nominal design value. 
+− Disclaimer: “As this was an authorisation case “New Authorisation” was the scope of the assessment limited to the parts of the vehicle type that are changed and their impacts on the unchanged parts of the vehicle type in line with article 39(4) and 40(3) of (EU) 2018/545. 
+Checks already carried out at the previous authorisation of reference type 13-178-0002-5-001-001 were not repeated.”"""@en ;
+    dcterms:isReplacedBy erava:20240621-009 ;
     vpa:valid [
         a time:ProperInterval ;
         time:hasBeginning "2024-06-14"^^xsd:date ;
@@ -129,32 +173,57 @@ eva:20240202-004 a era:VehicleTypeAuthorisation; # subClassOf vpa:Permission ;
     ].
 
 # For the first C2T application following 20240202-004: this was V-20240621-009
-eva:vac-13-178-0010-8-001-001-2 a era:VehicleAuthorisationCase ;
+erava:vac-13-178-0010-8-001-001-2 a era:VehicleAuthorisationCase ;
     vpa:permissionType era-va-authcase:C2T ;
     # Non-disclosed - OSS data on the auth case can be placed here
-    vpa:supports eva:va-20240621-009 .
+    vpa:supports erava:va-20240621-009 .
 
-eva:va-20240621-009 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request ;
+erava:va-20240621-009 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request ;
     # Non-disclosed - OSS data can be placed here
-    vpa:requestFor eva:20240621-009 .
+    vpa:requestFor erava:20240621-009 .
 
-eva:20240621-009 a era:VehicleAuthorisation ; # subClassOf vpa:Permission ;
+erava:20240621-009 a era:VehicleAuthorisation ; # subClassOf vpa:Permission ;
     dcterms:identifier "EU8120241578" ;
-    dcterms:isReplacedBy eva:20241219-012 ;
+    dcterms:isReplacedBy erava:20241219-012 ;
     dcterms:issued "2024-06-26"^^xsd:date .
 
 # For the C2T application following 20240621-009: this was V-20241219-012
-eva:vac-13-178-0010-8-001-001-3 a era:VehicleAuthorisationCase ; # subClassOf vpa:Case
+erava:vac-13-178-0010-8-001-001-3 a era:VehicleAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:C2T ;
     # Non-disclosed - OSS data on the auth case can be placed here
-    vpa:supports eva:va-20241219-012 .
+    vpa:supports erava:va-20241219-012 .
 
-eva:va-20241219-012 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request
+erava:va-20241219-012 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request
     # Non-disclosed - OSS data can be placed here
-    vpa:requestFor eva:20241219-012 .
+    vpa:requestFor erava:20241219-012 .
 
-eva:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission
+erava:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission
     dcterms:identifier "EU8120250002" ;
     dcterms:issued "2025-01-03"^^xsd:date .
 
+### Evidence(Document)(s)
 
+# Evidence without eradis URI can only be represented as strings. These can later be converted into URI’s where possible.
+erava:13-178-0010-8-001-001-1 a vpa:Evidence ;
+    rdfs:member “DE008/1/SB/2024/RST/DE/RST-20056/V01”, 
+        “004/1/NNTR/2023/CCO/DE EN/3708.1U/V01”, 
+        “004/1/NNTR/2023/CCO/DE EN/3708.1/V01”, 
+        ”004/1/NNTR/2023/CCO/DE EN/3708.2/V01” ;
+    vpa:supportsCompliance [ a vpa:Compliance ;
+        vpa:compliant "true"^^xsd:boolean ;
+        vpa:checkedSection "2.1.1 Strength and integrity" , "3.1 Vehicle gauge" , "3.2.1 Running safety and dynamics", "3.3.5 Sanding system" , "3.3.7 Axle shaft", "4.1 Functional requirements for braking at train level" , "4.5 Brake performance" , ..., "12.1.2.2 Other GSM-R requirements", "12.2.1 National on-board signalling systems" ;
+    	vpa:withRestriction [
+            a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
+            era:forConfiguration eratv:ConfigA  ;
+        ]
+    ] ;	
+    vpa:submittedIn erava:vac-13-178-0010-8-001-001-1 .
+
+# Section 2.2 via vpa:Evidence. In OSS, the collection of submitted documents is larger.
+erava:13-178-0010-8-001-001-2 a vpa:Evidence ;
+    rdfs:member eradis:cls-NoBoCert-30999, # 1991/1/SB/2024/RST/DEEN/CRF-10410/V01
+        eradis:cld-NoBoCert-34042, # 1991/1/SB/2024/RST/DEEN/PRM-10411/V02
+        eradis:cld-NoBoCert-31004, # 1991/1/SB/2024/RST/DEEN/NOI-10412/V01
+        eradis:cld-NoBoCert-15199, # 1991/1/SB/2020/RST/DEEN/CRF-10027/V02
+        eradis:cld-NoBoCert-29770 ; # 0893/1/SB/2023/CCO/DEEN/3708/V02
+    vpa:submittedIn erava:vac-13-178-0010-8-001-001-1 .
