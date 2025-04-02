@@ -18,7 +18,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 
-# FIXME: the Amended and Revoked status should not come from an ERATV SKOS CS.
+# TO DO: the Amended and Revoked status should not come from an ERATV SKOS CS.
 # REFERENCES ARE INCOMPLETE vav ERADIS, as this EC DoC covers a lot of EC DECLs
 
 :ecd-ecDecl-8917 
@@ -36,23 +36,23 @@
     dcterms:subject eralex:ic-1302-2014-5_3.11 ; # The URI of the exact IC in scope
     dcterms:identifier "AT/000000FN93653a/2021/001714" ;
     rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=8917"^^xsd:anyURI ;
-    dcterms:hasVersion "1";
+    era:eradisVersion "1";
     dcterms:isReplacedBy :ecd-ecDecl-9627 ;
     era:status era-states-eratv:ammended ; # typo is in the SKOS CS
-    dcterm:references [
-         a era:CertificateSet ;
-         dct:hasPart 
+    dcterm:requires [
+         a vpa:Evidence ;
+         rdfs:member 
             [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3474" ], # NOT IN eradis?
             :cld-NoBoCert-12325 # equals [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
          ;
     ], [
-         a era:CertificateSet ;
-         dct:hasPart 
+         a vpa:Evidence ;
+         rdfs:member 
             [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3480" ], 
             :cld-NoBoCert-12325 # equals [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
     ], [
-         a era:CertificateSet ;
-         dct:hasPart 
+         a vpa:Evidence ;
+         rdfs:member 
             [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3482" ],
             :cld-NoBoCert-12325 # equals [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
          
@@ -73,23 +73,23 @@
     dcterms:subject eralex:ic-1302-2014-5_3.11 ; # The URI of the exact IC in scope
     dcterms:identifier "AT/000000FN93653a/2021/001714" ;
     rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=12411"^^xsd:anyURI ;
-    dcterms:hasVersion "11";
+    era:eradisVersion "11";
     dcterms:replaces :ecd-ecDecl-12000 ;
     era:status era-states-eratv:revoked ; # !! 
-    dcterm:references [
-         a era:CertificateSet ;
-         dct:hasPart 
+    dcterm:requires [
+         a vpa:Evidence ;
+         rdfs:member 
             [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3474" ], # 
             :cld-NoBoCert-17158 # equals[ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
          ;
     ], [
-         a era:CertificateSet ;
-         dct:hasPart 
+         a vpa:Evidence ;
+         rdfs:member 
             [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3480" ],
             :cld-NoBoCert-17158 # equals[ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
     ], [
-         a era:CertificateSet ;
-         dct:hasPart 
+         a vpa:Evidence ;
+         rdfs:member 
             [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3482" ],
             :cld-NoBoCert-17158 # equals[ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]        
     ] .
