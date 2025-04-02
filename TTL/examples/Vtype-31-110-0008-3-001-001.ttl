@@ -18,22 +18,44 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 
+# This VehicleType has one Config
+eratv:config1435Hauled a era:VehicleTypeConfiguration ;
+    rdfs:label "1435mm / None (for hauled passenger vehicles and special vehicles)"@en ;
+    era:wheelSetGauge era-ntg-rinf:30 ;
+    era:energySupplySystem era-ess-rinf:None .
+
 eratv:vt-31-110-0008-3-001-001 a era:VehicleType ;
     dcterms:identifier "31-110-0008-3-001-001";
     dcterms:issued "2023-06-12"^^xsd:date ; # the entry of record in ERATV
     dcterms:created "2024-12-17"^^xsd:date ; # this resource in the KG
     rdfs:label "Passenger coach IC 1 - R294 (80 Sitzplätze)"@en ;
-    era:category era-vehicle-types-eratv:hauledPassenger ;
-    era:subCategory era-vehicle-types-eratv:passengerCoach ;
-    vpa:definesCase eva:vac-31-110-0008-3-001-001-1 ;
-    era:manufacturer era-org:WaggonUnionLinkeHoffmannBusch ; # only possible reference, given no more data
-    era:vehicleTypePlatform "DB RIC" .
+    era:vehicleTypeCategory era-vehicle-types-eratv:hauledPassenger ;
+    era:vehicleTypeSubCategory era-vehicle-types-eratv:passengerCoach ;
+    era:vehicleTypeManufacturer [ a era:OrganisationRole ;
+        era:roleOf era-org:WaggonUnionLinkeHoffmannBusch ; # only possible reference, given no more data
+    ] ;
 
-# One special VehicleType Config
-eratv:config1435Hauled a era:VehicleTypeConfiguration ;
-    rdfs:label "1435mm / None (for hauled passenger vehicles and special vehicles)"@en ;
-    era:wheelSetGauge era-ntg-rinf:30 ;
-    era:energySupplySystem era-ess-rinf:None .
+    # (some) Parameters independent of a configuration
+    era:drivingCabs 0^^xsd:integer ;
+    era:magneticBrakingFitted "true"^^xsd:boolean ;
+    era:minimumHorizontalRadius 150^^xsd:integer ;
+    era:endCouplingType <http://data.europa.eu/949/concepts/end-coupling-type/eratv/Manual> ;
+
+    # (all) config dependent parameters
+    era:configDependentParameter [
+        a era:VehicleTypeConfigParameterSet ;
+        era:forConfiguration eratv:config1435Hauled ;
+        era:hasWheelSlideProtectionSystem "true"^^xsd:boolean ;
+        era:maximumDesignSpeed 200^^xsd:integer ;
+        era:massPerWheel 11125^^xsd:integer ;
+        era:totalVehicleMass44500^^xsd:integer ;
+        era:axleSpacing "a: 0016,50 m b: 0002,45 m c: 0002,50 m" ;
+    ] ;
+        
+    # Link to its first authorisation case
+    vpa:definesCase eva:vac-31-110-0008-3-001-001-1 ;
+    
+    era:vehicleTypePlatform "DB RIC" .
 
 # Coded and Non-coded CfU & restrictions
 eratv:nccfu-31-110-0008-3-001-001-1 a era:VehicleTypeAuthorisationRestriction ;
@@ -55,14 +77,26 @@ eva:vac-31-110-0008-3-001-001-1 a era:VehicleTypeAuthorisationCase ;            
     vpa:permissionType era-va-authcase:EXT ;                            # implies presence of a era:VehicleAuthorisation in OSS
     era:typeRegistrationMethod era-vehicle-types-regmethod:NewType ;    # see: https://github.com/Certiman/automate-va/issues/2
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DNK> ; # Whole memberstate
+    era:authorisingMemberState <http://publications.europa.eu/resource/authority/country/DNK> ; # Whole memberstate
 
     # Conditions linked to a Configuration
-    era:configDependentConditions [ 
-        a era:VehicleTypeCompliance ; # subClassOf vpa:Compliance
+    era:configDependentCondition [ 
+        a era:VehicleTypeAuthorisationCheck ; # subClassOf vpa:Compliance
         vpa:checkedSection <IRI to the NNTR causing the restriction> ; # Rarely available
         vpa:withRestriction eratv:nccfu-31-110-0008-3-001-001-1 ;
     ] ;
 
+    # 3.1.3.1.5 Parameters for which conformity to applicable national rules has been assessed
+    era:safetyDeclaration "31-110-0008-3-001-001 R294 DECl APPLICANT CONCERNING THE REQUIREMENTS CAPTURE PROCESS AND SIGNIFICV1.0" ;
+    era:configDependentCompliance [
+        a era:VehicleTypeAuthorisationCheck ; # subClassOf vpa:Compliance
+        vpa:checkedSection <1 Documentation>, <3 Track interaction and gauging>, <4 Braking> , ... ;
+        vpa:checkedRequirement <http://data.europa.eu/eli/dec_impl/2015/2299/oj> ;
+        vpa:withRestriction [
+            a era:VehicleTypeAuthorisationCheck ;
+            era:forConfiguration eratv:config1435Hauled ;
+        ]
+    ];
     vpa:supports eva:va-V20230413021 .                                  # A real VA application
 
 eva:va-V20230413021 a era:VehicleTypeAuthorisationApplication ; # vpa:Request , a named node as it was physically submitted in OSS
@@ -73,6 +107,7 @@ eva:va-V20230413021 a era:VehicleTypeAuthorisationApplication ; # vpa:Request , 
 # 3.1.3.1 Initial Registration (of the auth)
 eva:V20230413021 a era:VehicleTypeAuthorisation ; # subClassOf vpa:Permission ;
     dcterms:identifier "EU8020230120" ;
+    rdfs:comment "Existing area of use from previous approvals : DE, NL, AT, CH, PL No evidence found of previous conditions for use for the existing area of use";
     dcterms:issued "2023-06-12"^^xsd:date ; # the document issue date
     era:vehicleTypeAuthorisationHolder 
         [    
