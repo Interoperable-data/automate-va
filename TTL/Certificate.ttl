@@ -1,5 +1,3 @@
-
-
 @base <http://data.europa.eu/949/> .
 @prefix : <http://data.europa.eu/949/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
@@ -18,10 +16,11 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 
-# For inclusion in the ERA ontology
+# For inclusion in the ERA ontology, after review
+# Do not use currently
 :CLD a 
     owl:Class , sh:NodeShape ;
-    rdfs:subClassOf :TimeBoundDocument, vpa:DocumentedEvidence ;
+    rdfs:subClassOf :TimeBoundDocument, vpa:EvidenceDocument ;
     dcterms:created "2024-10-25"^^xsd:date ;
     # dcterms:modified "_RESERVED_"^^xsd:date ;
 
@@ -57,7 +56,7 @@
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dcterms:hasVersion ;
+        sh:path era:eradisVersion ;
         sh:datatype xsd:number ;
         sh:nodeKind sh:Literal ;
         sh:description "The Version Counter of the CLD, as defined in RFU-STR-001.";
@@ -113,19 +112,17 @@
         sh:nodeKind sh:IRI ; 
         sh:class vpa:Requirement
     ];
-    sh:property [
-        a sh:PropertyShape ;
-        sh:path vpa:checked ;
-        sh:description "Scope of Certification by reference to Assessment Requirements (TSI specific verification)"@en;
-        skos:definition """The detailed assessment references must be the URI of SKOS Concepts of the ERA RINF vocabulary.
-        
-        (Mandatory) For TSI CCS also the set(s) of specifications of TSI CCS Appendix A, including the TSI CCS from which the set is taken (e. g. set of specifications #2 from
-        TSI CCS (EU) 2016/919 last amended by (EU) 2020/387) and (only if part train protection is assessed) the ETCS system version.
-
-        (Optional) For other TSI's"""@en ;
-        sh:nodeKind sh:IRI ; 
-        sh:class skos:ConceptScheme # ETCSMandatorySpecificationsSet & (exists) ETCSMVersions
-    ];
+    #sh:property [
+    #    a sh:PropertyShape ;
+    #    sh:path vpa:checked ; ERROR, as this is a property of vpa:Compliance
+    #    sh:description "Scope of Certification by reference to Assessment Requirements (TSI specific verification)"@en;
+    #    skos:definition """The detailed assessment references must be the URI of SKOS Concepts of the ERA RINF vocabulary.    
+    #    (Mandatory) For TSI CCS also the set(s) of specifications of TSI CCS Appendix A, including the TSI CCS from which the set is taken (e. g. set of specifications #2 from
+    #    TSI CCS (EU) 2016/919 last amended by (EU) 2020/387) and (only if part train protection is assessed) the ETCS system version.
+    #    (Optional) For other TSI's"""@en ;
+    #    sh:nodeKind sh:IRI ; 
+    #    sh:class skos:ConceptScheme # ETCSMandatorySpecificationsSet & (exists) ETCSMVersions
+    #];
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:creator ;
@@ -237,11 +234,11 @@
         )
     ];
 
-    ## TODO: In some cases, the ComplianceCheck MUST be linked to an OperationalMode
+    ## TODO: In some cases, the ComplianceCheck MUST be linked to a Vehicle Configuration
     sh:property [
         a sh:PropertyShape ;
-        # sh:path era:operationalMode ?? ;
+        # sh:path :forConfiguration ;
         sh:nodeKind sh:IRI ;
-        sh:class :VTOperationalMode ;
+        sh:class :VehicleTypeConfiguration ;
     ]
 .
