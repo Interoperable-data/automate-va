@@ -11,16 +11,16 @@ The EU Agency for Railways has introduced the [ontology for Verified Permissions
 
 > `Documented evidence` allows permission seekers to ask these permissions to permission providers (permitting bodies). Instances of documented evidence are resources, potentially having a physical/electronic document as its presentation.
 
-Stakeholders wanting to represent this `vpa:DocumentedEvidence` as linked data, in order to achieve the objectives as described elsewhere, are invited to examine and return comments on the following proposal.
+Stakeholders wanting to represent this `vpa:EvidenceDocument` as linked data, in order to achieve the objectives as described elsewhere, are invited to examine and return comments on the following proposal.
 
 > [!NOTE]
-> The class `vpa:DocumentedEvidence` can be linked to verified `vpa:Requirement`, which are further not specified, but can be, for instance to eli:LegalResource and other classes. The EU Agency for Railways uses the `vpa:DocumentedEvidence` class to model [ERADIS Interoperability documents](https://eradis.era.europa.eu/default.aspx). The process is described [here](./RESTRICTION.md).
+> The class `vpa:EvidenceDocument` can be linked to verified `vpa:Requirement`, which are further not specified, but can be, for instance to eli:LegalResource and other classes. The EU Agency for Railways uses the `vpa:EvidenceDocument` class to model [ERADIS Interoperability documents](https://eradis.era.europa.eu/default.aspx). The process is described [here](./RESTRICTION.md).
 
 ## Data model
 
 For EC Declarations, [see this document](DECLARATIONS.md).
 
-`era:Certificate a vpa:DocumentedEvidence ;` are instantiated from ERADIS data, and will be complemented by verifiable credentials (open point).
+`era:Certificate a vpa:EvidenceDocument ;` are instantiated from ERADIS data, and will be complemented by verifiable credentials (open point).
 
 A CLD has the following properties. For the use cases, please consult [this document](../USE%20CASES/CLD.md).
 
@@ -133,7 +133,7 @@ CLDs must only have versions consistent with the ERADIS Identifier, which has `/
 
 To clarify that a certificate has:
 
-- a version, `dct:hasVersion` must be used additionally, only if it is consistent with its ERADIS Identifier. If in older CLDs no version is present in the ERADIS ID, and a CLD replacing it exists with `/V01`, then the first has to encode a `dct:hasVersion "0"` exceptionally.
+- a version, `era:eradisVersion` must be used additionally, only if it is consistent with its ERADIS Identifier. If in older CLDs no version is present in the ERADIS ID, and a CLD replacing it exists with `/V01`, then the first has to encode a `era:eradisVersion "0"` exceptionally.
 - a language, `dct:language` can be used, only if it is consistent with the languages encoded in the ERADIS identifier. The languages must be IRI's and not strings.
 
 > [!WARNING]
