@@ -1,6 +1,6 @@
 # On the examples
 
-The `/examples` folder contains `.ttl`-files of resources expected to be critical in the automated authorisation process. These examples show some important aspects of CLD, EC declarations and Vehicle Types. Only some are repeted here.
+The `/examples` folder contains `.ttl`-files of resources expected to be critical in the automated authorisation process. These examples show some important aspects of CLD, EC declarations and Vehicle Types. Only some are repeated here.
 
 The introduction of new Vehicle Types must follow internal procedure [INS_VEA_011](../INS_VEA_011%20Registration%20in%20ERATV.pdf).
 
@@ -8,12 +8,12 @@ The introduction of new Vehicle Types must follow internal procedure [INS_VEA_01
 
 The following guidelines follow from the documentation on CLDs and EC Declarations.
 
-- A set of certificates `era:CertificateSet` constitutes the `dct:references` of the EC Declaration supported by these CLDs.
-- Where possible, the Certificate Set `dct:hasPart` links to CLD-URI's, if not a "shortened string-based" CLD must be added.
+- A set of certificates is stored as `rdfs:member` of `vpa:Evidence` and can serve as the `dcterms:requires` of the EC Declaration supported by these CLDs. CLDs are in the end `vpa:EvidenceDocuments`.
+- Where possible, the Certificates are represented with their eradis: CLD-URI's, if not a "shortened string-based" CLD must be added.
 - SPARQL-query `?s dcterms:isReplacedBy+ ?p` must be able to reconstruct the historical evolution of the resource, both in the case of CLD as EC Declaration.
 - An EC Declaration's end of validity date can ONLY be constructed:
-  - (for all supporting certificates) through the property path `?decl dcterm:references/dct:hasPart/vpa:valid?/time:hasBeginning ?startdate` and then comparing the current date with the one calculated using the `time:hasDurationDescription`.
-  - (for one specific certificate) through the path `?decl dcterms:references/dct:hasPart ?cert`, combined with `?cert vpa:valid/time:hasBeginning ?begin`, and using the same as above duration.
+  - (for all supporting certificates) through the property path `?decl dcterm:requires/rdfs:member/vpa:valid?/time:hasBeginning ?startdate` and then comparing the current date with the one calculated using the `time:hasDurationDescription`.
+  - (for one specific certificate) through the path `?decl dcterms:requires/rdfs:member ?cert`, combined with `?cert vpa:valid/time:hasBeginning ?begin`, and using the same as above duration.
 - Given the non-disclosed nature of some properties, the `vpa:checked` property must link to triples stored in a private graph or container.
 
 ## VA Applications
@@ -33,7 +33,7 @@ eva:{authorisation case identified by type id + index} a era:VehicleTypeAuthoris
     vpa:permissionType era{SKOS-CS} ;
     ...
     # 4RP means the application exists
-    vpa:supports eva:va-{OSSID} | eva:va-{NATIONAL AUTH ID} ; 
+    vpa:supportsRequest eva:va-{OSSID} | eva:va-{NATIONAL AUTH ID} ; 
     ...
 
 eva:va-{OSS_ID} | eva:va-{NATIONAL AUTH ID} a era:VehicleTypeAuthorisationApplication ; 
@@ -60,7 +60,7 @@ In this case, the above structure is reduced as follows:
 ```js
 eratv:vt-11-057-0018-9-001 a era:VehicleType ; # Uses: era:VehicleType subClassOf vpa:Scope
     dcterms:identifier "11-057-0018-9-001";
-    era:manufacturer [
+    era:vehicleTypeManufacturer [
       a era:OrganisationRole ;
       era:roleOf <era-org:BEST_GUESS> ;
       era:hasRole <skos:Manufacturer> .
@@ -75,11 +75,11 @@ eratv:vt-11-057-0018-9-001 a era:VehicleType ; # Uses: era:VehicleType subClassO
 # Uses: era:VehicleTypeAuthorisationCase subClassOf vpa:Case
 eva:vac-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationCase ;                 
     vpa:permissionType era-skos-va:HistoricalAuthorisationCase ;  
-    era:areaOfUse <MemberState-1> ; # Always the whole memberstate
+    era:authorisingMemberState <MemberState-1> ; # Always the whole memberstate, AoU not used
     ...
-    vpa:supports [
+    vpa:supportsRequest [
         # blankNode as it was never physically submitted
-        a VehicleTypeAuthorisationApplication ; 
+        a era:VehicleTypeAuthorisationApplication ; 
         vpa:requestFor eva:auth-11-057-0018-9-001-MS1-1 ; 
         # Only the first is needed as we can find corrections by following dcterms:isReplacedBy*
     ]. 
@@ -108,7 +108,7 @@ SELECT ?vt ?val ?cfg WHERE {
 
 ### (Non)Coded CfU and other restrictions
 
-Authorisation Cases will document the (N)CCFU using `era:configDependentConditions`, a subClassOf `vpa:Compliance`, which allows the condition to link to the `vpa:checkedSection` in order to trace its origin where possible. The conditions will be instantiated as `era:VehicleTypeAuthorisationRestriction`s as such:
+Authorisation Cases will document the (N)CCFU using `era:configDependentCondition`, a subClassOf `vpa:Compliance`, which allows the condition to link to the `vpa:checkedSection` in order to trace its origin where possible. The conditions will be instantiated as `era:VehicleTypeAuthorisationRestriction`s as such:
 
 ```
 SELECT ?vt ?case ?auth ?cfg ?cfu ?cprop ?cval WHERE {
@@ -116,7 +116,7 @@ SELECT ?vt ?case ?auth ?cfg ?cfu ?cprop ?cval WHERE {
   vpa:definesCase ?case .
   FILTER {
     ?case a era:VehicleAuthorisationCase ;
-      era:configDependentConditions/vpa:withRestriction ?cfu .
+      era:configDependentCondition/vpa:withRestriction ?cfu .
       FILTER {
         ?cfu a era:VehicleTypeAuthorisationRestriction ;
           era:forConfiguration ?cfg ;
@@ -128,4 +128,9 @@ SELECT ?vt ?case ?auth ?cfg ?cfu ?cprop ?cval WHERE {
 
 ### Compliance with TSI (non-checked sections and applicable specific cases)
 
-Sections 2.1 and 2.3 are to be provided, but make use of subClassesOf `vpa:Requirement` and `vpa:Compliance`.
+Sections 2.1 and 2.3 of the VehicleType will make use of subClassesOf `vpa:Requirement` and `vpa:Compliance`, see the examples. 
+
+For Section 2.2, we strongly recommend to use the `vpa:Evidence` instances, in which the certificates are a `rdfs:member`, and then express this Evidence to `vpa:supportsCase` the relevant AuthorisationCase.
+
+> [!WARNING]
+> The parameter `3.1.3.2.6 Parameters for which conformity to applicable national rules has been assessed` is also to be considered a `era:configDependentCompliance` of an AuthorisationCase.
