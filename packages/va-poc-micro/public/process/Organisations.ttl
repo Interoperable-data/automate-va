@@ -1,0 +1,56 @@
+@base <https://example.org/va-poc-micro/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix dul:  <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix org:  <http://www.w3.org/ns/org#> .
+@prefix schema: <http://schema.org/> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix :     <#> .
+
+:OrganisationProcess
+    a dul:Process ;
+    rdfs:label "Organisation Management Process" ;
+    rdfs:comment "Example process to demonstrate adding Organisations and Sites." ;
+    vcard:hasContact :ProcessContact .
+
+:ProcessContact
+    a vcard:Individual ;
+    vcard:fn "GitHub Copilot" ;
+    vcard:hasEmail "copilot@example.org" .
+
+:task_addOrganisation
+    a dul:Task, prov:Action ;
+    rdfs:comment "Allows a user to add basic data about an Organisation under org:Organization." ;
+    rdf:first :step_addOrg_1 ;
+    rdf:rest :task_addSite .
+
+:step_addOrg_1
+    a dul:Action ;
+    rdfs:label "Add Organisation - Step 1" ;
+    dct:description "Add your organisation’s basic data." ;
+    dct:source <../shapes/addOrganizationShape.ttl> ;
+    schema:version "1.0" ;
+    rdf:rest :step_addOrg_2 .
+
+:step_addOrg_2
+    a dul:Action ;
+    rdfs:label "Add Organisation - Step 2" ;
+    dct:description "Additional organisation properties, e.g. classification, contact info." ;
+    dct:source <../shapes/orgDetailsShape.ttl> ;
+    schema:version "1.0" ;
+    rdf:rest rdf:nil .
+
+:task_addSite
+    a dul:Task, prov:Action ;
+    rdfs:comment "Allows a user to add a Site, referencing an existing org:Organization." ;
+    rdf:first :step_addSite_1 .
+
+:step_addSite_1
+    a dul:Action ;
+    rdfs:label "Add Site - Step 1" ;
+    dct:description "Create a Site resource (org:Site) for the chosen Organisation." ;
+    dct:source <../shapes/addSiteShape.ttl> ;
+    schema:version "1.0" ;
+    rdf:rest rdf:nil .
