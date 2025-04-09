@@ -235,7 +235,8 @@
     rdfs:label "Vehicle Type Configuration"@en ;
     rdfs:comment """Technical properties of a vehicle type, or even the applicable specific cases as certified, sometimes depend on specific values of:
     - the provided power system (era:era:energySupplySystem)
-    - a combination of [era:energySupplySystem, the ATP system and the track gauge]"""@en;
+    - a combination of [era:energySupplySystem, the ATP system and the track gauge]"""@en
+.
 
 
 # AoU
