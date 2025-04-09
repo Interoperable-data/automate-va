@@ -22,6 +22,7 @@
 
 :task_addOrganisation
     a dul:Task, prov:Action ;
+    rdfs:label "Add Organisation Task" ; # Added label for the task
     rdfs:comment "Allows a user to add basic data about an Organisation under org:Organization." ;
     rdf:first :step_addOrg_1 ;
     rdf:rest :task_addSite .
@@ -46,6 +47,7 @@
 
 :task_addSite
     a dul:Task, prov:Action ;
+    rdfs:label "Add Site Task" ; # Added label for the task
     rdfs:comment "Allows a user to add a Site, referencing an existing org:Organization." ;
     rdf:first :step_addSite_1 .
 

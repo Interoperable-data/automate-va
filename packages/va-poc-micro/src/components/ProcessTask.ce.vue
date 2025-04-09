@@ -23,6 +23,8 @@
   const currentStep = ref<Thing | null>(null);
   const steps = ref<Thing[]>([]);
   const isLoading = ref(true); // Loading state
+  const tasks = ref<Thing[]>([]); // List of tasks
+  const selectedTask = ref<Thing | null>(null); // User-selected task
 
   // Process and task details
   const processLabel = ref('');
@@ -31,6 +33,9 @@
 
   // Internal state for the fully qualified URL
   const resolvedProcessFileUrl = ref('');
+
+  // Add a reactive variable to store the dataset
+  const dataset = ref<SolidDataset | null>(null);
 
   // Resolve the process file URL internally
   function resolveProcessFileUrl() {
@@ -56,39 +61,21 @@
       emit('turtleContentUpdated', turtleContent);
       console.log('Emitted Turtle content to parent.');
 
-      // Convert the RDF/JS dataset into a SolidDataset
-      const dataset: SolidDataset = await parseTurtleToSolidDataset(turtleContent);
-      console.log('Converted Turtle content into SolidDataset:', dataset);
+      // Convert the RDF/JS dataset into a SolidDataset and store it in the reactive variable
+      dataset.value = await parseTurtleToSolidDataset(turtleContent);
+      console.log('Converted Turtle content into SolidDataset:', dataset.value);
 
       // Discover process-level metadata
-      discoverProcessData(dataset);
+      discoverProcessData();
 
       // Discover tasks dynamically
-      const tasks = discoverTasks(dataset);
-      if (tasks.length === 0) {
+      tasks.value = discoverTasks();
+      if (tasks.value.length === 0) {
         console.warn('No tasks found in the dataset.');
         return;
       }
 
-      // Select the first task (or allow user selection in the future)
-      const selectedTask = tasks[0];
-      console.log('Selected task:', selectedTask);
-
-      // Extract task details
-      taskComment.value = getStringNoLocale(selectedTask, RDFS.comment) || '';
-      console.log('Extracted task details:', { taskComment: taskComment.value });
-
-      // Discover the first step of the task
-      const firstStep = getFirstStep(selectedTask, dataset);
-      if (!firstStep) {
-        console.warn('No steps found for the selected task.');
-        return;
-      }
-
-      // Extract the sequence of steps
-      steps.value = extractSteps(firstStep, dataset);
-      currentStep.value = steps.value[0];
-      console.log('Extracted steps:', steps.value);
+      console.log('Discovered tasks:', tasks.value);
     } catch (error) {
       console.error('Error fetching or parsing process file:', error);
     } finally {
@@ -97,32 +84,53 @@
     }
   }
 
-  // Function to dynamically discover tasks in the dataset
-  function discoverTasks(dataset: SolidDataset): Thing[] {
-    const allThings = getThingAll(dataset);
-    const tasks = allThings.filter((thing) => {
-      const type = getUrl(thing, RDF.type);
-      return (
-        type === 'http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Task' ||
-        type === 'http://www.w3.org/ns/prov#Action'
-      );
-    });
-    console.log('Discovered tasks:', tasks);
-    return tasks;
+  // Function to handle task selection
+  function handleTaskSelection(task: Thing) {
+    if (!dataset.value) {
+      console.error('Dataset is not available. Cannot handle task selection.');
+      return;
+    }
+
+    selectedTask.value = task;
+    taskComment.value = getStringNoLocale(task, RDFS.comment) || '';
+
+    // Discover the first step of the selected task
+    const firstStep = getFirstStep(task);
+    if (!firstStep) {
+      console.warn('No steps found for the selected task.');
+      steps.value = [];
+      currentStep.value = null;
+      return;
+    }
+
+    // Extract the sequence of steps
+    steps.value = extractSteps(firstStep);
+    currentStep.value = steps.value[0];
+    console.log('Extracted steps:', steps.value);
   }
 
   // Function to dynamically discover the first step of a task
-  function getFirstStep(taskThing: Thing, dataset: SolidDataset): Thing | null {
+  function getFirstStep(taskThing: Thing): Thing | null {
+    if (!dataset.value) {
+      console.error('Dataset is not available. Cannot get the first step.');
+      return null;
+    }
+
     const firstStepUrl = getUrl(taskThing, RDF.first);
     if (!firstStepUrl) {
       console.warn('No first step found for task:', taskThing);
       return null;
     }
-    return getThing(dataset, firstStepUrl);
+    return getThing(dataset.value, firstStepUrl);
   }
 
   // Function to extract steps dynamically
-  function extractSteps(firstStep: Thing, dataset: SolidDataset): Thing[] {
+  function extractSteps(firstStep: Thing): Thing[] {
+    if (!dataset.value) {
+      console.error('Dataset is not available. Cannot extract steps.');
+      return [];
+    }
+
     const stepSequence: Thing[] = [];
     let currentStep = firstStep;
 
@@ -133,7 +141,7 @@
       const nextStepUrl = getUrl(currentStep, RDF.rest);
       if (!nextStepUrl || nextStepUrl === RDF.nil) break;
 
-      currentStep = getThing(dataset, nextStepUrl) || null;
+      currentStep = getThing(dataset.value, nextStepUrl) || null;
     }
 
     console.log('Extracted step sequence:', stepSequence);
@@ -141,8 +149,13 @@
   }
 
   // Function to discover process-level metadata
-  function discoverProcessData(dataset: SolidDataset): void {
-    const allThings = getThingAll(dataset);
+  function discoverProcessData(): void {
+    if (!dataset.value) {
+      console.error('Dataset is not available. Cannot discover process data.');
+      return;
+    }
+
+    const allThings = getThingAll(dataset.value);
 
     // Find the process Thing (assumes it's the first Thing of type `dul:Process`)
     const processThing = allThings.find((thing) => {
@@ -162,17 +175,21 @@
     }
   }
 
-  // Handle step completion and move to the next step
-  function handleStepCompleted(turtleData: string) {
-    console.log('Step completed with data:', turtleData);
-
-    const currentIndex = steps.value.findIndex((step) => step === currentStep.value);
-    if (currentIndex < steps.value.length - 1) {
-      currentStep.value = steps.value[currentIndex + 1];
-      console.log('Moved to next step:', currentStep.value);
-    } else {
-      console.log('All steps completed!');
+  // Function to dynamically discover tasks in the dataset
+  function discoverTasks(): Thing[] {
+    if (!dataset.value) {
+      console.error('Dataset is not available. Cannot discover tasks.');
+      return [];
     }
+
+    const allThings = getThingAll(dataset.value);
+    return allThings.filter((thing) => {
+      const type = getUrl(thing, RDF.type);
+      return (
+        type === 'http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Task' ||
+        type === 'http://www.w3.org/ns/prov#Action'
+      );
+    });
   }
 
   // Resolve the process file URL and fetch the process file on mount
@@ -190,8 +207,18 @@
       <p class="process-comment">{{ processComment }}</p>
     </header>
 
+    <!-- Task Selection -->
+    <section v-if="tasks.length > 0" class="task-selection">
+      <label for="task-select">Select a Task:</label>
+      <select id="task-select" v-model="selectedTask" @change="handleTaskSelection(selectedTask)">
+        <option v-for="task in tasks" :key="task.url" :value="task">
+          {{ getStringNoLocale(task, RDFS.label) || 'Unnamed Task' }}
+        </option>
+      </select>
+    </section>
+
     <!-- Task Details -->
-    <section class="task-details">
+    <section v-if="selectedTask" class="task-details">
       <h2>Task Details</h2>
       <p>{{ taskComment }}</p>
     </section>
@@ -225,6 +252,10 @@
   .process-comment {
     font-size: 1rem;
     color: #666;
+  }
+
+  .task-selection {
+    margin-bottom: 1rem;
   }
 
   .task-details {
