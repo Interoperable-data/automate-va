@@ -8,7 +8,12 @@
 
     <!-- Non-editable block for @base and @prefix -->
     <div class="non-editable-block">
-      <pre><code class="turtle">@base {{ base }} .{{ '\n' }}@prefix {{ prefixes }}</code></pre>
+      <pre>
+        <code class="turtle">
+          {{ base || 'No @base defined.' }}{{ base ? ' .' : '' }}
+          {{ prefixes || 'No @prefixes defined.' }}
+        </code>
+      </pre>
     </div>
 
     <!-- Editable block for the rest of the TTL -->
@@ -18,6 +23,7 @@
         class="editable-textarea"
         spellcheck="false"
         rows="15"
+        placeholder="No content available to edit."
       ></textarea>
     </div>
   </div>
@@ -51,10 +57,15 @@
           (line) => !line.startsWith('@base') && !line.startsWith('@prefix')
         );
 
-        base.value = baseLine ? baseLine.replace('@base', '').trim() : '';
-        prefixes.value = prefixLines.map((line) => line.replace('@prefix', '').trim()).join('\n');
+        base.value = baseLine ? baseLine.trim() : '';
+        prefixes.value = prefixLines.map((line) => line.trim()).join('\n');
         editableContent.value = otherLines.join('\n');
+      } else {
+        base.value = '';
+        prefixes.value = '';
+        editableContent.value = '';
       }
+      console.log('TurtleViewer received updated ttlContent:', newContent);
     },
     { immediate: true }
   );

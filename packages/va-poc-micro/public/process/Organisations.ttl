@@ -30,7 +30,7 @@
     a dul:Action ;
     rdfs:label "Add Organisation - Step 1" ;
     dct:description "Add your organisation’s basic data." ;
-    dct:source <../shapes/addOrganizationShape.ttl> ;
+    dct:source <../form-shapes/organisation-start.ttl> ;
     dct:subject "http://data.europa.eu/949/OrgOrFormalOrgShape" ; # Added subject for SHACL form
     schema:version "1.0" ;
     rdf:rest :step_addOrg_2 .

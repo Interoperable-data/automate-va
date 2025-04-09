@@ -201,15 +201,21 @@ importers:
       '@inrupt/vocab-common-rdf':
         specifier: ^1.0.5
         version: 1.0.5
+      '@rdfjs/dataset':
+        specifier: ^2.0.2
+        version: 2.0.2
+      '@rdfjs/serializer-ntriples':
+        specifier: ^2.0.1
+        version: 2.0.1
       '@rdfjs/types':
         specifier: ^2.0.1
         version: 2.0.1
       '@ulb-darmstadt/shacl-form':
         specifier: ^1.6.6
         version: 1.6.6(@popperjs/core@2.11.8)(encoding@0.1.13)(web-streams-polyfill@3.3.3)
-      rdf-parse:
-        specifier: ^4.0.0
-        version: 4.0.0(encoding@0.1.13)
+      n3:
+        specifier: ^1.24.2
+        version: 1.24.2
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.7.3)
@@ -3067,8 +3073,18 @@ packages:
     resolution: {integrity: sha512-BNwCSvG0cz0srsG5esq6CQKJc1m8g/M0DZpLuiEp0MMpfwguXX7VeS8TCg4UUG3DV/DqEvhy83ZKSEjdsYseeA==}
     hasBin: true
 
+  '@rdfjs/dataset@2.0.2':
+    resolution: {integrity: sha512-6YJx+5n5Uxzq9dd9I0GGcIo6eopZOPfcsAfxSGX5d+YBzDgVa1cbtEBFnaPyPKiQsOm4+Cr3nwypjpg02YKPlA==}
+    hasBin: true
+
   '@rdfjs/namespace@2.0.1':
     resolution: {integrity: sha512-U85NWVGnL3gWvOZ4eXwUcv3/bom7PAcutSBQqmVWvOaslPy+kDzAJCH1WYBLpdQd4yMmJ+bpJcDl9rcHtXeixg==}
+
+  '@rdfjs/serializer-ntriples@2.0.1':
+    resolution: {integrity: sha512-G1ZI0qaN/MUHxeCwr59JscO2LdyIb6MNQdXOv7NFBZuodyHsxxhJRFmMVn+3SEXeNJbVeEEbWBrLglCUgJ8XjQ==}
+
+  '@rdfjs/sink@2.0.1':
+    resolution: {integrity: sha512-smzIFGF6EH1sLAJR9F3p2wMNrN44JjPeYAoITTJLqtuNC319K7IXaJ+qNLBGTtapZ/jvpx2Tks0TjcH9KrAvEA==}
 
   '@rdfjs/term-map@2.0.2':
     resolution: {integrity: sha512-EJ2FmmdEUsSR/tU1nrizRLWzH24YzhuvesrbUWxC3Fs0ilYNdtTbg0RaFJDUnJF3HkbNBQe8Zrt/uvU/hcKnHg==}
@@ -4263,6 +4279,9 @@ packages:
   dotenv@16.4.7:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
+
+  duplex-to@2.0.0:
+    resolution: {integrity: sha512-f2nMnk11mwDptEFBTv2mcWHpF4ENAbuQ63yTiSy/99rG4Exsxsf0GJhJYq/AHF2cdMYswSx23LPuoijBflpquQ==}
 
   duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
@@ -5477,6 +5496,10 @@ packages:
     resolution: {integrity: sha512-3f0IYJo+6+lXypothmlwPzm3wJNffsxUwnfONeFv2QqWq7RjTvyCMtkRXDUXW6XrZoOzaQX8xTTSYNlGjXcGtw==}
     engines: {node: '>=12.0'}
 
+  n3@1.24.2:
+    resolution: {integrity: sha512-j/3PKmK0MA3tAohDCl9y1JDaNxp8wCnhTtrOOgZ1O17JVtWLkzHsp2jZ8YhY2uS4FWQAm6mExcXvl7C8lwXyaw==}
+    engines: {node: '>=12.0'}
+
   nanoid@3.3.8:
     resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -5999,9 +6022,6 @@ packages:
 
   rdf-parse@2.3.3:
     resolution: {integrity: sha512-N5XEHm+ajFzwo/vVNzB4tDtvqMwBosbVJmZl5DlzplQM9ejlJBlN/43i0ImAb/NMtJJgQPC3jYnkCKGA7wdo/w==}
-
-  rdf-parse@4.0.0:
-    resolution: {integrity: sha512-lNVuUKPVAdX9lJYYrJFhdQHFulYjk95BYvuNsE+eUs/M93sdsovH/Ga8bTAxagmpsoQ4LzMPa2YqeHX8ysltOA==}
 
   rdf-quad@1.5.0:
     resolution: {integrity: sha512-LnCYx8XbRVW1wr6UiZPSy2Tv7bXAtEwuyck/68dANhFu8VMnGS+QfUNP3b9YI6p4Bfd/fyDx5E3x81IxGV6BzA==}
@@ -13169,7 +13189,7 @@ snapshots:
       http-link-header: 1.1.3
       jsonld-context-parser: 3.0.0
       jsonld-streaming-parser: 4.0.1
-      n3: 1.23.1
+      n3: 1.24.2
       uuid: 10.0.0
     optionalDependencies:
       fsevents: 2.3.3
@@ -13727,9 +13747,20 @@ snapshots:
     dependencies:
       '@rdfjs/data-model': 1.3.4
 
+  '@rdfjs/dataset@2.0.2': {}
+
   '@rdfjs/namespace@2.0.1':
     dependencies:
       '@rdfjs/data-model': 2.1.0
+
+  '@rdfjs/serializer-ntriples@2.0.1':
+    dependencies:
+      '@rdfjs/sink': 2.0.1
+      '@rdfjs/to-ntriples': 3.0.1
+      duplex-to: 2.0.0
+      readable-stream: 4.7.0
+
+  '@rdfjs/sink@2.0.1': {}
 
   '@rdfjs/term-map@2.0.2':
     dependencies:
@@ -14178,7 +14209,7 @@ snapshots:
       leaflet.fullscreen: 3.0.2
       mapbox-gl: 3.11.0
       mdui: 2.1.3
-      n3: 1.23.1
+      n3: 1.24.2
       shacl-engine: 1.0.2(encoding@0.1.13)
       uuid: 10.0.0
     transitivePeerDependencies:
@@ -15095,6 +15126,8 @@ snapshots:
       dotenv: 16.4.7
 
   dotenv@16.4.7: {}
+
+  duplex-to@2.0.0: {}
 
   duplexer@0.1.2: {}
 
@@ -16607,6 +16640,12 @@ snapshots:
       queue-microtask: 1.2.3
       readable-stream: 4.7.0
 
+  n3@1.24.2:
+    dependencies:
+      buffer: 6.0.3
+      queue-microtask: 1.2.3
+      readable-stream: 4.7.0
+
   nanoid@3.3.8: {}
 
   nanoid@5.0.9: {}
@@ -17204,37 +17243,6 @@ snapshots:
       '@comunica/mediator-number': 2.10.0
       '@comunica/mediator-race': 2.10.0
       '@rdfjs/types': 2.0.1
-      readable-stream: 4.7.0
-      stream-to-string: 1.2.1
-    transitivePeerDependencies:
-      - encoding
-
-  rdf-parse@4.0.0(encoding@0.1.13):
-    dependencies:
-      '@comunica/actor-http-fetch': 4.0.2(encoding@0.1.13)
-      '@comunica/actor-http-proxy': 4.1.0(encoding@0.1.13)
-      '@comunica/actor-rdf-parse-html': 4.0.2
-      '@comunica/actor-rdf-parse-html-microdata': 4.0.2(encoding@0.1.13)
-      '@comunica/actor-rdf-parse-html-rdfa': 4.0.2(encoding@0.1.13)
-      '@comunica/actor-rdf-parse-html-script': 4.0.2(encoding@0.1.13)
-      '@comunica/actor-rdf-parse-jsonld': 4.0.2(encoding@0.1.13)
-      '@comunica/actor-rdf-parse-n3': 4.0.2(encoding@0.1.13)
-      '@comunica/actor-rdf-parse-rdfxml': 4.0.2(encoding@0.1.13)
-      '@comunica/actor-rdf-parse-shaclc': 4.0.2
-      '@comunica/actor-rdf-parse-xml-rdfa': 4.0.2(encoding@0.1.13)
-      '@comunica/bus-http': 4.1.0
-      '@comunica/bus-init': 4.1.0
-      '@comunica/bus-rdf-parse': 4.0.2
-      '@comunica/bus-rdf-parse-html': 4.0.2
-      '@comunica/config-query-sparql': 4.1.0
-      '@comunica/context-entries': 4.1.0(encoding@0.1.13)
-      '@comunica/core': 4.1.0
-      '@comunica/mediator-combine-pipeline': 4.1.0
-      '@comunica/mediator-combine-union': 4.1.0
-      '@comunica/mediator-number': 4.1.0
-      '@comunica/mediator-race': 4.1.0
-      '@rdfjs/types': 2.0.1
-      rdf-data-factory: 1.1.3
       readable-stream: 4.7.0
       stream-to-string: 1.2.1
     transitivePeerDependencies:

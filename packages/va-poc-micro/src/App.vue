@@ -1,35 +1,45 @@
 <script setup lang="ts">
-  const sampleTtl = `
-@base <https://example.org/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix ex: <http://example.org/> .
+  import { ref } from 'vue';
 
-ex:Resource1 a ex:Class1 ;
-    rdfs:label "Example Resource" ;
-    ex:property "Value" .
-`;
+  const turtleContent = ref(''); // Shared state for Turtle content
+
+  // Handle updates to the Turtle content from ProcessTask
+  function updateTurtleContent(content: string) {
+    console.error('Got this Turtle content:', content.substring(0, 100));
+    turtleContent.value = content;
+  }
+
+  // Handle dragstart event
+  function onDragStart(event) {
+    console.log('Drag started:', event);
+  }
+
+  // Handle drop event
+  function onDrop(slot) {
+    console.log('Dropped into slot:', slot);
+  }
 </script>
 
 <template>
-  <process-task-viewer
-    @dragstart="(id) => console.log(`Drag started for ID: ${id}`)"
-    @drop="(slot) => console.log(`Dropped into slot: ${slot}`)"
-  >
-    <!-- Left Section: ShapeStep -->
-    <shape-step
+  <process-task-viewer @dragstart="onDragStart" @drop="onDrop">
+    <!-- Left Section: ProcessTask -->
+    <process-task
       slot="left"
-      id="shape-step-1"
-      step-label="Test Step Label"
-      step-description="This is a test description for the ShapeStep component."
-      form-shape-url="./public/form-shapes/organisation-start.ttl"
-    />
+      process-file-url="../../public/process/Organisations.ttl"
+      @turtleContentUpdated="updateTurtleContent"
+    ></process-task>
 
-    <!-- Middle Section: Placeholder for Search -->
-    <div slot="middle" class="search-placeholder">Search Component Placeholder</div>
+    <!-- Middle Section: ShapeStep -->
+    <!-- WORKS <shape-step
+      slot="middle"
+      step-label="Middle Slot Test Step"
+      step-description="This is a test ShapeStep in the middle slot."
+      form-shape-url="./public/form-shapes/organisation-start.ttl"
+      shape-subject="http://data.europa.eu/949/OrgOrFormalOrgShape"
+    ></shape-step> -->
 
     <!-- Right Section: TurtleViewer -->
-    <turtle-viewer slot="right" :ttl-content="sampleTtl" />
+    <turtle-viewer slot="right" :ttl-content="turtleContent"></turtle-viewer>
   </process-task-viewer>
 </template>
 
