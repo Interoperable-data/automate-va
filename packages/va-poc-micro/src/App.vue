@@ -2,6 +2,7 @@
   import { ref } from 'vue';
 
   const turtleContent = ref(''); // Shared state for Turtle content
+  const processFileUrl = ref(''); // Reactive state for the validated Process URL
 
   // Handle updates to the Turtle content from ProcessTask
   function updateTurtleContent(event: Event) {
@@ -21,6 +22,25 @@
     }
   }
 
+  // Handle the validated URL from ProcessFinder
+  function handleUrlValidated(event: Event) {
+    try {
+      // Extract the validated URL from event.detail
+      const url = (event as CustomEvent).detail?.[0];
+
+      if (typeof url !== 'string') {
+        throw new Error('Invalid URL type: Expected a string in event.detail[0].');
+      }
+      processFileUrl.value = url; // Update the Process URL
+      console.log('Validated Process URL:', url);
+    } catch (error) {
+      console.error('Error handling validated URL:', error);
+      console.error('Received event:', event);
+
+      processFileUrl.value = ''; // Reset to an empty string in case of an error
+    }
+  }
+
   // Handle dragstart event
   function onDragStart(event) {
     console.log('Drag started:', event);
@@ -34,21 +54,24 @@
 
 <template>
   <process-task-viewer @dragstart="onDragStart" @drop="onDrop">
+    <!-- Top Section: ProcessFinder -->
+    <process-finder slot="top" @urlValidated="handleUrlValidated"></process-finder>
+
     <!-- Left Section: ProcessTask -->
     <process-task
       slot="left"
-      process-file-url="../../public/process/Organisations.ttl"
+      :process-file-url="processFileUrl"
       @turtleContentUpdated="updateTurtleContent"
     ></process-task>
 
     <!-- Middle Section: ShapeStep -->
-    <!-- WORKS <shape-step
+    <shape-step
       slot="middle"
       step-label="Middle Slot Test Step"
       step-description="This is a test ShapeStep in the middle slot."
-      form-shape-url="./public/form-shapes/organisation-start.ttl"
+      form-shape-url="https://github.com/Interoperable-data/automate-va/blob/dev-lws/TTL/form-shapes/organisation-start.ttl"
       shape-subject="http://data.europa.eu/949/OrgOrFormalOrgShape"
-    ></shape-step> -->
+    ></shape-step>
 
     <!-- Right Section: TurtleViewer -->
     <turtle-viewer slot="right" :ttl-content="turtleContent"></turtle-viewer>

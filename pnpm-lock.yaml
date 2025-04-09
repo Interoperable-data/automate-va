@@ -213,6 +213,12 @@ importers:
       '@ulb-darmstadt/shacl-form':
         specifier: ^1.6.6
         version: 1.6.6(@popperjs/core@2.11.8)(encoding@0.1.13)(web-streams-polyfill@3.3.3)
+      '@va-automate/kg-session':
+        specifier: workspace:*
+        version: link:../kg-session
+      '@va-automate/lws-manager':
+        specifier: workspace:*
+        version: link:../lws-manager
       n3:
         specifier: ^1.24.2
         version: 1.24.2

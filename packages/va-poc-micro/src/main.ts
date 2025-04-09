@@ -3,13 +3,14 @@ import './style.css';
 import App from './App.vue';
 import { ShaclForm } from '@ulb-darmstadt/shacl-form'; // Corrected import for ShaclForm
 
-// Import the ShapeStep custom element
+// Import custom elements
 import ShapeStepCE from './components/ShapeStep.ce.vue';
 import ProcessTaskCE from './components/ProcessTask.ce.vue';
 import TurtleViewerCE from './components/TurtleViewer.ce.vue';
 import ProcessTaskViewerCE from './components/ProcessTaskViewer.ce.vue';
+import ProcessFinderCE from './components/ProcessFinder.ce.vue'; // Import ProcessFinder
 
-// Register the custom element globally (only once)
+// Register the custom elements globally (only once)
 if (!customElements.get('shape-step')) {
   customElements.define('shape-step', defineCustomElement(ShapeStepCE));
 }
@@ -21,6 +22,9 @@ if (!customElements.get('turtle-viewer')) {
 }
 if (!customElements.get('process-task-viewer')) {
   customElements.define('process-task-viewer', defineCustomElement(ProcessTaskViewerCE));
+}
+if (!customElements.get('process-finder')) {
+  customElements.define('process-finder', defineCustomElement(ProcessFinderCE)); // Register ProcessFinder
 }
 
 // Create and mount your main Vue app

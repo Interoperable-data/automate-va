@@ -1,59 +1,36 @@
-import { fetch } from '@inrupt/solid-client-authn-browser';
-import { newEngine } from '@comunica/actor-init-sparql';
+import { fetchTurtleFromWeb, fetchTurtleFromSparql, isSparqlEndpoint } from '@va-automate/kg-session';
+
+export enum TargetType {
+  WebId = 'webId',
+  SparqlEndpoint = 'sparqlEndpoint',
+  TurtleFile = 'turtleFile',
+}
 
 /**
- * Fetches a Turtle file from a remote URL.
- * @param url The URL of the Turtle file.
- * @returns The Turtle content as a string.
+ * Determines the type of a given URL (SPARQL endpoint, Turtle file, or WebId).
+ * Delegates to `lws-manager` and `kg-session` for implementation.
+ * @param url The URL to check.
+ * @returns The type of the URL as TargetType.
  */
-export async function fetchTurtleFromRemoteFile(url: string): Promise<string> {
+export async function checkUrlType(url: string): Promise<TargetType> {
   try {
-    const response = await fetch(url, { method: 'GET' });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Turtle file from ${url}: ${response.statusText}`);
+    const parsedUrl = new URL(url);
+
+    // Check if the URL is a SPARQL endpoint
+    if (await isSparqlEndpoint(parsedUrl)) {
+      return TargetType.SparqlEndpoint;
     }
-    return await response.text();
+
+    // Check if the URL is a Turtle file
+    if (url.endsWith('.ttl')) {
+      await fetchTurtleFromWeb(url); // Validate the Turtle file
+      return TargetType.TurtleFile;
+    }
+
+    // Default to WebId if no other type matches
+    return TargetType.WebId;
   } catch (error) {
-    console.error('Error fetching Turtle file:', error);
-    throw error;
+    console.error(`Error determining URL type for ${url}:`, error);
+    throw new Error('Unable to determine URL type.');
   }
-}
-
-/**
- * Fetches data as Turtle from a SPARQL endpoint.
- * @param endpointUrl The URL of the SPARQL endpoint.
- * @param query The SPARQL query to execute.
- * @returns The Turtle content as a string.
- */
-export async function fetchTurtleFromSparqlEndpoint(
-  endpointUrl: string,
-  query: string
-): Promise<string> {
-  try {
-    const engine = newEngine();
-    const result = await engine.query(query, {
-      sources: [endpointUrl],
-      headers: { Accept: 'text/turtle' }, // Request Turtle format
-    });
-
-    const { data } = await engine.resultToString(result, 'text/turtle');
-    const turtleContent = await streamToString(data);
-    return turtleContent;
-  } catch (error) {
-    console.error('Error fetching Turtle from SPARQL endpoint:', error);
-    throw error;
-  }
-}
-
-/**
- * Helper function to convert a ReadableStream to a string.
- * @param stream The ReadableStream to convert.
- * @returns The content of the stream as a string.
- */
-async function streamToString(stream: NodeJS.ReadableStream): Promise<string> {
-  const chunks: Uint8Array[] = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  return Buffer.concat(chunks).toString('utf-8');
 }

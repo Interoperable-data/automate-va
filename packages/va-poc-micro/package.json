@@ -15,6 +15,7 @@
     "@rdfjs/serializer-ntriples": "^2.0.1",
     "@rdfjs/types": "^2.0.1",
     "@ulb-darmstadt/shacl-form": "^1.6.6",
+    "@va-automate/kg-session": "workspace:*",
     "n3": "^1.24.2",
     "vue": "^3.5.13"
   },

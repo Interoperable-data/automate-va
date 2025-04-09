@@ -283,3 +283,22 @@ export async function executeDirectQuery(
   debugLog(debug, 'Direct query results:', res)
   return res
 }
+
+
+/**
+ * Fetches a Turtle file from a web URL.
+ * @param url The URL of the Turtle file.
+ * @returns The Turtle content as a string.
+ */
+export async function fetchTurtleFromWeb(url: string): Promise<string> {
+  try {
+    const response = await fetch(url, { method: 'GET' });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Turtle file from ${url}: ${response.statusText}`);
+    }
+    return await response.text();
+  } catch (error) {
+    console.error('Error fetching Turtle file from web:', error);
+    throw error;
+  }
+}

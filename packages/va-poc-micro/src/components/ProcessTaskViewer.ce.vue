@@ -1,6 +1,11 @@
 <!-- filepath: c:\Projects\va-automate-poc-lws\automate-va\packages\va-poc-micro\src\components\ProcessTaskViewer.ce.vue -->
 <template>
   <div class="process-task-viewer">
+    <!-- Top Section -->
+    <div class="grid-item top">
+      <slot name="top"></slot>
+    </div>
+
     <!-- Left Section -->
     <div
       class="grid-item left"
@@ -92,6 +97,7 @@
 <style scoped>
   .process-task-viewer {
     display: grid;
+    grid-template-rows: auto 1fr; /* Add a row for the top slot */
     grid-template-columns: 1fr 1fr 1fr; /* Three equal columns */
     gap: 1rem;
     height: 100vh; /* Full viewport height */
@@ -107,6 +113,10 @@
     overflow: auto;
     min-height: 200px; /* Ensure drop areas are visible */
     transition: background-color 0.3s ease;
+  }
+
+  .grid-item.top {
+    grid-column: span 3; /* Make the top slot span all columns */
   }
 
   .grid-item.drop-active {
