@@ -10,7 +10,7 @@
     <div class="non-editable-block">
       <pre>
         <code class="turtle">
-          {{ base || 'No @base defined.' }}{{ base ? ' .' : '' }}
+          {{ base || 'No @base defined.' }}
           {{ prefixes || 'No @prefixes defined.' }}
         </code>
       </pre>

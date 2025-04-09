@@ -4,9 +4,21 @@
   const turtleContent = ref(''); // Shared state for Turtle content
 
   // Handle updates to the Turtle content from ProcessTask
-  function updateTurtleContent(content: string) {
-    console.error('Got this Turtle content:', content.substring(0, 100));
-    turtleContent.value = content;
+  function updateTurtleContent(event: Event) {
+    try {
+      // Extract content from event.detail
+      const content = (event as CustomEvent).detail?.[0];
+
+      if (typeof content !== 'string') {
+        throw new Error('Invalid content type: Expected a string in event.detail[0].');
+      }
+      turtleContent.value = content;
+    } catch (error) {
+      console.error('Error updating Turtle content:', error);
+      console.error('Received event:', event);
+
+      turtleContent.value = ''; // Reset to an empty string in case of an error
+    }
   }
 
   // Handle dragstart event
