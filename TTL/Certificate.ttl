@@ -56,7 +56,7 @@
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path era:eradisVersion ;
+        sh:path vpa:versionNumber ;
         sh:datatype xsd:number ;
         sh:nodeKind sh:Literal ;
         sh:description "The Version Counter of the CLD, as defined in RFU-STR-001.";
@@ -97,6 +97,27 @@
         sh:nodeKind sh:IRI ; 
         sh:class vpa:Requirement
     ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:type ;
+        sh:description "SKOS Concept indicating what type of CLD is represented, as in RDU-STR-001 C) (page 8)"@en ;
+        sh:nodeKind sh:IRI ;
+        skos:definition """From RFU-STR-001, issue 20.
+Rail Notified Bodies may issue CLDs of the following types:
+1 - EC Type Examination Certificate (B, CB, SB)
+2 - EC Design Examination Certificate (CH1, H2, SH1, SH2)
+4 - Quality Management System Approval (CD, CH, CH1, D, SD, H1, H2, SH1, SH2)
+5 - EC Certificate of Conformity (A1, CA1, CA2, CF, F)
+6 - EC Certificate of Verification (SD, SF, SG, SH1, SH2)
+7 - EC Certificate of Suitability for Use (CV, V)
+8.1 - Intermediate Statement of Verification – EC Type Examination (SB)
+8.2 - Intermediate Statement of Verification – EC Design Examination (SH1, SH2)
+8.4 - Intermediate Statement of Verification – Quality Management System Approval (SD, SH1, SH2)
+8.6 - Intermediate Statement of Verification - EC Certificate of Verification (SD, SF, SG, SH1, SH2)
+        """@en ;
+        sh:maxCount 1 ;
+        
+    ] ;
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:coverage ;
