@@ -15,33 +15,72 @@
 @prefix vpa:     <http://w3id.org/vpa/> .
 @prefix prov:    <http://www.w3.org/ns/prov#> .
 
+# FORMS
+@prefix issform: <http://era.europa.eu/forms/iss/> . 
+
+# SKOS
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
+@prefix  iss-rs: <http://data.europa.eu/949/iss/concepts/record-statuses/> .
+
 era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
   sh:node era:ECMCertificate ;
-
-  owl:imports  <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/era-skos-orgRoles.ttl> ;
+  sh:targetClass era:ECMCertificate ;
 
   sh:property [
     sh:description "EIN Number" ;
     sh:name "EIN Number" ;
-    sh:pattern "^[A-Z]{2}//d{2}//d{4}//d{4}$" ;
+    sh:pattern "^[A-Z]{2}/\\d{2}/\\d{4}/\\d{4}$" ;
     sh:path dcterms:identifier ;
-    sh:maxCount 1
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:group issform:A 
   ] , [
     sh:description "History" ;
     sh:name "History" ;
     sh:maxCount 1 ;
+    sh:minCount 1 ;
     sh:path era:state ;
-    sh:class skos:Concept 
+    sh:in (iss-rs:New iss-rs:Submitted iss-rs:Validated iss-rs:Published iss-rs:Corrected iss-rs:Archived) ;
+    owl:imports iss-skos:era-skos-recordStatuses.ttl ;
+    sh:class skos:Concept ;
+ sh:group issform:A
   ] , [
     sh:name "Validity"@en ;
     sh:path vpa:valid ;
-    sh:class skos:Concept
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:class skos:Concept ;
+    sh:group issform:S
   ], [
     sh:name "Date issued" ;
     sh:description "Issue date of the ECM certificate" ;
     sh:maxCount 1 ;
+    sh:minCount 1 ;
     sh:datatype xsd:date ;
-    sh:path dcterms:issued 
+    sh:path dcterms:issued ;
+    sh:group issform:S
+  ] , [
+    sh:description "Maintenance development" ;
+    sh:name "Development" ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount 1 ;
+    sh:path era:ecmProvidesMaintenanceDevelopment ;
+    sh:group issform:F 
+  ] , [
+    sh:name "Fleet Manager" ;
+    sh:description "Fleet Maintenance Management" ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount 1 ;
+    sh:path era:ecmProvidesFleetMaintenanceManagement ;
+    sh:group issform:F 
+  ] , [
+    sh:name "MWS";
+    sh:description "Maintenance delivery/workshop" ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount 1 ;
+    sh:path era:ecmProvidesMaintenanceDelivery ;
+    sh:group issform:F 
   ] , [
     sh:name "ECM" ;
     sh:path vpa:issuedBy ;
@@ -58,12 +97,36 @@ era:OrganisationRoleShape a sh:NodeShape , rdfs:Class ;
     sh:description "Name of the ECM" ;
     sh:name "ECM Name" ;
     sh:path era:roleOf ;
-    sh:datatype xsd:String ;
+    sh:datatype xsd:string ;
     sh:maxCount 1
   ] , [ 
     sh:description "Type of Company"@en ;
     sh:name "ECM Type" ;
-    sh:path era:companyType ;
+    sh:path era:role ;
+    sh:in ( 
+      era-organisation-roles:Keeper 
+      era-organisation-roles:ECM
+      era-organisation-roles:Manufacturer
+      era-organisation-roles:IM 
+    ) ;
+    owl:imports  iss-skos:era-skos-orgRoles.ttl ;
+    # Issue in SHACL-FORM: if uncommented, takes them all
+    # sh:class skos:Concept
+    # IGNORED xsd:datatype xsd:anyURI ;
+  ] , [ 
+    sh:path era:inCountry ;
+    sh:name "Country" ;
+    sh:description "Country of operation of the ECM" ;
+    sh:maxCount 1 ;
     sh:class skos:Concept
-  ]
-.
+  ].
+
+
+issform:F a sh:PropertyGroup ;
+  rdfs:label "Maintenance Functions"@en .
+
+issform:A a sh:PropertyGroup ;
+  rdfs:label "ECM Certificate"@en .
+
+issform:S a sh:PropertyGroup ;
+  rdfs:label "Status"@en .
