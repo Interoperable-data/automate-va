@@ -158,6 +158,8 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
   ] , [
     # PreEngagement is a choice
     sh:name "Pre-Engagement" ;
+    sh:path era:isPreEngagementApplication ;
+    sh:datatype xsd:boolean ;
     sh:maxCount 1 ;
     sh:or (
       [ sh:node era:PreEngagementShape ; sh:name "Yes" ]
@@ -175,9 +177,10 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
     sh:minCount 1
   ] , [
     sh:path dcterms:identifier ;
+    sh:order 0 ;
     sh:name "Application ID" ;
     sh:description "The identifier of the VA application (automatically filled in)" ;
-    sh:hasValue "V-20YYMMDD-000" ;
+    sh:hasValue "V-20231001-001" ;
     sh:datatype xsd:string ;
     sh:pattern "^V-20\\d{2}[01-12][0-3][1-9]-\\d{3}$" ;
     sh:maxCount 1
@@ -187,7 +190,8 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
     sh:path dcterms:creator ;
     sh:name "Applicant's Information" ;
     sh:description "Identify the Applicant by its organisation code." ;
-    sh:maxCount 1
+    sh:maxCount 1 ;
+    sh:minCount 1
   ] .
 
 # All authorisation cases within a C2T application are of type C2t
@@ -251,31 +255,38 @@ era:ApplicantOrgRoleShape a sh:NodeShape ;
   sh:property [
      # For conversion to an org URI
     sh:path era:roleOf ;
+    sh:minCount 1 ;
     sh:maxCount 1 ;
     sh:name "Applicant Information" ;
     sh:datatype xsd:string ;
     sh:or (
-      sh:node era:ApplicantByNamShape 
-      sh:node era:ApplicantByCodeShape 
+      [sh:node era:ApplicantByNamShape ; sh:name "By Name" ]
+      [sh:node era:ApplicantByCodeShape ; sh:name "By Code" ]
     )
   ] , [
     sh:path era:hasRole ;
     sh:hasValue era-organisation-roles:Applicant ;
+    sh:nodeKind sh:IRI ;
     sh:name "Applicant Role" ;
+    sh:maxCount 1 ;
   ].
 
 # Id By Name
 era:ApplicantByNamShape a sh:NodeShape ;
+  sh:targetClass era:Body ;
   sh:property [
-    sh:name "ECM Name" ;
-    sh:description "Name of the ECM" ;
+    sh:path era:roleOf ;
+    sh:name "Applicant Name" ;
+    sh:description "Name of the Applicant" ;
     sh:datatype xsd:string ;
     sh:maxCount 1
   ].
 
 # Id by orgCode
 era:ApplicantByCodeShape a sh:NodeShape ;
+  sh:targetClass era:Role ;
   sh:property [
+    sh:path era:orgCode ;
     sh:pattern "^//w{4}$" ; # K3L8 eg.
     sh:description "Organisation Code of the Applicant" ;
     sh:name "Organisation Code" ;
@@ -285,13 +296,6 @@ era:ApplicantByCodeShape a sh:NodeShape ;
 # If PreEngagement, a Reference to pre-engagement baseline is required
 era:PreEngagementShape a sh:NodeShape ;
   sh:property [
-    # era:isPreEngagementApplication “true”^^xsd:Boolean ; # ‘true’ would express a pre-engagement application. Not used here.
-    sh:path era:isPreEngagementApplication ;
-    sh:datatype xsd:boolean ;
-    sh:hasValue true; 
-    sh:name "Pre-engagement" ;
-    sh:maxCount 1
-  ] , [
     # era:preEngagementBaseline era:Document
     sh:path era:preEngagementBaseline ;
     sh:name "PreEngagement Reference"@en ;
@@ -299,15 +303,9 @@ era:PreEngagementShape a sh:NodeShape ;
     sh:minCount 1
   ] .
 
-# If NO PreEngagement, only boolean
+# If NO PreEngagement, only boolean as already marked
 era:noPreEngagementShape a sh:NodeShape ;
-  sh:property [
-    # era:isPreEngagementApplication “false”^^xsd:Boolean ;
-    sh:path era:isPreEngagementApplication ;
-    sh:datatype xsd:boolean ;
-    sh:hasValue false; 
-    sh:name "No Pre-engagement" ;
-  ] .
+  rdfs:label "No pre-engagement" .
 
 # UI Groups
 issform:RecordGroup a sh:PropertyGroup ;
