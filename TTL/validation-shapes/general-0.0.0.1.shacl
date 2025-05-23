@@ -1,0 +1,80 @@
+## Helper SPARQL-based constraint components
+# Author: MDH
+# Version: 0.0.0.1
+
+@prefix :        <http://example.com/> .
+@prefix dash:    <http://datashapes.org/dash#> .
+@prefix era:     <http://data.europa.eu/949/> .      
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix geo:     <http://www.opengis.net/ont/geosparql#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema:  <http://schema.org/> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix time:    <http://www.w3.org/2006/time#> .
+@prefix unit:    <http://qudt.org/vocab/unit/> .
+@prefix vpa:     <http://w3id.org/vpa/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix iss:     <http://data.europa.eu/949/iss/> . 
+@prefix issform: <http://era.europa.eu/forms/iss/> . 
+
+## Configuration
+:Config
+    :currentYear "2025"^^xsd:string .
+
+### VALIDATION SHAPES
+
+# Checks a EIN-number (CC, NN, YYYY)
+:EINConstraintComponent 
+  a sh:ConstraintComponent ;
+  rdfs:label "Correct EIN numbers"@en , "Correcte EIN nummers"@nl ;
+  rdfs:description "ECM EIN must be `CC/NN/YYYY/nnnn`, where NN is a predefined number, CC is two-letter ISO country code and YYYY is the current year."@en ;
+  rdfs:seeAlso "https://www.era.europa.eu/system/files/2022-11/European%20Identification%20Number.pdf"^^xsd:anyURI ;
+  dcterms:created "2025-05-22"^^xsd:date ;
+  
+  sh:parameter [
+    sh:path :CC ;
+    sh:datatype xsd:string ;
+    sh:minLenght 2 ;
+    sh:maxLength 2 ;
+    sh:name "Issuing Authority" ;
+    sh:description "EIN Field 1 (Code relevant for the issuing authority (2 letters))" ;
+  ] ;   
+  sh:parameter [
+    sh:path :NN ;
+    sh:datatype xsd:string ;
+    sh:minLenght 2 ;
+    sh:maxLength 2 ;
+    sh:description "Document Type" ;
+    sh:description "EIN Field 2 (Type of document(2 digits))" ;
+  ] ;   
+  sh:parameter [
+    sh:path :YYYY ;
+    sh:datatype xsd:string ;
+    sh:minLenght 4 ;
+    sh:maxLength 4 ;
+    sh:description "Issue Year" ;
+    sh:description "EIN Field 3 (Issue Year (4 digits))" ;
+  ] ;   
+  sh:propertyValidator  [
+    a sh:SPARQLSelectValidator ;
+    sh:message "The identifier must have the format {$CC}/{$NN}/YYYY/NNNN where YYYY is the current year ({$YYYY})." ;
+    sh:severity sh:Violation ;
+    sh:select """
+        PREFIX dcterms: <http://purl.org/dc/terms/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        SELECT $this ?value
+        WHERE {
+            $this dcterms:identifier ?value .
+            :Config :currentYear ?currentYear .
+            BIND (CONCAT('^?CC//?NN//', ?currentYear, '/\\\\d{4}$') AS ?pattern)
+            FILTER (
+                !REGEX(?value, ?pattern, 'i')
+            )
+        }
+    """ ;
+  ] .
