@@ -1,5 +1,5 @@
 ## Form serves: 1.1 ECM Certificate
-# Author: MDH 
+
 @base            <http://example.com/> .
 @prefix dash:    <http://datashapes.org/dash#> .
 @prefix era:     <http://data.europa.eu/949/> .      
@@ -55,7 +55,7 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
   sh:group issform:RecordGroup ; 
   sh:path iss:recordDefVersion ;
   sh:datatype xsd:string ;
-  sh:hasValue '0.0.0.1' ;
+  sh:hasValue '0.0.0.3' ;
   sh:minCount 1 ;
   sh:maxCount 1 ;
  ] ; 
@@ -154,12 +154,20 @@ sh:targetClass iss:Record .
 ######################################
 era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
 
+  sh:targetClass era:ECMCertificate ;
   rdfs:label "ECM Certificate" ;
   rdfs:comment "CERTIFICATE OF CONFORMITY OF ENTITY IN CHARGE OF MAINTENANCE - ECM Certificate"@en;
+
+  # ----------- Shape document management
+  dcterms:creator [ 
+    foaf:name "Maarten Duhoux" ;
+    dcterms:source <https://orcid.org/0009-0003-6653-6123> ;
+    org:memberOf <http://publications.europa.eu/resource/authority/corporate-body/ERA>
+  ] ;
   rdfs:seeAlso "https://eradis.era.europa.eu/safety_docs/ecm/certificates/submit.aspx?DocType=1"^^xsd:anyURI ;
   dcterms:created "2025-05-22"^^xsd:date ;
-
-  sh:targetClass era:ECMCertificate ;
+  dcterms:modified "2025-05-23"^^xsd:date ;
+  # ----------
 
   # Certificate Type
   sh:property [
@@ -369,11 +377,11 @@ issform:CE a sh:PropertyGroup ;
 issform:CB a sh:PropertyGroup ;
   rdfs:label "CERTIFICATION BODY"@en .
 issform:CI a sh:PropertyGroup ;
-  rdfs:label "Certificate Information"@en .
+  rdfs:label "CERTIFICATE INFORMATION"@en .
 issform:S a sh:PropertyGroup ;
-  rdfs:label "Scope"@en .
+  rdfs:label "SCOPE"@en .
 issform:OTH a sh:PropertyGroup ;
-  rdfs:label "Other"@en .
+  rdfs:label "OTHER"@en .
 issform:F a sh:PropertyGroup ;
   rdfs:label "Attached Files"@en .
 
