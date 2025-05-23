@@ -1,3 +1,6 @@
+## Form serves: 1.1 ECM Certificate
+# Author: MDH 
+@base            <http://example.com/> .
 @prefix dash:    <http://datashapes.org/dash#> .
 @prefix era:     <http://data.europa.eu/949/> .      
 @prefix dcterms: <http://purl.org/dc/terms/> .
@@ -26,15 +29,15 @@
 @prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
 
 issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
- sh:property [ 
-  sh:description "Record ID" ; 
-  sh:name "Record ID" ; 
-  sh:group issform:RecordGroup ; 
-  sh:datatype xsd:string ; 
-  sh:path iss:recordId ;
-  dash:readonly true;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
+  sh:property [ 
+    sh:description "Record ID" ; 
+    sh:name "Record ID" ; 
+    sh:group issform:RecordGroup ; 
+    sh:datatype xsd:string ; 
+    sh:path iss:recordId ;
+    dash:readonly true;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
  ] ; 
  sh:property [ 
   sh:description "Record Type" ; 
@@ -76,7 +79,6 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
   sh:maxCount 1 ;
   sh:path iss:recordDateTime
  ] ; 
-
  sh:property [ 
   sh:description "Record Title" ; 
   sh:name "Record Title" ; 
@@ -147,109 +149,203 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
  ] ;  
 sh:targetClass iss:Record .
 
+###################################### 
+################## FORM-defining SHACL
+######################################
 era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
+
+  rdfs:label "ECM Certificate" ;
+  rdfs:comment "CERTIFICATE OF CONFORMITY OF ENTITY IN CHARGE OF MAINTENANCE - ECM Certificate"@en;
+  rdfs:seeAlso "https://eradis.era.europa.eu/safety_docs/ecm/certificates/submit.aspx?DocType=1"^^xsd:anyURI ;
+  dcterms:created "2025-05-22"^^xsd:date ;
+
   sh:targetClass era:ECMCertificate ;
 
+  # Certificate Type
   sh:property [
     sh:description "EIN Number" ;
-    sh:name "EIN Number" ;
-    sh:pattern "^[A-Z]{2}/\\d{2}/\\d{4}/\\d{4}$" ;
+    sh:name "1. EIN Number" ;
+    sh:pattern "^[A-Z]{2}/31/\\d{4}/\\d{4}$" ; # EIN of ECM Certificate
     sh:path dcterms:identifier ;
     sh:maxCount 1 ;
     sh:minCount 1 ;
-    sh:group issform:A 
-  ] , [
-    sh:description "History" ;
-    sh:name "History" ;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:path era:state ;
-    sh:in (iss-rs:New iss-rs:Submitted iss-rs:Updated iss-rs:Validated iss-rs:Published iss-rs:Corrected iss-rs:Archived) ;
-    owl:imports iss-skos:era-skos-recordStatuses.ttl ;
-    sh:class skos:Concept ;
-    sh:group issform:A
-  ] , [ 
+    sh:group issform:CT
+  ] ;
+
+  # Certified Entity
+  sh:property  [ 
     sh:path era:inCountry ;
-    sh:name "Country" ;
+    sh:name "2.1 Country" ;
     owl:imports vac:eumemberstates.ttl ;
-    sh:description "Country of operation of the ECM" ;
+    sh:description "Country" ;
     sh:maxCount 1 ;
     sh:class skos:Concept ;
-    sh:group issform:A
+    sh:group issform:CE
   ] , [
-    sh:name "Validity"@en ;
-    sh:path vpa:valid ;
-    sh:maxCount 1 ;
+    sh:name "2. Certified Entity" ;
+    sh:path dcterms:audience ;
     sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:node era:OrganisationRoleShape  ;
+    sh:group issform:CE
+  ]; 
+
+  # Certification Body
+  sh:property  [ 
+    sh:path era:inCountry ;
+    sh:name "3.1 Country" ;
+    owl:imports vac:eumemberstates.ttl ;
+    sh:description "Country" ;
+    sh:maxCount 1 ;
     sh:class skos:Concept ;
-    owl:imports iss-skos:era-skos-documentStatuses.ttl ;
-    sh:nodeKind sh:IRI ;
-    sh:group issform:S
-  ], [
-    sh:name "Date issued" ;
-    sh:description "Issue date of the ECM certificate" ;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:datatype xsd:date ;
-    sh:path dcterms:issued ;
-    sh:group issform:S
+    sh:group issform:CB
   ] , [
-    sh:description "Maintenance development" ;
-    sh:name "Development" ;
-    sh:datatype xsd:boolean ;
-    sh:maxCount 1 ;
-    sh:path era:ecmProvidesMaintenanceDevelopment ;
-    sh:group issform:F 
-  ] , [
-    sh:name "Fleet Manager" ;
-    sh:description "Fleet Maintenance Management" ;
-    sh:datatype xsd:boolean ;
-    sh:maxCount 1 ;
-    sh:path era:ecmProvidesFleetMaintenanceManagement ;
-    sh:group issform:F 
-  ] , [
-    sh:name "MWS";
-    sh:description "Maintenance delivery/workshop" ;
-    sh:datatype xsd:boolean ;
-    sh:maxCount 1 ;
-    sh:path era:ecmProvidesMaintenanceDelivery ;
-    sh:group issform:F 
-  ] , [
-    sh:name "ECM (Organisation)" ;
+    sh:name "3. Certification Body" ;
     sh:path dcterms:creator ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:node era:OrganisationRoleShape  
-  ] , [ 
-    sh:description "ECM Certificate (File)" ; 
-    sh:name "ECM Certificate File" ; 
-    sh:group issform:F ; 
+    sh:node era:OrganisationRoleShape  ;
+    sh:group issform:CB
+  ]; 
+
+  # Certificate Information
+  sh:property [
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "4.1 Certificate type" ;
+    sh:path era:state ;
+    sh:hasValue iss-rs:New ;
+    sh:nodeKinde sh:IRI ;
+    sh:group issform:CI
+  ] , [
+    sh:name "4.2 Previous Certificate" ;
+    sh:description "ECM identification number of the previous certificate" ;
+    sh:path dcterms:replaces ;
+    sh:nodeKind sh:IRI ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:group issform:CI
+  ] , [
+    sh:name "Validity" ;
+    sh:path dcterms:valid ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
+    sh:node era:CertificateValidityShape ;
+    sh:group issform:CI 
+  ], [ 
+    sh:description "Type of Company"@en ;
+    sh:name "4.5 Type of Company" ;
+    sh:path era:role ;
+    sh:in ( 
+      era-organisation-roles:RU 
+      era-organisation-roles:IM 
+      era-organisation-roles:Keeper 
+      era-organisation-roles:ECM
+      era-organisation-roles:Manufacturer
+    ) ;
+    owl:imports iss-skos:era-skos-orgRoles.ttl ;
+    # sh:class skos:Concept ;
+    sh:nodeKind sh:IRI ;
+    sh:group issform:CI
+  ] ;
+ 
+  # Scope
+  sh:property  [
+    sh:name "Category (ERATV)";
+    sh:path era:ecmCategory ;
+    owl:imports era-skos:era-skos-Categories.ttl ;
+    sh:class skos:Concept ;
+    sh:group issform:S
+  ] ,  [
+    sh:name "Subcategory (ERATV)";
+    sh:path era:ecmSubCategory ;
+    owl:imports era-skos:era-skos-SubCategories.ttl ;
+    sh:class skos:Concept ;
+    sh:group issform:S
+  ] , [ 
+    sh:name "Covers wagons specialised in transport of dangerous goods" ;
+    sh:datatype xsd:boolean ;
+    sh:path era:ecmForRIDWagons ;
+    sh:maxCount 1 ;
+    sh:group issform:S
+  ];
+
+  # Other
+  sh:property [
+    sh:name "Additional Information"@en ;
+    sh:path rdfs:comment ;
+    dash:singleLine false ;
+    sh:datatype xsd:string ;
+    sh:group issform:OTH
+  ] , [
+    sh:name "Date issued" ;
+    sh:path dcterms:issued ;
+    sh:hasValue "Automatically filled in" ;
+    sh:datatype xsd:date ;
+    sh:maxCount 1 ;
+    sh:group issform:OTH
+  ] , [
+    sh:name "Internal reference Number" ;
+    sh:path dcterms:title ; # DCTERMS 'A name given to the resource.' 
+    sh:hasValue "Automatically filled in" ;
+    sh:datatype xsd:string ;
+    sh:pattern ""; # to be provided
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:group issform:OTH
+  ];
+
+  # Attached Files
+  sh:property  [ 
+    sh:name ">>>" ;
+    sh:group issform:F ; 
+    sh:path iss:hasFiles ;
+    sh:maxCount 1 ;
     sh:node issform:FileFormShape ;
-    sh:path iss:hasFile
-  ] .
+  ].
+
+# Validity is a time: instance
+era:CertificateValidityShape  a sh:NodeShape, rdfs:Class ;
+  sh:targetClass time:Interval ;
+  sh:property [
+    sh:name "Starting date" ;
+    sh:path time:hasBeginning ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:node [
+      sh:targetClass time:Instant ;
+      sh:property [
+        sh:maxCount 1 ;
+        sh:path time:inXSDDate ;
+        sh:datatype xsd:date ;
+        sh:name "4.3 Validity from" ;
+      ]
+    ];
+ ] , [
+    sh:path time:hasEnd ;
+    sh:name "Ending date" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:node [
+      sh:targetClass time:Instant ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:property [
+        sh:maxCount 1 ;
+        sh:path time:inXSDDate ;
+        sh:datatype xsd:date ;
+        sh:name "4.4 Validity to (included)" ;
+      ]
+    ]
+ ] .
 
 # File ECM itself
 issform:FileFormShape a sh:NodeShape, rdfs:Class ;
-  sh:property [ 
-    sh:description "File URL of the ECM Certificate" ; 
-    sh:name "ECM Certificate URL" ;
+  sh:property [
+    sh:name "Upload File:" ;
     sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:datatype xsd:anyURI ;
-    sh:path iss:fileURL
-  ] , [ 
-    sh:description "File note" ; 
-    sh:name "File note" ;
-    sh:minCount 0 ;
-    sh:maxCount 1 ;
-    sh:path iss:filename
-  ] , [
-    sh:name "Upload the ECM:" ;
-    sh:description "ECM File";
-    sh:datatype     xsd:base64Binary ;
-    sh:maxCount 1
+    sh:datatype xsd:base64Binary ;
+    sh:path iss:filePath ; # <<<< CHECK!
   ]; 
   sh:targetClass iss:File .
 
@@ -258,35 +354,33 @@ era:OrganisationRoleShape a sh:NodeShape , rdfs:Class ;
   sh:targetClass era:OrganisationRole ;
   sh:property [
     # For conversion to an org URI
-    sh:description "Name of the ECM" ;
-    sh:name "ECM Name" ;
+    sh:description "Legal title" ;
+    sh:name "Legal title" ;
     sh:path era:roleOf ;
     sh:datatype xsd:string ;
     sh:maxCount 1
-  ] , [ 
-    sh:description "Type of Company"@en ;
-    sh:name "ECM Type" ;
-    sh:path era:role ;
-    sh:in ( 
-      era-organisation-roles:Keeper 
-      era-organisation-roles:ECM
-      era-organisation-roles:Manufacturer
-      era-organisation-roles:IM 
-    ) ;
-    owl:imports iss-skos:era-skos-orgRoles.ttl ;
-    # sh:class skos:Concept ;
-    sh:nodeKind sh:IRI ;
   ] .
 
+# Main parts of the form
+issform:CT a sh:PropertyGroup ;
+  rdfs:label "Certificate Type"@en .
+issform:CE a sh:PropertyGroup ;
+  rdfs:label "INFORMATION OF THE CERTIFIED ENTITY"@en .
+issform:CB a sh:PropertyGroup ;
+  rdfs:label "CERTIFICATION BODY"@en .
+issform:CI a sh:PropertyGroup ;
+  rdfs:label "Certificate Information"@en .
+issform:S a sh:PropertyGroup ;
+  rdfs:label "Scope"@en .
+issform:OTH a sh:PropertyGroup ;
+  rdfs:label "Other"@en .
+issform:F a sh:PropertyGroup ;
+  rdfs:label "Attached Files"@en .
+
+# REMOVE LATER, when records are no longer needed
 issform:RecordGroup a sh:PropertyGroup ;
    sh:order 1 ;
    rdfs:label "Record" .
 issform:ReportingDetailsGroup a sh:PropertyGroup ;
    sh:order 2 ;
    rdfs:label "Details" .
-issform:A a sh:PropertyGroup ;
-  rdfs:label "Administrative Data"@en .
-issform:F a sh:PropertyGroup ;
-  rdfs:label "Maintenance Functions"@en .
-issform:S a sh:PropertyGroup ;
-  rdfs:label "Status"@en .
