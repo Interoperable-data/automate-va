@@ -299,6 +299,7 @@ era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:group issform:OTH
   ] , [
     sh:name "Conditions for Use"@en ;
+    rdfs:seeAlso "https://www.era.europa.eu/sites/default/files/2025-03/era1209-292%20clarification%20note%20about%20conditions%20for%20use.pdf?t=1741026457"^^xsd:anyURI ;
     sh:path rdfs:comment ;
     dash:singleLine false ;
     sh:datatype xsd:string ;
@@ -384,13 +385,22 @@ issform:FileFormShape a sh:NodeShape, rdfs:Class ;
 era:OrganisationRoleShape a sh:NodeShape , rdfs:Class ;
   sh:targetClass era:OrganisationRole ;
   sh:property [
-    # For conversion to an org URI
+    # For conversion of the string to an org URI
     sh:description "Legal title" ;
     sh:name "Legal title" ;
     sh:path era:roleOf ;
     sh:datatype xsd:string ;
+    sh:nodeKind sh:IRI ;
     sh:maxCount 1
-  ] .
+  ] , [
+    # For conversion of the string to an org URI
+    sh:description "Organisation Code" ;
+    sh:name "Organisation Code" ;
+    sh:path era:roleOf ;
+    sh:datatype xsd:string ;
+    sh:nodeKind sh:IRI ;
+    sh:maxCount 1
+  ].
 
 # Main parts of the form
 issform:CT a sh:PropertyGroup ;
