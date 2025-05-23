@@ -6,6 +6,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
 @prefix geo:     <http://www.opengis.net/ont/geosparql#> .
+@prefix org:     <https://www.w3.org/ns/org#> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
@@ -28,6 +29,7 @@
 @prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
 @prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
 
+# Due to use in ISS prototype, can not be removed for now:
 issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
   sh:property [ 
     sh:description "Record ID" ; 
@@ -169,7 +171,7 @@ era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
   dcterms:modified "2025-05-23"^^xsd:date ;
   # ----------
 
-  # Certificate Type
+  # 1 -- Certificate Type
   sh:property [
     sh:description "EIN Number" ;
     sh:name "1. EIN Number" ;
@@ -180,7 +182,7 @@ era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:group issform:CT
   ] ;
 
-  # Certified Entity
+  # 2 -- Certified Entity
   sh:property  [ 
     sh:path era:inCountry ;
     sh:name "2.1 Country" ;
@@ -196,9 +198,15 @@ era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:maxCount 1 ;
     sh:node era:OrganisationRoleShape  ;
     sh:group issform:CE
-  ]; 
+  ] , [
+    sh:name "Certified Body is Newcomer" ;
+    sh:datatype xsd:boolean ;
+    sh:path era:ecmNewComer ;
+    sh:maxCount 1 ;
+    sh:group issform:CE
+  ] ; 
 
-  # Certification Body
+  # 3 -- Certification Body
   sh:property  [ 
     sh:path era:inCountry ;
     sh:name "3.1 Country" ;
@@ -216,10 +224,9 @@ era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:group issform:CB
   ]; 
 
-  # Certificate Information
+  # 4 -- Certificate Information
   sh:property [
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
+    sh:maxCount 1 ; sh:minCount 1 ;
     sh:name "4.1 Certificate type" ;
     sh:path era:state ;
     sh:hasValue iss-rs:New ;
@@ -229,15 +236,14 @@ era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:name "4.2 Previous Certificate" ;
     sh:description "ECM identification number of the previous certificate" ;
     sh:path dcterms:replaces ;
-    sh:nodeKind sh:IRI ;
+    sh:nodeKind sh:IRI ; ## MUST RESOLVE INTO AN URI
     sh:datatype xsd:string ;
-    sh:maxCount 1 ;
+    sh:minCount 1 ; sh:maxCount 1 ;
     sh:group issform:CI
   ] , [
     sh:name "Validity" ;
     sh:path dcterms:valid ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
+    sh:minCount 1 ; sh:maxCount 1 ;
     sh:node era:CertificateValidityShape ;
     sh:group issform:CI 
   ], [ 
@@ -257,7 +263,7 @@ era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:group issform:CI
   ] ;
  
-  # Scope
+  # 5 -- Scope
   sh:property  [
     sh:name "Category (ERATV)";
     sh:path era:ecmCategory ;
@@ -276,9 +282,15 @@ era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:path era:ecmForRIDWagons ;
     sh:maxCount 1 ;
     sh:group issform:S
+  ],[ 
+    sh:name "Covers High-speed Trainsets" ;
+    sh:datatype xsd:boolean ;
+    sh:path era:ecmHighSpeed ;
+    sh:maxCount 1 ;
+    sh:group issform:S
   ];
 
-  # Other
+  # 6 -- Other
   sh:property [
     sh:name "Additional Information"@en ;
     sh:path rdfs:comment ;
@@ -286,24 +298,36 @@ era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:datatype xsd:string ;
     sh:group issform:OTH
   ] , [
+    sh:name "Conditions for Use"@en ;
+    sh:path rdfs:comment ;
+    dash:singleLine false ;
+    sh:datatype xsd:string ;
+    sh:group issform:OTH
+  ] , [
     sh:name "Date issued" ;
     sh:path dcterms:issued ;
-    sh:hasValue "Automatically filled in" ;
     sh:datatype xsd:date ;
     sh:maxCount 1 ;
     sh:group issform:OTH
   ] , [
-    sh:name "Internal reference Number" ;
-    sh:path dcterms:title ; # DCTERMS 'A name given to the resource.' 
-    sh:hasValue "Automatically filled in" ;
+    sh:name "Transfered Certificate EIN" ;
+    sh:description "ECM identification number of the transfered certificate" ;
+    sh:pattern "^[A-Z]{2}/31/\\d{4}/\\d{4}$" ; # EIN of ECM Certificate
+    sh:path dcterms:relation ;
+    sh:nodeKind sh:IRI ;
     sh:datatype xsd:string ;
-    sh:pattern ""; # to be provided
-    sh:minCount 1 ;
     sh:maxCount 1 ;
+    sh:group issform:OTH
+  ] ,  [
+    sh:name "Internal Reference Number" ;
+    sh:path dcterms:title ; # DCTERMS 'A name given to the resource.' 
+    sh:description "EIN Certification Body Reference" ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ; sh:maxCount 1 ;
     sh:group issform:OTH
   ];
 
-  # Attached Files
+  # 7 -- Attached Files
   sh:property  [ 
     sh:name ">>>" ;
     sh:group issform:F ; 
@@ -312,14 +336,15 @@ era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:node issform:FileFormShape ;
   ].
 
+######## Additional helper NODES
+
 # Validity is a time: instance
 era:CertificateValidityShape  a sh:NodeShape, rdfs:Class ;
   sh:targetClass time:Interval ;
   sh:property [
     sh:name "Starting date" ;
     sh:path time:hasBeginning ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
+    sh:minCount 1 ;     sh:maxCount 1 ;
     sh:node [
       sh:targetClass time:Instant ;
       sh:property [
@@ -332,12 +357,10 @@ era:CertificateValidityShape  a sh:NodeShape, rdfs:Class ;
  ] , [
     sh:path time:hasEnd ;
     sh:name "Ending date" ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
+    sh:minCount 1 ;     sh:maxCount 1 ;
     sh:node [
       sh:targetClass time:Instant ;
-      sh:minCount 1 ;
-      sh:maxCount 1 ;
+      sh:minCount 1 ;   sh:maxCount 1 ;
       sh:property [
         sh:maxCount 1 ;
         sh:path time:inXSDDate ;
@@ -357,7 +380,7 @@ issform:FileFormShape a sh:NodeShape, rdfs:Class ;
   ]; 
   sh:targetClass iss:File .
 
-# ECM name and role (to convert!)
+# ECM name and role (to convert into URI!)
 era:OrganisationRoleShape a sh:NodeShape , rdfs:Class ;
   sh:targetClass era:OrganisationRole ;
   sh:property [
