@@ -82,7 +82,33 @@ See [Presentations](#presentation).
 
 ### Signing a VTA Application Check, Assessment, Recommendation, Conclusion and Decision
 
-These presentations SHOULD be signed using a `Verifiable Credential` on the data which uniquely defines it (given the presentation itself is not linked data). Both the integrity as the authority to sign should be embedded in the digital signature.
+These presentations SHOULD be signed using a [`Verifiable Credential`](https://www.w3.org/TR/vc-data-model-2.0/#securing-mechanisms) on the data which uniquely defines it (given the presentation itself is not linked data). Both the integrity as the authority to sign should be embedded in the digital signature. A final authorisation could therefore look as follows, but we repeat the need to provide digital signatures for all other reports where legally required:
+
+```rdf
+erava:EU812025{nnnn} a era:VehicleTypeAuthorisation ;
+  vpa:requestedIn erava:my_app ; # links to the application
+  dcterms:identifier "EU812025{nnnn}" ;
+  dcterms:created "2025-06-07"^^xsd:date ;
+  dcterms:author [ a era:OrganisationRole ; era:hasOrganisationRole era-organisation-roles:AuthorisingEntity ;
+    era:roleOf <http://publications.europa.eu/resource/authority/corporate-body/ERA> ;
+  ];
+  dcterms:audience [ a era:OrganisationRole ; era:roleOf mydata:Applicant ; era:hasOrganisationRole era-organisation-roles:Applicant ] .
+
+erasign:1234 a vc:VerifiableCredential, era:VehicleTypeAuthorisationCredential ;
+  vc:issuer <https://www.era.europa.eu/person/maarten-duhoux> ; # I wish :)
+  vc:validFrom "2025-06-10T19:23:24Z" ;
+  vc:validUntil "2027-06-09T12:00:00Z" ;
+  vc:credentialSubject erava:EU812025{nnnn} ;
+  vc:proof [
+    vc:type vc:DataIntegrityProof;
+    vc:cryptosuite "eddsa-rdfc-2022";
+    vc:created "2021-11-13T18:19:39Z";
+    vc:verificationMethod  <http://publications.europa.eu/resource/issuers/corporate-body/ERA/PAD#signKey-1> ;
+    vc:proofPurpose "assertionMethod";
+    vc:proofValue "z58DAdFfa9SkqZMVPxAQp...jQCrfFPP2oumHKtz" 
+  }
+]
+```
 
 In order to avoid some `foaf:Agent` of an Authorising Entity to sign out of his/her authority, the organisational data should make use of `org:Membership` and `org:Role`. These roles can then be used to allow the Agent to execute the 'Signing'-use case.
 
