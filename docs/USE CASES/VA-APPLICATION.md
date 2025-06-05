@@ -38,7 +38,7 @@ Compile reusable collections of evidence documents, and link them to an applicat
 
 Data available through links is not repeated in the VTA Application. Example: all the VehicleType related info, including the Holder must be retrieved through that `Source`.
 
-```rdf
+```js
 erava:myDEBOEvidenceForPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
   dcterms:description "These are all the DeBo documents we can reuse in the platform A approvals" ;
   vpa:checked [ a vpa:Compliance ; ] # SHOULD contains all details of what was checked exactly, as it is not in the members (of which we only know the identifier strings)
@@ -84,7 +84,7 @@ See [Presentations](#presentation).
 
 These presentations SHOULD be signed using a [`Verifiable Credential`](https://www.w3.org/TR/vc-data-model-2.0/#securing-mechanisms) on the data which uniquely defines it (given the presentation itself is not linked data). Both the integrity as the authority to sign should be embedded in the digital signature. A final authorisation could therefore look as follows, but we repeat the need to provide digital signatures for all other reports where legally required:
 
-```rdf
+```js
 erava:EU812025{nnnn} a era:VehicleTypeAuthorisation ;
   vpa:requestedIn erava:my_app ; # links to the application
   dcterms:identifier "EU812025{nnnn}" ;
@@ -135,7 +135,7 @@ Presentations likely leave the creation space of the initial author towards othe
 
 A presentation creates instances of new Classes, using a series of several CONSTRUCT queries. Given the complexity of some verifications, some [advanced, non-normative features of SHACL](https://www.w3.org/TR/shacl-af/) may also be required (See for instance [SCHACL-JS](https://www.w3.org/TR/shacl-js/#js-api)). Let us for instance describe the test on the validity of an EVN control number, of a Vehicle in the Scope of the Authorisation Case. This will - in the /data/ graph - appear as:
 
-```rdf
+```js
 mydata:Applicant a era:Body .               # Organisational data is hosted at ORG+ or the applicant
 eratv:vt-myVehicleType a era:VehicleType ;  # Vehicle Types are in ERATV+ and are subClassOf vpa:Scope
 
@@ -156,7 +156,7 @@ eratv:vt-myVehicleType a era:VehicleType ;  # Vehicle Types are in ERATV+ and ar
 ```
 In the C2T-completeness assessment we have to execute many SHACL validations on the generated data. The result of these validation reports are reconstructed as the `era:VehicleTypeAuthorisationAssessment` like so:
 
-```rdf
+```js
 :my_pre-assessment a era:VehicleTypeAuthorisationAssessment ; # subClassof rdf:Bag
    era:assessmentType era-skos-at:PAVACompletenessC2T ;       # will enable the application of the relevant verified sections...
    rdfs:member [
