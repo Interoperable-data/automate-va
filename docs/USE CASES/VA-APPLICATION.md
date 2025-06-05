@@ -62,11 +62,15 @@ erava:myECDeclarationsforPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
   dct:description "These are all the EC Declarations we can reuse in the platform A approvals"@en ;
   # vpa:checked [ a vpa:Compliance ; vpa:checkedRequirement <TSI> ; ] is NOT needed, given dcterms:coverage <> of the ECDs.
   vpa:submittedFor erava:my_app ;  # the link between an application and the evidence submitted
-  rdfs:member eradis:ecd-ecDecl-29745 , eradis:ecd-ecDecl-27125 , eradis:ecd-ecDecl-18025 . 
+  rdfs:member eradis:ecd-ecDecl-29745 , eradis:ecd-ecDecl-27125 , eradis:ecd-ecDecl-18025 .
+
+erava:mySpecificCertificatesForPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
+  rdfs:label "Specific Pantograph CLD for Platform A"@en ;
+  vpa:submittedFor erava:my_app ;  # the link between an application and the evidence submitted
+  rdfs:member eradis:cld-NoBoCert-12325 .
 ```
 
-As explained in the ERADIS documents, these ECDs link to their supporting CLDs using `dct:requires`. Only in the case of many supporting CLDs, 
-  
+As explained in the ERADIS documents, these ECDs link to their supporting CLDs using `dct:requires`. Only in the case of many supporting CLDs (mostly TEC/DEC), of which only one is applicable in the VA Application, it needs to be added to the Evidence.
 
 ### Update an existing VTA Application (private only)
 
@@ -141,6 +145,7 @@ eratv:vt-myVehicleType a era:VehicleType ;  # Vehicle Types are in ERATV+ and ar
 
 :my_app a era:VehicleTypeAuthorisationApplication ;
   dct:identifier "My application"@en;
+  rdfs:seeAlso "https://oss.era.europa.eu/{omitted}/{someIdhere}/application" ;
   dct:author [ a era:OrganisationRole ; era:roleOf mydata:Applicant ; era:hasOrganisationRole era-organisation-roles:Applicant ] ;
   
   vpa:constitutedBy [
