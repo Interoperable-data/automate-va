@@ -38,6 +38,36 @@ Compile reusable collections of evidence documents, and link them to an applicat
 
 Data available through links is not repeated in the VTA Application. Example: all the VehicleType related info, including the Holder must be retrieved through that `Source`.
 
+```rdf
+erava:myDEBOEvidenceForPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
+  dcterms:description "These are all the DeBo documents we can reuse in the platform A approvals" ;
+  vpa:checked [ a vpa:Compliance ; ] # SHOULD contains all details of what was checked exactly, as it is not in the members (of which we only know the identifier strings)
+  vpa:supportsScope eratv:vt-myVehicleType ; # These typically are in section 2.1 of the type.
+  rdfs:member [
+    a vpa:EvidenceDocument ;
+    rdfs:label “DE008/1/SB/2024/RST/DE/RST-20056/V01”
+  ] , [
+    a vpa:EvidenceDocument ;
+    rdfs:label “004/1/NNTR/2023/CCO/DE EN/3708.1U/V01”
+  ] , [
+    a vpa:EvidenceDocument ;
+    rdfs:label “004/1/NNTR/2023/CCO/DE EN/3708.1/V01”
+  ] , [
+    a vpa:EvidenceDocument ;
+    rdfs:label ”004/1/NNTR/2023/CCO/DE EN/3708.2/V01”
+  ] .
+
+erava:myECDeclarationsforPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
+  rdfs:label "ECDs for Platform A"@en ;
+  dct:description "These are all the EC Declarations we can reuse in the platform A approvals"@en ;
+  # vpa:checked [ a vpa:Compliance ; vpa:checkedRequirement <TSI> ; ] is NOT needed, given dcterms:coverage <> of the ECDs.
+  vpa:submittedFor erava:my_app ;  # the link between an application and the evidence submitted
+  rdfs:member eradis:ecd-ecDecl-29745 , eradis:ecd-ecDecl-27125 , eradis:ecd-ecDecl-18025 . 
+```
+
+As explained in the ERADIS documents, these ECDs link to their supporting CLDs using `dct:requires`. Only in the case of many supporting CLDs, 
+  
+
 ### Update an existing VTA Application (private only)
 
 URI: `/data/VehicleAuthorisation/{identifier of the resource to update}`
@@ -48,7 +78,7 @@ If an VTAIssue-dialogue has been created, the applicant can always add a reply, 
 
 ### Assess or report on a VTA Application: presentations
 
-See above.
+See [Presentations](#presentation).
 
 ### Signing a VTA Application Check, Assessment, Recommendation, Conclusion and Decision
 
@@ -80,8 +110,12 @@ Presentations likely leave the creation space of the initial author towards othe
 A presentation creates instances of new Classes, using a series of several CONSTRUCT queries. Given the complexity of some verifications, some [advanced, non-normative features of SHACL](https://www.w3.org/TR/shacl-af/) may also be required (See for instance [SCHACL-JS](https://www.w3.org/TR/shacl-js/#js-api)). Let us for instance describe the test on the validity of an EVN control number, of a Vehicle in the Scope of the Authorisation Case. This will - in the /data/ graph - appear as:
 
 ```rdf
+mydata:Applicant a era:Body .               # Organisational data is hosted at ORG+ or the applicant
+eratv:vt-myVehicleType a era:VehicleType ;  # Vehicle Types are in ERATV+ and are subClassOf vpa:Scope
+
 :my_app a era:VehicleTypeAuthorisationApplication ;
   dct:identifier "My application"@en;
+  dct:author [ a era:OrganisationRole ; era:roleOf mydata:Applicant ; era:hasOrganisationRole era-organisation-roles:Applicant ] ;
   
   vpa:constitutedBy [
     a era:VehicleTypeAuthorisationCase ;
@@ -92,94 +126,26 @@ A presentation creates instances of new Classes, using a series of several CONST
         rdfs:member [ a era:Vehicle ; dct:identifier "91 80 6187 520-2" ] # , [etc] other vehicles in the set
       ] ,
      [ a era:Vehicle ; dct:identifier "91 80 6187 525-7" ] ; # an extra vehicle
-# other triples
+
 ```
-In the C2T-completeness assessment we have to execute many checks on the generated presentation. This is therefore constructed into the `era:VehicleTypeAuthorisationAssessment` as:
+In the C2T-completeness assessment we have to execute many SHACL validations on the generated data. The result of these validation reports are reconstructed as the `era:VehicleTypeAuthorisationAssessment` like so:
 
 ```rdf
-:pre-assessment a era:VehicleTypeAuthorisationAssessment ; #subClassof rdf:Bag
-   era:assessmentType era-skos-at:PAVACompleteness ;
+:my_pre-assessment a era:VehicleTypeAuthorisationAssessment ; # subClassof rdf:Bag
+   era:assessmentType era-skos-at:PAVACompletenessC2T ;       # will enable the application of the relevant verified sections...
    rdfs:member [
-      a era:AssessmentElement ; # subClassOf vpa:Compliance
-      vpa:checkedSection :PAVACompletenessCheck-2 ;
-      # vpa:isCompliant depends on outcome of the SHACL validation ("false|true"^^xsd:boolean) ;
+      # other checks
    ] , [
-
-
-   # other records of the completeness assessment
+      # The vehicle number check
+      a era:AssessmentElement ; # subClassOf vpa:Compliance
+      vpa:checkedSection eralex:PAVA-AnnexI-11 ;              # ... as they exist in ERALEX
+      vpa:isCompliant "true"^^xsd:boolean ; # CONSTRUCTed from the SHACL validation report ("false|true"^^xsd:boolean) ;
+   ] , [
+     # other records of the completeness assessment
+   ] .
 ```
 
-which requires the legislation to be machine readable as for instance:
-
-```rdf
-# The collection of checks as a Requirement, as located in the ERALEX graph
-eralex:PAVA-AnnexII a vpa:Requirement ;
-  rdfs:label "ANNEX II" ;
-  rdfs:comment "Aspects for assessment by the authorising entity";
-  dcterms:description "The information that shall be assessed by the authorising entity is specified per authorisation case. An (x) in the column for the applicable authorisation case indicates that this aspect is mandatory to assess for this authorisation case."@en ;
-  vpa:sections eralex:PAVACompletenessCheck-1 , eralex:PAVACompletenessCheck-2 , eralex:PAVACompletenesssCheck-11 # , ...
-  dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/2020-06-16#anx_II> .
-
-# The collection of sections within that requirement some of which have automated shacl validation rulez.
-eralex:PAVACompletenessCheck-1 a skos:Concept ;
-  rdfs:label "1." ;
-  skos:note "MANUAL ONLY - pre-engagement baseline is not machine-readable" ;
-  rdfs:comment "Application consistent with the pre-engagement baseline (when applicable)" ;
-
-eralex:PAVACompletenessCheck-2 a skos:Concept ;
-  rdfs:label "2." ;
-  rdfs:comment "The type of application is described in the application form" ;
-  skos:note "AUTOMATIC" ;
-  era:shaclShapeValidationRule <http://data.europa.eu/949/shapes/PAVA/CC2> .
-
-#...
-eralex:PAVACompletenesssCheck-11 a skos:Concept ;
-  rdfs:label "11."
-  rdfs:comment "The information about the vehicles is complete in the application form: vehicles are properly identified (EVN numbers, pre-reserved vehicle numbers, other identification)"
-  skos:note "AUTOMATIC" ;
-  era:shaclShapeValidationRule <http://data.europa.eu/949/shapes/PAVA/CC11a> , <http://data.europa.eu/949/shapes/PAVA/CC11b> .
-```
-
-For the validation-rules, we could have:
-
-```shacl
-<http://data.europa.eu/949/shapes/PAVA/CC2>
-  a sh:NodeShape ;
-  sh:targetClass era:VehicleTypeAuthorisationApplication ;
-  sh:sparql [
-    a sh:SPARQLConstraint ;   # This triple is optional
-    sh:message "VA Applications contain a valid authorisation case. Valid combinations are not checked." ;
-    sh:prefixes vpa: , era-va-authcase: ;
-    sh:select """
-  SELECT $this ?authcasetype
-  WHERE {
-    $this vpa:constitutedBy/vpa:permissionType ?authcasetype .
-    FILTER (  !isLiteral(?authcasetype)                ||  # literal is not allowed
-              !( ?authcasetype = era-va-authcase:C2T ) ||  # correct SKOS Concept for C2T
-              !( ?authcasetype = era-va-authcase:NEW )     # correct SKOS Concept for NEW
-              # incomplete
-           )
-    }
-    """ ;
-  ] .
-
-<http://data.europa.eu/949/shapes/PAVA/CC11a>
-  a sh:NodeShape ;
-  sh:targetClass era:VehicleTypeAuthorisationApplication ;
-  sh:sparql [
-    a sh:SPARQLConstraint ;   # This triple is optional
-    sh:message "VA Applications contain valid vehicle numbers (eventually in vehicle sets) as their scope." ;
-    sh:prefixes vpa: , dct: ;
-    sh:select """
-  SELECT $this ?vehnumber
-  WHERE {
-    $this vpa:constitutedBy/vpa:concerns/dct:identifier ?vehnumber .
-    FILTER (  
-           )
-    }
-    """ ;
-  ] .
-```
+This approach requires the legislation and its checklists to be machine readable (and strictly linked to SHACL validation shapes) as described in the [ERALEX Assessment Use Case](../ERALEX/assessments.md).
 
 ## Machine-to-machine cycle
 
