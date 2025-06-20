@@ -1,427 +1,477 @@
-## Form serves: 1.1 ECM Certificate
+  ## Form serves: 1.1 ECM Certificate
 
-@base            <http://example.com/> .
-@prefix dash:    <http://datashapes.org/dash#> .
-@prefix era:     <http://data.europa.eu/949/> .      
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix geo:     <http://www.opengis.net/ont/geosparql#> .
-@prefix org:     <https://www.w3.org/ns/org#> .
-@prefix owl:     <http://www.w3.org/2002/07/owl#> .
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix schema:  <http://schema.org/> .
-@prefix sh:      <http://www.w3.org/ns/shacl#> .
-@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
-@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-@prefix time:    <http://www.w3.org/2006/time#> .
-@prefix unit:    <http://qudt.org/vocab/unit/> .
-@prefix vpa:     <http://w3id.org/vpa/> .
-@prefix prov:    <http://www.w3.org/ns/prov#> .
-@prefix iss:     <http://data.europa.eu/949/iss/> . 
-@prefix issform: <http://era.europa.eu/forms/iss/> . 
+  @base            <http://example.com/> .
+  @prefix dash:    <http://datashapes.org/dash#> .
+  @prefix era:     <http://data.europa.eu/949/> .      
+  @prefix dcterms: <http://purl.org/dc/terms/> .
+  @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+  @prefix geo:     <http://www.opengis.net/ont/geosparql#> .
+  @prefix org:     <https://www.w3.org/ns/org#> .
+  @prefix owl:     <http://www.w3.org/2002/07/owl#> .
+  @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+  @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+  @prefix schema:  <http://schema.org/> .
+  @prefix sh:      <http://www.w3.org/ns/shacl#> .
+  @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+  @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+  @prefix time:    <http://www.w3.org/2006/time#> .
+  @prefix unit:    <http://qudt.org/vocab/unit/> .
+  @prefix vpa:     <http://w3id.org/vpa/> .
+  @prefix prov:    <http://www.w3.org/ns/prov#> .
+  @prefix iss:     <http://data.europa.eu/949/iss/> . 
+  @prefix issform: <http://era.europa.eu/forms/iss/> . 
 
-# SKOS
-@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
-@prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
-@prefix era-skos: <https://raw.githubusercontent.com/Interoperable-data/ERA-Ontology-3.1.0/refs/heads/main/era-skos/> .
-@prefix iss-rs: <http://data.europa.eu/949/iss/concepts/record-statuses/> .
-@prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
-@prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
+  # SKOS
+  @prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+  @prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
+  @prefix era-skos: <https://raw.githubusercontent.com/Interoperable-data/ERA-Ontology-3.1.0/refs/heads/main/era-skos/> .
+  @prefix iss-rs: <http://data.europa.eu/949/iss/concepts/record-statuses/> .
+  @prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
+  @prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
 
-# Due to use in ISS prototype, can not be removed for now:
-issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
+  # Due to use in ISS prototype, can not be removed for now:
+  issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
+    sh:property [ 
+      sh:description "Record ID" ; 
+      sh:name "Record ID" ; 
+      sh:group issform:RecordGroup ; 
+      sh:datatype xsd:string ; 
+      sh:path iss:recordId ;
+      dash:readonly true;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+  ] ; 
   sh:property [ 
-    sh:description "Record ID" ; 
-    sh:name "Record ID" ; 
+    sh:description "Record Type" ; 
+    sh:name "Record Type" ; 
     sh:group issform:RecordGroup ; 
-    sh:datatype xsd:string ; 
-    sh:path iss:recordId ;
+    sh:datatype skos:Concept ; 
+    sh:path iss:recordType ;
     dash:readonly true;
     sh:minCount 1 ;
     sh:maxCount 1 ;
- ] ; 
- sh:property [ 
-  sh:description "Record Type" ; 
-  sh:name "Record Type" ; 
-  sh:group issform:RecordGroup ; 
-  sh:datatype skos:Concept ; 
-  sh:path iss:recordType ;
-  dash:readonly true;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
- ] ; 
-  sh:property [ 
-  sh:description "Record Definition Version" ; 
-  sh:name "Record Definition Version" ; 
-  sh:group issform:RecordGroup ; 
-  sh:path iss:recordDefVersion ;
-  sh:datatype xsd:string ;
-  sh:hasValue '0.0.0.3' ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
- ] ; 
- sh:property [ 
-  sh:description "Record Version" ; 
-  sh:name "Record Version" ; 
-  sh:group issform:RecordGroup ; 
-  sh:path iss:recordVersionNumber ;
-  sh:datatype xsd:string ;
-  sh:hasValue '0.0.0.1' ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
- ] ; 
- sh:property [ 
-  sh:description "Record Date & Time" ; 
-  sh:name "Record Date & Time" ; 
-  sh:group issform:RecordGroup ; 
-  sh:datatype xsd:string ; 
-  dash:readonly true;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
-  sh:path iss:recordDateTime
- ] ; 
- sh:property [ 
-  sh:description "Record Title" ; 
-  sh:name "Record Title" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  sh:datatype xsd:string ; 
-  sh:path iss:recordTitle ;
-  sh:minCount 0 ;
-  sh:maxCount 1 ;
- ] ; 
-  sh:property [ 
-  sh:description "Report Status" ; 
-  sh:name "Report Status" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  sh:path iss:recordStatus ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
-  sh:in (iss-rs:New iss-rs:Updated iss-rs:Submitted iss-rs:Validated iss-rs:Published iss-rs:Corrected iss-rs:Archived) ;
-  owl:imports iss-skos:era-skos-recordStatuses.ttl ;
-  sh:class  skos:Concept
- ] ; 
- sh:property [ 
-  sh:description "Reporting entity name" ; 
-  sh:name "Reporting entity name" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  dash:readonly true;
-  sh:maxCount 1 ;
-  sh:minCount 1 ;
-  sh:path iss:reportingEntityName
- ] ; 
- sh:property [ 
-  sh:description "Reporting entity category" ; 
-  sh:name "Reporting entity category" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
-  # owl:imports iss-skos:era-skos-orgRoles.ttl ;
-  # sh:class  skos:Concept ;
-  sh:path iss:reportingEntityCategory ;
-  dash:readonly true;
- ] ; 
- sh:property [ 
-  sh:description "Reporter Name" ; 
-  sh:name "Reporter Name" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  sh:datatype xsd:string ; 
-  sh:path iss:user ;
-  dash:readonly true;
-  sh:maxCount 1 ;
-  sh:minCount 1 ;
- ] ; 
- sh:property [ 
-  sh:description "Reporter e-mail" ; 
-  sh:name "Reporter e-mail" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  sh:datatype xsd:string ; 
-  sh:path iss:userEmail ;
-  dash:readonly true;
-  sh:maxCount 1 ;
-  sh:minCount 1 ;
- ] ; 
- sh:property [ 
-  sh:description "ECM Certificate" ; 
-  sh:name "ECM Certificate" ; 
-  sh:node era:ECMCertificateShape  ;
-  sh:path iss:hasInfoInRecord ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
- ] ;  
-sh:targetClass iss:Record .
-
-###################################### 
-################## FORM-defining SHACL
-######################################
-era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
-
-  sh:targetClass era:ECMCertificate ;
-  rdfs:label "ECM Certificate" ;
-  rdfs:comment "CERTIFICATE OF CONFORMITY OF ENTITY IN CHARGE OF MAINTENANCE - ECM Certificate"@en;
-
-  # ----------- Shape document management
-  dcterms:creator [ 
-    foaf:name "Maarten Duhoux" ;
-    dcterms:source <https://orcid.org/0009-0003-6653-6123> ;
-    org:memberOf <http://publications.europa.eu/resource/authority/corporate-body/ERA>
-  ] ;
-  rdfs:seeAlso "https://eradis.era.europa.eu/safety_docs/ecm/certificates/submit.aspx?DocType=1"^^xsd:anyURI ;
-  dcterms:created "2025-05-22"^^xsd:date ;
-  dcterms:modified "2025-05-23"^^xsd:date ;
-  # ----------
-
-  # 1 -- Certificate Type
-  sh:property [
-    sh:description "EIN Number" ;
-    sh:name "1. EIN Number" ;
-    sh:pattern "^[A-Z]{2}/31/\\d{4}/\\d{4}$" ; # EIN of ECM Certificate
-    sh:path dcterms:identifier ;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:group issform:CT
-  ] ;
-
-  # 2 -- Certified Entity
-  sh:property  [ 
-    sh:path era:inCountry ;
-    sh:name "2.1 Country" ;
-    owl:imports vac:eumemberstates.ttl ;
-    sh:description "Country" ;
-    sh:maxCount 1 ;
-    sh:class skos:Concept ;
-    sh:group issform:CE
-  ] , [
-    sh:name "2. Certified Entity" ;
-    sh:path dcterms:audience ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:node era:OrganisationRoleShape  ;
-    sh:group issform:CE
-  ] , [
-    sh:name "Certified Body is Newcomer" ;
-    sh:datatype xsd:boolean ;
-    sh:path era:ecmNewComer ;
-    sh:maxCount 1 ;
-    sh:group issform:CE
   ] ; 
-
-  # 3 -- Certification Body
-  sh:property  [ 
-    sh:path era:inCountry ;
-    sh:name "3.1 Country" ;
-    owl:imports vac:eumemberstates.ttl ;
-    sh:description "Country" ;
-    sh:maxCount 1 ;
-    sh:class skos:Concept ;
-    sh:group issform:CB
-  ] , [
-    sh:name "3. Certification Body" ;
-    sh:path dcterms:creator ;
+    sh:property [ 
+    sh:description "Record Definition Version" ; 
+    sh:name "Record Definition Version" ; 
+    sh:group issform:RecordGroup ; 
+    sh:path iss:recordDefVersion ;
+    sh:datatype xsd:string ;
+    sh:hasValue '0.0.0.3' ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:node era:OrganisationRoleShape  ;
-    sh:group issform:CB
-  ]; 
-
-  # 4 -- Certificate Information
-  sh:property [
-    sh:maxCount 1 ; sh:minCount 1 ;
-    sh:name "4.1 Certificate type" ;
-    sh:path era:state ;
-    sh:hasValue iss-rs:New ;
-    sh:nodeKinde sh:IRI ;
-    sh:group issform:CI
-  ] , [
-    sh:name "4.2 Previous Certificate" ;
-    sh:description "ECM identification number of the previous certificate" ;
-    sh:path dcterms:replaces ;
-    sh:nodeKind sh:IRI ; ## MUST RESOLVE INTO AN URI
+  ] ; 
+  sh:property [ 
+    sh:description "Record Version" ; 
+    sh:name "Record Version" ; 
+    sh:group issform:RecordGroup ; 
+    sh:path iss:recordVersionNumber ;
     sh:datatype xsd:string ;
-    sh:minCount 1 ; sh:maxCount 1 ;
-    sh:group issform:CI
-  ] , [
-    sh:name "Validity" ;
-    sh:path dcterms:valid ;
-    sh:minCount 1 ; sh:maxCount 1 ;
-    sh:node era:CertificateValidityShape ;
-    sh:group issform:CI 
-  ], [ 
-    sh:description "Type of Company"@en ;
-    sh:name "4.5 Type of Company" ;
-    sh:path era:role ;
-    sh:in ( 
-      era-organisation-roles:RU 
-      era-organisation-roles:IM 
-      era-organisation-roles:Keeper 
-      era-organisation-roles:ECM
-      era-organisation-roles:Manufacturer
-    ) ;
-    owl:imports iss-skos:era-skos-orgRoles.ttl ;
-    # sh:class skos:Concept ;
-    sh:nodeKind sh:IRI ;
-    sh:group issform:CI
-  ] ;
- 
-  # 5 -- Scope
-  sh:property  [
-    sh:name "Category (ERATV)";
-    sh:path era:ecmCategory ;
-    owl:imports era-skos:era-skos-Categories.ttl ;
-    sh:class skos:Concept ;
-    sh:group issform:S
-  ] ,  [
-    sh:name "Subcategory (ERATV)";
-    sh:path era:ecmSubCategory ;
-    owl:imports era-skos:era-skos-SubCategories.ttl ;
-    sh:class skos:Concept ;
-    sh:group issform:S
-  ] , [ 
-    sh:name "Covers wagons specialised in transport of dangerous goods" ;
-    sh:datatype xsd:boolean ;
-    sh:path era:ecmForRIDWagons ;
+    sh:hasValue '0.0.0.1' ;
+    sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:group issform:S
-  ],[ 
-    sh:name "Covers High-speed Trainsets" ;
-    sh:datatype xsd:boolean ;
-    sh:path era:ecmHighSpeed ;
+  ] ; 
+  sh:property [ 
+    sh:description "Record Date & Time" ; 
+    sh:name "Record Date & Time" ; 
+    sh:group issform:RecordGroup ; 
+    sh:datatype xsd:string ; 
+    dash:readonly true;
+    sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:group issform:S
-  ];
+    sh:path iss:recordDateTime
+  ] ; 
+  sh:property [ 
+    sh:description "Record Title" ; 
+    sh:name "Record Title" ; 
+    sh:group issform:ReportingDetailsGroup ; 
+    sh:datatype xsd:string ; 
+    sh:path iss:recordTitle ;
+    sh:minCount 0 ;
+    sh:maxCount 1 ;
+  ] ; 
+    sh:property [ 
+    sh:description "Report Status" ; 
+    sh:name "Report Status" ; 
+    sh:group issform:ReportingDetailsGroup ; 
+    sh:path iss:recordStatus ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in (iss-rs:New iss-rs:Updated iss-rs:Submitted iss-rs:Validated iss-rs:Published iss-rs:Corrected iss-rs:Archived) ;
+    owl:imports iss-skos:era-skos-recordStatuses.ttl ;
+    sh:class  skos:Concept
+  ] ; 
+  sh:property [ 
+    sh:description "Reporting entity name" ; 
+    sh:name "Reporting entity name" ; 
+    sh:group issform:ReportingDetailsGroup ; 
+    dash:readonly true;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:path iss:reportingEntityName
+  ] ; 
+  sh:property [ 
+    sh:description "Reporting entity category" ; 
+    sh:name "Reporting entity category" ; 
+    sh:group issform:ReportingDetailsGroup ; 
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    # owl:imports iss-skos:era-skos-orgRoles.ttl ;
+    # sh:class  skos:Concept ;
+    sh:path iss:reportingEntityCategory ;
+    dash:readonly true;
+  ] ; 
+  sh:property [ 
+    sh:description "Reporter Name" ; 
+    sh:name "Reporter Name" ; 
+    sh:group issform:ReportingDetailsGroup ; 
+    sh:datatype xsd:string ; 
+    sh:path iss:user ;
+    dash:readonly true;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+  ] ; 
+  sh:property [ 
+    sh:description "Reporter e-mail" ; 
+    sh:name "Reporter e-mail" ; 
+    sh:group issform:ReportingDetailsGroup ; 
+    sh:datatype xsd:string ; 
+    sh:path iss:userEmail ;
+    dash:readonly true;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+  ] ; 
+  sh:property [ 
+    sh:description "ECM Certificate" ; 
+    sh:name "ECM Certificate" ; 
+    sh:node era:ECMCertificateShape  ;
+    sh:path iss:hasInfoInRecord ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+  ] ;  
+  sh:targetClass iss:Record .
 
-  # 6 -- Other
-  sh:property [
-    sh:name "Additional Information"@en ;
-    sh:path rdfs:comment ;
-    dash:singleLine false ;
-    sh:datatype xsd:string ;
-    sh:group issform:OTH
-  ] , [
-    sh:name "Conditions for Use"@en ;
-    rdfs:seeAlso "https://www.era.europa.eu/sites/default/files/2025-03/era1209-292%20clarification%20note%20about%20conditions%20for%20use.pdf?t=1741026457"^^xsd:anyURI ;
-    sh:path rdfs:comment ;
-    dash:singleLine false ;
-    sh:datatype xsd:string ;
-    sh:group issform:OTH
-  ] , [
-    sh:name "Date issued" ;
-    sh:path dcterms:issued ;
-    sh:datatype xsd:date ;
-    sh:maxCount 1 ;
-    sh:group issform:OTH
-  ] , [
-    sh:name "Transfered Certificate EIN" ;
-    sh:description "ECM identification number of the transfered certificate" ;
-    sh:pattern "^[A-Z]{2}/31/\\d{4}/\\d{4}$" ; # EIN of ECM Certificate
-    sh:path dcterms:relation ;
-    sh:nodeKind sh:IRI ;
-    sh:datatype xsd:string ;
-    sh:maxCount 1 ;
-    sh:group issform:OTH
-  ] ,  [
-    sh:name "Internal Reference Number" ;
-    sh:path dcterms:title ; # DCTERMS 'A name given to the resource.' 
-    sh:description "EIN Certification Body Reference" ;
-    sh:datatype xsd:string ;
-    sh:minCount 1 ; sh:maxCount 1 ;
-    sh:group issform:OTH
-  ];
+  ###################################### 
+  ################## FORM-defining SHACL
+  ######################################
+  era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
 
-  # 7 -- Attached Files
-  sh:property  [ 
-    sh:name ">>>" ;
-    sh:group issform:F ; 
-    sh:path iss:hasFiles ;
-    sh:maxCount 1 ;
-    sh:node issform:FileFormShape ;
-  ].
+    sh:targetClass era:ECMCertificate ;
+    rdfs:label "ECM Certificate" ;
+    rdfs:comment "CERTIFICATE OF CONFORMITY OF ENTITY IN CHARGE OF MAINTENANCE - ECM Certificate"@en;
 
-######## Additional helper NODES
+    # ----------- Shape document management
+    dcterms:creator [ 
+      foaf:name "Maarten Duhoux" ;
+      dcterms:source <https://orcid.org/0009-0003-6653-6123> ;
+      org:memberOf <http://publications.europa.eu/resource/authority/corporate-body/ERA>
+    ] ;
+    rdfs:seeAlso "https://eradis.era.europa.eu/safety_docs/ecm/certificates/submit.aspx?DocType=1"^^xsd:anyURI ;
+    dcterms:created "2025-05-22"^^xsd:date ;
+    dcterms:modified "2025-05-23"^^xsd:date , "2025-06-19"^^xsd:date;
+    # ----------
 
-# Validity is a time: instance
-era:CertificateValidityShape  a sh:NodeShape, rdfs:Class ;
-  sh:targetClass time:Interval ;
-  sh:property [
-    sh:name "Starting date" ;
-    sh:path time:hasBeginning ;
-    sh:minCount 1 ;     sh:maxCount 1 ;
-    sh:node [
-      sh:targetClass time:Instant ;
-      sh:property [
-        sh:maxCount 1 ;
-        sh:path time:inXSDDate ;
-        sh:datatype xsd:date ;
-        sh:name "4.3 Validity from" ;
-      ]
+    # 1 -- Certificate Type
+    sh:property [
+      sh:description "EIN Number" ;
+      sh:name "1. EIN Number" ;
+      sh:pattern "^[A-Z]{2}/31/\\d{4}/\\d{4}$" ; # EIN of ECM Certificate
+      sh:path dcterms:identifier ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:group issform:CT
+    ] ;
+
+    # 2 -- Certified Entity
+    sh:property [
+      sh:name "2. Certified Entity" ;
+      sh:path dcterms:audience ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:node era:CBOrgRoleShape  ;
+      sh:group issform:CE
+    ] , [
+      sh:name "Certified Body is Newcomer" ;
+      sh:datatype xsd:boolean ;
+      sh:path era:ecmNewComer ;
+      sh:maxCount 1 ;
+      sh:group issform:CE
+    ] ; 
+
+    # 3 -- Certification Body
+    sh:property  [
+      sh:name "3. Certification Body" ;
+      sh:path dcterms:creator ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:node era:CFBOrgRoleShape  ;
+      sh:group issform:CB
+    ]; 
+
+    # 4 -- Certificate Information
+    sh:property [
+      sh:maxCount 1 ; sh:minCount 1 ;
+      sh:name "4.1 Certificate type" ;
+      sh:path era:state ;
+      sh:hasValue iss-rs:New ;
+      sh:nodeKind sh:IRI ;
+      sh:group issform:CI
+    ] , [
+      sh:name "4.2 Previous Certificate" ;
+      sh:description "ECM identification number of the previous certificate" ;
+      sh:path dcterms:replaces ;
+      # sh:nodeKind sh:IRI ; ## MUST RESOLVE INTO AN URI
+      sh:datatype xsd:string ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:group issform:CI
+    ] , [
+      sh:name "Validity" ;
+      sh:path dcterms:valid ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:node era:CertificateValidityShape ;
+      sh:group issform:CI 
+    ], [ 
+      sh:description "Type of Company"@en ;
+      sh:name "4.5 Type of Company" ;
+      sh:path era:role ;
+      sh:in ( 
+        era-organisation-roles:RU 
+        era-organisation-roles:IM 
+        era-organisation-roles:Keeper 
+        era-organisation-roles:ECM
+        era-organisation-roles:Manufacturer
+      ) ;
+      owl:imports iss-skos:era-skos-orgRoles.ttl ;
+      # sh:class skos:Concept ;
+      sh:nodeKind sh:IRI ;
+      sh:group issform:CI
+    ] ;
+  
+    # 5 -- Scope
+    sh:property  [
+      sh:name "Category (ERATV)";
+      sh:path era:ecmCategory ;
+      owl:imports era-skos:era-skos-Categories.ttl ;
+      sh:class skos:Concept ;
+      sh:group issform:S
+    ] ,  [
+      sh:name "Subcategory (ERATV)";
+      sh:path era:ecmSubCategory ;
+      owl:imports era-skos:era-skos-SubCategories.ttl ;
+      sh:class skos:Concept ;
+      sh:group issform:S
+    ] , [ 
+      sh:name "Covers wagons specialised in transport of dangerous goods" ;
+      sh:datatype xsd:boolean ;
+      sh:path era:ecmForRIDWagons ;
+      sh:maxCount 1 ;
+      sh:group issform:S
+    ],[ 
+      sh:name "Covers High-speed Trainsets" ;
+      sh:datatype xsd:boolean ;
+      sh:path era:ecmHighSpeed ;
+      sh:maxCount 1 ;
+      sh:group issform:S
     ];
- ] , [
-    sh:path time:hasEnd ;
-    sh:name "Ending date" ;
-    sh:minCount 1 ;     sh:maxCount 1 ;
-    sh:node [
-      sh:targetClass time:Instant ;
-      sh:minCount 1 ;   sh:maxCount 1 ;
-      sh:property [
-        sh:maxCount 1 ;
-        sh:path time:inXSDDate ;
-        sh:datatype xsd:date ;
-        sh:name "4.4 Validity to (included)" ;
-      ]
-    ]
- ] .
 
-# File ECM itself
-issform:FileFormShape a sh:NodeShape, rdfs:Class ;
-  sh:property [
-    sh:name "Upload File:" ;
-    sh:minCount 1 ;
-    sh:datatype xsd:base64Binary ;
-    sh:path iss:filePath ; # <<<< CHECK!
-  ]; 
-  sh:targetClass iss:File .
+    # 6 -- Other
+    sh:property [
+      sh:name "Additional Information"@en ;
+      sh:path rdfs:comment ;
+      dash:singleLine false ;
+      sh:datatype xsd:string ;
+      sh:group issform:OTH
+    ] , [
+      sh:name "Conditions for Use"@en ;
+      rdfs:seeAlso "https://www.era.europa.eu/sites/default/files/2025-03/era1209-292%20clarification%20note%20about%20conditions%20for%20use.pdf?t=1741026457"^^xsd:anyURI ;
+      sh:path rdfs:comment ;
+      dash:singleLine false ;
+      sh:datatype xsd:string ;
+      sh:group issform:OTH
+    ] , [
+      sh:name "Date issued" ;
+      sh:path dcterms:issued ;
+      sh:datatype xsd:date ;
+      sh:maxCount 1 ;
+      sh:group issform:OTH
+    ] , [
+      sh:name "Transfered Certificate EIN" ;
+      sh:description "ECM identification number of the transfered certificate" ;
+      sh:pattern "^[A-Z]{2}/31/\\d{4}/\\d{4}$" ; # EIN of ECM Certificate
+      sh:path dcterms:relation ;
+      sh:nodeKind sh:IRI ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:group issform:OTH
+    ] ,  [
+      sh:name "Internal Reference Number" ;
+      sh:path dcterms:title ; # DCTERMS 'A name given to the resource.' 
+      sh:description "EIN Certification Body Reference" ;
+      sh:datatype xsd:string ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:group issform:OTH
+    ];
 
-# ECM name and role (to convert into URI!)
-era:OrganisationRoleShape a sh:NodeShape , rdfs:Class ;
-  sh:targetClass era:OrganisationRole ;
-  sh:property [
-    # For conversion of the string to an org URI
-    sh:description "Legal title" ;
-    sh:name "Legal title" ;
-    sh:path era:roleOf ;
-    sh:datatype xsd:string ;
-    sh:nodeKind sh:IRI ;
-    sh:maxCount 1
+    # 7 -- Attached Files
+    sh:property  [ 
+      sh:name ">>>" ;
+      sh:group issform:F ; 
+      sh:path iss:hasFiles ;
+      sh:maxCount 1 ;
+      sh:node issform:FileFormShape ;
+    ].
+
+  ######## Additional helper NODES
+
+  # Validity is a time: instance
+  era:CertificateValidityShape  a sh:NodeShape, rdfs:Class ;
+    sh:targetClass time:Interval ;
+    sh:property [
+      sh:name "Starting date" ;
+      sh:path time:hasBeginning ;
+      sh:minCount 1 ;     sh:maxCount 1 ;
+      sh:node [
+        sh:targetClass time:Instant ;
+        sh:property [
+          sh:maxCount 1 ;
+          sh:path time:inXSDDate ;
+          sh:datatype xsd:date ;
+          sh:name "4.3 Validity from" ;
+        ]
+      ];
   ] , [
-    # For conversion of the string to an org URI
-    sh:description "Organisation Code" ;
-    sh:name "Organisation Code" ;
-    sh:path era:roleOf ;
-    sh:datatype xsd:string ;
-    sh:nodeKind sh:IRI ;
-    sh:maxCount 1
-  ].
+      sh:path time:hasEnd ;
+      sh:name "Ending date" ;
+      sh:minCount 1 ;     sh:maxCount 1 ;
+      sh:node [
+        sh:targetClass time:Instant ;
+        sh:minCount 1 ;   sh:maxCount 1 ;
+        sh:property [
+          sh:maxCount 1 ;
+          sh:path time:inXSDDate ;
+          sh:datatype xsd:date ;
+          sh:name "4.4 Validity to (included)" ;
+        ]
+      ]
+  ] .
 
-# Main parts of the form
-issform:CT a sh:PropertyGroup ;
-  rdfs:label "Certificate Type"@en .
-issform:CE a sh:PropertyGroup ;
-  rdfs:label "INFORMATION OF THE CERTIFIED ENTITY"@en .
-issform:CB a sh:PropertyGroup ;
-  rdfs:label "CERTIFICATION BODY"@en .
-issform:CI a sh:PropertyGroup ;
-  rdfs:label "CERTIFICATE INFORMATION"@en .
-issform:S a sh:PropertyGroup ;
-  rdfs:label "SCOPE"@en .
-issform:OTH a sh:PropertyGroup ;
-  rdfs:label "OTHER"@en .
-issform:F a sh:PropertyGroup ;
-  rdfs:label "Attached Files"@en .
+  # File ECM itself
+  issform:FileFormShape a sh:NodeShape, rdfs:Class ;
+    sh:property [
+      sh:name "Upload File:" ;
+      sh:minCount 1 ;
+      sh:datatype xsd:base64Binary ;
+      sh:path iss:filePath ; # <<<< CHECK!
+    ]; 
+    sh:targetClass iss:File .
 
-# REMOVE LATER, when records are no longer needed
-issform:RecordGroup a sh:PropertyGroup ;
-   sh:order 1 ;
-   rdfs:label "Record" .
-issform:ReportingDetailsGroup a sh:PropertyGroup ;
-   sh:order 2 ;
-   rdfs:label "Details" .
+  # Name OR role (to convert into URI!)
+  # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
+  era:CBOrgRoleShape a sh:NodeShape ;
+    sh:targetClass era:OrganisationRole ;
+    sh:property [ 
+      sh:name "2.1 Country" ;
+      sh:path era:inCountry ;
+      owl:imports vac:eumemberstates.ttl ;
+      sh:description "Country" ;
+      sh:maxCount 1 ;
+      sh:class skos:Concept ;
+    ], [
+      sh:name "Certified Body Role" ;
+      sh:path era:hasOrganisationRole ;
+      sh:hasValue era-organisation-roles:CertifiedBody ;
+      sh:nodeKind sh:IRI ;
+      sh:maxCount 1 ;
+    ] , [
+      # For conversion to an org URI
+      sh:path era:roleOf ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "Confirm certified body" ;
+      sh:or (
+        [ sh:node era:ByNameShape ; 
+          sh:name "Certified Body Name" ]
+        [ 
+          sh:node era:ByCodeShape ; 
+          sh:name "Certified Body Code" ]
+      )
+    ] .
+
+  # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
+  era:CFBOrgRoleShape a sh:NodeShape ;
+    sh:targetClass era:OrganisationRole ;
+    sh:property [ 
+      sh:path era:inCountry ;
+      sh:name "3.1 Country" ;
+      owl:imports vac:eumemberstates.ttl ;
+      sh:description "Country" ;
+      sh:maxCount 1 ;
+      sh:class skos:Concept ;
+      sh:nodeKind sh:IRI ;
+    ] , [
+      # For conversion to an org URI
+      sh:name "Confirm Certifying Body" ;
+      sh:path era:roleOf ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:or (
+        [ sh:node era:ByNameShape ; 
+          sh:name "Certifying Body Name" ]
+        [ 
+          sh:node era:ByCodeShape ; 
+          sh:name "Certifying Body Code" ]
+      )
+    ];
+    sh:property [
+      sh:name "Certifying Body Role" ;
+      sh:path era:hasOrganisationRole ;
+      sh:hasValue era-organisation-roles:CertifyingBody  ;
+      sh:nodeKind sh:IRI ;
+      sh:maxCount 1 ;
+    ].
+
+  # Id By Name
+  era:ByNameShape a sh:NodeShape ;
+    sh:targetClass era:Body ;
+    sh:property [
+      sh:path era:roleOf ;
+      sh:name "Name" ;
+      sh:description "Name" ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1
+    ].
+
+  # Id by orgCode
+  era:ByCodeShape a sh:NodeShape ;
+    sh:targetClass era:Body;
+    sh:property [
+      sh:path era:orgCode ;
+      sh:pattern "^\\w{4}$" ; # K3L8 eg.
+      sh:description "Confirm your OrgCode" ;
+      sh:name "Organisation Code" ;
+      sh:maxCount 1
+    ].
+
+  # Main parts of the form
+  issform:CT a sh:PropertyGroup ;
+    rdfs:label "1 - Certificate Type"@en .
+  issform:CE a sh:PropertyGroup ;
+    rdfs:label "2 - INFORMATION OF THE CERTIFIED ENTITY"@en .
+  issform:CB a sh:PropertyGroup ;
+    rdfs:label "3 - CERTIFICATION BODY"@en .
+  issform:CI a sh:PropertyGroup ;
+    rdfs:label "4 - CERTIFICATE INFORMATION"@en .
+  issform:S a sh:PropertyGroup ;
+    rdfs:label "5 - SCOPE"@en .
+  issform:OTH a sh:PropertyGroup ;
+    rdfs:label "6 - OTHER"@en .
+  issform:F a sh:PropertyGroup ;
+    rdfs:label "Attached Files"@en .
+
+  # REMOVE LATER, when records are no longer needed
+  issform:RecordGroup a sh:PropertyGroup ;
+    sh:order 1 ;
+    rdfs:label "Record" .
+  issform:ReportingDetailsGroup a sh:PropertyGroup ;
+    sh:order 2 ;
+    rdfs:label "Details" .
