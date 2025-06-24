@@ -48,15 +48,20 @@ era:VTAAShape a sh:NodeShape ;
     sh:name "Application ID" ;
     sh:path dcterms:identifier ;
     sh:datatype xsd:string ;
+    sh:message "Without an internal application identifier, with at least 8 characters, the search function will not work!"@en ;
+    sh:severity sh:Violation ;
     sh:minCount 1 ;
-    sh:maxCount 1
+    sh:maxCount 1 ;
+    sh:minLength 8 
   ];
   sh:property [
     sh:name "OSS Application ID" ;
     sh:description "Only fill in when the application also exists in OSS" ;
     sh:path rdfs:seeAlso ;
     sh:datatype xsd:string ;
-    sh:pattern "^V-20\\d{2}[01-12][0-3][1-9]-\\d{3}$" ;
+    sh:pattern "^V-20\\d{2}[0-9][0-9][0-3][0-9]-\\d{3}$" ;
+    sh:message "Without an OSS reference, a link with this application on OSS cannot be made."@en ;
+    sh:severity sh:Info ;
     sh:maxCount 1
   ];
   sh:property [
@@ -67,6 +72,8 @@ era:VTAAShape a sh:NodeShape ;
     sh:datatype rdf:langString ;
     sh:languageIn ( "en" "fr" "de" "es" ) ;
     sh:uniqueLang "true"^^xsd:boolean ;
+    sh:message "The authorisation case must be *described* in the application form."@en ;
+    sh:severity sh:Violation ;
     sh:maxCount 1 ;
     sh:minLength 6 ;
     sh:minCount 1
@@ -80,30 +87,37 @@ era:VTAAShape a sh:NodeShape ;
     sh:datatype rdf:langString ;
     sh:languageIn ( "en" "fr" "de" "es" ) ;
     sh:uniqueLang "true"^^xsd:boolean ;
+    sh:message "Other relevant information may be needed to contact the Authorisation Holder adequately."@en ;
+    sh:severity sh:Info ;
     sh:maxCount 1 ;
     sh:minCount 1
   ];
   sh:property [
     # PreEngagement is a choice
     # era:preEngagementBaseline era:Document
+    sh:path era:preEngagementBaseline ;
     sh:name "Pre-Engagement" ;
     sh:description "If a pre-engagement baseline was present, quote the reference document.";
-    sh:minCount 0 ; # If NOT given, NO pre-engagement
-    sh:maxCount 5 ;
-    sh:path era:preEngagementBaseline ;
-    sh:name "PreEngagement Reference Document"@en ;
-    sh:datatype xsd:anyURI;
-    # TOO COMPLEX sh:or (
-    #   [ sh:node era:PreEngagementShape ; 
-    #     sh:name "Yes, pre-engagement baseline" ]
-    #   [ sh:node era:noPreEngagementShape  ; 
-    #     sh:name "No pre-engagement baseline" ]
-    # )
+    # sh:minCount 0 ; # If NOT given, NO pre-engagement
+    # sh:maxCount 5 ;
+    # sh:name "PreEngagement Reference Document"@en ;
+    # sh:datatype xsd:anyURI;
+   	sh:qualifiedMinCount 1 ;
+   	sh:qualifiedMaxCount 1 ;
+    sh:qualifiedValueShape [ sh:or (
+       [ sh:node era:PreEngagementShape ; 
+         sh:name "Yes, pre-engagement baseline" ]
+       [ sh:node era:noPreEngagementShape  ; 
+         sh:name "No pre-engagement baseline" ]
+     )
+    ] 
   ];
   sh:property [
     sh:node era:VTACShape ;
     sh:name "Authorisation Case";
     sh:path vpa:constitutedBy ;
+    sh:message "An Application for Vehicle Authorisation in Conformity to Type MUST exist at least out of one C2T Authorisation Case"@en ;
+    sh:severity sh:Violation ;
     sh:minCount 1 ;
     sh:maxCount 8
   ];
@@ -170,15 +184,20 @@ era:VehiclesSetShape a sh:NodeShape ;
     sh:datatype xsd:string ;
     sh:minCount 1 ;
     sh:pattern "^\\d{11}-\\d{1}$"
-  ];
-  sh:property [
-  # The datatype update: is caught by the form post processor
-   sh:name "Pre-reserved Numbers" ;
-   sh:path update:arePreReservedNumbers ;
-   sh:datatype xsd:boolean ;
-   sh:minCount 1 ;   
-   sh:maxCount 1 ;
-].
+  ] , [
+    # The datatype update: is caught by the form post processor
+    sh:name "Pre-reserved Numbers" ;
+    sh:path update:arePreReservedNumbers ;
+    sh:datatype xsd:boolean ;
+    sh:minCount 1 ;   
+    sh:maxCount 1 ;
+  ], [
+    sh:name "Registration Entity Email";
+    sh:description "Contact email address of the registration entity" ;
+    sh:path update:regEntEmail ;
+    sh:maxCount 1 ;
+
+  ].
 
 # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
 era:ApplicantOrgRoleShape a sh:NodeShape ;
@@ -226,3 +245,36 @@ era:ApplicantByCodeShape a sh:NodeShape ;
     sh:name "Organisation Code" ;
     sh:maxCount 1
   ].
+
+# If PreEngagement, a Reference to pre-engagement baseline is required
+era:PreEngagementShape a sh:NodeShape ;
+  sh:targetClass era:PreEngagement ;
+  sh:property [
+    # era:preEngagementBaseline era:Document
+    sh:path era:hasPreEngagementBaseline ;
+    sh:name "Pre-engagement baseline present"@en ;
+    sh:datatype xsd:boolean;
+    sh:hasValue "true"^^xsd:boolean;
+    # NEVER sh:nodeKind sh:Literal ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] , [
+    # era:preEngagementBaseline era:Document
+    sh:path era:preEngagementBaseline ;
+    sh:name "PreEngagement Reference Document"@en ;
+    sh:datatype xsd:anyURI; # unstable, unchecked
+  ] .
+
+# If NO PreEngagement, only boolean as already marked
+era:noPreEngagementShape a sh:NodeShape ;
+  sh:targetClass era:PreEngagement ;
+  sh:property [
+    # era:hasPreEngagementBaseline era:Document
+    sh:path era:hasPreEngagementBaseline ;
+    sh:name "Pre-engagement baseline present"@en ;
+    sh:datatype xsd:boolean;
+    # NEVER sh:nodeKind sh:Literal ;
+    sh:hasValue "false"^^xsd:boolean ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] .
