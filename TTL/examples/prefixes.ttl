@@ -18,11 +18,21 @@
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 
 # Domain-specific
-@prefix era-cld: <http://data.europa.eu/949/eradis/cld/> .
+@prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
-@prefix era-ecd: <http://data.europa.eu/949/eradis/declaration/> .
+@prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
 @prefix era-lex: <http://data.europa.eu/949/eli/> .
 @prefix era-org: <http://data.europa.eu/949/organisations/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
 @prefix erava: <http://data.europa.eu/949/vehicleAuthorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicleRegistrations/> .
+@prefix evr: <http://data.europa.eu/949/vehicles/> .
+
+# Relevant SKOS Concept Schemes
+@prefix era-skos: <http://data.europa.eu/949/concepts/> .
+@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
+@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
+@prefix era-vtc: <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
