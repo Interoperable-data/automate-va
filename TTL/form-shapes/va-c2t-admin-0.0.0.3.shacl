@@ -29,24 +29,29 @@
 
 era:VTAAShape a sh:NodeShape ;
 
-  # ----------- Shape document management
+  # ----------- Shape management
   dcterms:creator [ 
     foaf:name "Maarten Duhoux" ;
     dcterms:source <https://orcid.org/0009-0003-6653-6123> ;
     org:memberOf <http://publications.europa.eu/resource/authority/corporate-body/ERA>
   ] ;
   rdfs:seeAlso "https://oss.era.europa.eu"^^xsd:anyURI ;
-  rdfs:comment "This shape enables to collect the general data and Authorisation Case(s) for a C2T VA application. It does NOT collect the submitted Evidence."@en ;
-  skos:editorialNote "The shape fails when allowing more than one VehiclesSet in a case, so this must be kept at max 1"@en ;
+  rdfs:comment """This shape enables to collect the general data of a C2T VA application. It does NOT collect the submitted Evidence.
+This version has been updated with the SHACL message and severities needed in a compliant validator."""@en ;
+  skos:editorialNote """Remarks:
+1. The shape currently fails with the pre-Engagement boolean, as `sh:or` allows both to be true. This should become a `sh:xone`.
+2. Links to Applicant, Vehicles and VehicleTypes SHOULD become URI's and are only captured as strings in this version."""@en ;
   dcterms:created "2025-06-24"^^xsd:date ;
+  dcterms:modified "2025-06-25"^^xsd:date ;
   schema:version "0.0.0.3" ;
-  # dcterms:modified "2025-05-23"^^xsd:date ;
-  # ----------
+  # -------------------------------------
 
   sh:targetClass era:VehicleTypeAuthorisationApplication ; # a vpa:Request ;
   sh:property [
-    sh:name "Application ID" ;
+    # sh:hasValue "ABCDEFGH" ; # For testing purposes
     sh:path dcterms:identifier ;
+    sh:name "Application ID" ;
+    sh:description "Internal applicant's identifier for the application, allows retrieval in search systems"@en ;
     sh:datatype xsd:string ;
     sh:message "Without an internal application identifier, with at least 8 characters, the search function will not work!"@en ;
     sh:severity sh:Violation ;
@@ -55,9 +60,10 @@ era:VTAAShape a sh:NodeShape ;
     sh:minLength 8 
   ];
   sh:property [
+    # sh:hasValue "V-20250601-001" ; # For testing purposes
+    sh:path rdfs:seeAlso ;
     sh:name "OSS Application ID" ;
     sh:description "Only fill in when the application also exists in OSS" ;
-    sh:path rdfs:seeAlso ;
     sh:datatype xsd:string ;
     sh:pattern "^V-20\\d{2}[0-9][0-9][0-3][0-9]-\\d{3}$" ;
     sh:message "Without an OSS reference, a link with this application on OSS cannot be made."@en ;
@@ -65,7 +71,7 @@ era:VTAAShape a sh:NodeShape ;
     sh:maxCount 1
   ];
   sh:property [
-    # rdfs:label “{{Project Name}}”@de ; # Project Name, in German.
+    # sh:hasValue "PROJECT"@en ; # For testing purposes
     sh:path rdfs:label ;
     sh:name "Project Name"@en ;
     sh:description "Project Name"@en ;
@@ -79,10 +85,10 @@ era:VTAAShape a sh:NodeShape ;
     sh:minCount 1
   ];
   sh:property [
-    # rdfs:comment “{{Other relevant Information}}”@en ;
+    # sh:hasValue "INFO"@en ; # For testing purposes
+    sh:path rdfs:comment ;
     sh:name "Other relevant Information"@en ;
     sh:description "Other relevant Information"@en ;
-    sh:path rdfs:comment ;
     dash:singleLine false ;
     sh:datatype rdf:langString ;
     sh:languageIn ( "en" "fr" "de" "es" ) ;
@@ -104,18 +110,55 @@ era:VTAAShape a sh:NodeShape ;
     # sh:datatype xsd:anyURI;
    	sh:qualifiedMinCount 1 ;
    	sh:qualifiedMaxCount 1 ;
+    sh:message "Each Application must clarify whether Chapter 3 of (EU)2018/545 is applied before or not."@en ;
+    sh:severity sh:Violation ;
     sh:qualifiedValueShape [ sh:or (
-       [ sh:node era:PreEngagementShape ; 
-         sh:name "Yes, pre-engagement baseline" ]
-       [ sh:node era:noPreEngagementShape  ; 
-         sh:name "No pre-engagement baseline" ]
-     )
+       [ sh:name "Yes, pre-engagement baseline" ;
+        sh:node [
+            a sh:NodeShape ;
+            sh:targetClass era:PreEngagement ;
+            sh:property [
+                # era:preEngagementBaseline era:Document
+                sh:path era:hasPreEngagementBaseline ;
+                sh:name "Pre-engagement baseline present"@en ;
+                sh:datatype xsd:boolean;
+                sh:hasValue "true"^^xsd:boolean;
+                # AVOID sh:nodeKind sh:Literal ;
+                sh:minCount 1 ;
+                sh:maxCount 1
+            ] , [
+                # era:preEngagementBaseline era:Document
+                sh:path era:preEngagementBaseline ;
+                sh:name "PreEngagement Reference Document"@en ;
+                sh:datatype xsd:anyURI; # unstable, unchecked
+            ]
+         ] ; 
+         
+        ]
+        [ sh:name "No pre-engagement baseline" ;
+          sh:node [
+            a sh:NodeShape ;
+            sh:targetClass era:PreEngagement ;
+            sh:property [
+              # era:hasPreEngagementBaseline era:Document
+              sh:path era:hasPreEngagementBaseline ;
+              sh:name "Pre-engagement baseline present"@en ;
+              sh:datatype xsd:boolean;
+              # AVOID sh:nodeKind sh:Literal ;
+              sh:hasValue "false"^^xsd:boolean ;
+              sh:minCount 1 ;
+              sh:maxCount 1
+            ] 
+          ] 
+        ]
+      )
     ] 
   ];
   sh:property [
-    sh:node era:VTACShape ;
-    sh:name "Authorisation Case";
     sh:path vpa:constitutedBy ;
+    sh:name "Authorisation Case";
+    sh:description "The Application in C2T consists of at least one Authorisation Case, each defining one exact type and vehicles to be authorised to that type."@en ;
+    sh:node era:VehicleTypeAuthorisationCaseShape ;
     sh:message "An Application for Vehicle Authorisation in Conformity to Type MUST exist at least out of one C2T Authorisation Case"@en ;
     sh:severity sh:Violation ;
     sh:minCount 1 ;
@@ -123,158 +166,175 @@ era:VTAAShape a sh:NodeShape ;
   ];
   sh:property [
     # dcterms:creator [ a era:OrganisationRole ; era:roleOf <URI of Applicant> ] ;
-    sh:node era:ApplicantOrgRoleShape ;
-    # sh:group issform:APP ;
     sh:path dcterms:creator ;
     sh:name "Applicant's Information" ;
+    sh:description "The information of the Applicant will be reconstructed as an ORG+ URI"@en ;
+    sh:message "Each application MUST refer to the URI of the Applicant, which is constructed through a name or organisation code."@en ;
+    sh:severity sh:Violation ;
+    sh:node era:ApplicantOrgRoleShape ;
+    # sh:group issform:APP ;
     sh:maxCount 1 ;
     sh:minCount 1
   ] .
 
-era:VTACShape a sh:NodeShape ;
-   sh:targetClass era:VehicleTypeAuthorisationCase ; ;
-   sh:property [
-     sh:name "Authorisation Case Type" ;
-     sh:path vpa:permissionType ;
-     sh:nodeKind sh:IRI ;
-     sh:hasValue era-va-authcase:C2T ;
-     sh:minCount 1 ;
-     sh:maxCount 1
-   ];
-   sh:property [
+era:VehicleTypeAuthorisationCaseShape a sh:NodeShape ;
+  sh:targetClass era:VehicleTypeAuthorisationCase ;
+
+  # ----------- Shape management
+  dcterms:creator [ 
+    foaf:name "Maarten Duhoux" ;
+    dcterms:source <https://orcid.org/0009-0003-6653-6123> ;
+    org:memberOf <http://publications.europa.eu/resource/authority/corporate-body/ERA>
+  ] ;
+  rdfs:seeAlso "https://oss.era.europa.eu"^^xsd:anyURI ;
+  rdfs:comment """This shape enables to collect Authorisation Case(s) for a C2T VA application. It does NOT collect the submitted Evidence.
+This version has been updated with the SHACL message and severities needed in a compliant validator."""@en ;
+  skos:editorialNote "The shape fails when allowing more than one VehiclesSet in a case, so this must be kept at max 1."@en ;
+  # -------------------------------------
+
+  sh:property [
+    sh:path vpa:permissionType ;
+    sh:name "Authorisation Case Type"@en ;
+    sh:nodeKind sh:IRI ;
+    sh:hasValue era-va-authcase:C2T ;
+    sh:message "Each Authorisation Case in C2T MUST refer to the SKOS Concept of that case type." ;
+    sh:severity sh:Violation ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ];
+  sh:property [
    	sh:path vpa:concerns ;
-   	sh:name "Concerns VehicleType (one allowed)" ;
+   	sh:name "Concerns VehicleType (one allowed)"@en ;
    	sh:qualifiedValueShape [ sh:node era:VehicleTypeScopeShape ] ;
+    sh:message "Exactly one VehicleType must define each Authorisation Case and the Vehicles contained in the Case shall be of that type."@en ;
+    sh:severity sh:Violation ;
    	sh:qualifiedMinCount 1 ;
    	sh:qualifiedMaxCount 1 ;
-   ] ;
-   sh:property [
+  ] ;
+  sh:property [
    	sh:path vpa:concerns ;
    	sh:name "Concerns Vehicles" ;
    	sh:qualifiedValueShape [ sh:node era:VehiclesSetShape ] ;
+    sh:message "One set of vehicles, containing minimally one vehicle, must define each Authorisation Case, and must be of the unique vehicle type."@en ;
+    sh:severity sh:Violation ;
    	sh:qualifiedMinCount 1 ;
    	sh:qualifiedMaxCount 1 ; # Shape fails if not exactly set to 1 (or left out)
-   ] . 
+  ] . 
 
 # The Scope can be one VehicleTypeScopeShape per case
 era:VehicleTypeScopeShape a sh:NodeShape ;
   sh:targetClass era:VehicleType ;
   # sh:targetClass vpa:Scope;
   sh:property [
+    # sh:hasValue "12-789-1324-4-007-009" ; # For testing purposes
     sh:path dcterms:identifier ;
     sh:name "VehicleType Identifier"@en ;
-    sh:pattern "^\\d{2}-\\d{3}-\\d{4}-\\d-(\\d{3}(-\\d{3})?)$" ;
     sh:description "NN-MMM-LLLL-N-VAR(-VER)" ;
-    # OK sh:hasValue "12-789-1324-4-007-009" ;
+    sh:pattern "^\\d{2}-\\d{3}-\\d{4}-\\d-(\\d{3}(-\\d{3})?)$" ;
     sh:datatype xsd:string ;
-    sh:minCount 1 ;
     sh:minLength 17 ;
     sh:maxLength 21 ;
-    sh:maxCount 1
+    sh:message "Exactly one Vehicle Type per Authorisation Case must match `NN-MMM-LLLL-N-VAR(-VER).`"@en ;
+    sh:severity sh:Violation ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    # sh:message "Exactly one VehicleType defines one C2T authorisation case. Add another case to add another vehicle type to the Authorisation application."@en ;
+    # sh:severity sh:Violation ;
   ].
 
 # The Scope can be one or more Vehicle Numbers per case
 era:VehiclesSetShape a sh:NodeShape ;
   sh:targetClass era:VehicleSet ;
+
+  # ----------- Shape management
+  dcterms:creator [ 
+    foaf:name "Maarten Duhoux" ;
+    dcterms:source <https://orcid.org/0009-0003-6653-6123> ;
+    org:memberOf <http://publications.europa.eu/resource/authority/corporate-body/ERA>
+  ] ;
+  rdfs:seeAlso "https://oss.era.europa.eu"^^xsd:anyURI ;
+  rdfs:comment """This `era:VehiclesSetShape`-shape enables to collect the vehicles linked to one Authorisation Case(s) for a C2T VA application, as STRINGS. 
+It does NOT collect the submitted Evidence. This version has been updated with the SHACL message and severities needed in a compliant validator."""@en ;
+  # -------------------------------------
+
   # sh:targetClass vpa:Scope;
   sh:property [
-    sh:name "Vehicle Identifier"@en ;
-    sh:description "A correct Vehicle Number (EVN or pre-reserved)" ;
+    # sh:hasValue "01234567890-1" ; # For testing purposes
     sh:path rdfs:member ;
+    sh:name "Vehicle Identifier"@en ;
+    sh:description "A correct Vehicle Number (EVN or pre-reserved)"@en ;
+    sh:message "The vehicle number should be submitted without spaces, nor any country markings; the control number is checked after submission."@en ;
+    sh:severity sh:Violation ;
     sh:datatype xsd:string ;
     sh:minCount 1 ;
     sh:pattern "^\\d{11}-\\d{1}$"
   ] , [
     # The datatype update: is caught by the form post processor
-    sh:name "Pre-reserved Numbers" ;
     sh:path update:arePreReservedNumbers ;
+    sh:name "Pre-reserved Numbers" ;
+    sh:description "Indicates whether the numbers are pre-reserved or EVN's from vehicles in service."@en ;
+    sh:message "Each vehicles set must indicate whether it concerns pre-reserved or operational vehicle numbers"@en ;
+    sh:severity sh:Info ;
     sh:datatype xsd:boolean ;
     sh:minCount 1 ;   
     sh:maxCount 1 ;
   ], [
-    sh:name "Registration Entity Email";
-    sh:description "Contact email address of the registration entity" ;
+    # See OSS, but should be deduced from the EVR+ KG.
     sh:path update:regEntEmail ;
+    sh:name "Registration Entity Email";
+    sh:description "Contact email address of the registration entity"@en ;
+    sh:message "Only one email contact from the registration entity can be added. It should normally be deduced automatically."@en ;
+    sh:severity sh:Info ;
     sh:maxCount 1 ;
-
   ].
 
 # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
 era:ApplicantOrgRoleShape a sh:NodeShape ;
   sh:targetClass era:OrganisationRole ;
   sh:property [
+    sh:path era:organisationCode ;
+    sh:name "Organisation Code" ;
+    sh:description "Confirm your Organisation Code as Applicant" ;
+    sh:pattern "^\\w{4}$" ; # K3L8 eg.
+    sh:message "This code will be converted in a unique ORG+ URI of the organisation."@en ;
+    sh:severity sh:Info ;
+    # sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
      # For conversion to an org URI
     sh:path era:roleOf ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:name "Confirm applicant" ;
-    sh:or (
-       [ sh:node era:ApplicantByNamShape ; 
-         sh:name "By Name" ]
-       [ 
-         sh:node era:ApplicantByCodeShape ; 
-         sh:name "By Code" ]
-    )
+    sh:name "Applicant Name" ;
+    sh:node era:ApplicantByNameShape ; 
   ];
   sh:property [
     sh:path era:hasOrganisationRole ;
-    sh:hasValue era-organisation-roles:Applicant ;
-    sh:nodeKind sh:IRI ;
     sh:name "Applicant Role" ;
+    sh:hasValue era-organisation-roles:Applicant ;
+    sh:message "The creator of the application MUST be having the role Applicant in its ORG+ data."@en ;
+    sh:severity sh:Violation ;
+    sh:nodeKind sh:IRI ;
     sh:maxCount 1 ;
   ].
 
 # Id By Name
-era:ApplicantByNamShape a sh:NodeShape ;
+era:ApplicantByNameShape a sh:NodeShape ;
   sh:targetClass era:Body ;
   sh:property [
-    sh:path era:roleOf ;
+    sh:path foaf:name ;
     sh:name "Applicant Name" ;
     sh:description "Name of the Applicant" ;
     sh:datatype xsd:string ;
-    sh:maxCount 1
-  ].
-
-# Id by orgCode
-era:ApplicantByCodeShape a sh:NodeShape ;
-  sh:targetClass era:Body;
-  sh:property [
-    sh:path era:orgCode ;
-    sh:pattern "^\\w{4}$" ; # K3L8 eg.
-    sh:description "Confirm your OrgCode as Applicant" ;
-    sh:name "Organisation Code" ;
+    sh:message "This name string will be converted in a unique ORG+ URI of the organisation."@en ;
+    sh:severity sh:Info ;
+    # sh:minCount 1 ;
     sh:maxCount 1
   ].
 
 # If PreEngagement, a Reference to pre-engagement baseline is required
-era:PreEngagementShape a sh:NodeShape ;
-  sh:targetClass era:PreEngagement ;
-  sh:property [
-    # era:preEngagementBaseline era:Document
-    sh:path era:hasPreEngagementBaseline ;
-    sh:name "Pre-engagement baseline present"@en ;
-    sh:datatype xsd:boolean;
-    sh:hasValue "true"^^xsd:boolean;
-    # NEVER sh:nodeKind sh:Literal ;
-    sh:minCount 1 ;
-    sh:maxCount 1
-  ] , [
-    # era:preEngagementBaseline era:Document
-    sh:path era:preEngagementBaseline ;
-    sh:name "PreEngagement Reference Document"@en ;
-    sh:datatype xsd:anyURI; # unstable, unchecked
-  ] .
+# era:PreEngagementShape a sh:NodeShape ; integrated above.
 
 # If NO PreEngagement, only boolean as already marked
-era:noPreEngagementShape a sh:NodeShape ;
-  sh:targetClass era:PreEngagement ;
-  sh:property [
-    # era:hasPreEngagementBaseline era:Document
-    sh:path era:hasPreEngagementBaseline ;
-    sh:name "Pre-engagement baseline present"@en ;
-    sh:datatype xsd:boolean;
-    # NEVER sh:nodeKind sh:Literal ;
-    sh:hasValue "false"^^xsd:boolean ;
-    sh:minCount 1 ;
-    sh:maxCount 1
-  ] .
+# era:noPreEngagementShape a sh:NodeShape ; integrated above
