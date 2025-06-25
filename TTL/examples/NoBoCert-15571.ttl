@@ -26,9 +26,9 @@ eradis:cld-NoBoCert-15571
     ];
     skos:note """This certificate follows certificate number 0038/1/SB/2016/RST/EN/20161113 issue 2 dated
 02/09/2016 and certificate number 2673/1/SB/2016/RST/EN/N20160045/02 dated 29/05/2020"""@en ;
-    dcterms:audience era-org:MF-RO-310141-2931 ; # Applicant
-    dcterms:contributor era-org:MF-RO-310141-2931 ; # Manufacturer
-    dcterms:creator era-org:NoBo-2826 ; # The NoBo itself /ORGS (<http://data.europa.eu/949/taxonomies/org#NoBo-2826>)
+    dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-RO-310141-2931 ; era:hasRole era-organisation-roles:Applicant  ] ; # Applicant 
+    dcterms:contributor [ a era:OrganisationRole ; era:roleOf rorg:MF-RO-310141-2931 ; era:hasRole era-organisation-roles:Manufacturer ] ; # Manufacturer
+    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-2826 ; era:hasRole era-organisation-roles:NoBo ] ; # The NoBo itself /ORGS (<http://data.europa.eu/949/taxonomies/org#NoBo-2826>)
     vpa:checked 
         erapod:check-NoBoCert-15571-1 ,
         erapod:check-NoBoCert-15571-2 ;
