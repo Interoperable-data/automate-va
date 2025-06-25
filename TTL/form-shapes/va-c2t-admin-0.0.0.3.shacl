@@ -27,6 +27,9 @@
 # Properties to be post-processed
 @prefix update: <http://data.europa.eu/949/update/> .
 
+# EU Countries
+ @prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
+
 era:VTAAShape a sh:NodeShape ;
 
   # ----------- Shape management
@@ -52,6 +55,7 @@ This version has been updated with the SHACL message and severities needed in a 
     sh:path dcterms:identifier ;
     sh:name "Application ID" ;
     sh:description "Internal applicant's identifier for the application, allows retrieval in search systems"@en ;
+    sh:group dash:APPD ;
     sh:datatype xsd:string ;
     sh:message "Without an internal application identifier, with at least 8 characters, the search function will not work!"@en ;
     sh:severity sh:Violation ;
@@ -64,6 +68,7 @@ This version has been updated with the SHACL message and severities needed in a 
     sh:path rdfs:seeAlso ;
     sh:name "OSS Application ID" ;
     sh:description "Only fill in when the application also exists in OSS" ;
+    sh:group dash:APPD ;
     sh:datatype xsd:string ;
     sh:pattern "^V-20\\d{2}[0-9][0-9][0-3][0-9]-\\d{3}$" ;
     sh:message "Without an OSS reference, a link with this application on OSS cannot be made."@en ;
@@ -75,6 +80,7 @@ This version has been updated with the SHACL message and severities needed in a 
     sh:path rdfs:label ;
     sh:name "Project Name"@en ;
     sh:description "Project Name"@en ;
+    sh:group dash:APPD ;
     sh:datatype rdf:langString ;
     sh:languageIn ( "en" "fr" "de" "es" ) ;
     sh:uniqueLang "true"^^xsd:boolean ;
@@ -90,6 +96,7 @@ This version has been updated with the SHACL message and severities needed in a 
     sh:name "Other relevant Information"@en ;
     sh:description "Other relevant Information"@en ;
     dash:singleLine false ;
+    sh:group dash:APPD ;
     sh:datatype rdf:langString ;
     sh:languageIn ( "en" "fr" "de" "es" ) ;
     sh:uniqueLang "true"^^xsd:boolean ;
@@ -99,11 +106,32 @@ This version has been updated with the SHACL message and severities needed in a 
     sh:minCount 1
   ];
   sh:property [
+    # Post-processing is needed by checking whether these identifiers are those of the NoBos issuing the EC Certificates
+    sh:path update:involvedNoBos ;
+    sh:name "Identifiers of the Notified Bodies";
+    sh:description "(OSS) requires the Applicant to confirm which NoBo's were involved in the verification processes";
+    sh:group dash:CAB ;
+    sh:message "It is expected that the Applicant repeats the NoBo's involved" ;
+    sh:minCount 0 ;
+    sh:pattern "^\\d{4}$" ; # 1010 eg.
+  ];
+  sh:property [
+    # Post-processing is needed by checking whether these identifiers are those of the NoBos issuing the EC Certificates
+    sh:path update:involvedDeBos ;
+    sh:name "VAT Number of the Designated Bodies";
+    sh:description "(OSS) requires the Applicant to confirm which DeBo's were involved in the NNTR verification processes";
+    sh:group dash:CAB ;
+    sh:message "It is expected that the Applicant repeats the DeBo's involved" ;
+    sh:minCount 0 ;
+    sh:minlength 9 
+  ];
+  sh:property [
     # PreEngagement is a choice
     # era:preEngagementBaseline era:Document
     sh:path era:preEngagementBaseline ;
     sh:name "Pre-Engagement" ;
     sh:description "If a pre-engagement baseline was present, quote the reference document.";
+    sh:group dash:APPD ;
     # sh:minCount 0 ; # If NOT given, NO pre-engagement
     # sh:maxCount 5 ;
     # sh:name "PreEngagement Reference Document"@en ;
@@ -155,26 +183,27 @@ This version has been updated with the SHACL message and severities needed in a 
     ] 
   ];
   sh:property [
+    # dcterms:creator [ a era:OrganisationRole ; era:roleOf <URI of Applicant> ] ;
+    sh:path dcterms:creator ;
+    sh:name "Applicant's Information" ;
+    sh:description "The information of the Applicant will be reconstructed as an ORG+ URI"@en ;
+    sh:group dash:APP ;
+    sh:message "Each application MUST refer to the URI of the Applicant, which is constructed through a name or organisation code."@en ;
+    sh:severity sh:Violation ;
+    sh:node era:ApplicantOrgRoleShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1
+  ];
+  sh:property [
     sh:path vpa:constitutedBy ;
     sh:name "Authorisation Case";
     sh:description "The Application in C2T consists of at least one Authorisation Case, each defining one exact type and vehicles to be authorised to that type."@en ;
+    sh:group dash:APP ;
     sh:node era:VehicleTypeAuthorisationCaseShape ;
     sh:message "An Application for Vehicle Authorisation in Conformity to Type MUST exist at least out of one C2T Authorisation Case"@en ;
     sh:severity sh:Violation ;
     sh:minCount 1 ;
     sh:maxCount 8
-  ];
-  sh:property [
-    # dcterms:creator [ a era:OrganisationRole ; era:roleOf <URI of Applicant> ] ;
-    sh:path dcterms:creator ;
-    sh:name "Applicant's Information" ;
-    sh:description "The information of the Applicant will be reconstructed as an ORG+ URI"@en ;
-    sh:message "Each application MUST refer to the URI of the Applicant, which is constructed through a name or organisation code."@en ;
-    sh:severity sh:Violation ;
-    sh:node era:ApplicantOrgRoleShape ;
-    # sh:group issform:APP ;
-    sh:maxCount 1 ;
-    sh:minCount 1
   ] .
 
 era:VehicleTypeAuthorisationCaseShape a sh:NodeShape ;
@@ -195,6 +224,7 @@ This version has been updated with the SHACL message and severities needed in a 
   sh:property [
     sh:path vpa:permissionType ;
     sh:name "Authorisation Case Type"@en ;
+    sh:group dash:AUTHC ;
     sh:nodeKind sh:IRI ;
     sh:hasValue era-va-authcase:C2T ;
     sh:message "Each Authorisation Case in C2T MUST refer to the SKOS Concept of that case type." ;
@@ -202,9 +232,26 @@ This version has been updated with the SHACL message and severities needed in a 
     sh:minCount 1 ;
     sh:maxCount 1
   ];
+  sh:property [ 
+      sh:path era:areaOfuse ;
+      sh:name "Area of Use (all networks in the country)" ;
+      sh:description "All networks of a country forming the Area Of Use" ;
+      sh:group dash:AUTHC ;
+      owl:imports vac:eumemberstates.ttl ; # FAILS <http://publications.europa.eu/resource/authority/country> ;
+      sh:message "Each Authorisation Case must refer to the intended Area Of use, which shall be compared with the AoU of the Vehicle Type" ;
+      sh:minCount 1 ;
+      sh:class skos:Concept ;
+  ];
+  # era:typeRegistrationMethod is only applicable in other authorisation cases, and is not allowed in C2T.
+  sh:not [
+    a sh:PropertyShape ;
+    sh:path era:typeRegistrationMethod ;
+    sh:minCount 1
+  ];
   sh:property [
    	sh:path vpa:concerns ;
    	sh:name "Concerns VehicleType (one allowed)"@en ;
+    sh:group dash:AUTHC ;
    	sh:qualifiedValueShape [ sh:node era:VehicleTypeScopeShape ] ;
     sh:message "Exactly one VehicleType must define each Authorisation Case and the Vehicles contained in the Case shall be of that type."@en ;
     sh:severity sh:Violation ;
@@ -214,6 +261,7 @@ This version has been updated with the SHACL message and severities needed in a 
   sh:property [
    	sh:path vpa:concerns ;
    	sh:name "Concerns Vehicles" ;
+    sh:group dash:AUTHC ;
    	sh:qualifiedValueShape [ sh:node era:VehiclesSetShape ] ;
     sh:message "One set of vehicles, containing minimally one vehicle, must define each Authorisation Case, and must be of the unique vehicle type."@en ;
     sh:severity sh:Violation ;
@@ -338,3 +386,7 @@ era:ApplicantByNameShape a sh:NodeShape ;
 
 # If NO PreEngagement, only boolean as already marked
 # era:noPreEngagementShape a sh:NodeShape ; integrated above
+
+dash:CAB a sh:PropertyGroup ; sh:order 2 ; rdfs:label "CONFORMITY ASSESSMENT BODIES" .
+dash:APPD a sh:PropertyGroup ; sh:order 0 ; rdfs:label "APPLICATION DESCRIPTION" .
+dash:AUTHC a sh:PropertyGroup ; sh:order 0 ; rdfs:label "AUTHORISATION CASE(S)" .
