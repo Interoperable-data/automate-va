@@ -21,7 +21,7 @@
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
 @prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
 @prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
-@prefix era-org: <http://data.europa.eu/949/organisations/> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
 
 # Uses: era:VehicleType subClassOf vpa:Scope
 eratv:vt-11-057-0018-9-001 a era:VehicleType ; 
@@ -35,8 +35,8 @@ eratv:vt-11-057-0018-9-001 a era:VehicleType ;
     vpa:definesCase eva:vac-11-057-0018-9-001-1 , eva:vac-11-057-0018-9-001-2 , eva:vac-11-057-0018-9-001-3 ;
     era:vehicleTypeManufacturer [
         a era:OrganisationRole ;
-        era:roleOf era-org:MF-DE-12435-44 ; # as per current /ORG
-        era:hasRole <SKOS Concept for Manufacturer> ;
+        era:roleOf rorg:MF-DE-12435-44 ; # as per current /ORG
+        era:hasOrganisationRole era-org-roles:Manufacturer ;
     ] ,
     era:vehicleTypePlatform "X4" .
 
@@ -86,8 +86,8 @@ eva:auth-11-057-0018-9-001-DE-1 a era:VehicleTypeAuthorisation ;
     era:vehicleTypeAuthorisationHolder 
         [    
             a era:OrganisationRole ;
-            era:roleOf era-org:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
-            era:hasRole <Holder> .
+            era:roleOf rorg:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
+            era:hasOrganisationRole era-organisation-roles:Holder .
         ];
     dcterms:isReplacedBy eva:auth-11-057-0018-9-001-1-2 ;
     vpa:valid [
@@ -104,7 +104,8 @@ eva:auth-11-057-0018-9-001-DE-2 a era:VehicleTypeAuthorisation  ;
     dcterms:issued "2020-09-10"^^xsd:date ; # the issue date of the correction
     era:vehicleTypeAuthorisationHolder [
         a era:OrganisationRole ;
-        era:roleOf era-org:MF-DE-12435-44 
+        era:roleOf era-org:MF-DE-12435-44 ;
+        era:hasOrganisationRole era-organisation-roles:Holder 
     ] .
 
 # SWITZERLAND - See all authorisation data under 3.2.X.X
@@ -121,12 +122,11 @@ eva:vac-11-057-0018-9-001-2 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VA
 eva:auth-11-057-0018-9-001-CH-1 a era:VehicleTypeAuthorisation ;
     dcterms:identifier "CH5920191114" ;
     dcterms:issued "2019-12-16"^^xsd:date ; # the document issue date
-    era:vehicleTypeAuthorisationHolder 
-        [    
-            a era:OrganisationRole ;
-            era:roleOf era-org:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
-            era:hasRole <Holder> .
-        ];
+    era:vehicleTypeAuthorisationHolder [  
+          a era:OrganisationRole ;
+          era:roleOf rorg:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
+          era:hasOrganisationRole era-organisation-roles:Holder 
+    ];
     dcterms:isReplacedBy eva:auth-11-057-0018-9-001-2-2 ;
     vpa:valid [
         a time:ProperInterval ;
@@ -157,7 +157,8 @@ eva:auth-11-057-0018-9-001-AT-1 a era:VehicleTypeAuthorisation ;
     dcterms:issued "2021-06-10"^^xsd:date ; # the document issue date
     era:vehicleTypeAuthorisationHolder [
         a era:OrganisationRole ;
-        era:roleOf era-org:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
+        era:roleOf rorg:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
+        era:hasOrganisationRole era-organisation-roles:Holder
     ] ;
     vpa:valid [
         a time:ProperInterval ;
