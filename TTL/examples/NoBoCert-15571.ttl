@@ -1,21 +1,28 @@
 # prefixes.ttl
 
 eradis:cld-NoBoCert-15571 
-    a era:CLD ;
+    a era:CLD , vpa:EvidenceDocument ; 
     dcterms:created "2024-12-16"^^xsd:date ; # the creation of this resource in the KG
+    dcterms:issued "2021-09-23"^^xsd:date ; # the document issue date
     dcterms:replaces :cld-NoBoCert-7370 ;
-    dcterms:coverage eralex:dir-2016-797 ,
-        eralex:dec-2010-713-SB ,
-        eralex:reg-2013-1236 , 
-        eralex:reg-2014-1304 ,
-        eralex:reg-2015-924,
-        eralex:reg-2013-321 ;
+
+    # What this CLD uses as legal basis:
+    dcterms:type era-cld-types:1 ;
+    dcterms:conformsTo era-cld-modules:SB ; # the module
+    dcterms:coverage eralex:dir-2016-797 ; # the EU Legislation
+    dcterms:subject eralex:reg-2015-924 ; # The RST subsystem as a whole
+    vpa:checkedCompliance [ 
+        vpa:checkedRequirement 
+            eralex:reg-2013-1236 , 
+            eralex:reg-2014-1304 ,
+            eralex:reg-2015-924 ,
+            eralex:reg-2013-321 
+    ] ;
+
+    # Human readable content
     rdfs:comment "Tank Wagon 97m3 Za(c)ns" ;
-    dcterms:subject eralex:reg-2015-924 ;
-    dcterms:type era-skos-CLDType:ECTypeExamination ;
     dcterms:identifier "2826/1/SB/2021/RST/EN/N20210917/01" ;
     rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/NoBoCert/view.aspx?id=15571"^^xsd:anyURI ;
-    dcterms:issued "2021-09-23"^^xsd:date ; # the document issue date
     vpa:valid [
         a time:ProperInterval ;
         time:hasBeginning "2016-09-02"^^xsd:date ; #start of validity
