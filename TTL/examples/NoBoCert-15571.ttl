@@ -39,7 +39,7 @@ eradis:cld-NoBoCert-15571
     vpa:checked 
         erapod:check-NoBoCert-15571-1 ,
         erapod:check-NoBoCert-15571-2 ;
-    dcterms:hasversion 1 .
+    vpa:versionNumber 1 .
 
 # Stored in a confidential data pod and inaccessible
 # The following is illustrative only
