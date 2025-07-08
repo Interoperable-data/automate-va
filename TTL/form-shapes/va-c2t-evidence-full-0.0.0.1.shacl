@@ -1,0 +1,231 @@
+@prefix dash:    <http://datashapes.org/dash#> .
+@prefix era:     <http://data.europa.eu/949/> .      
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix geo:     <http://www.opengis.net/ont/geosparql#> .
+@prefix org:     <http://www.w3.org/ns/org#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema:  <http://schema.org/> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix time:    <http://www.w3.org/2006/time#> .
+@prefix unit:    <http://qudt.org/vocab/unit/> .
+@prefix vpa:     <http://w3id.org/vpa/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix iss:     <http://data.europa.eu/949/iss/> . 
+
+# SKOS
+@prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
+@prefix iss-rs: <http://data.europa.eu/949/iss/concepts/record-statuses/> .
+
+@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
+@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+
+# Properties to be post-processed
+@prefix update: <http://data.europa.eu/949/update/> .
+
+# EU Countries
+ @prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
+
+era:EvidenceShape a sh:NodeShape ;
+
+  # ----------- Shape management
+  dcterms:creator [ 
+    foaf:name "Maarten Duhoux" ;
+    dcterms:source <https://orcid.org/0009-0003-6653-6123> ;
+    org:memberOf <http://publications.europa.eu/resource/authority/corporate-body/ERA>
+  ] ;
+  rdfs:seeAlso "https://oss.era.europa.eu"^^xsd:anyURI ;
+  rdfs:comment """This shape enables to collect the ECD/CLD evidence of a C2T VA application. It does NOT collect the general data."""@en ;
+  skos:editorialNote """Remarks:
+1. The evidence is required on subsystems and IC level, whereby a CLD needs to be added only if many CLD's determine the scope of the ECD.
+2. This shape assumes evidence is foreseen over the full hierarchy from SS DOV down to the IC CLDs. It may be possible to separate the subsystem evidence from the IC evidence."""@en ;
+  dcterms:created "2025-07-08"^^xsd:date ;
+  # dcterms:modified ""^^xsd:date ;
+  schema:version "0.0.0.1" ;
+  # -------------------------------------
+
+  sh:targetClass era:OSSLibrary ; # subClassOf vpa:Evidence
+  sh:property [
+    sh:path vpa:submittedFor ;
+    sh:name "VA C2T application URI('s)";
+    sh:description "The Application(s) for which this Evidence can serve" ;
+    sh:hasValue <erava:va-s-001> ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;    
+  ] , [
+    sh:path dcterms:identifier ;
+    sh:name "Evidence collection identifier" ;
+    sh:description "Use a clear identifier to retrieve this evidence collection.";
+    sh:hasValue "Siemens MIREO Evidence"^^xsd:string ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 
+  ] , [ 
+    sh:path rdfs:comment ;
+    sh:name "Describe the Evidence collection" ;
+    sh:description "Description of the vehicle type(s) this collection can serve as Evidence for.";
+    sh:hasValue "This is the MIREO Evidence for 4-Teilig trainsets"^^xsd:string ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 
+  ] , [
+    # 
+    sh:path dcterms:created ;
+    sh:name "Evidence creation datetime" ;
+    sh:description "DateTime of the Evidence creation (automatically generated)" ;
+    dash:readonly true;
+    sh:hasValue "2025-07-08T06:24:14"^^xsd:dateTime ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:datatype xsd:dateTime ;
+  ] , [
+    sh:path rdfs:member ;
+    sh:name "Subsystem EC Declarations" ;
+    sh:description "The EC Declarations as submitted for each subsystem" ;
+    sh:group dash:ECDSS ;
+    sh:node era:ECDSSShape ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+  ] , [
+    sh:path rdfs:member ;
+    sh:name "Other certificates" ;
+    sh:description "Certificates (not in ERADIS+) supporting this vehicle type" ;
+    sh:group dash:OTH ;
+    sh:node era:OtherCertsShape ;
+    sh:minCount 0
+  ] , [
+    sh:path rdfs:member ;
+    sh:name "Other Statements" ;
+    sh:description "Other relevant statements and authorisations";
+    sh:group dash:OTHSA ;
+    sh:node era:OtherStatementsShape ;
+    sh:minCount 0
+  ] .
+
+era:ECDSSShape a sh:NodeShape ;
+  sh:targetClass era:ECDeclaration ;
+  sh:property [
+    sh:name "ECD type" ;
+    sh:path dcterms:type ; 
+    sh:hasValue era-cld-types:ECDoV ;
+    sh:maxCount 1;
+    sh:nodekind sh:IRI ;
+  ]; 
+  sh:property [
+    sh:name "Subsystem ECD: document ID" ;
+    sh:description "Document ID number of the subsystem EC Declaration" ;
+    sh:path dcterms:identifier ;
+    sh:datatype xsd:string ;
+    sh:hasValue "DE/000 HRB96651 B/2025/241759" ;
+    # sh:pattern "^\\w{2}/\\d{14}/\\d{4}/\\d{6}$" ; # BE/00000203430576/2024/000002, AT/0000000110595s/2024/000039, DE/000 HRB96651 B/2025/241759 
+    sh:minCount 1 ; sh:maxCount 1 
+] , [
+    sh:name "Subsystem ECD: Issue date" ;
+    sh:description "The issue date of the ECD";
+    sh:path dcterms:issued ;
+    sh:datatype xsd:date ;
+    sh:minCount 1 ; sh:maxCount 1 
+  ] , [
+    sh:path dcterms:requires ;
+    sh:name "Supporting Subsystem CLDs" ;
+    sh:description "The collections of relevant CLD's supporting this Declaration" ;
+    sh:node era:CLDSSCollectionShape;
+    sh:minCount 1 ; sh:maxCount 1
+  ].
+
+era:CLDSSCollectionShape a sh:NodeShape ;
+  sh:targetClass era:CLDEvidence ;
+  sh:property [
+    sh:path rdfs:member ;
+    sh:name "Supporting SS CLDs name" ;
+    sh:description "Supporting SS CLDs desc" ;
+    sh:node era:CLDSSShape ;
+    sh:minCount 1 ;
+    sh:maxCount 3
+  ].
+
+era:CLDSSShape a sh:NodeShape ;
+  sh:targetClass era:CLD ;
+  sh:property [
+    sh:name "Subsystem CLD" ;
+    sh:description "ERADIS ID number of the subsystem CLD" ;
+    sh:path dcterms:identifier ;
+    sh:hasValue "2250/6/SG/2024/ENE/DEEN/0962-1N-09/V1.0" ;
+    sh:datatype xsd:string ;
+    sh:pattern "" ; #  ERADIS CLD pattern
+  ] , [
+    sh:path dcterms:requires ;
+    sh:name "Supporting IC DOC's" ;
+    sh:description "The collections of relevant IC DOC's supporting this subsystem CLD" ;
+    sh:node era:ICDOCCollectionShape;
+    sh:minCount 1 ;
+    sh:maxCount 2
+  ].
+
+era:ICDOCCollectionShape a sh:NodeShape ;
+  sh:targetClass era:DOCEvidence ;
+  sh:property [
+    sh:path rdfs:member ;
+    sh:name "Supporting IC DOCs name" ;
+    sh:description "Supporting IC DOCs desc" ;
+    sh:node era:DOCICShape ;
+    sh:minCount 1 ;
+    sh:maxCount 3
+  ].
+
+era:DOCICShape a sh:NodeShape ;
+  sh:targetClass era:ECDeclaration ; # But for the underlying IC's
+  sh:property [
+    sh:name "ECD type" ;
+    sh:path dcterms:type ; 
+    sh:hasValue era-cld-types:ECDoC ;
+    sh:maxCount 1;
+    sh:nodekind sh:IRI ;
+  ]; 
+  sh:property [
+    sh:name "IC ECD" ;
+    sh:description "Document ID number of the IC EC Declaration" ;
+    sh:path dcterms:identifier ;
+    sh:datatype xsd:string ;
+    sh:hasValue "BE/00000203430576/2024/000002" ;
+    # sh:pattern "^\\w{2}\/\\d{14}\/\\d{4}\/\\d{6}$" ; # BE/00000203430576/2024/000002, AT/0000000110595s/2024/000039, DE/000 HRB96651 B/2025/241759 
+  ] , [
+    sh:name "IC ECDoC Issue date" ;
+    sh:description "The issue date of this IC EC DoC";
+    sh:path dcterms:issued ;
+    sh:datatype xsd:date ;
+    sh:minCount 1 ;
+    sh:maxCount 1 
+  ] , [
+    sh:path dcterms:requires ;
+    sh:name "Supporting Interoperability Constituent CLDs" ;
+    sh:description "The collections of relevant CLD's supporting this Declaration of Conformity" ;
+    sh:node era:CLDICCollectionShape;
+    sh:minCount 1 ;
+    sh:maxCount 2
+  ].
+
+era:CLDICCollectionShape a sh:NodeShape ;
+  sh:targetClass era:CLDEvidence ;
+  sh:property [
+    sh:path rdfs:member ;
+    sh:name "Supporting IC CLDs name" ;
+    sh:description "Supporting IC CLDs desc" ;
+    sh:node era:CLDICShape ;
+    sh:minCount 1 ; sh:maxCount 1
+  ].
+
+era:CLDICShape a sh:NodeShape ;
+  sh:targetClass era:CLD ;
+  sh:property [
+    sh:name "IC CLD" ;
+    sh:description "ERADIS ID number of the relevant IC CLD" ;
+    sh:path dcterms:identifier ; # 0893/2/CH1/2024/RST/DEEN/3158/v01
+    sh:datatype xsd:string ;
+    sh:pattern "" ; #  ERADIS CLD pattern
+  ] .
+
