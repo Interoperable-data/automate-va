@@ -7,12 +7,18 @@ era-cld:cld-NoBoCert—32963
 
     # Legal Basis
     dcterms:type era-cld-types:2 ;                   # 2/CH1
-    dcterms:conformsTo era-cld-modules:CH1 ;         # Module process applied
-    dcterms:coverage eralex:dir-2016-797 ;           # Directives covered
+	# Module process and ERA process applied
+    dcterms:conformsTo era-cld-modules:CH1 , [ 
+		a era:Document ;
+		rdfs:label "ERA Technical Document 000MRA1044"@en ;
+		era:documentURL "https://www.era.europa.eu/system/files/2022-10/Technical%20Document%20Requirements%20for%20NoBos.pdf?t=1751549597"^^xsd:anyURI ; # "https://www.era.europa.eu/system/files/2022-12/Technical%20Document%20Requirements%20for%20NoBos%20ver%202.0.pdf"^^xsd:anyURI ;
+		rdfs:comment "Version 1.1 of June 2017"@en ; # "Version 2.0 of December 2022"@en
+	];
+    dcterms:source eralex:dir-2016-797 ;             # Directives at the source of the CLD
     dcterms:subject eralex:ic-1302-2014-5_3.10 ;     # IC 'Pantograph'
     vpa:checkedCompliance [ 
-        vpa:checkedRequirement  eralex:reg-2014-1302 , # MISSING AMENDMENTS
-    ];     # TSI(s) (including amendments) used
+        vpa:checkedRequirement  eralex:reg-2014-1302 , eralex:cir-2019-776 , eralex:cir-2020-387 , eralex:cir-2023-1694
+    ];     											 # TSI(s) (including amendments) used
 
     # Human readable contents
     rdfs:comment “Stromabnehmer SWL0 115-6YM01“@de , # Typo in ERADIS, better use the label!
@@ -40,6 +46,7 @@ era-cld:cld-NoBoCert—32963
         era:roleOf rorg:MF-AT-8020-31 ;           # Manufacturer FN 483145 h (same ID!)
         era:hasOrganisationRole era-organisation-roles:ConstituentManufacturer
     ] ;
+	dcterms:coverage [] ; 						  # No Manufacturing locations
     dcterms:creator [
         a era:OrganisationRole ;
         era:roleOf rorg:NoBo-0893
