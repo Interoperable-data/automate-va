@@ -1,0 +1,86 @@
+# prefixes.ttl
+
+eradis:cld-NoBoCert-25403 
+    a era:CLD , vpa:EvidenceDocument ; 
+    dcterms:created "2025-07-09"^^xsd:date ; # the creation of this resource in the KG
+    dcterms:issued "2025-04-19"^^xsd:date ; # the document issue date
+    dcterms:replaces [ a era:CLD ; dct:identifier "0941/2/CH1/2023/CCO/EN/RC0317A-01/V01" ] ;
+
+    # What this CLD uses as legal basis:
+    dcterms:type era-cld-types:2 ;
+    dcterms:conformsTo era-cld-modules:CH1 ; # the module
+    dcterms:source eralex:dir-2016-797 ; # the EU Legislation
+    dcterms:subject eralex:ic-2020-420-OB-5 , eralex:ic-2020-420-OB-2 , eralex:ic-2020-420-OB-1 ; # The CCS IC's as mentioned in the CLD
+    vpa:checkedCompliance [ a era:CABAssessment ;
+        era:cabAssessmentResult  """This certificate has been issued in respect of compliance with the applicable requirements of the above Directive. The Interoperability Constituent was shown to comply, subject to any restrictions listed on the
+attached annex, which forms part of this certificate.
+        
+This EC Design Examination has been issued under consideration of Module CH1 of the relevant decision adopted pursuant to the Directive. Details regarding this certificate are described in the annex.
+        
+The essential requirements have been assessed as being met through compliance with the technical requirements of the relevant TSI only."""@en ;
+        era:cabValidityStatement """This certificate is valid for the Object of Assessment as mentioned above as long as compliance of the
+Object of Assessment with certification requirements is maintained by the Applicant."""@en ;
+        rdfs:seeAlso "RC0317A-CAR-FP-230109-01 Rev. 2.0 dated 18/04/2023" ;
+        vpa:checkedRequirement 
+            eralex:cir-2016-919, eralex:cir-2019-776, eralex:cir-2020-387, eralex:cir-2020-420 ; 
+    ] , nobo:Assmt-RC0317A-02 ;
+
+    # Human readable content
+    dcterms:description """Interoperability Constituent: ETCS on-board
+ETCS on-board GoIC
+Generic Product EBI Cab 2000 ETCS Onboard System R4 Package P8c:
+P8CMR8.2c / EO 1.4.A10.0
+ICs included in the GoIC: ETCS on-board, Odometry Equipment, GSM-R Data only radio"@en ;
+    dcterms:identifier "0941/2/CH1/2023/CCO/EN/RC0317A-02/V01" ;
+    rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/NoBoCert/view.aspx?id=25403"^^xsd:anyURI ;
+    vpa:valid [
+        a time:ProperInterval ;
+        time:hasBeginning "2024-04-19"^^xsd:date ; #start of validity
+        time:hasDurationDescription [
+            # https://www.w3.org/TR/owl-time/#time:DurationDescription
+            time:years 99 ;
+        ]
+    ];
+    rdfs:comment """This certificate restricts certificate number: 0941/2/CH1/2023/CCO/EN/RC0317A-01/V01 dated 31/01/2023 which is withdrawn."""@en ;
+    dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-SE-11473-29 ; era:hasOrganisationRole era-organisation-roles:Applicant  ] ; # <http://data.europa.eu/949/taxonomies/org#MF-SE-11743-29> 
+    dcterms:contributor [ a era:OrganisationRole ; era:roleOf rorg:MF-SE-11473-29 ; era:hasOrganisationRole era-organisation-roles:Manufacturer ] ; # Manufacturer
+    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-0941 ; era:hasOrganisationRole era-organisation-roles:NoBo ] ; # The NoBo itself /ORGS (<http://data.europa.eu/949/taxonomies/org#NoBo-2826>)
+    # dcterms:spatial [ a org:Site ] ; # No manufacturing locations
+    vpa:versionNumber 1 .
+
+# Details of confidential nature can be stored separately
+nobo:Assmt-RC0317A-02 a era:CABAssessment ;
+    schema:version "2.0" ;
+    dcterms:issued "2023-04-18" ;
+    dcterms:identifier "RC0317A-CAR-FP-230109-01" ;
+    # etc. details are here, like List of applied standards - section 4.2.1.
+    vpa:checkedRequirements <STD1>, <STD2>  ;
+
+    # The CLOUs as per https://www.era.europa.eu/system/files?file=2024-06/restrictions_and_added_functions_en.pdf
+    # Model to be discussed internally
+    era:cabCLOU [
+        a era:CABRestriction ; # subClassOf era:Restriction, vpa:Restriction
+        vpa:regarding <URI to exact Legal RQT relevant for this restriction> ;
+        dcterms:type 
+            <SKOS CS – 6.3.2 of the ERA document: Type of the Restriction>, 
+            <SKOS CS – 6.7.2 of the ERA document: Type of Condition>, 
+            <SKOS CS – 6.4.2 of the ERA document: Type of the Non-conformity>,
+            <SKOS CS – 6.5.2 of the ERA document: Type of consequences> ;
+        vpa:consequences "Description of Consequences: ..."@en; # Warning: non-existing property in the vpa: ontology
+        rdfs:comment “ ”@en;
+        era:nonCodedRestriction "Description of the Condition: ...."@en;
+    ] , [
+        a era:CABRestriction ;
+        vpa:regarding <URI to exact Legal RQT relevant for other restriction> ;
+        era:nonCodedRestriction "restriction N. 2";
+        rdfs:comment "Other restriction" ;
+    ] , [
+        a era:CABAddition ;
+        dcterms:type <era-skos-addition-types:Option> | <era-skos-addition-types:AddedFunction> ;
+        dcterms:description "6.1.3 Description of the Option | 6.4.3 Description of the added functionality" ;
+        era:nonCodedRestriction "6.2.3 CLOU | 6.5.3 CLOU" ;
+        vpa:consequences "Description of Consequences: ..."@en; # Warning: non-existing property in the vpa: ontology
+        dcterms:source 
+            <SKOS era-skos-reasons-for-addition:6.3.3.X> , # When added function
+            <SKOS era-skos-ertams-added-functions:XYZ> ; # Whern Added functionality.
+    ].
