@@ -148,7 +148,7 @@ The following mandatory properties are the basis for the data model allowing ext
 | `dct:description`  | Object of assessment (in words)    |                               `xsd:string`                                |      n/a      |
 | `rdfs:comment`     | Supplementary information          |                               `xsd:string`                                |      n/a      |
 | `dct:type`         | Certificate type                   | (IRI to [SKOS Concept](https://github.com/Certiman/automate-va/issues/2)) |    /ERALEX    |
-| `dct:conformsTo`   | Modules Applied                    |            (IRI to those /ERALEX instances, which are modules)            |    /ERALEX    |
+| `dct:conformsTo`   | Modules Applied                    |            (IRI to those /ERALEX instances, which are modules, or SKOS)   |    /ERALEX    |
 | `dct:identifier`   | Certificate Number                 |                     `xsd:string` (with `sh:pattern`)                      |      n/a      |
 | `dct:replaces`     | Previous Certificate               |                         (IRI to that certificate)                         |    /IODOCS    |
 | `dct:isReplacedBy` | Certificate replacing the current  |           (if replaced, then IRI to that replacing certificate)           |    /IODOCS    |
@@ -167,7 +167,7 @@ The following properties are not mandatory but allow detailing the verification 
 | `vpa:checkedCompliance`| See the VPA ontology        | (IRI to the vpa:Compliance instances, which themselves     |
 |                       |                                         | contain the checked sections of the above conformsTo link, |
 |                       |                                         | and allow to link the restrictions as well)                |
-| `vpa:withRestriction` | Certificate restrictions and conditions | (IRI to the instance of the Restriction)                   |
+| `vpa:withRestriction` | Certificate restrictions and conditions | (*NON-disclosed* IRI to the instance of the Restriction)                   |
 | `vpa:checkedCompliance/vpa:checkedSection`     | The Sections of TSI to which   | (IRI to SKOS Concepts, expressing verified sections,       |
 |                       |  compliance was | without indication of the result)                          |
 |                       | verified.                               |                                                            |
@@ -188,19 +188,67 @@ See also [EC Declarations](DECLARATIONS.md).
 
 ## Links between CLD's
 
-No link between CLDs is directly made, but related CLDs (together supporting a EC Declaration) can be grouped in instances of `vpa:Evidence` or subclasses thereof.
+No link between CLDs is directly made, but related CLDs (together supporting a EC Declaration) can be grouped in instances of `vpa:Evidence` or subclasses thereof. They can then be used as the range of `dct:requires` to express that this Evidence is required by the resource (like an EC Declaration).
 
 ## Non-disclosed properties
 
+The following data could be stored in *non-disclosed* graphs.
+
+### ASSESSMENT RESULT
+
+Use:
+- [ ] `era:CABAssessment` / `era:CABAudit`, which is a `vpa:Compliance` subClass, with extra properties:
+- [ ] `era:cabAssessmentResult` and `era:cabAuditResult` (range: `xsd:string`)
+- [ ] `era:cabAssessmentReport` and `era:cabAuditReport` (range: `xsd:anyURI`)
+- [ ] `era:cabCLOU`, allowing the confidential formulation of conditions and limits of use by a CAB (range: `era:CABRestriction`).
+
+This is the core statement of the Certificate. NoBo statement that the object of assessment (Interoperability Constituent/Subsystem, or its phase/part/Quality Management System), was shown to comply with the assessment requirements, subject to any restrictions and conditions as listed in the relevant field. The essential requirements have been assessed as being met through compliance with the requirements of the relevant TSI only. The details of the assessment results are provided within the documentation part of the NoBo File and/or NoBo Assessment Report.
+
+### RESTRICTIONS / CONDITIONS FOR USE [optional]
+
 See also [Restrictions](./RESTRICTION.md) for the non-disclosed data regarding the Conditions and Limits of Use.
 
-The following data should be stored in non-disclosed graphs.
+The available class is `era:CABRestriction`, subClassOf `era:Restriction`, subClassOf `vpa:Restriction`. An example is shown below, and as a Restriction it can always be linked to a specific Vehicle Type Configuration (or later infrastructure type).
 
-- ASSESSMENT REQUIREMENTS: In combination with those Harmonised Standards, Voluntary Standards (or parts thereof), other European or national rules authorized by the TSI and Alternative Solutions as identified in the EC NoBo [File/Documentation]
+### ASSESSMENT REQUIREMENTS 
+
+In combination with those Harmonised Standards, the noBo is allowed to quote
+  - Voluntary Standards (or parts thereof),
+  - other European or national rules authorized by the TSI and
+  - Alternative Solutions as identified in the EC NoBo [File/Documentation]
 - STANDARD USED [optional]
-- ASSESSMENT RESULT: This is the core statement of the Certificate. NoBo statement that the object of assessment (Interoperability Constituent/Subsystem, or its phase/part/Quality Management System), was shown to comply with the assessment requirements, subject to any restrictions and conditions as listed in the relevant field. The essential requirements have been assessed as being met through compliance with the requirements of the relevant TSI only. The details of the assessment results are provided within the documentation part of the NoBo File and/or NoBo Assessment Report.
-- RESTRICTIONS / CONDITIONS FOR USE [optional]
-- ANNEXES (each with [identifier, revision-if used, date]):
+
+To express these references, use link under `vpa:checkedCompliance` and privately stored instances of `vpa:Compliance`:
+
+```
+<eradis:cld-123> a era:CLD ; # a vpa:EvidenceDocument
+  # other properties
+   vpa:checkedCompliance <nobo:Assessment-123> , <nobo:Compliance-123-45> ; # a private URI
+
+# Elsewhere in this private KG
+<nobo:Assessment-123> a era:CABAssessment , vpa:Compliance ;
+  dcterms:description """This certificate is valid for the Object of Assessment as mentioned above as long 
+as compliance of the Object of Assessment with certification requirements is 
+maintained by the Applicant."""@en
+
+<nobo:Compliance-123-45> a era:CABAssessment , vpa:Compliance ;
+  vpa:checkedRequirement <URI of the standards , TSI, etc> ; # <<<<<< Assessment Requirements can be expressed here
+  vpa:checkedSection <URI of Concept representing - Precise Section of the above> ;
+  vpa:compliant "true"^^xsd:boolean ;
+  era:cabCLoU <nobo:Conditions-1234> .
+
+<nobo:Conditions-1234> a era:CABRestriction , vpa:Restriction, era:Restriction ;
+  era:forConfiguration <VT-Config> ; # if applicable, then also provide eventuially the consequence on the properties of the VehicleType.
+  vpa:regarding <URI of the standards below, TSI, etc> ; # for clarity, is already in the CABAssessment.
+  era:nonCodedRestrictions "{Text here}" ;
+  <era:properties expressing any coded restrictions for a vehicle type> "{their value}" ; 
+  
+```
+
+
+### ANNEXES 
+
+Each with [identifier, revision-if used, date]:
   - [optional]
   - [optional - NOBO ASSESSMENT REPORT]
   - [optional - NOBO FILE/TECHNICAL DOCUMENTATION]
