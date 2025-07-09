@@ -16,13 +16,17 @@ era-cld:cld-NoBoCert—32963
 	];
     dcterms:source eralex:dir-2016-797 ;             # Directives at the source of the CLD
     dcterms:subject eralex:ic-1302-2014-5_3.10 ;     # IC 'Pantograph'
-    vpa:checkedCompliance [ 
+    vpa:checkedCompliance [ a era:CABAssessment ;
+		# Assessment Requirements
+		# TSI(s) (including amendments) used
         vpa:checkedRequirement  eralex:reg-2014-1302 , eralex:cir-2019-776 , eralex:cir-2020-387 , eralex:cir-2023-1694
-    ];     											 # TSI(s) (including amendments) used
+		rdfs:seeAlso "Assessment report 3158/V02 dd. 7/05/2024"@en ;
+		vpa:compliant "true"^^xsd:boolean 
+    ] ;     											 
 
     # Human readable contents
-    rdfs:comment “Stromabnehmer SWL0 115-6YM01“@de , # Typo in ERADIS, better use the label!
-                 „Pantograph 8WL0 115-6YM01“@en ;    # Object of Assessment
+    dcterms:description “Stromabnehmer SWL0 115-6YM01“@de , # Typo in ERADIS, better use the label!
+                        „Pantograph 8WL0 115-6YM01“@en ;    # Object of Assessment
     dcterms:identifier “0893/2/CH1/2024/RST/DEEN/3158/V01” ;
     rdfs:seeAlso “https://eradis.era.europa.eu/interop_docs/NoBoCert/view.aspx?id=32963”^^xsd:anyURI ;
     vpa:valid [
@@ -33,16 +37,16 @@ era-cld:cld-NoBoCert—32963
             time:years 99 ;                          # Unlimited
         ]
     ] ;
-    skos:note "" ;
+    # rdfs:comment "" ;
 
     # Involved stakeholders
     dcterms:audience [
-	    a era:OrganisationRole ;
+	a era:OrganisationRole ;
         era:roleOf rorg:MF-AT-1210-90 ;            # Applicant FN 483145 h
         era:hasOrganisationRole era-organisation-roles:Applicant
     ] ; 
     dcterms:contributor [
-	    a era:OrganisationRole ;
+	a era:OrganisationRole ;
         era:roleOf rorg:MF-AT-8020-31 ;           # Manufacturer FN 483145 h (same ID!)
         era:hasOrganisationRole era-organisation-roles:ConstituentManufacturer
     ] ;
