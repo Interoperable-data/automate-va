@@ -30,7 +30,7 @@ Object of Assessment with certification requirements is maintained by the Applic
 ETCS on-board GoIC
 Generic Product EBI Cab 2000 ETCS Onboard System R4 Package P8c:
 P8CMR8.2c / EO 1.4.A10.0
-ICs included in the GoIC: ETCS on-board, Odometry Equipment, GSM-R Data only radio"@en ;
+ICs included in the GoIC: ETCS on-board, Odometry Equipment, GSM-R Data only radio"""@en ;
     dcterms:identifier "0941/2/CH1/2023/CCO/EN/RC0317A-02/V01" ;
     rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/NoBoCert/view.aspx?id=25403"^^xsd:anyURI ;
     vpa:valid [
