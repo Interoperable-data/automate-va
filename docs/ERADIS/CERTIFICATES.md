@@ -148,26 +148,29 @@ The following mandatory properties are the basis for the data model allowing ext
 | `dct:description`  | Object of assessment (in words)    |                               `xsd:string`                                |      n/a      |
 | `rdfs:comment`     | Supplementary information          |                               `xsd:string`                                |      n/a      |
 | `dct:type`         | Certificate type                   | (IRI to [SKOS Concept](https://github.com/Certiman/automate-va/issues/2)) |    /ERALEX    |
-| `dct:conformsTo`   | Modules Applied                    |            (IRI to those /ERALEX instances, which are modules, or SKOS)   |    /ERALEX    |
+| `dct:conformsTo`   | Modules and 000MRA1044 which were Applied                    |            (IRI to those /ERALEX instances, which are modules, or SKOS)   |    /ERALEX    |
 | `dct:identifier`   | Certificate Number                 |                     `xsd:string` (with `sh:pattern`)                      |      n/a      |
 | `dct:replaces`     | Previous Certificate               |                         (IRI to that certificate)                         |    /IODOCS    |
 | `dct:isReplacedBy` | Certificate replacing the current  |           (if replaced, then IRI to that replacing certificate)           |    /IODOCS    |
 | `dct:source`       | Interoperability Directive applied |          (IRI to /ERALEX instances of the applied IO Directive)           |    /ERALEX    |
 | `vpa:checkedCompliance/vpa:checkedRequirement`     | TSI's used (amendments included)   | (IRI to those /ERALEX instances)          |    /ERALEX    |
+| `dct:requires` | Documentation accompanying this CLD | The `xsd:anyURI` where the Documentation can be found.                       |      n/a      |
 
 > [!NOTE]
-> [Modules are foreseen to have the IRI](../ERALEX/LEGISLATION.md): `eralex:dec-2010-713-SB` whereby the last characters express the module. They are - like IC's - instances of `eli:LegalResourceSubdivision`, which as a subClassOf `eli:LegalResource` must still be considered `dct:Jurisdiction` (hence `dct:coverage`).
+> [Modules are foreseen to have the IRI](../ERALEX/LEGISLATION.md): `eralex:dec-2010-713-SB` whereby the last characters express the module. They are - like IC's - instances of `eli:LegalResourceSubdivision`, which as a subClassOf `eli:LegalResource` must still be considered `dct:Jurisdiction` (hence `dct:coverage`). 
+> The full statement on module conformity is `{module.label} of the relevant decision adopted pursuant to the Directive`.
 
 The following properties are not mandatory but allow detailing the verification activities:
 
 | Property              | Data                                    | Datatype/ObjectProperty                                    |
 | :-------------------- | :-------------------------------------- | :--------------------------------------------------------- |
-| `common:serialNumber` | Unique serial number                    | `xsd:string`                                               |
-| TBD                   | Underlying certification report         | `xsd:string` (`dct:source` can hence not be used)          |
-| `vpa:checkedCompliance`| See the VPA ontology        | (IRI to the vpa:Compliance instances, which themselves     |
-|                       |                                         | contain the checked sections of the above conformsTo link, |
-|                       |                                         | and allow to link the restrictions as well)                |
+| `common:serialNumber` | Unique serial number  | `xsd:string`                                               |
 | `vpa:withRestriction` | Certificate restrictions and conditions | (*NON-disclosed* IRI to the instance of the Restriction)                   |
+||||
+| `vpa:checkedCompliance`| See the VPA ontology | (IRI to the vpa:Compliance instances, which themselves contain      |
+|                       |                       | the checked sections of the above conformsTo link,                |
+|                       |                       | and allow to link the restrictions as well)                |
+| `vpa:checkedCompliance/rdfs:seeAlso`          | Underlying certification report         | `xsd:anyURI`     |
 | `vpa:checkedCompliance/vpa:checkedSection`     | The Sections of TSI to which   | (IRI to SKOS Concepts, expressing verified sections,       |
 |                       |  compliance was | without indication of the result)                          |
 |                       | verified.                               |                                                            |
@@ -196,9 +199,13 @@ The following data could be stored in *non-disclosed* graphs.
 
 ### ASSESSMENT RESULT
 
-Use:
+Use the property `vpa:checkedCompliance` to link to an instance of:
 - [ ] `era:CABAssessment` / `era:CABAudit`, which is a `vpa:Compliance` subClass, with extra properties:
-- [ ] `era:cabAssessmentResult` and `era:cabAuditResult` (range: `xsd:string`)
+- [ ] `era:cabAssessmentResult` and `era:cabAuditResult` (range: `xsd:string`) with the strings:
+  - [ ] `The Object of Assessment as identified above was shown to comply with the Assessment Requirements, subject to any Conditions and Limits of use as listed below. The Assessment Results are provided in detail within the accompanying [EC Assessment Report or NoBo-File/ Accompanying Documentation section 4]. The Essential Requirements have been assessed as being met through compliance with the requirements of the relevant TSI only.`
+- [ ] `era:cabValidityStatement`, with the strings as in RFU-STR-001 ar alike:
+  - [ ] `This certificate is valid for the Object of Assessment as mentioned above as long as compliance of the Object of Assessment with certification requirements is maintained by the Applicant.`
+  - [ ] (only for SD, SH1 modules) `Within the validity duration of this Certificate, the Applicant can perform production/installation and final product/installation inspection of the Object of Assessment as long as the product/installation conforms to the EC Type/Design Examination Certificate. This validity duration may be extended on the basis of future updating of related Certificates/QMS approvals.`
 - [ ] `era:cabAssessmentReport` and `era:cabAuditReport` (range: `xsd:anyURI`)
 - [ ] `era:cabCLOU`, allowing the confidential formulation of conditions and limits of use by a CAB (range: `era:CABRestriction`).
 
@@ -227,9 +234,9 @@ To express these references, use link under `vpa:checkedCompliance` and privatel
 
 # Elsewhere in this private KG
 <nobo:Assessment-123> a era:CABAssessment , vpa:Compliance ;
-  dcterms:description """This certificate is valid for the Object of Assessment as mentioned above as long 
-as compliance of the Object of Assessment with certification requirements is 
-maintained by the Applicant."""@en
+  dct:description "General Validity statement" ;
+  rdfs:seeAlso "URL of the CAB report" ;
+  era:cabValidityStatement """This certificate is valid for the Object of Assessment as mentioned above as long as compliance of the Object of Assessment with certification requirements is maintained by the Applicant."""@en
 
 <nobo:Compliance-123-45> a era:CABAssessment , vpa:Compliance ;
   vpa:checkedRequirement <URI of the standards , TSI, etc> ; # <<<<<< Assessment Requirements can be expressed here
@@ -244,7 +251,6 @@ maintained by the Applicant."""@en
   <era:properties expressing any coded restrictions for a vehicle type> "{their value}" ; 
   
 ```
-
 
 ### ANNEXES 
 
