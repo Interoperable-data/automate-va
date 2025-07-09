@@ -14,13 +14,13 @@ The EU Agency for Railways has introduced the [ontology for Verified Permissions
 Stakeholders wanting to represent this `vpa:EvidenceDocument` as linked data, in order to achieve the objectives as described elsewhere, are invited to examine and return comments on the following proposal.
 
 > [!NOTE]
-> The class `vpa:EvidenceDocument` can be linked to verified `vpa:Requirement`, which are further not specified, but can be, for instance to eli:LegalResource and other classes. The EU Agency for Railways uses the `vpa:EvidenceDocument` class to model [ERADIS Interoperability documents](https://eradis.era.europa.eu/default.aspx). The process is described [here](./RESTRICTION.md).
+> The class `vpa:EvidenceDocument` can be linked to verified `vpa:Requirement`s (using `vpa:closes`), which are further not specified, but can be, for instance to eli:LegalResource and other classes. The EU Agency for Railways uses the `vpa:EvidenceDocument` class to model [ERADIS Interoperability documents](https://eradis.era.europa.eu/default.aspx). The process is described [here](./RESTRICTION.md). A stronger and more detailed approach is to use the `vpa:Compliance` class (using `vpa:checkedCompliance`), which allows to link not only the legal Requirements, but also the sections therein, and the resulting compliance check results.
 
 ## Data model
 
 For EC Declarations, [see this document](DECLARATIONS.md).
 
-`era:Certificate a vpa:EvidenceDocument ;` are instantiated from ERADIS data, and will be complemented by verifiable credentials (open point).
+`era:CLD a vpa:EvidenceDocument ;` are instantiated from ERADIS data, and will be complemented by verifiable credentials (open point).
 
 A CLD has the following properties. For the use cases, please consult [this document](../USE%20CASES/CLD.md).
 
@@ -34,8 +34,8 @@ A CLD has the following properties. For the use cases, please consult [this docu
 
 ### Issuer (public)
 
-- ObjectProperty `http://purl.org/dc/elements/1.1/creator`
-- range: IRI of the issuing NoBo, which must itself be an instance of `<http://www.w3.org/ns/org#Organization>`.
+- [X] ObjectProperty `http://purl.org/dc/elements/1.1/creator`
+- range: IRI of the issuing NoBo, which must itself be an instance of `era:Body` (a `<http://www.w3.org/ns/org#Organization>`).
 
 The Agency is considering to provide `era-org:NoBo-` + `NANDO number of the NoBo`, in order to cover for this IRI[^1].
 
@@ -97,7 +97,7 @@ era:doc-uuid_of_document a era:CLD ;
 
 ### Refinement of Certificate Subsystem (SS) and Interoperability Constituent (IC)
 
-#### The subject (public)
+#### The (public) Object of Assessment
 
 The legal subject of the certificates can be documented using links to instances of ERALEX/ELI. Details are [here](../ERALEX/LEGISLATION.md).
 
@@ -112,17 +112,17 @@ Because different certificates sometimes treat the same IC or SS but produced or
 
 | Property      |                                              Data | Datatype/ObjectProperty                      | dataset @ ERA |
 | :------------ | ------------------------------------------------: | :------------------------------------------- | :-----------: |
-| `dct:spatial` | Validity restricted in Location (production site) | (IRI to the /ORG containing the site's data) |     /ORG      |
-|               |                           RFU-STR-001  [R3.a,R33] |                                              |               |
+| `dct:spatial` | Validity restricted in Location (production site) | (IRI to the /ORG containing the org:Site's  |     /ORG      |
+|               |                           RFU-STR-001  [R3.a,R33] | data as audited)     |               |
 
 #### The [INF, ENE, CCS]-combination
 
-Finally, some certificates are inherently specifying a limited application, regarding [ENE, INF, CCS]-combinations. The `era:CommonCharacteristicsSubset` could in that case be used, be it through the relevant classes as in the following table. More information is available in the [ERA Vocabulary](https://linkedvocabs.org/data/era-ontology/3.1.0/doc/index-en.html).
+Finally, some certificates (`era:CLD` is a subClassOf `vpa:EvidenceDocument`) are inherently specifying a limited application, regarding [ENE, INF, CCS]-combinations. The `era:VehicleTypeAuthorisationRestriction` (or more generally `vpa:Restriction`) could in that case be used, be it through the relevant classes as in the following table. More information is available in the [ERA Vocabulary](https://linkedvocabs.org/data/era-ontology/3.1.0/doc/index-en.html).
 
 | Property                        |                                     Data | Datatype/ObjectProperty                                          | dataset @ ERA |
 | :------------------------------ | ---------------------------------------: | :--------------------------------------------------------------- | :-----------: |
-| `era:belongsTo`        |                                          | `era:CommonCharacteristicsSubset`                            |               |
-| `era:parameter`                 |                                          | `era:InfrastructureSubsystem`, `era:EnergySubsystem` & `era:CCSSubsystem` |               |
+| `vpa:withRestriction`           |                                          | `era:VehicleTypeAuthorisationRestriction`                        |               |
+| `era:forConfiguration`          |                                          | (IRI to the Configuration, which contains:)                      |               |
 | `era:wheelsetGauge`             | Validity limited to a certain INF gauge, | (IRI to the SKOS Concept representing the gauge)                 |     /RINF     |
 | `era:energySupplySystem`        |                       ENE supply system, | (IRI to the SKOS Concept representing the supply)                |     /RINF     |
 | `era:etcsEquipmentOnBoardLevel` |             CCS train protection system. | (IRI to the SKOS Concept representing the ATP)                   |     /RINF     |
@@ -133,27 +133,27 @@ CLDs must only have versions consistent with the ERADIS Identifier, which has `/
 
 To clarify that a certificate has:
 
-- a version, `era:eradisVersion` must be used additionally, only if it is consistent with its ERADIS Identifier. If in older CLDs no version is present in the ERADIS ID, and a CLD replacing it exists with `/V01`, then the first has to encode a `era:eradisVersion "0"` exceptionally.
+- a version, `vpa:versionNumber` must be used additionally, only if it is consistent with its ERADIS Identifier. If in older CLDs no version is present in the ERADIS ID, and a CLD replacing it exists with `/V01`, then the first has to encode a `vpa:versionNumber "0"` exceptionally.
 - a language, `dct:language` can be used, only if it is consistent with the languages encoded in the ERADIS identifier. The languages must be IRI's and not strings.
 
 > [!WARNING]
 > The following is not made explicit in the /ERALEX dataset, and must be refined in the [specification](../ERALEX/LEGISLATION.md).
-> The (optional) use of `dct:conformsTo` requires the ?o IRI of TSI's used to be a subClassOf `dct:Standard`. We assume the annexes of the TSI to have held the verified requirement sections, as such Standards.
+> The (mandatory) use of `vpa:`-properties to express what TSI and amendments have been assessed, requires the ?o IRI of TSI's used to be a subClassOf `dct:Standard`. We assume the annexes/sections of the TSI to have held the verified requirement sections, as such Standards, but in attendance to URI's we will foresee them as SKOS Concepts.
 > The (mandatory) use of `dct:coverage` equally requires the ?o IRI of Applied Modules and Directives to be a subClassOf `dct:Jurisdiction`.
 
 The following mandatory properties are the basis for the data model allowing extraction from ERADIS:
 
 | Property           | Data                               |                          Datatype/ObjectProperty                          | dataset @ ERA |
 | :----------------- | :--------------------------------- | :-----------------------------------------------------------------------: | :-----------: |
-| `rdfs:comment`     | Object of assessment               |                               `xsd:string`                                |      n/a      |
-| `dct:description`  | Supplementary information          |                               `xsd:string`                                |      n/a      |
+| `dct:description`  | Object of assessment (in words)    |                               `xsd:string`                                |      n/a      |
+| `rdfs:comment`     | Supplementary information          |                               `xsd:string`                                |      n/a      |
 | `dct:type`         | Certificate type                   | (IRI to [SKOS Concept](https://github.com/Certiman/automate-va/issues/2)) |    /ERALEX    |
+| `dct:conformsTo`   | Modules Applied                    |            (IRI to those /ERALEX instances, which are modules)            |    /ERALEX    |
 | `dct:identifier`   | Certificate Number                 |                     `xsd:string` (with `sh:pattern`)                      |      n/a      |
 | `dct:replaces`     | Previous Certificate               |                         (IRI to that certificate)                         |    /IODOCS    |
 | `dct:isReplacedBy` | Certificate replacing the current  |           (if replaced, then IRI to that replacing certificate)           |    /IODOCS    |
-| `dct:coverage`     | Interoperability Directive applied |          (IRI to /ERALEX instances of the applied IO Directive)           |    /ERALEX    |
-| `dct:coverage`     | Modules Applied                    |            (IRI to those /ERALEX instances, which are modules)            |    /ERALEX    |
-| `dct:coverage`     | TSI's used (amendments included)   |                     (IRI to those /ERALEX instances)                      |    /ERALEX    |
+| `dct:source`       | Interoperability Directive applied |          (IRI to /ERALEX instances of the applied IO Directive)           |    /ERALEX    |
+| `vpa:checkedCompliance/vpa:checkedRequirement`     | TSI's used (amendments included)   | (IRI to those /ERALEX instances)          |    /ERALEX    |
 
 > [!NOTE]
 > [Modules are foreseen to have the IRI](../ERALEX/LEGISLATION.md): `eralex:dec-2010-713-SB` whereby the last characters express the module. They are - like IC's - instances of `eli:LegalResourceSubdivision`, which as a subClassOf `eli:LegalResource` must still be considered `dct:Jurisdiction` (hence `dct:coverage`).
@@ -164,12 +164,12 @@ The following properties are not mandatory but allow detailing the verification 
 | :-------------------- | :-------------------------------------- | :--------------------------------------------------------- |
 | `common:serialNumber` | Unique serial number                    | `xsd:string`                                               |
 | TBD                   | Underlying certification report         | `xsd:string` (`dct:source` can hence not be used)          |
-| `vpa:checked`         | See the VPA ontology                    | (IRI to the vpa:Compliance instances, which themselves     |
+| `vpa:checkedCompliance`| See the VPA ontology        | (IRI to the vpa:Compliance instances, which themselves     |
 |                       |                                         | contain the checked sections of the above conformsTo link, |
 |                       |                                         | and allow to link the restrictions as well)                |
 | `vpa:withRestriction` | Certificate restrictions and conditions | (IRI to the instance of the Restriction)                   |
-| `dct:conformsTo`      | If not using `vpa:checked`, then the    | (IRI to SKOS Concepts, expressing verified sections,       |
-|                       | Sections of TSI to which compliance was | without indication of the result)                          |
+| `vpa:checkedCompliance/vpa:checkedSection`     | The Sections of TSI to which   | (IRI to SKOS Concepts, expressing verified sections,       |
+|                       |  compliance was | without indication of the result)                          |
 |                       | verified.                               |                                                            |
 
 For Applicant, Manufacturer and NoBo the IRI to those /ORGS instances MUST be used.
@@ -188,7 +188,7 @@ See also [EC Declarations](DECLARATIONS.md).
 
 ## Links between CLD's
 
-OPEN POINT
+No link between CLDs is directly made, but related CLDs (together supporting a EC Declaration) can be grouped in instances of `vpa:Evidence` or subclasses thereof.
 
 ## Non-disclosed properties
 
