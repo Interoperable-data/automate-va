@@ -36,8 +36,8 @@ eradis:cld-NoBoCert-15571
     dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-RO-310141-2931 ; era:hasOrganisationRole era-organisation-roles:Applicant  ] ; # Applicant 
     dcterms:contributor [ a era:OrganisationRole ; era:roleOf rorg:MF-RO-310141-2931 ; era:hasOrganisationRole era-organisation-roles:Manufacturer ] ; # Manufacturer
     dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-2826 ; era:hasOrganisationRole era-organisation-roles:NoBo ] ; # The NoBo itself /ORGS (<http://data.europa.eu/949/taxonomies/org#NoBo-2826>)
-    dcterms:coverage [] ; # No manufacturing locations
-    vpa:checked 
+    # dcterms:spatial [ a org:Site ] ; # No manufacturing locations
+    vpa:checkedCompliance
         erapod:check-NoBoCert-15571-1 ,
         erapod:check-NoBoCert-15571-2 ;
     vpa:versionNumber 1 .
@@ -45,11 +45,11 @@ eradis:cld-NoBoCert-15571
 # Stored in a confidential data pod and inaccessible
 # The following is illustrative only
 erapod:check-NoBoCert-15571-1
-    a vpa:Compliance ;
+    a era:CABAssessment ; # vpa:Compliance
     vpa:checkedSection era-skos-lex:TSI-WAG-Section-6.2.2.1.StrengthOfUnit ; # See also the Non-disclosed properties
     vpa:isCompliant "false"^^xsd:boolean ;
-    vpa:withRestriction [
-        a vpa:Restriction ;
+    era:cabCLOU [                                     # subProperty of vpa:withRestriction
+        a era:CABRestriction ;                        # subClassOf vpa:Restriction ;
         vpa:regarding eralex:reg-2015-924 ;
         dcterms:source eralex:reg-2015-924 ;
         rdfs:comment "Example: Original text of the NoBo's restriction can be provided here" ;
@@ -57,7 +57,7 @@ erapod:check-NoBoCert-15571-1
 
 # Example of a check without a restriction
 erapod:check-NoBoCert-15571-2
-    a vpa:Compliance ;
+    a era:CABAssessment ; # vpa:Compliance
     vpa:checkedSection era-skos-lex:TSI-WAG-Section-6.2.2.3.RunningDynamicBehaviour ;
     dcterms:source eralex:reg-2013-1236 ;
     rdfs:comment "The WAG is compliant in regard to 6.2.2.3 of TSI WAG." ;
