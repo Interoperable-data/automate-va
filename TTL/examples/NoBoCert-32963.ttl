@@ -1,0 +1,47 @@
+# prefixes.ttl
+
+era-cld:cld-NoBoCert—32963 
+    a era:CLD , vpa:EvidenceDocument ;
+    dcterms:created “2024-12-16”^^xsd:date ;         # creation in the KG
+    dcterms:issued "2024-05-07"^^xsd:date ;          # the document issue date
+
+    # Legal Basis
+    dcterms:type era-cld-types:2 ;                   # 2/CH1
+    dcterms:conformsTo era-cld-modules:CH1 ;         # Module process applied
+    dcterms:coverage eralex:dir-2016-797 ;           # Directives covered
+    dcterms:subject eralex:ic-1302-2014-5_3.10 ;     # IC 'Pantograph'
+    vpa:checkedCompliance [ 
+        vpa:checkedRequirement  eralex:reg-2014-1302 , # MISSING AMENDMENTS
+    ];     # TSI(s) (including amendments) used
+
+    # Human readable contents
+    rdfs:comment “Stromabnehmer SWL0 115-6YM01“@de , # Typo in ERADIS, better use the label!
+                 „Pantograph 8WL0 115-6YM01“@en ;    # Object of Assessment
+    dcterms:identifier “0893/2/CH1/2024/RST/DEEN/3158/V01” ;
+    rdfs:seeAlso “https://eradis.era.europa.eu/interop_docs/NoBoCert/view.aspx?id=32963”^^xsd:anyURI ;
+    vpa:valid [
+        a time:ProperInterval ;
+        time:hasBeginning "2024-05-07"^^xsd:date ;   # start of validity
+        time:hasDurationDescription [
+            # https://www.w3.org/TR/owl-time/#time:DurationDescription
+            time:years 99 ;                          # Unlimited
+        ]
+    ] ;
+    skos:note "" ;
+
+    # Involved stakeholders
+    dcterms:audience [
+	    a era:OrganisationRole ;
+        era:roleOf rorg:MF-AT-1210-90 ;            # Applicant FN 483145 h
+        era:hasOrganisationRole era-organisation-roles:Applicant
+    ] ; 
+    dcterms:contributor [
+	    a era:OrganisationRole ;
+        era:roleOf rorg:MF-AT-8020-31 ;           # Manufacturer FN 483145 h (same ID!)
+        era:hasOrganisationRole era-organisation-roles:ConstituentManufacturer
+    ] ;
+    dcterms:creator [
+        a era:OrganisationRole ;
+        era:roleOf rorg:NoBo-0893
+    ] ;
+    vpa:versionNumber 1 .
