@@ -20,7 +20,7 @@ eradis:cld-NoBoCert-15571
     ] ;
 
     # Human readable content
-    rdfs:comment "Tank Wagon 97m3 Za(c)ns" ;
+    dcterms:description "Tank Wagon 97m3 Za(c)ns" ;
     dcterms:identifier "2826/1/SB/2021/RST/EN/N20210917/01" ;
     rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/NoBoCert/view.aspx?id=15571"^^xsd:anyURI ;
     vpa:valid [
@@ -31,7 +31,7 @@ eradis:cld-NoBoCert-15571
             time:years 10 ;
         ]
     ];
-    skos:note """This certificate follows certificate number 0038/1/SB/2016/RST/EN/20161113 issue 2 dated
+    rdfs:comment """This certificate follows certificate number 0038/1/SB/2016/RST/EN/20161113 issue 2 dated
 02/09/2016 and certificate number 2673/1/SB/2016/RST/EN/N20160045/02 dated 29/05/2020"""@en ;
     dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-RO-310141-2931 ; era:hasOrganisationRole era-organisation-roles:Applicant  ] ; # Applicant 
     dcterms:contributor [ a era:OrganisationRole ; era:roleOf rorg:MF-RO-310141-2931 ; era:hasOrganisationRole era-organisation-roles:Manufacturer ] ; # Manufacturer
