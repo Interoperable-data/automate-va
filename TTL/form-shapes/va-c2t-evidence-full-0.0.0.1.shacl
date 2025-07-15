@@ -50,19 +50,19 @@ era:EvidenceShape a sh:NodeShape ;
   schema:version "0.0.0.1" ;
   # -------------------------------------
 
-  sh:targetClass era:OSSLibrary ; # subClassOf vpa:Evidence
+  sh:targetClass era:DocumentSet ; # subClassOf vpa:Evidence
   sh:property [
     sh:path vpa:submittedFor ;
     sh:name "VA C2T application URI('s)";
     sh:description "The Application(s) for which this Evidence can serve" ;
-    sh:hasValue <erava:va-s-001> ;
+    # sh:hasValue <erava:va-s-001> ;
     sh:nodeKind sh:IRI ;
     sh:minCount 1 ;    
   ] , [
     sh:path dcterms:identifier ;
     sh:name "Evidence collection identifier" ;
     sh:description "Use a clear identifier to retrieve this evidence collection.";
-    sh:hasValue "Siemens MIREO Evidence"^^xsd:string ;
+    # sh:hasValue "An evidence collection"^^xsd:string ;
     sh:datatype xsd:string ;
     sh:minCount 1 ;
     sh:maxCount 1 
