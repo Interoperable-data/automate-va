@@ -1,0 +1,38 @@
+# prefixes.ttl
+
+# The latest EC Declaration, an example of a revoked resource.
+:ecd-ecDecl-12411 
+    a era:ECDeclaration ;
+    dcterms:type era-cld-types:ECDoC ;
+    dcterms:created "2024-12-18"^^xsd:date ; # the creation of this resource in the KG
+    dcterms:issued "2021-12-09"^^xsd:date ; # the document issue date
+    dcterms:available "2022-01-24"^^xsd:date ; # the availability of this resource in the ERADIS db
+    dcterms:creator [ a era:OrganisationRole ; era:roleOf era-org:MF-AT-4822-62 ; era:hasOrganisationRole era-organisation-roles:Manufacturer ] ;
+    dcterms:contributor [ a era:OrganisationRole ; era:roleOf rorg:NoBo-1714 ; era:hasOrganisationRole era-organisation-roles:NoBo ] ;
+    dcterms:coverage era-lex:dir-2016-797 ,
+                     era-lex:reg-2014-1302 ;
+    rdfs:label "Pantograph contact strips" ;
+    rdfs:comment "For detailed info, please see ANNEX" ;
+    dcterms:subject era-lex:ic-1302-2014-5_3.11 ; # The URI of the exact IC in scope
+    dcterms:identifier "AT/000000FN93653a/2021/001714" ;
+    rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=12411"^^xsd:anyURI ;
+    era:eradisVersion "11";
+    dcterms:replaces :ecd-ecDecl-12000 ;
+    era:status era-states-eratv:revoked ; # !! 
+    dcterms:requires [
+         a vpa:Evidence ;
+         rdfs:member 
+            [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3474" ], # 
+            :cld-NoBoCert-17158 # equals[ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
+         ;
+    ], [
+         a vpa:Evidence ;
+         rdfs:member 
+            [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3480" ],
+            :cld-NoBoCert-17158 # equals[ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
+    ], [
+         a vpa:Evidence ;
+         rdfs:member 
+            [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3482" ],
+            :cld-NoBoCert-17158 # equals[ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]        
+    ] .
