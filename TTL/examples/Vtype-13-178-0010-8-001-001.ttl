@@ -19,7 +19,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     ] ;
 
     ##### LINKED AUTHORISATIONS
-    vpa:definesCase erava:vac-13-178-0010-8-001-001-1 ; # Section 2 & 3 info there
+    vpa:definesCase erava:vac-13-178-0010-8-001-001-DE-1 ; # Section 2 & 3 info there
 
     ##### CONFIGURATION
     era:wheelSetGauge era-ntg-rinf:30 ;
@@ -61,7 +61,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     ];
     era:vehicleTypePlatform "MIREO" .
 
-### CONFIGURATIONS, RESTRICTIONS, AUTHORISATIONS
+### CONFIGURATIONS AND RESTRICTIONS
 
 # Configuration only used in 3.1.2.4 (auth)
 eratv:ConfigA a era:VehicleTypeConfiguration ; # NOT a subClass of vpa:Requirement
@@ -92,8 +92,10 @@ eratv:nccfu-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationRestriction ; 
 - Die maximale Bahnsteighöhe für das Öffnen der Türen beträgt 960mm.
 ..."""@de . # existing property
 
+### AUTHORISATION (CASE)S
+
 # GERMANY - See all authorisation data under 3.1.X.X
-erava:vac-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
+erava:vac-13-178-0010-8-001-001-DE-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:NEW ;
     era:typeRegistrationMethod era-vehicle-types-regmethod:NewType ;
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
@@ -173,7 +175,7 @@ Checks already carried out at the previous authorisation of reference type 13-17
     ].
 
 # For the first C2T application following 20240202-004: this was V-20240621-009
-erava:vac-13-178-0010-8-001-001-2 a era:VehicleAuthorisationCase ;
+erava:vac-13-178-0010-8-001-001-DE-2 a era:VehicleAuthorisationCase ;
     vpa:permissionType era-va-authcase:C2T ;
     # Non-disclosed - OSS data on the auth case can be placed here
     vpa:supports erava:va-20240621-009 .
@@ -188,7 +190,7 @@ erava:20240621-009 a era:VehicleAuthorisation ; # subClassOf vpa:Permission ;
     dcterms:issued "2024-06-26"^^xsd:date .
 
 # For the C2T application following 20240621-009: this was V-20241219-012
-erava:vac-13-178-0010-8-001-001-3 a era:VehicleAuthorisationCase ; # subClassOf vpa:Case
+erava:vac-13-178-0010-8-001-001-DE-3 a era:VehicleAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:C2T ;
     # Non-disclosed - OSS data on the auth case can be placed here
     vpa:supports erava:va-20241219-012 .
@@ -202,28 +204,4 @@ erava:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission
     dcterms:issued "2025-01-03"^^xsd:date .
 
 ### Evidence(Document)(s)
-
-# Evidence without eradis URI can only be represented as strings. These can later be converted into URI’s where possible.
-erava:13-178-0010-8-001-001-1 a vpa:Evidence ;
-    rdfs:member “DE008/1/SB/2024/RST/DE/RST-20056/V01”, 
-        “004/1/NNTR/2023/CCO/DE EN/3708.1U/V01”, 
-        “004/1/NNTR/2023/CCO/DE EN/3708.1/V01”, 
-        ”004/1/NNTR/2023/CCO/DE EN/3708.2/V01” ;
-    vpa:supportsCompliance [ a vpa:Compliance ;
-        vpa:compliant "true"^^xsd:boolean ;
-        vpa:checkedSection "2.1.1 Strength and integrity" , "3.1 Vehicle gauge" , "3.2.1 Running safety and dynamics", "3.3.5 Sanding system" , "3.3.7 Axle shaft", "4.1 Functional requirements for braking at train level" , "4.5 Brake performance" , ..., "12.1.2.2 Other GSM-R requirements", "12.2.1 National on-board signalling systems" ;
-    	vpa:withRestriction [
-            a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
-            era:forConfiguration eratv:ConfigA  ;
-        ]
-    ] ;	
-    vpa:submittedIn erava:vac-13-178-0010-8-001-001-1 .
-
-# Section 2.2 via vpa:Evidence. In OSS, the collection of submitted documents is larger.
-erava:13-178-0010-8-001-001-2 a vpa:Evidence ;
-    rdfs:member eradis:cls-NoBoCert-30999, # 1991/1/SB/2024/RST/DEEN/CRF-10410/V01
-        eradis:cld-NoBoCert-34042, # 1991/1/SB/2024/RST/DEEN/PRM-10411/V02
-        eradis:cld-NoBoCert-31004, # 1991/1/SB/2024/RST/DEEN/NOI-10412/V01
-        eradis:cld-NoBoCert-15199, # 1991/1/SB/2020/RST/DEEN/CRF-10027/V02
-        eradis:cld-NoBoCert-29770 ; # 0893/1/SB/2023/CCO/DEEN/3708/V02
-    vpa:submittedIn erava:vac-13-178-0010-8-001-001-1 .
+See Evidence-13-178-0010-8-001-001.ttl
