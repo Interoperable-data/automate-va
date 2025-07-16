@@ -8,7 +8,7 @@ The introduction of new Vehicle Types must follow internal procedure [INS_VEA_01
 
 The following guidelines follow from the documentation on CLDs and EC Declarations.
 
-- A set of certificates is stored as `rdfs:member` of `vpa:Evidence` and can serve as the `dcterms:requires` of the EC Declaration supported by these CLDs. CLDs are in the end `vpa:EvidenceDocuments`.
+- A set of certificates is stored as `rdfs:member` of `era:CABEvidence|vpa:Evidence` and can serve as the `dcterms:requires` of the EC Declaration supported by these CLDs. CLDs are in the end `vpa:EvidenceDocument`s.
 - Where possible, the Certificates are represented with their eradis: CLD-URI's, if not a "shortened string-based" CLD must be added.
 - SPARQL-query `?s dcterms:isReplacedBy+ ?p` must be able to reconstruct the historical evolution of the resource, both in the case of CLD as EC Declaration.
 - An EC Declaration's end of validity date can ONLY be constructed:
@@ -27,13 +27,14 @@ Each type which was authorised under the 4th Railway Package ((EU) 2016/797, det
 ```js
 eratv:{vehicle type identifier} a era:VehicleType ;
     ...
-    vpa:definesCase eva:{authorisation case identified by type id + index} , ... ;
+    vpa:definesCase eva:{authorisation case identified by type id + Authorising MS + index} , ... ;
 
-eva:{authorisation case identified by type id + index} a era:VehicleTypeAuthorisationCase ;
+eva:{authorisation case identified by type id + Authorising MS + index} a era:VehicleTypeAuthorisationCase ;
     vpa:permissionType era{SKOS-CS} ;
     ...
     # 4RP means the application exists
-    vpa:supportsRequest eva:va-{OSSID} | eva:va-{NATIONAL AUTH ID} ; 
+    vpa:constitutes eva:va-{OSSID} | eva:va-{NATIONAL AUTH ID} ;
+    vpa:concerns eratv:{vehicle type identifier} ; # and relevant vehicle sets
     ...
 
 eva:va-{OSS_ID} | eva:va-{NATIONAL AUTH ID} a era:VehicleTypeAuthorisationApplication ; 
@@ -41,8 +42,10 @@ eva:va-{OSS_ID} | eva:va-{NATIONAL AUTH ID} a era:VehicleTypeAuthorisationApplic
     vpa:requestFor eva:{OSSID} | eva:{NATIONAL AUTH} .
 
 eva:{OSSID} a era:VehicleTypeAuthorisation ;
-    # other properties as colected from the Authorisation-section in ERATV
+    # other properties as collected from the Authorisation-section in ERATV
 ```
+
+The use of the OSS ID is possible if the VA-application was treated in OSS.
 
 [Example type: 13-178-0010-8-001-001](https://eratv.era.europa.eu/Eratv/Home/View/13-178-0010-8-001-001)
 
