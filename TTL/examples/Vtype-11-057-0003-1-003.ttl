@@ -2,18 +2,75 @@
 
 ### VehicleType
 eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
-  dcterms:identifier "11-057-0003-1-003" ;
-  dcterms:issued "2019-03-27T00:00:00Z"^^xsd:dateTime ; # Date of Record
-  rdfs:label "X4-E-Lok-AB (MS-Lokomotiven) Korridor D-A-I_Rel. E1.03" ;
-  era:alternativeTypeName "E193 DAI_Rel. E1.03" ; # current property is too general
-  era:category era-vehicle-types-eratv:tractionVehicles ;
-  era:subCategory era-vehicle-types-eratv:locomotive ;
-  vpa:definesCase eva:vac-11-057-0003-1-003-1 , eva:vac-11-057-0003-1-003-2 ; # DE, AT
-  ...
-  era:vehicleTypePlatform "X4" .
+    ## GENERAL INFO
+    dcterms:identifier "11-057-0003-1-003" ;
+    dcterms:issued "2019-03-27T00:00:00Z"^^xsd:dateTime ; # Date of Record
+    era:typeName "X4-E-Lok-AB (MS-Lokomotiven) Korridor D-A-I_Rel. E1.03" ;
+    era:alternativeTypeName "E193 DAI_Rel. E1.03" ; # current property is too general
+    era:vehicleTypePlatform "X4" ;
 
-### VehicleTypeConfiguration's
-### Note, these are IDENTICAL as those defined in the type 11-057-0018-9-001
+    era:category era-vehicle-types-eratv:tractionVehicles ;
+    era:subCategory era-vehicle-types-eratv:locomotive ;
+    era:manufacturer [
+        a era:OrganisationRole ;
+        era:roleOf era-org:MF-DE-81739-1 ;  # Siemens AG (era:Body, see above)
+        era:hasOrganisationRole era-organisation-roles:Manufacturer
+    ] ;
+
+    ## LINKED AUTHS
+    vpa:definesCase eva:vac-11-057-0003-1-003-1 , eva:vac-11-057-0003-1-003-2 ; # DE, AT
+
+    ## CONFIGURATIONS
+    era:wheelSetGauge era-ntg-rinf:30 ;
+    era:protectionLegacySystem 
+        era-tpls-rinf:34 , era-tpls-eratv:LZB80E , # LZB (LZB80E)
+        era-tpls-eratv:INDUSI-PZB , # Indusi/PZB (LZB80E)
+        era-tpls-rinf:42 ;  # RSDD/SCMT
+    era:energySupplySystem 
+        era-ess-rinf:AC10 , # AC 25kV-50Hz
+        era-ess-rinf:AC20 , # AC 15kV-16.7Hz
+        era-ess-rinf:DC30 ; # DC 3kV
+
+    ## Non-configuration dependent parameters
+    era:gsmRVersion era-gsmrv-eratv:7-15 ;
+    era:radioSwitchOverSpecialConditions "None" ;
+    # ... many others
+
+    # Configuration-dependent parameters
+    era:configDependentParameter [ 
+        ## Joined AC-configurations 
+        a era:VTConfigParameterSet ;
+        era:forConfiguration eratv:Config15kV167Hz , eratv:Config25kV50Hz ;
+        era:energySupplyMaxPower 6400^^xsd:double ;
+        era:maximumContactWireHeight 4.51, 6.51 ;
+        era:vehiclePantographHead "1950 sc DE and AT mm" ;
+        era:contactStripMaterial era-csm-rinf:20 ; # plain carbon
+        era:numberOfPantographsInContactWithOCL 1 ;
+        # ...
+    ] , [
+        ## Other values
+
+    ] , [ .. ] ;
+    ...
+.
+
+### VehicleTypeConfigurations
+### Note, some are IDENTICAL as those defined in the type 11-057-0018-9-001, and they are reused in the KG.
+# AC 15kV-16.7Hz only
+eratv:Config15kV167Hz a era:VehicleTypeConfiguration ;
+    rdfs:label "AC 15kV-16.7Hz" ;
+    era:energySupplySystem era-ess-rinf:AC20 .
+
+# AC 25kV-50Hz only
+eratv:Config25kV50Hz a era:VehicleTypeConfiguration ;
+    rdfs:label "AC 25kV-50Hz" ;
+    era:energySupplySystem era-ess-rinf:AC10 .
+
+# DC 3kV only
+eratv:Config3kV a era:VehicleTypeConfiguration ;
+    rdfs:label "DC 3kV" ;
+    era:energySupplySystem era-ess-rinf:DC30 .
+
 # 1435mm / AC 15kV-16.7Hz / Indusi/PZB
 eracfg:Config1435IndusiPZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / Indusi/PZB" ;
@@ -32,6 +89,7 @@ eracfg:Config1435LZB a era:VehicleTypeConfiguration ;
 
 #### Restrictions
 eratv:nccfu-11-057-0003-1-003-1-1 a era:VehicleTypeAuthorisationRestriction ;
+  # vpa:regarding must link to a vpa:Requirement.
   era:forConfiguration eratv:Config1435LZB , eratv:Config1435IndusiPZB ;
   # ... both are MOSTLY identical and coded only.
   era:minimumHorizontalRadius "140"^^xsd:integer ;
@@ -43,12 +101,12 @@ eratv:nccfu-11-057-0003-1-003-1-1 a era:VehicleTypeAuthorisationRestriction ;
   # TSI CCS - Annex II.3.3.   List of Class B train protection systems
 
 eratv:nccfu-11-057-0003-1-003-1-2 a era:VehicleTypeAuthorisationRestriction ;
-  vpa:regarding eratv:Config1435LZB ;
+  era:forConfiguration eratv:Config1435LZB ;
   # 3.1 Climatic zone:  3.1.1 T1
   era:temperatureRange era-tr:10 .
 
 eratv:nccfu-11-057-0003-1-003-1-3 a era:VehicleTypeAuthorisationRestriction ;
-  vpa:regarding eratv:Config1435IndusiPZB ;
+  era:forConfiguration eratv:Config1435IndusiPZB ;
   # 3.1 Climatic zone:  3.1.1 T2
   era:temperatureRange era-tr:20 .
 
@@ -72,13 +130,21 @@ eva:vac-11-057-0003-1-003-1 a era:VehicleTypeAuthorisationCase ;   # Uses: era:V
       eratv:nccfu-11-057-0003-1-003-1-2 ,
       eratv:nccfu-11-057-0003-1-003-1-3 ;
   ] ;
+  # Section 2 Conformity must be linked to the authorisation case where type appeared.
+  era:configDependentCompliance [
+      a era:VehicleTypeCompliance ;
+      vpa:checkedSection <SKOS:TSI-section> .
  ...
 
 eva:auth-11-057-0003-1-003-DE-1 a era:VehicleTypeAuthorisation ;
   dcterms:identifier "DE5920191006" ;
   skos:altLabel "DE5120190000; 3129-31tae/016-3110#001" ;
   dcterms:issued "2019-03-19"^^xsd:date ; # the document issue date
-  era:vehicleTypeAuthorisationHolder era-org:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
+  era:vehicleTypeAuthorisationHolder [
+        a era:OrganisationRole ;
+        era:roleOf era-org:MF-DE-12435-44 ;  # label was 'Siemens AG', in Berlin
+        era:hasOrganisationRole era-organisation-roles:Holder ;
+    ]; 
   dcterms:isReplacedBy eva:auth-11-057-0003-1-003-DE-2 .
 
 eva:auth-11-057-0003-1-003-DE-2 a era:VehicleTypeAuthorisation ;
@@ -91,19 +157,23 @@ eva:auth-11-057-0003-1-003-DE-3 a era:VehicleTypeAuthorisation ;
   dcterms:issued "2020-02-12"^^xsd:date . # Second correction
 
 # AUSTRIA
-eva:vac-11-057-0003-1-003-2 a era:VAAuthorisationCase ;   # Uses: era:VAAuthorisationCase subClassOf vpa:Case
-  vpa:permissionType era-skos-va:HistoricalAuthCase ; 
+eva:vac-11-057-0003-1-003-2 a era:VehicleTypeAuthorisationCase  ;   # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+  vpa:permissionType era-skos-va:HistoricalAuthorisationCase ; 
   era:typeRegistrationMethod era-vehicle-types-regmethod:NewVersionOfRegisteredType ;
   era:areaOfUse <http://publications.europa.eu/resource/authority/country/AUT> ; # Whole memberstate
   vpa:supports [
-    a vpa:Request ; # blankNode (physical submission outside of OSS)
+    a era:VehicleAuthorisationApplication ; # blankNode (physical submission outside of OSS)
     vpa:requestFor 
       eva:auth-11-057-0003-1-003-AT-1 ;
   ].
   # No restrictions in ERATV.
 
-eva:auth-11-057-0003-1-003-AT-1 a era:VAAuthorisation ;
+eva:auth-11-057-0003-1-003-AT-1 a era:VehicleTypeAuthorisation ;
   dcterms:identifier "AT5920211002" ;
   skos:altLabel "GZ 2021-0.395.278" ;
   dcterms:issued "2021-06-04"^^xsd:date ; # the document issue date
-  era:vehicleTypeAuthorisationHolder era-org:MF-DE-12435-44 . # Siemens Mobility GmbH
+  era:vehicleTypeAuthorisationHolder  [
+        a era:OrganisationRole ;
+        era:roleOf era-org:MF-DE-12435-44 ;  # label was 'Siemens AG', in Berlin
+        era:hasOrganisationRole era-organisation-roles:Holder ;
+    ]. # era-org:MF-DE-12435-44 would be Siemens Mobility GmbH previous name AG.
