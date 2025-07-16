@@ -1,27 +1,4 @@
-@base <http://data.europa.eu/949/> .
-@prefix : <http://data.europa.eu/949/cld/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix eralex: <http://data.europa.eu/949/eli/> .
-@prefix eva: <http://data.europa.eu/949/eva/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix time: <http://www.w3.org/2006/time#> .
-@prefix unit: <http://qudt.org/vocab/unit/> .
-@prefix vpa: <http://w3id.org/vpa/> .
-@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
-@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
-@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
-@prefix era-org: <http://data.europa.eu/949/organisations/> .
+## See prefixes.ttl for common, specific and SKOS CS prefixes
 
 ### VehicleType
 eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
@@ -95,14 +72,14 @@ eratv:Config3kV a era:VehicleTypeConfiguration ;
     era:energySupplySystem era-ess-rinf:DC30 .
 
 # 1435mm / AC 15kV-16.7Hz / Indusi/PZB
-eratv:Config1435IndusiPZB a era:VehicleTypeConfiguration ;
+eracfg:Config1435IndusiPZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / Indusi/PZB" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
     era:protectionLegacySystem era-tpls-eratv:INDUSI-PZB .
 
 # 1435mm / AC 15kV-16.7Hz / LZB
-eratv:Config1435LZB a era:VehicleTypeConfiguration ;
+eracfg:Config1435LZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / LZB" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
@@ -115,11 +92,11 @@ eratv:nccfu-11-057-0003-1-003-1-1 a era:VehicleTypeAuthorisationRestriction ;
   # vpa:regarding must link to a vpa:Requirement.
   era:forConfiguration eratv:Config1435LZB , eratv:Config1435IndusiPZB ;
   # ... both are MOSTLY identical and coded only.
-  era:minimumHorizontalRadius 140 ;
-  era:gaugingProfile era-gaugings-rinf:40 ;
+  era:minimumHorizontalRadius "140"^^xsd:integer ;
+
   # ... coded 2.4, 2.5 as they are identical for both configs.
   era:etcsEquipmentOnBoardLevel era-etcslevel:30 ; # L2, without details on what TSI
-  era:protectionLegacySystem <> . # ERA DOC needed to convert codes to:
+  
   # correct SKOS CS, check whether era-tpls:TrainProtectionLegacySystems is as per 
   # TSI CCS - Annex II.3.3.   List of Class B train protection systems
 
@@ -135,7 +112,7 @@ eratv:nccfu-11-057-0003-1-003-1-3 a era:VehicleTypeAuthorisationRestriction ;
 
 #### Authorisation(Case)(s)
 # GERMANY
-eva:vac-11-057-0003-1-003-1 a era:VehicleAuthorisationCase  ;   # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+eva:vac-11-057-0003-1-003-1 a era:VehicleTypeAuthorisationCase ;   # Uses: era:VAAuthorisationCase subClassOf vpa:Case
   vpa:permissionType era-skos-va:HistoricalAuthCase ; 
   era:typeRegistrationMethod era-vehicle-types-regmethod:NewVersionOfRegisteredType ;
   era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ; # Whole memberstate
@@ -159,7 +136,7 @@ eva:vac-11-057-0003-1-003-1 a era:VehicleAuthorisationCase  ;   # Uses: era:VAAu
       vpa:checkedSection <SKOS:TSI-section> .
  ...
 
-eva:auth-11-057-0003-1-003-DE-1 a era:VehicleAuthorisation  ;
+eva:auth-11-057-0003-1-003-DE-1 a era:VehicleTypeAuthorisation ;
   dcterms:identifier "DE5920191006" ;
   skos:altLabel "DE5120190000; 3129-31tae/016-3110#001" ;
   dcterms:issued "2019-03-19"^^xsd:date ; # the document issue date
@@ -170,17 +147,17 @@ eva:auth-11-057-0003-1-003-DE-1 a era:VehicleAuthorisation  ;
     ]; 
   dcterms:isReplacedBy eva:auth-11-057-0003-1-003-DE-2 .
 
-eva:auth-11-057-0003-1-003-DE-2 a era:VehicleAuthorisation  ;
+eva:auth-11-057-0003-1-003-DE-2 a era:VehicleTypeAuthorisation ;
   dcterms:identifier "DE5920191006" ;
   skos:altLabel "DE5120190000; 3129-31tae/016-3110#001" ;
   dcterms:issued "2019-09-06"^^xsd:date ; # First correction
   dcterms:isReplacedBy eva:auth-11-057-0003-1-003-DE-3 .
 
-eva:auth-11-057-0003-1-003-DE-3 a era:VehicleAuthorisation  ;
+eva:auth-11-057-0003-1-003-DE-3 a era:VehicleTypeAuthorisation ;
   dcterms:issued "2020-02-12"^^xsd:date . # Second correction
 
 # AUSTRIA
-eva:vac-11-057-0003-1-003-2 a era:VehicleAuthorisationCase  ;   # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+eva:vac-11-057-0003-1-003-2 a era:VehicleTypeAuthorisationCase  ;   # Uses: era:VAAuthorisationCase subClassOf vpa:Case
   vpa:permissionType era-skos-va:HistoricalAuthorisationCase ; 
   era:typeRegistrationMethod era-vehicle-types-regmethod:NewVersionOfRegisteredType ;
   era:areaOfUse <http://publications.europa.eu/resource/authority/country/AUT> ; # Whole memberstate

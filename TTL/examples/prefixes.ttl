@@ -24,3 +24,15 @@
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
 @prefix erava: <http://data.europa.eu/949/vehicleAuthorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicleRegistrations/> .
+
+### SKOS
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
+@prefix era-tpls-rinf: <http://data.europa.eu/949/concepts/train-protection-legacy-systems/rinf/> .
+@prefix era-rscv-rinf: <http://data.europa.eu/949/concepts/radio-system-compatibilities-voice/rinf/> .
+@prefix era-gsmr-rinf: <http://data.europa.eu/949/concepts/gsmr-networks/rinf/> .
+@prefix era-gaugings-rinf: <http://data.europa.eu/949/concepts/gaugings/rinf/> .
+@prefix era-tr: <http://data.europa.eu/949/concepts/temperature-ranges/> .
