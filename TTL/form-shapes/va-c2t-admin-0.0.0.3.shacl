@@ -161,7 +161,6 @@ This version has been updated with the SHACL message and severities needed in a 
                 sh:datatype xsd:anyURI; # unstable, unchecked
             ]
          ] ; 
-         
         ]
         [ sh:name "No pre-engagement baseline" ;
           sh:node [

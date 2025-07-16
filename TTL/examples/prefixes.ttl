@@ -1,5 +1,6 @@
 @base <http://data.europa.eu/949/> .
 @prefix era: <http://data.europa.eu/949/> .
+@prefix gotham: <https://batman.fandom.com/wiki/> .
 
 # General
 @prefix dcterms: <http://purl.org/dc/terms/> .
@@ -16,26 +17,31 @@
 @prefix vpa: <http://w3id.org/vpa#> .
 @prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
 
 # Domain-specific
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix era-lex: <http://data.europa.eu/949/requirements/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
-@prefix orgs: <http://data.europa.eu/949/organisations/sites/> .
-@prefix orgu: <http://data.europa.eu/949/organisations/units/> .
+@prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
+@prefix uorg: <http://data.europa.eu/949/organisations/units/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix erava: <http://data.europa.eu/949/vehicleAuthorisations/> .
-@prefix eravr: <http://data.europa.eu/949/vehicleRegistrations/> .
+@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 
 # Relevant SKOS Concept Schemes
 @prefix era-skos: <http://data.europa.eu/949/concepts/> .
 @prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
 @prefix era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/> .
 @prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
 @prefix era-states: <http://data.europa.eu/949/concepts/states/> .
 @prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
 @prefix era-vtc: <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
+@prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
+@prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
+@prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .

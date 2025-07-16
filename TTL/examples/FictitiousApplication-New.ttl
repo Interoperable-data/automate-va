@@ -1,4 +1,50 @@
-# todo: prefixes and syntaxc check
+@base <http://data.europa.eu/949/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix gotham: <https://batman.fandom.com/wiki/> .
+
+# General
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Domain-specific
+@prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
+@prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
+@prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
+@prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
+@prefix uorg: <http://data.europa.eu/949/organisations/units/> .
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
+@prefix evr: <http://data.europa.eu/949/vehicles/> .
+
+# Relevant SKOS Concept Schemes
+@prefix era-skos: <http://data.europa.eu/949/concepts/> .
+@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
+@prefix era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
+@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
+@prefix era-vtc: <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
+@prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
+@prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
+@prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
 
 # The VehicleType is in DRAFT and being created.
 rorg:MF-US-GC001-224 a era:Body ; # Wayne Industries, Gotham City, USA (era:Body, see above)
@@ -23,14 +69,14 @@ eratv:vt-71-001-0001-1-001 a era:VehicleType ;
   era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledSpecialVehicle ;
   era:vehicleTypeManufacturer [
     a era:OrganisationRole ;
-    era:roleOf era-org:MF-US-GC001-224 ;  
+    era:roleOf rorg:MF-US-GC001-224 ;  
     era:hasOrganisationRole era-organisation-roles:Manufacturer
   ] ;
   era:wheelSetGauge era-ntg-rinf:30 ;
   era:energySupplySystem era-ess-rinf:DC30 ;
   era:vehicleTypePlatform "Batman Rail Vehicles"@en .
 
-eratv:BatmanSpecial a a era:VehicleTypeConfiguration ;
+eratv:BatmanSpecial a era:VehicleTypeConfiguration ;
   rdfs:label "3kV on US Standard Gauge";
   era:wheelSetGauge era-ntg-rinf:30 ;
   era:energySupplySystem era-ess-rinf:DC30 .
@@ -42,13 +88,13 @@ evr:bat-mobile-metro-001 a era:Vehicle ;
   era:compositeBrakeBlockRetrofitted true ;
   era:vehicleNumber "01234567890-9" ; # should raise several problems
   era:vehicleSeries "Wayne Railway Attack vehicles, series 001"@en ;
-  era:operationalRestriction era-rc-eratv:2-7-7 . # it is too loud
+  era:operationalRestriction era-noic:2-7-7 . # it is too loud
 
 erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
   rdfs:label "Authorisation project of the Batman spacial railway Vehicle"@de ;
   era:preEngagementBaseline [ a era:preEngagement ; era:hasPreEngagementBaseline false ];
-  dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 era:hasRole era-organisation-roles:Applicant ] ;
-  dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR era:hasRole era-organisation-roles:AuthorisingEntity ] ;
+  dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasRole era-organisation-roles:Applicant ] ;
+  dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasRole era-organisation-roles:AuthorisingEntity ] ;
   dcterms:identifier "VA-20250715-001" ;
   vpa:constitutedBy erava:vac-71-001-0001-1-001-US-1 ;
   vpa:requestFor erava:71-001-0001-1-001-US-1 ;
@@ -56,7 +102,7 @@ erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # su
 
 erava:vac-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
   vpa:permissionType era-va-authcase:NEW ;
-  era:typeRegistrationMethod era-vehicle-types-regmethod:NewType ;
+  era:typeRegistrationMethod era-va-trm:NewType ;
   rdfs:label "Case 'NEW' to achieve APOM of type 71-001-0001-1-001 in the US"@en ;
   era:areaOfUse <http://publications.europa.eu/resource/authority/country/USA> ;
   era:authorisingMemberState <http://publications.europa.eu/resource/authority/country/USA> ; 
@@ -126,8 +172,8 @@ gotham:nobo-71-001-0001-1-001-US a era:CABEvidence ;
   ] ;	
   vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 .
 
-gotham:ecd-123 a era:ECDeclaration ;
-  dcterms:type era-cld-types:ECDoV ;
+era-ecd:ecd-123 a era:ECDeclaration ;
+  dcterms:type era-ecd-types:ECDoV ;
   dcterms:identifier "US/000000GC93653a/2022/000014" ;
   dcterms:label "DoV for Wayne Industries special railway attack vehicle";
   dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
@@ -135,7 +181,7 @@ gotham:ecd-123 a era:ECDeclaration ;
   dcterms:issued "2022-04-03"^^xsd:date ;
   vpa:versionNumber "1" .
 
-gotham:nobo-123 a era:ECCertificate ;
+era-cld:nobo-123 a era:CLD ;
   dcterms:identifier "0001/1/SB/2022/RST/EN/WAYN0001/01" ;
   dcterms:type era-cld-types:1 ;
   dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
@@ -156,7 +202,7 @@ gotham:clui-123 a era:CABRestriction ; # subClassOf era:Restriction
   vpa:regarding eralex:reg-2014-1304 ;
   era:nonCodedRestrictions "The vehicle has a non-compliant mass per wheel"@en .
   
-gotham:nobo-456 a era:ECCertificate ;
+era-cld:nobo-456 a era:CLD ;
   dcterms:identifier "0001/4/SD/2022/RST/EN/WAYN0001/01" ;
   dcterms:type era-cld-types:4 ;
   dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham

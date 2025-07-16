@@ -1,8 +1,53 @@
 # prefixes.ttl
+@base <http://data.europa.eu/949/> .
+@prefix era: <http://data.europa.eu/949/> .
 
-era-cld:cld-NoBoCert—32963 
-    a era:CLD , vpa:EvidenceDocument ;
-    dcterms:created “2024-12-16”^^xsd:date ;         # creation in the KG
+# General
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Domain-specific
+@prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
+@prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
+@prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
+@prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
+@prefix uorg: <http://data.europa.eu/949/organisations/units/> .
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix erava: <http://data.europa.eu/949/vehicleAuthorisations/> .
+@prefix eravr: <http://data.europa.eu/949/vehicleRegistrations/> .
+@prefix evr: <http://data.europa.eu/949/vehicles/> .
+
+# Relevant SKOS Concept Schemes
+@prefix era-skos: <http://data.europa.eu/949/concepts/> .
+@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
+@prefix era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
+@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
+@prefix era-vtc: <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
+@prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
+@prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
+@prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
+
+era-cld:cld-NoBoCert-32963 a era:CLD , vpa:EvidenceDocument ;
+    dcterms:created "2024-12-16"^^xsd:date ;         # creation in the KG
     dcterms:issued "2024-05-07"^^xsd:date ;          # the document issue date
 
     # Legal Basis
@@ -16,19 +61,20 @@ era-cld:cld-NoBoCert—32963
 	];
     dcterms:source eralex:dir-2016-797 ;             # Directives at the source of the CLD
     dcterms:subject eralex:ic-1302-2014-5_3.10 ;     # IC 'Pantograph'
-    vpa:checkedCompliance [ a era:CABAssessment ;
+    vpa:checkedCompliance [ 
+        a era:CABAssessment ;
 		# Assessment Requirements
 		# TSI(s) (including amendments) used
-        vpa:checkedRequirement  eralex:reg-2014-1302 , eralex:cir-2019-776 , eralex:cir-2020-387 , eralex:cir-2023-1694
+        vpa:checkedRequirement  eralex:reg-2014-1302 , eralex:cir-2019-776 , eralex:cir-2020-387 , eralex:cir-2023-1694 ;
 		rdfs:seeAlso "Assessment report 3158/V02 dd. 7/05/2024"@en ;
 		vpa:compliant "true"^^xsd:boolean 
     ] ;     											 
 
     # Human readable contents
-    dcterms:description “Stromabnehmer SWL0 115-6YM01“@de , # Typo in ERADIS, better use the label!
-                        „Pantograph 8WL0 115-6YM01“@en ;    # Object of Assessment
-    dcterms:identifier “0893/2/CH1/2024/RST/DEEN/3158/V01” ;
-    rdfs:seeAlso “https://eradis.era.europa.eu/interop_docs/NoBoCert/view.aspx?id=32963”^^xsd:anyURI ;
+    dcterms:description "Stromabnehmer SWL0 115-6YM01"@de , # Typo in ERADIS, better use the label!
+                        "Pantograph 8WL0 115-6YM01"@en ;    # Object of Assessment
+    dcterms:identifier "0893/2/CH1/2024/RST/DEEN/3158/V01" ;
+    rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/NoBoCert/view.aspx?id=32963"^^xsd:anyURI ;
     vpa:valid [
         a time:ProperInterval ;
         time:hasBeginning "2024-05-07"^^xsd:date ;   # start of validity
