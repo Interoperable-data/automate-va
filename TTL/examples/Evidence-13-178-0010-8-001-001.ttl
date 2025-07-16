@@ -1,0 +1,30 @@
+# Evidence without eradis URI can only be represented as strings. These can later be converted into URI’s where possible.
+# Instances of CABEvidence are checked on the contents of the supported Compliance.
+
+# 3.1.3.2.5 Certificate of verification and 
+# 3.1.3.2.6 Parameters for which conformity to applicable national rules has been assessed:
+erava:debo-13-178-0010-8-001-001-1 a era:CABEvidence ; # subClassOf vpa:Evidence ;
+    rdfs:label "MIREO DeBo evidence" ;
+    rdfs:member “DE008/1/SB/2024/RST/DE/RST-20056/V01”, 
+        “004/1/NNTR/2023/CCO/DE EN/3708.1U/V01”, 
+        “004/1/NNTR/2023/CCO/DE EN/3708.1/V01”, 
+        ”004/1/NNTR/2023/CCO/DE EN/3708.2/V01” ;
+    vpa:statesCompliance [ a vpa:Compliance ;
+        vpa:compliant "true"^^xsd:boolean ;
+        vpa:checkedSection "2.1.1 Strength and integrity" , "3.1 Vehicle gauge" , "3.2.1 Running safety and dynamics", "3.3.5 Sanding system" , "3.3.7 Axle shaft", "4.1 Functional requirements for braking at train level" , "4.5 Brake performance" , ..., "12.1.2.2 Other GSM-R requirements", "12.2.1 National on-board signalling systems" ;
+    	  vpa:withRestriction [
+            a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
+            era:forConfiguration eratv:ConfigA  ;
+        ]
+    ] ;	
+    vpa:supportsCase erava:vac-13-178-0010-8-001-001-DE-1 .
+
+# Section 2.2 (subsystem evidence) via vpa:Evidence. 
+erava:nobo-ss-13-178-0010-8-001-001-1 a era:CABEvidence ;
+    rdfs:label "MIREO Subsystem Certificates" ;
+    rdfs:member eradis:cls-NoBoCert-30999, # 1991/1/SB/2024/RST/DEEN/CRF-10410/V01
+        eradis:cld-NoBoCert-34042, # 1991/1/SB/2024/RST/DEEN/PRM-10411/V02
+        eradis:cld-NoBoCert-31004, # 1991/1/SB/2024/RST/DEEN/NOI-10412/V01
+        eradis:cld-NoBoCert-15199, # 1991/1/SB/2020/RST/DEEN/CRF-10027/V02
+        eradis:cld-NoBoCert-29770 ; # 0893/1/SB/2023/CCO/DEEN/3708/V02
+    vpa:supportsCase erava:vac-13-178-0010-8-001-001-DE-1 .
