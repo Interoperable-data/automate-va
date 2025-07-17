@@ -1,0 +1,6 @@
+# comment here
+@base <http://example.org/> .
+@prefix ex: <http://example2.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+:John a foaf:Person ; ex:name "John" .

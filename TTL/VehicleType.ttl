@@ -9,7 +9,7 @@
 # Vehicles before the 3RWP can be authorised without a link to the authorisation as formalised here.
 
 # ------------------------------ REQUEST
-:VVTAuthorisationApplication a
+era-sh:VVTAuthorisationApplication a
     owl:Class , sh:NodeShape ;
     rdfs:subClassOf vpa:Request ;
     dcterms:created "2024-10-25"^^xsd:date ;
@@ -73,7 +73,7 @@
 
 
 # ------------------------------ PERMISSION
-:VVTAuthorisation a 
+era-sh:VVTAuthorisation a 
     owl:Class , sh:NodeShape ;
     rdfs:subClassOf :TimeBoundDocument, vpa:Permission ;
     dcterms:created "2024-10-25"^^xsd:date ;
@@ -151,7 +151,7 @@
     ].
 
 # ------------------------------ CASE
-:VVTAuthorisationCase a
+era-sh:VVTAuthorisationCase a
     owl:Class , sh:NodeShape ;
     rdfs:subClassOf vpa:Case ;
     dcterms:created "2024-10-25"^^xsd:date ;
@@ -195,7 +195,7 @@
 
 # ------------------------------ VALID SCOPES
 # Linked to the Case via vpa:concerns, see above.
-:VehicleCollection a
+era-sh:VehicleCollection a
     owl:Class , sh:NodeShape ;
     rdfs:subClassOf vpa:Scope ;
     dcterms:created "2024-10-25"^^xsd:date ;
@@ -210,7 +210,7 @@
 
 # VehicleType - OPERATIONAL MODE
 # Restricts the value of a property to an operation under ENE or [ENE, CCS, INF].
-:VehicleTypeConfiguration a
+era-sh:VehicleTypeConfiguration a
     sh:NodeShape , owl:Class ;
     dcterms:created "2024-10-25"^^xsd:date ;
     # dcterms:modified "_RESERVED_"^^xsd:date ;
@@ -224,7 +224,7 @@
 
 
 # AoU
-:AreaOfUse a 
+era-sh:AreaOfUse a 
     owl:Class , sh:NodeShape, vpa:Scope ;
     dcterms:created "2024-10-25"^^xsd:date ;
     # dcterms:modified "_RESERVED_"^^xsd:date ;
@@ -286,8 +286,8 @@
 
 
 # VT
-:VehicleType a 
-    owl:Class , sh:NodeShape, vpa:Scope ;
+era-sh:VehicleType a 
+    owl:Class , sh:NodeShape ; # vpa:Scope ;
     dcterms:created "2024-10-25"^^xsd:date ;
     # dcterms:modified "_RESERVED_"^^xsd:date ;
 

@@ -1,7 +1,5 @@
-@base <http://data.europa.eu/949/shapes/> .
-
 # For inclusion in the ERA ontology
-:TimeBoundDocument a 
+era-sh:TimeBoundDocument a 
     owl:Class , sh:NodeShape ;
     dcterms:created "2024-10-25"^^xsd:date ;
     # dcterms:modified "_RESERVED_"^^xsd:date ;
@@ -28,7 +26,7 @@
     ].
 
 # The expression of the start and end of validity of any DocumentedEvidence, Permission.
-:ValidityInterval a 
+era-sh:ValidityInterval a 
     time:ProperInterval, sh:NodeShape ;
     ## shape: beginning and duration are mandatory.
     rdfs:comment """"""@en;
@@ -62,7 +60,7 @@
         ]
     ).
 
-:ValidityInYears a 
+era-sh:ValidityInYears a 
     time:DurationDescription , sh:NodeShape ;
     # only a duration expressed in time:years can be accepted. A value of 2.5 can be accepted.
     sh:closed "true"^^xsd:boolean ; # no other properties can be used.
