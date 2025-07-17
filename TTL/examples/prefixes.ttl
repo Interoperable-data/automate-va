@@ -1,5 +1,6 @@
 @base <http://data.europa.eu/949/> .
 @prefix era: <http://data.europa.eu/949/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
 @prefix gotham: <https://batman.fandom.com/wiki/> .
 
 # General

@@ -20,8 +20,8 @@
 
 # Domain-specific
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
-@prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
+@prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix eralex: <http://data.europa.eu/949/requirements/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
@@ -160,7 +160,7 @@ gotham:debo-456 a era:ECCertificate ;
 
 gotham:nobo-71-001-0001-1-001-US a era:CABEvidence ;
   rdfs:label "NoBo covered declarations";
-  rdfs:member gotham:ecd-123 ;
+  rdfs:member era-ecd:ecd-123 ;
   vpa:statesCompliance [ a vpa:Compliance ;
     vpa:compliant "false"^^xsd:boolean ;
     vpa:checkedRequirement eralex:reg-2013-1236 , eralex:reg-2014-1304 , eralex:reg-2015-924 , eralex:reg-2013-321  ;
@@ -177,7 +177,7 @@ era-ecd:ecd-123 a era:ECDeclaration ;
   dcterms:identifier "US/000000GC93653a/2022/000014" ;
   dcterms:label "DoV for Wayne Industries special railway attack vehicle";
   dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
-  dcterms:requires [ a era:CABEvidence ; rdfs:member gotham:nobo-123 , gotham:nobo-456 ];
+  dcterms:requires [ a era:CABEvidence ; rdfs:member era-cld:nobo-123 , era-cld:nobo-456 ];
   dcterms:issued "2022-04-03"^^xsd:date ;
   vpa:versionNumber "1" .
 

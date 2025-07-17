@@ -1,0 +1,121 @@
+@base <http://data.europa.eu/949/shapes/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+
+# Vehicle validation shape for VA scope
+:VehicleShape a sh:NodeShape ;
+  rdfs:label "Vehicle Validation Shape"@en ;
+  rdfs:comment "Validates core requirements for Vehicle instances in the VA scope."@en ;
+  sh:targetClass era:Vehicle ;
+  sh:property [
+    sh:path dcterms:identifier ;
+    sh:name "Vehicle Identifier" ;
+    sh:description "Mandatory unique string identifier for the vehicle." ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:uniqueLang true ;
+    sh:severity sh:Violation ;
+  ] ;
+  sh:property [
+    sh:path rdfs:label ;
+    sh:name "Vehicle Label" ;
+    sh:description "Mandatory unique string label for the vehicle." ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:uniqueLang true ;
+    sh:severity sh:Violation ;
+  ] ;
+  sh:property [
+    sh:path era:vehicleType ;
+    sh:name "Vehicle Type" ;
+    sh:description "IRI to the vehicle type. Must be present and an IRI." ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    sh:severity sh:Violation ;
+  ] ;
+  sh:property [
+    sh:path era:vehicleNumber ;
+    sh:name "Vehicle Number" ;
+    sh:description "Mandatory vehicle number." ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:severity sh:Violation ;
+  ] ;
+  sh:property [
+    sh:path era:vehicleSeries ;
+    sh:name "Vehicle Series" ;
+    sh:description "Recommended vehicle series." ;
+    sh:datatype xsd:string ;
+    sh:minCount 0 ;
+    sh:severity sh:Warning ;
+  ] ;
+  sh:property [
+    sh:path era:vehicleKeeper ;
+    sh:name "Vehicle Keeper (Required if Authorised)" ;
+    sh:description "Keeper is required if the linked vehicle type is fully authorised (has dcterms:issued). Violation if missing in that case." ;
+    sh:minCount 1 ;
+    sh:severity sh:Violation ;
+    sh:condition [
+      sh:path era:vehicleType ;
+      sh:node [
+        sh:property [
+          sh:path dcterms:issued ;
+          sh:minCount 1 ;
+        ]
+      ]
+    ]
+  ] ;
+  sh:property [
+    sh:path era:vehicleKeeper ;
+    sh:name "Vehicle Keeper (Draft Type)" ;
+    sh:description "Keeper may be absent if the linked vehicle type is in draft (no dcterms:issued)." ;
+    sh:minCount 0 ;
+    sh:severity sh:Info ;
+    sh:condition [
+      sh:path era:vehicleType ;
+      sh:node [
+        sh:property [
+          sh:path dcterms:issued ;
+          sh:maxCount 0 ;
+        ]
+      ]
+    ]
+  ] ;
+  sh:property [
+    sh:path era:compositeBrakeBlockRetrofitted ;
+    sh:name "Composite Brake Block Retrofitted" ;
+    sh:description "Should be present for Freight wagons (hauled)." ;
+    sh:minCount 0 ;
+    sh:severity sh:Warning ;
+    sh:condition [
+      sh:path [ sh:inversePath era:vehicleType ] ;
+      sh:node [
+        sh:property [
+          sh:path era:vehicleTypeCategory ;
+          sh:hasValue era-vehicle-types-eratv:51 ;
+        ]
+      ]
+    ]
+  ] ;
+  sh:property [
+    sh:path era:operationalRestriction ;
+    sh:name "Operational Restriction" ;
+    sh:description "Should be present for Freight wagons (hauled)." ;
+    sh:minCount 0 ;
+    sh:severity sh:Warning ;
+    sh:condition [
+      sh:path [ sh:inversePath era:vehicleType ] ;
+      sh:node [
+        sh:property [
+          sh:path era:vehicleTypeCategory ;
+          sh:hasValue era-vehicle-types-eratv:51 ;
+        ]
+      ]
+    ]
+  ] .

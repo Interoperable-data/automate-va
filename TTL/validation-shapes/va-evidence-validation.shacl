@@ -1,42 +1,69 @@
-@prefix sh: <http://www.w3.org/ns/shacl#> .
+@base <http://data.europa.eu/949/shapes/> .
 @prefix era: <http://data.europa.eu/949/> .
-@prefix vpa: <http://w3id.org/vpa#> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
 
 # 1. Link between Application, Authorisation, and Case
-:VehicleTypeAuthorisationCaseLinkShape a sh:NodeShape ;
+era-sh:VehicleTypeAuthorisationCaseLinkShape a sh:NodeShape ;
+  rdfs:label "Vehicle Type Authorisation Case Link Shape"@en ;
+  rdfs:comment "Validates that a VehicleTypeAuthorisationCase is linked to an Application and exactly one VehicleType."@en ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
   sh:property [
     sh:path vpa:constitutes ;
+    sh:name "Constitutes Application" ;
     sh:class era:VehicleTypeAuthorisationApplication ;
     sh:minCount 1 ;
-    sh:message "A VehicleTypeAuthorisationCase must be linked to a VehicleTypeAuthorisationApplication via vpa:constitutes." ;
-  ] ;
-  sh:property [
-    sh:path vpa:constitutes ;
     sh:nodeKind sh:IRI ;
+    sh:severity sh:Warning ;
+    sh:description "Link to the VehicleTypeAuthorisationApplication this case is part of." ;
+    sh:message "A VehicleTypeAuthorisationCase should be linked to a VehicleTypeAuthorisationApplication via vpa:constitutes." ;
   ] ;
   sh:property [
     sh:path vpa:concerns ;
+    sh:name "Concerns VehicleType" ;
     sh:class era:VehicleType ;
-    sh:minCount 1 ;
-    sh:message "A VehicleTypeAuthorisationCase must concern at least one VehicleType." ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:nodeKind sh:IRI ;
+    sh:severity sh:Violation ;
+    sh:description "Link to the VehicleType that is the subject of this authorisation case. Must be exactly one." ;
+    sh:message "A VehicleTypeAuthorisationCase must link to exactly one VehicleType (Violation)." ;
   ] .
 
-:VehicleTypeAuthorisationLinkShape a sh:NodeShape ;
+era-sh:VehicleTypeAuthorisationLinkShape a sh:NodeShape ;
+  rdfs:label "Vehicle Type Authorisation Link Shape"@en ;
+  rdfs:comment "Validates that a VehicleTypeAuthorisation is linked to an Application."@en ;
   sh:targetClass era:VehicleTypeAuthorisation ;
   sh:property [
     sh:path vpa:requestedIn ;
+    sh:name "Requested In Application" ;
     sh:class era:VehicleTypeAuthorisationApplication ;
+    sh:nodeKind sh:IRI ;
     sh:minCount 1 ;
+    sh:severity sh:Violation ;
+    sh:description "Link to the VehicleTypeAuthorisationApplication in which this authorisation is requested." ;
     sh:message "A VehicleTypeAuthorisation must be linked to a VehicleTypeAuthorisationApplication via vpa:requestedIn." ;
   ] .
 
 # 2. PermissionType NEW: VehicleType must not have dcterms:issued, but must have dcterms:created and era:vehicleTypeManufacturer
-:NewPermissionTypeVehicleTypeShape a sh:NodeShape ;
+era-sh:NewPermissionTypeVehicleTypeShape a sh:NodeShape ;
+  rdfs:label "New PermissionType VehicleType Shape"@en ;
+  rdfs:comment "Validates that if permissionType is NEW, the VehicleType must not have dcterms:issued, but must have dcterms:created and era:vehicleTypeManufacturer."@en ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
   sh:rule [
     a sh:TripleRule ;
@@ -47,15 +74,21 @@
     sh:construct [
       sh:property [
         sh:path vpa:concerns ;
+        sh:name "Concerns VehicleType (NEW)" ;
+        sh:description "Points to the VehicleType that must be checked for creation/issued/manufacturer properties if permissionType is NEW." ;
         sh:node [
-          sh:not [ sh:path dcterms:issued ] ;
+          sh:not [ sh:path dcterms:issued ; sh:name "Issued Date (forbidden if NEW)" ; sh:description "VehicleType must not have dcterms:issued if permissionType is NEW." ] ;
           sh:property [
             sh:path dcterms:created ;
+            sh:name "Created Date (required if NEW)" ;
             sh:minCount 1 ;
+            sh:description "VehicleType must have dcterms:created if permissionType is NEW." ;
           ] ;
           sh:property [
             sh:path era:vehicleTypeManufacturer ;
+            sh:name "VehicleType Manufacturer (required if NEW)" ;
             sh:minCount 1 ;
+            sh:description "VehicleType must have era:vehicleTypeManufacturer if permissionType is NEW." ;
           ] ;
         ] ;
       ] ;
@@ -64,25 +97,33 @@
   ] .
 
 # 3. Vehicle must be of same type as VehicleType in the case
-:VehicleTypeMatchShape a sh:NodeShape ;
+era-sh:VehicleTypeMatchShape a sh:NodeShape ;
+  rdfs:label "Vehicle Type Match Shape"@en ;
+  rdfs:comment "Validates that each Vehicle in the case is of the same type as the VehicleType linked to the case."@en ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
-  sh:property [
-    sh:path vpa:concerns ;
-    sh:node [
-      sh:property [
-        sh:path era:vehicleType ;
-        sh:equals sh:parent ; # Pseudocode, see note below
-      ] ;
-    ] ;
-    sh:message "Each Vehicle in the case must be of the same type as the VehicleType linked to the case." ;
+  sh:sparql [
+    sh:message "Each Vehicle in the case must be of the same type as the VehicleType linked to the case (era:vehicleType must match the VehicleType in vpa:concerns)." ;
+    sh:select """
+      SELECT $this ?vehicle ?vehicletype
+      WHERE {
+        $this vpa:concerns ?vehicle, ?vehicletype .
+        ?vehicletype a era:VehicleType .
+        ?vehicle a era:Vehicle ; era:vehicleType ?vehicletype2 .
+        FILTER (?vehicletype != ?vehicletype2)
+      }
+    """ ;
   ] .
 # Note: sh:equals is not standard; in practice, this may require a SPARQL-based constraint.
 
 # 4. CABEvidence validation
-:CABEvidenceShape a sh:NodeShape ;
+era-sh:CABEvidenceShape a sh:NodeShape ;
+  rdfs:label "CAB Evidence Shape"@en ;
+  rdfs:comment "Validates that each rdfs:member of CABEvidence is a CABEvidence, CLD, ECDeclaration, or Certificate resource."@en ;
   sh:targetClass era:CABEvidence ;
   sh:property [
     sh:path rdfs:member ;
+    sh:name "CAB Evidence Member" ;
+    sh:description "Each rdfs:member must be a CABEvidence, CLD, ECDeclaration, or Certificate resource." ;
     sh:or (
       [ sh:class era:CABEvidence ]
       [ sh:class era:CLD ]
@@ -92,13 +133,19 @@
     sh:message "rdfs:member must be CABEvidence, CLD, ECDeclaration, or Certificate." ;
   ] .
 
-:ECDeclarationValidityShape a sh:NodeShape ;
+era-sh:ECDeclarationValidityShape a sh:NodeShape ;
+  rdfs:label "ECDeclaration Validity Shape"@en ;
+  rdfs:comment "Validates that dcterms:requires resources for ECDeclaration have a valid time interval."@en ;
   sh:targetClass era:ECDeclaration ;
   sh:property [
     sh:path dcterms:requires ;
+    sh:name "Requires Evidence" ;
+    sh:description "Points to CABEvidence or related resources required for this ECDeclaration; must have a valid time interval." ;
     sh:node [
       sh:property [
         sh:path vpa:valid ;
+        sh:name "Validity Interval (Required)" ;
+        sh:description "The validity interval for the required evidence (should have a valid end or beginning date)." ;
         sh:property [
           sh:alternativePath ( [ sh:path time:hasEnd ] [ sh:path time:hasBeginning ] ) ;
           sh:datatype xsd:date ;
@@ -108,18 +155,26 @@
     sh:message "dcterms:requires resources must have a valid ending date (or valid interval)." ;
   ] .
 
-:CLDandECCertificateValidityShape a sh:NodeShape ;
+era-sh:CLDandECCertificateValidityShape a sh:NodeShape ;
+  rdfs:label "CLD and ECCertificate Validity Shape"@en ;
+  rdfs:comment "Validates that CLD and ECCertificate have a validity property with a valid time interval."@en ;
   sh:targetClass era:CLD ;
   sh:or (
     [ sh:property [
         sh:path vpa:valid ;
+        sh:name "Validity Interval (Begin/Duration)" ;
+        sh:description "The validity interval for the CLD or ECCertificate (should have a valid beginning and duration)." ;
         sh:node [
           sh:property [
             sh:path time:hasBeginning ;
+            sh:name "Validity Start Date" ;
             sh:datatype xsd:date ;
+            sh:description "Start date of the validity interval." ;
           ] ;
           sh:property [
             sh:path time:hasDurationDescription ;
+            sh:name "Validity Duration" ;
+            sh:description "Duration of the validity interval." ;
           ] ;
         ] ;
         sh:minCount 1 ;
@@ -127,10 +182,14 @@
     ]
     [ sh:property [
         sh:path vpa:valid ;
+        sh:name "Validity Interval (End)" ;
+        sh:description "The validity interval for the CLD or ECCertificate (should have a valid end date)." ;
         sh:node [
           sh:property [
             sh:path time:hasEnd ;
+            sh:name "Validity End Date" ;
             sh:datatype xsd:date ;
+            sh:description "End date of the validity interval." ;
           ] ;
         ] ;
         sh:minCount 1 ;
@@ -138,5 +197,3 @@
     ]
   ) ;
   sh:message "CLD and ECCertificate must have a validity property with a valid time interval." .
-
-# The same shape can be used for ECCertificate if needed, or duplicated with targetClass era:ECCertificate.
