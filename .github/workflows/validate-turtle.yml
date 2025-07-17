@@ -3,10 +3,10 @@ name: Validate Turtle Files with Apache Jena (riot)
 on:
   push:
     paths:
-      - '**.ttl'
+      - 'TTL/**/*.ttl'
   pull_request:
     paths:
-      - '**.ttl'
+      - 'TTL/**/*.ttl'
 
 jobs:
   validate:
