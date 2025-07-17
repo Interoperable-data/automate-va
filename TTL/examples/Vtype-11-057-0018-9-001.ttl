@@ -22,6 +22,7 @@
 @prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
 @prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
 @prefix era-org: <http://data.europa.eu/949/organisations/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
 
 # Uses: era:VehicleType subClassOf vpa:Scope
 eratv:vt-11-057-0018-9-001 a era:VehicleType ; 
@@ -58,7 +59,7 @@ eratv:Config1435LZB a era:VehicleTypeConfiguration ;
 eratv:NCCFU-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationRestriction ;
     era:forConfig eratv:Config1435LZB , eratv:Config1435IndusiPZB ;
     # ... both are identical and coded only.
-
+ .
 #### AuthorisationCase
 eva:vac-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationCase ;                 # Uses: era:VAAuthorisationCase subClassOf vpa:Case
     vpa:permissionType era-skos-va:HistoricalAuthorisationCase ;                 # implies absence of a era:VehicleAuthorisation
@@ -71,10 +72,10 @@ eva:vac-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationCase ;                
     # Conditions linked to a Configuration
     era:configDependentConditions [ 
         a era:VehicleTypeCompliance ; # subClassOf vpa:Compliance
-        vpa:checkedSection <IRI to the NNTR causing the restriction> ; # Rarely available
+        vpa:checkedSection <http://data.europa.eu/949/requirement/legislation/ic-2022-721-5_3.2.7b> ; # IRI to the NNTR causing the restriction Rarely available
         vpa:withRestriction eratv:NCCFU-11-057-0018-9-001-1 ;
     ] ;
-
+  .
 # 3.1.3.1 Initial Registration
 eva:auth-11-057-0018-9-001-DE-1 a era:VehicleTypeAuthorisation ;
     dcterms:identifier "DE5920201005" ;
@@ -83,7 +84,7 @@ eva:auth-11-057-0018-9-001-DE-1 a era:VehicleTypeAuthorisation ;
         [    
             a era:OrganisationRole ;
             era:roleOf era-org:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
-            era:hasRole <Holder> .
+            era:hasRole era-organisation-roles:Holder 
         ];
     dcterms:isReplacedBy eva:auth-11-057-0018-9-001-1-2 ;
     vpa:valid [
@@ -118,7 +119,7 @@ eva:auth-11-057-0018-9-001-CH-1 a era:VehicleTypeAuthorisation ;
         [    
             a era:OrganisationRole ;
             era:roleOf era-org:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
-            era:hasRole <Holder> .
+            era:hasRole era-organisation-roles:Holder # holder 
         ];
     dcterms:isReplacedBy eva:auth-11-057-0018-9-001-2-2 ;
     vpa:valid [
