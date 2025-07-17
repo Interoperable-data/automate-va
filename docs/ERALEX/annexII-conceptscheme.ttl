@@ -10,7 +10,8 @@
 eralex:AnnexIIConceptScheme a skos:ConceptScheme ;
     skos:prefLabel "Annex II Aspects for Assessment (2018/545)"@en ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> ;
-    skos:note "Each concept represents a row or sub-row from the Annex II table. Hierarchy is modeled using skos:broader/narrower. Applicability per authorisation case is documented in the concept. Coverage is up to section 21 as per the regulation."@en .
+    skos:note "Each concept represents a row or sub-row from the Annex II table. Hierarchy is modeled using skos:broader/narrower. Applicability per authorisation case is documented in the concept. Coverage is up to section 21 as per the regulation."@en ;
+    skos:hasTopConcept eralex:PAVA-AnnexII-1, eralex:PAVA-AnnexII-2, eralex:PAVA-AnnexII-3, eralex:PAVA-AnnexII-4, eralex:PAVA-AnnexII-5, eralex:PAVA-AnnexII-6, eralex:PAVA-AnnexII-7, eralex:PAVA-AnnexII-8, eralex:PAVA-AnnexII-9, eralex:PAVA-AnnexII-10, eralex:PAVA-AnnexII-11, eralex:PAVA-AnnexII-12, eralex:PAVA-AnnexII-13, eralex:PAVA-AnnexII-14, eralex:PAVA-AnnexII-15, eralex:PAVA-AnnexII-16, eralex:PAVA-AnnexII-17, eralex:PAVA-AnnexII-18, eralex:PAVA-AnnexII-19, eralex:PAVA-AnnexII-20, eralex:PAVA-AnnexII-21 .
 
 # Example for the first few sections. The full annex would continue this pattern for all 21 sections and their subsections/items.
 
@@ -408,7 +409,7 @@ eralex:PAVA-AnnexII-9 a skos:Concept ;
     skos:prefLabel "(II) 9. Reports from Conformity assessment bodies (Article 15 Directive (EU) 2016/797), check"@en ;
     skos:definition "Covers the checks for reports from conformity assessment bodies as per Article 15 Directive (EU) 2016/797."@en ;
     skos:narrower eralex:PAVA-AnnexII-9-1, eralex:PAVA-AnnexII-9-2, eralex:PAVA-AnnexII-9-3, eralex:PAVA-AnnexII-9-4, eralex:PAVA-AnnexII-9-5, eralex:PAVA-AnnexII-9-6 ;
-    skos:related era-va-authcase:FA, era-va-authcase:RENEW, era-va-authcase:EXT, era-va-authcase:NEW ;
+    skos:related era-va-authcase:FA, era-va-authcase:RENEW, era-va-authcase:EXT, era-va_authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 9.1. Consistency with EC Declarations of Verification and EC certificates
@@ -471,7 +472,7 @@ eralex:PAVA-AnnexII-10 a skos:Concept ;
     skos:prefLabel "(II) 10. Check of assessments from NSAs for the area of use, as specified in Article 43"@en ;
     skos:definition "10. Check of assessments from NSAs for the area of use, as specified in Article 43"@en ;
     skos:note "MANUAL" ;
-    skos:related era-va-authcase:FA, era-va-authcase:RENEW, era-va-authcase:EXT, era-va-authcase:NEW ;
+    skos:related era-va-authcase:FA, era-va-authcase:RENEW, era-va-authcase:EXT, era-va_authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 11. Validity of the original vehicle type authorisation
@@ -480,7 +481,7 @@ eralex:PAVA-AnnexII-11 a skos:Concept ;
     skos:prefLabel "(II) 11. Validity of the original vehicle type authorisation"@en ;
     skos:definition "11. Validity of the original vehicle type authorisation"@en ;
     skos:note "AUTOMATIC" ;
-    skos:related era-va-authcase:C2T, era-va-authcase:RENEW, era-va-authcase:EXT, era-va-authcase:NEW ;
+    skos:related era-va-authcase:C2T, era-va-authcase:RENEW, era-va_authcase:EXT, era-va_authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 12. Original vehicle type authorisation is valid for the concerned area of use
@@ -489,7 +490,7 @@ eralex:PAVA-AnnexII-12 a skos:Concept ;
     skos:prefLabel "(II) 12. Original vehicle type authorisation is valid for the concerned area of use"@en ;
     skos:definition "12. Original vehicle type authorisation is valid for the concerned area of use"@en ;
     skos:note "AUTOMATIC" ;
-    skos:related era-va-authcase:C2T, era-va-authcase:RENEW, era-va-authcase:NEW ;
+    skos:related era-va-authcase:C2T, era-va-authcase:RENEW, era-va_authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 13. Existing conditions for use of the vehicle and other restrictions
@@ -498,7 +499,7 @@ eralex:PAVA-AnnexII-13 a skos:Concept ;
     skos:prefLabel "(II) 13. Existing conditions for use of the vehicle and other restrictions"@en ;
     skos:definition "13. Existing conditions for use of the vehicle and other restrictions"@en ;
     skos:note "MANUAL" ;
-    skos:related era-va-authcase:RENEW, era-va-authcase:EXT, era-va-authcase:NEW ;
+    skos:related era-va-authcase:RENEW, era-va_authcase:EXT, era-va_authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 14. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the requirements capture for the essential requirements ‘safety’ for the subsystems and safe integration between subsystems positive opinion.
@@ -507,7 +508,7 @@ eralex:PAVA-AnnexII-14 a skos:Concept ;
     skos:prefLabel "(II) 14. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the requirements capture for the essential requirements ‘safety’ for the subsystems and safe integration between subsystems positive opinion."@en ;
     skos:definition "14. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the requirements capture for the essential requirements ‘safety’ for the subsystems and safe integration between subsystems positive opinion."@en ;
     skos:note "MANUAL" ;
-    skos:related era-va-authcase:FA, era-va-authcase:EXT, era-va-authcase:NEW ;
+    skos:related era-va-authcase:FA, era-va_authcase:EXT, era-va_authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 15. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the potential modification of the overall safety level for the vehicle (significant change) positive opinion
@@ -516,7 +517,7 @@ eralex:PAVA-AnnexII-15 a skos:Concept ;
     skos:prefLabel "(II) 15. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the potential modification of the overall safety level for the vehicle (significant change) positive opinion"@en ;
     skos:definition "15. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the potential modification of the overall safety level for the vehicle (significant change) positive opinion"@en ;
     skos:note "MANUAL" ;
-    skos:related era-va-authcase:EXT, era-va-authcase:NEW ;
+    skos:related era-va_authcase:EXT, era-va_authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 16. Changes as compared to the authorised vehicle type are sufficiently described and match the CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013)
@@ -525,7 +526,7 @@ eralex:PAVA-AnnexII-16 a skos:Concept ;
     skos:prefLabel "(II) 16. Changes as compared to the authorised vehicle type are sufficiently described and match the CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013)"@en ;
     skos:definition "16. Changes as compared to the authorised vehicle type are sufficiently described and match the CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013)"@en ;
     skos:note "MANUAL" ;
-    skos:related era-va-authcase:NEW ;
+    skos:related era-va_authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 17. EC Declarations of Verification and EC certificates are properly updated in relation to the changed and/or updated rules
@@ -571,7 +572,7 @@ eralex:PAVA-AnnexII-19 a skos:Concept ;
     skos:prefLabel "(II) 19. Evidence that the design of the vehicle type has not changed"@en ;
     skos:definition "19. Evidence that the design of the vehicle type has not changed"@en ;
     skos:note "MANUAL" ;
-    skos:related era-va-authcase:RENEW, era-va-authcase:EXT ;
+    skos:related era-va-authcase:RENEW, era-va_authcase:EXT ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 20. Identification of the vehicle or series of vehicles covered by the declaration of conformity to the vehicle type
