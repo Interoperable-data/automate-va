@@ -34,3 +34,4 @@
 @prefix era-gsmr-rinf: <http://data.europa.eu/949/concepts/gsmr-networks/rinf/> .
 @prefix era-gaugings-rinf: <http://data.europa.eu/949/concepts/gaugings/rinf/> .
 @prefix era-tr: <http://data.europa.eu/949/concepts/temperature-ranges/> .
+@prefix era-states-eratv: <http://data.europa.eu/949/concepts/states/eratv/> .
