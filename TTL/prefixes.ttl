@@ -7,21 +7,23 @@
 @prefix gotham: <https://batman.fandom.com/wiki/> .
 
 # General
-@prefix as:      <https://www.w3.org/ns/activitystreams#> .
-@prefix dash:    <http://datashapes.org/dash#> .
-@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix as:    <https://www.w3.org/ns/activitystreams#> .
+@prefix cc:    <http://creativecommons.org/ns#> .
+@prefix dash:  <http://datashapes.org/dash#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dct:  <http://purl.org/dc/terms/> .
 @prefix dul:  <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix geo:     <http://www.opengis.net/ont/geosparql#> .
-@prefix gr: <http://purl.org/goodrelations/v1#> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix geo:  <http://www.opengis.net/ont/geosparql#> .
+@prefix gr:   <http://purl.org/goodrelations/v1#> .
+@prefix org:  <http://www.w3.org/ns/org#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix schema:  <http://schema.org/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix time: <http://www.w3.org/2006/time#> .
 @prefix unit: <http://qudt.org/vocab/unit/> .
@@ -61,12 +63,15 @@
 @prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
 @prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
 
- # WARNING: DO NOT YET EXIST
+ # WARNING: DO NOT (YET) EXIST
 @prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
 @prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
 @prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
 @prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
+@prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
+@prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
+@prefix issform:  <http://era.europa.eu/forms/iss/> . 
 
 # From ISS
 @prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
-@prefix iss-rs: <http://data.europa.eu/949/iss/concepts/record-statuses/> .
+@prefix iss-rs:   <http://data.europa.eu/949/iss/concepts/record-statuses/> .

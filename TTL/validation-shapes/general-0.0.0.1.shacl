@@ -3,8 +3,6 @@
 # Version: 0.0.0.1
 
 @base <http://data.europa.eu/949/shapes/> .
-@prefix iss:     <http://data.europa.eu/949/iss/> . 
-@prefix issform: <http://era.europa.eu/forms/iss/> . 
 
 ## Configuration
 :Config
