@@ -81,7 +81,7 @@ URI: `/process/ECDeclaration/withdraw`
 
 ## Declaration lifecycle (example)
 
-Document ID number: `DE/00000000201298/2017/000001` ([Kesselwagen Zacens 77m³, L4BH, LÜP 16,4m](https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=1199&DocumentType=ECDeclVer)) by `era-org:MF-DE-31008-1`.
+Document ID number: `DE/00000000201298/2017/000001` ([Kesselwagen Zacens 77m³, L4BH, LÜP 16,4m](https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=1199&DocumentType=ECDeclVer)) by `rorg:MF-DE-31008-1`.
 
 1. ISSUE NEW as Declaration 1199, issued 13/12/2017 (2008/57/EC), based on:
 

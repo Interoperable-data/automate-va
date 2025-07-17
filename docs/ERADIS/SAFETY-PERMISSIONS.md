@@ -37,7 +37,7 @@ For Infrastructure Managers, the term is '[Safety Authorisation](https://eur-lex
 | :---------------- | :--------------------------------------------------------------------- |
 | `dct:creator`     | The Agency or national safety authority in accordance with Chapter III |
 | `dct:contributor` | Unused, unless another accredited or recognised body was involved      |
-| `dct:audience`    | the **RU** who uses the Permission.                                 |
+| `dct:audience`    | the **RU** who uses the Permission.                                    |
 
 Further specific data is firstly the Category (A, B will not be migrated, only the SSC will be):
 
@@ -83,7 +83,7 @@ For the ECM-property (6. ADDITIONAL INFORMATION), which is free text, `rdfs:comm
 
 ### Notified and Designated Bodies (NoBo's and DeBos)
 
-Important is to document the exact legal references the NoBo's are allowed to assess, which could be done using the `era-lex:` instances. For DeBo's this link is more difficult (unless we link to the NNTR).
+Important is to document the exact legal references the NoBo's are allowed to assess, which could be done using the `eralex:` instances. For DeBo's this link is more difficult (unless we link to the NNTR).
 
 > [!IMPORTANT]
 > This section is an incomplete draft, to be reviewed by the working party, as ERADIS does not contain this info on individual XBos.

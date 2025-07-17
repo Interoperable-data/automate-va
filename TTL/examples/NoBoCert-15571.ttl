@@ -1,6 +1,6 @@
 # prefixes.ttl
 
-eradis:cld-NoBoCert-15571 
+era-cld:cld-NoBoCert-15571 
     a era:CLD , vpa:EvidenceDocument ; 
     dcterms:created "2024-12-16"^^xsd:date ; # the creation of this resource in the KG
     dcterms:issued "2021-09-23"^^xsd:date ; # the document issue date
@@ -46,7 +46,7 @@ eradis:cld-NoBoCert-15571
 # The following is illustrative only
 erapod:check-NoBoCert-15571-1
     a era:CABAssessment ; # vpa:Compliance
-    vpa:checkedSection era-skos-lex:TSI-WAG-Section-6.2.2.1.StrengthOfUnit ; # See also the Non-disclosed properties
+    vpa:checkedSection era-lex-sections:TSI-WAG-Section-6.2.2.1.StrengthOfUnit ; # See also the Non-disclosed properties
     vpa:isCompliant "false"^^xsd:boolean ;
     era:cabCLOU [                                     # subProperty of vpa:withRestriction
         a era:CABRestriction ;                        # subClassOf vpa:Restriction ;
@@ -58,10 +58,7 @@ erapod:check-NoBoCert-15571-1
 # Example of a check without a restriction
 erapod:check-NoBoCert-15571-2
     a era:CABAssessment ; # vpa:Compliance
-    vpa:checkedSection era-skos-lex:TSI-WAG-Section-6.2.2.3.RunningDynamicBehaviour ;
+    vpa:checkedSection era-lex-sections:TSI-WAG-Section-6.2.2.3.RunningDynamicBehaviour ;
     dcterms:source eralex:reg-2013-1236 ;
     rdfs:comment "The WAG is compliant in regard to 6.2.2.3 of TSI WAG." ;
-    vpa:isCompliant "true"^^xsd:boolean     .
-
-
-
+    vpa:isCompliant "true"^^xsd:boolean  .

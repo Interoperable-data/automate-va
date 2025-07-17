@@ -37,7 +37,7 @@ A CLD has the following properties. For the use cases, please consult [this docu
 - [X] ObjectProperty `http://purl.org/dc/elements/1.1/creator`
 - range: IRI of the issuing NoBo, which must itself be an instance of `era:Body` (a `<http://www.w3.org/ns/org#Organization>`).
 
-The Agency is considering to provide `era-org:NoBo-` + `NANDO number of the NoBo`, in order to cover for this IRI[^1].
+The Agency is considering to provide `rorg:NoBo-` + `NANDO number of the NoBo`, in order to cover for this IRI[^1].
 
 [^1]: Ideally, NoBo's would provide the IRI as part of their presence on the web. One way of doing so would be to store their organisational data as RDFa on their website (guideline under design).
 
@@ -110,22 +110,22 @@ The legal subject of the certificates can be documented using links to instances
 
 Because different certificates sometimes treat the same IC or SS but produced or manufactured at different sites, the spatial applicability is in some cases required to distinguish this aspect:
 
-| Property      |                                              Data | Datatype/ObjectProperty                      | dataset @ ERA |
-| :------------ | ------------------------------------------------: | :------------------------------------------- | :-----------: |
-| `dct:spatial` | Validity restricted in Location (production site) | (IRI to the /ORG containing the org:Site's  |     /ORG      |
-|               |                           RFU-STR-001  [R3.a,R33] | data as audited)     |               |
+| Property      |                                              Data | Datatype/ObjectProperty                    | dataset @ ERA |
+| :------------ | ------------------------------------------------: | :----------------------------------------- | :-----------: |
+| `dct:spatial` | Validity restricted in Location (production site) | (IRI to the /ORG containing the org:Site's |     /ORG      |
+|               |                           RFU-STR-001  [R3.a,R33] | data as audited)                           |               |
 
 #### The [INF, ENE, CCS]-combination
 
 Finally, some certificates (`era:CLD` is a subClassOf `vpa:EvidenceDocument`) are inherently specifying a limited application, regarding [ENE, INF, CCS]-combinations. The `era:VehicleTypeAuthorisationRestriction` (or more generally `vpa:Restriction`) could in that case be used, be it through the relevant classes as in the following table. More information is available in the [ERA Vocabulary](https://linkedvocabs.org/data/era-ontology/3.1.0/doc/index-en.html).
 
-| Property                        |                                     Data | Datatype/ObjectProperty                                          | dataset @ ERA |
-| :------------------------------ | ---------------------------------------: | :--------------------------------------------------------------- | :-----------: |
-| `vpa:withRestriction`           |                                          | `era:VehicleTypeAuthorisationRestriction`                        |               |
-| `era:forConfiguration`          |                                          | (IRI to the Configuration, which contains:)                      |               |
-| `era:wheelsetGauge`             | Validity limited to a certain INF gauge, | (IRI to the SKOS Concept representing the gauge)                 |     /RINF     |
-| `era:energySupplySystem`        |                       ENE supply system, | (IRI to the SKOS Concept representing the supply)                |     /RINF     |
-| `era:etcsEquipmentOnBoardLevel` |             CCS train protection system. | (IRI to the SKOS Concept representing the ATP)                   |     /RINF     |
+| Property                        |                                     Data | Datatype/ObjectProperty                           | dataset @ ERA |
+| :------------------------------ | ---------------------------------------: | :------------------------------------------------ | :-----------: |
+| `vpa:withRestriction`           |                                          | `era:VehicleTypeAuthorisationRestriction`         |               |
+| `era:forConfiguration`          |                                          | (IRI to the Configuration, which contains:)       |               |
+| `era:wheelsetGauge`             | Validity limited to a certain INF gauge, | (IRI to the SKOS Concept representing the gauge)  |     /RINF     |
+| `era:energySupplySystem`        |                       ENE supply system, | (IRI to the SKOS Concept representing the supply) |     /RINF     |
+| `era:etcsEquipmentOnBoardLevel` |             CCS train protection system. | (IRI to the SKOS Concept representing the ATP)    |     /RINF     |
 
 ### Other properties of Certificates
 
@@ -143,18 +143,18 @@ To clarify that a certificate has:
 
 The following mandatory properties are the basis for the data model allowing extraction from ERADIS:
 
-| Property           | Data                               |                          Datatype/ObjectProperty                          | dataset @ ERA |
-| :----------------- | :--------------------------------- | :-----------------------------------------------------------------------: | :-----------: |
-| `dct:description`  | Object of assessment (in words)    |                               `xsd:string`                                |      n/a      |
-| `rdfs:comment`     | Supplementary information          |                               `xsd:string`                                |      n/a      |
-| `dct:type`         | Certificate type                   | (IRI to [SKOS Concept](https://github.com/Certiman/automate-va/issues/2)) |    /ERALEX    |
-| `dct:conformsTo`   | Modules and 000MRA1044 which were Applied                    |            (IRI to those /ERALEX instances, which are modules, or SKOS)   |    /ERALEX    |
-| `dct:identifier`   | Certificate Number                 |                     `xsd:string` (with `sh:pattern`)                      |      n/a      |
-| `dct:replaces`     | Previous Certificate               |                         (IRI to that certificate)                         |    /IODOCS    |
-| `dct:isReplacedBy` | Certificate replacing the current  |           (if replaced, then IRI to that replacing certificate)           |    /IODOCS    |
-| `dct:source`       | Interoperability Directive applied |          (IRI to /ERALEX instances of the applied IO Directive)           |    /ERALEX    |
-| `vpa:checkedCompliance/vpa:checkedRequirement`     | TSI's used (amendments included)   | (IRI to those /ERALEX instances)          |    /ERALEX    |
-| `dct:requires` | Documentation accompanying this CLD | The `xsd:anyURI` where the Documentation can be found.                       |      n/a      |
+| Property                                       | Data                                      |                          Datatype/ObjectProperty                          | dataset @ ERA |
+| :--------------------------------------------- | :---------------------------------------- | :-----------------------------------------------------------------------: | :-----------: |
+| `dct:description`                              | Object of assessment (in words)           |                               `xsd:string`                                |      n/a      |
+| `rdfs:comment`                                 | Supplementary information                 |                               `xsd:string`                                |      n/a      |
+| `dct:type`                                     | Certificate type                          | (IRI to [SKOS Concept](https://github.com/Certiman/automate-va/issues/2)) |    /ERALEX    |
+| `dct:conformsTo`                               | Modules and 000MRA1044 which were Applied |       (IRI to those /ERALEX instances, which are modules, or SKOS)        |    /ERALEX    |
+| `dct:identifier`                               | Certificate Number                        |                     `xsd:string` (with `sh:pattern`)                      |      n/a      |
+| `dct:replaces`                                 | Previous Certificate                      |                         (IRI to that certificate)                         |    /IODOCS    |
+| `dct:isReplacedBy`                             | Certificate replacing the current         |           (if replaced, then IRI to that replacing certificate)           |    /IODOCS    |
+| `dct:source`                                   | Interoperability Directive applied        |          (IRI to /ERALEX instances of the applied IO Directive)           |    /ERALEX    |
+| `vpa:checkedCompliance/vpa:checkedRequirement` | TSI's used (amendments included)          |                     (IRI to those /ERALEX instances)                      |    /ERALEX    |
+| `dct:requires`                                 | Documentation accompanying this CLD       |          The `xsd:anyURI` where the Documentation can be found.           |      n/a      |
 
 > [!NOTE]
 > [Modules are foreseen to have the IRI](../ERALEX/LEGISLATION.md): `eralex:dec-2010-713-SB` whereby the last characters express the module. They are - like IC's - instances of `eli:LegalResourceSubdivision`, which as a subClassOf `eli:LegalResource` must still be considered `dct:Jurisdiction` (hence `dct:coverage`). 
@@ -162,26 +162,26 @@ The following mandatory properties are the basis for the data model allowing ext
 
 The following properties are not mandatory but allow detailing the verification activities:
 
-| Property              | Data                                    | Datatype/ObjectProperty                                    |
-| :-------------------- | :-------------------------------------- | :--------------------------------------------------------- |
-| `common:serialNumber` | Unique serial number  | `xsd:string`                                               |
-| `vpa:withRestriction` | Certificate restrictions and conditions | (*NON-disclosed* IRI to the instance of the Restriction)                   |
-||||
-| `vpa:checkedCompliance`| See the VPA ontology | (IRI to the vpa:Compliance instances, which themselves contain      |
-|                       |                       | the checked sections of the above conformsTo link,                |
-|                       |                       | and allow to link the restrictions as well)                |
-| `vpa:checkedCompliance/rdfs:seeAlso`          | Underlying certification report         | `xsd:anyURI`     |
-| `vpa:checkedCompliance/vpa:checkedSection`     | The Sections of TSI to which   | (IRI to SKOS Concepts, expressing verified sections,       |
-|                       |  compliance was | without indication of the result)                          |
-|                       | verified.                               |                                                            |
+| Property                                   | Data                                    | Datatype/ObjectProperty                                        |
+| :----------------------------------------- | :-------------------------------------- | :------------------------------------------------------------- |
+| `common:serialNumber`                      | Unique serial number                    | `xsd:string`                                                   |
+| `vpa:withRestriction`                      | Certificate restrictions and conditions | (*NON-disclosed* IRI to the instance of the Restriction)       |
+|                                            |                                         |                                                                |
+| `vpa:checkedCompliance`                    | See the VPA ontology                    | (IRI to the vpa:Compliance instances, which themselves contain |
+|                                            |                                         | the checked sections of the above conformsTo link,             |
+|                                            |                                         | and allow to link the restrictions as well)                    |
+| `vpa:checkedCompliance/rdfs:seeAlso`       | Underlying certification report         | `xsd:anyURI`                                                   |
+| `vpa:checkedCompliance/vpa:checkedSection` | The Sections of TSI to which            | (IRI to SKOS Concepts, expressing verified sections,           |
+|                                            | compliance was                          | without indication of the result)                              |
+|                                            | verified.                               |                                                                |
 
 For Applicant, Manufacturer and NoBo the IRI to those /ORGS instances MUST be used.
 
-| Property          | Organization (IRI)                                                                          |
-| :---------------- | :------------------------------------------------------------------------------------------ |
-| `dct:creator`     | For a certificate, this is the issuing **NoBo**                                             |
+| Property          | Organization (IRI)                                                                         |
+| :---------------- | :----------------------------------------------------------------------------------------- |
+| `dct:creator`     | For a certificate, this is the issuing **NoBo**                                            |
 | `dct:contributor` | For a certificate, the **manufacturer** of the IC/SS in scope of the verification process. |
-| `dct:audience`    | the **applicant** who uses the certificate in a permission-achieving process.               |
+| `dct:audience`    | the **applicant** who uses the certificate in a permission-achieving process.              |
 
 If in ERADIS, 'supplementary information' contains certificate numbers, they must be linked as IRI's under Previous or Replacing Certificate.
 

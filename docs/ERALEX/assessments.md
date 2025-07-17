@@ -26,6 +26,7 @@ eralex:PAVA-AnnexII a vpa:Requirement ;
   vpa:sections eralex:PAVA-AnnexII-1 , eralex:PAVA-AnnexII-2 , eralex:PAVA-AnnexII-11 # , ...
   dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/2020-06-16#anx_II> .
 ```
+
 ### The Annex verification as Sections of that Requirement
 
 The sections represent the legal text of the individual requirement to be checked, extended with `era:shaclShapeValidationRule` if there is a SCHACL-shape which could be applied to execute that assessment automatically:

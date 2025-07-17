@@ -1,6 +1,6 @@
 # prefixes.ttl
 
-eradis:cld-NoBoCert-25403 
+era-cld:cld-NoBoCert-25403 
     a era:CLD , vpa:EvidenceDocument ; 
     dcterms:created "2025-07-09"^^xsd:date ; # the creation of this resource in the KG
     dcterms:issued "2025-04-19"^^xsd:date ; # the document issue date
@@ -68,12 +68,12 @@ nobo:Assmt-RC0317A-02 a era:CABAssessment ;
             <SKOS CS – 6.5.2 of the ERA document: Type of consequences> ;
         vpa:consequences "Description of Consequences: ..."@en; # Warning: non-existing property in the vpa: ontology
         rdfs:comment “ ”@en;
-        era:nonCodedRestriction "Description of the Condition: ...."@en;
+        era:nonCodedRestriction "Description of the Condition: ...."@en
     ] , [
         a era:CABRestriction ;
         vpa:regarding <URI to exact Legal RQT relevant for other restriction> ;
         era:nonCodedRestriction "restriction N. 2";
-        rdfs:comment "Other restriction" ;
+        rdfs:comment "Other restriction" 
     ] , [
         a era:CABAddition ;
         dcterms:type <era-skos-addition-types:Option> | <era-skos-addition-types:AddedFunction> ;
@@ -82,5 +82,5 @@ nobo:Assmt-RC0317A-02 a era:CABAssessment ;
         vpa:consequences "Description of Consequences: ..."@en; # Warning: non-existing property in the vpa: ontology
         dcterms:source 
             <SKOS era-skos-reasons-for-addition:6.3.3.X> , # When added function
-            <SKOS era-skos-ertams-added-functions:XYZ> ; # Whern Added functionality.
+            <SKOS era-skos-ertms-added-functions:XYZ> ; # When Added functionality.
     ].

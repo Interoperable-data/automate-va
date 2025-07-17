@@ -1,6 +1,4 @@
-# See prefixes.ttl
-
-era-org:MF-DE-81739-1 a era:Body ;
+rorg:MF-DE-81739-1 a era:Body ;
     foaf:name "Siemens Mobility GmbH" .
 
 eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
@@ -14,7 +12,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
     era:vehicleTypeManufacturer [
         a era:OrganisationRole ;
-        era:roleOf era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH (era:Body, see above)
+        era:roleOf rorg:MF-DE-81739-1 ;  # Siemens Mobility GmbH (era:Body, see above)
         era:hasOrganisationRole era-organisation-roles:Manufacturer
     ] ;
 
@@ -97,7 +95,7 @@ eratv:nccfu-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationRestriction ; 
 # GERMANY - See all authorisation data under 3.1.X.X
 erava:vac-13-178-0010-8-001-001-DE-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:NEW ;
-    era:typeRegistrationMethod era-vehicle-types-regmethod:NewType ;
+    era:typeRegistrationMethod era-va-trm:NewType ;
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
     era:authorisingMemberState <http://publications.europa.eu/resource/authority/country/DEU> ; 
 
@@ -156,7 +154,7 @@ erava:20240202-004 a era:VehicleTypeAuthorisation; # subClassOf vpa:Permission ;
     dcterms:issued "2024-06-14"^^xsd:date ;
     era:vehicleTypeAuthorisationHolder [
         a era:OrganisationRole ;
-        era:roleOf era-org:MF-DE-81739-1 ;  # Siemens Mobility GmbH
+        era:roleOf rorg:MF-DE-81739-1 ;  # Siemens Mobility GmbH
         era:hasOrganisationRole era-organisation-roles:Holder ;
     ] ;
     rdfs:comment """− A note concerning ERATV parameter 4.7.6 

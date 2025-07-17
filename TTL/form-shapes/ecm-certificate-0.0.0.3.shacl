@@ -1,34 +1,15 @@
-  ## Form serves: 1.1 ECM Certificate
-
-  @base            <http://example.com/> .
-  @prefix dash:    <http://datashapes.org/dash#> .
-  @prefix era:     <http://data.europa.eu/949/> .      
-  @prefix dcterms: <http://purl.org/dc/terms/> .
-  @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-  @prefix geo:     <http://www.opengis.net/ont/geosparql#> .
-  @prefix org:     <https://www.w3.org/ns/org#> .
-  @prefix owl:     <http://www.w3.org/2002/07/owl#> .
-  @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-  @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-  @prefix schema:  <http://schema.org/> .
-  @prefix sh:      <http://www.w3.org/ns/shacl#> .
-  @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
-  @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-  @prefix time:    <http://www.w3.org/2006/time#> .
-  @prefix unit:    <http://qudt.org/vocab/unit/> .
-  @prefix vpa:     <http://w3id.org/vpa/> .
-  @prefix prov:    <http://www.w3.org/ns/prov#> .
+## Form serves: 1.1 ECM Certificate
   @prefix iss:     <http://data.europa.eu/949/iss/> . 
   @prefix issform: <http://era.europa.eu/forms/iss/> . 
 
   # SKOS
-  @prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+  # @prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
   @prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
   @prefix era-skos: <https://raw.githubusercontent.com/Interoperable-data/ERA-Ontology-3.1.0/refs/heads/main/era-skos/> .
   @prefix iss-rs: <http://data.europa.eu/949/iss/concepts/record-statuses/> .
   @prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
   @prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
-
+ 
   # Due to use in ISS prototype, can not be removed for now:
   issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     sh:property [ 

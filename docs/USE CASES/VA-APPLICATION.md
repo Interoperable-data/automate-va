@@ -162,8 +162,8 @@ eratv:vt-myVehicleType a era:VehicleType ;  # Vehicle Types are in ERATV+ and ar
 In the C2T-completeness assessment we have to execute many SHACL validations on the generated data. The result of these validation reports are reconstructed as the `era:VehicleTypeAuthorisationAssessment` like so:
 
 ```js
-:my_pre-assessment a era:VehicleTypeAuthorisationAssessment ; # subClassof rdf:Bag
-   era:assessmentType era-skos-at:PAVACompletenessC2T ;       # will enable the application of the relevant verified sections...
+:my_pre-assessment a era:VehicleTypeAuthorisationCheck ; # subClassof rdf:Bag
+   dcterms:type era-pava-at:PAVACompletenessC2T ;       # will enable the application of the relevant verified sections...
    rdfs:member [
       # other checks
    ] , [

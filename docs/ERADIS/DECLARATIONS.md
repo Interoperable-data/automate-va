@@ -22,7 +22,7 @@ For EC Certificates, [see this document](CERTIFICATES.md).
 ### Issuer
 
 - ObjectProperty `http://purl.org/dc/elements/1.1/creator`
-- range: IRI of the issuing Manufacturer, which must itself be an instance of `http://www.w3.org/ns/org#Organization`, detailed on `era:hasRole` at least `era-skos-roles:Applicant`.
+- range: IRI of the issuing Manufacturer, which must itself be an instance of `http://www.w3.org/ns/org#Organization`, detailed on `era:hasRole` at least `era-organisation-roles:Applicant`.
 
 Ideally, Manufacturers would provide the IRI and further organisation data as part of their presence on the web. One way of doing so would be to store their organisational data as RDFa on their website (guideline under design).
 

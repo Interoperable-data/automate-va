@@ -1,20 +1,4 @@
-@base <http://data.europa.eu/949/> .
-@prefix : <http://data.europa.eu/949/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix time: <http://www.w3.org/2006/time#> .
-@prefix unit: <http://qudt.org/vocab/unit/> .
-@prefix vpa: <http://w3id.org/vpa/> .
-@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@base <http://data.europa.eu/949/shapes/> .
 
 # For inclusion in the ERA ontology
 
@@ -200,8 +184,8 @@
         sh:description "The detailed technical scopes which are the intended vehicle types (and vehicles) to be authorised in the application case."
     ];
     sh:property [
-        a sh:PropertyShape, vpa:permissionType ;
-        sh:path era:vehicleAuthorisationCaseType ;
+        a sh:PropertyShape ; 
+        sh:path era:vehicleAuthorisationCaseType ; # subPropertyOf vpa:permissionType ;
         dcterms:created "2024-06-26"^^xsd:date; # See 5.1.0, property had another name
         era:inSkosConceptScheme <http://data.europa.eu/949/concepts/va-authcases/VehicleAuthorisationCase> ;
         sh:description "Indicates one of 5 allowed authorisation cases from 2018/545"@en ;

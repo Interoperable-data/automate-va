@@ -55,7 +55,8 @@ The [Organisation ontology](https://www.w3.org/ns/org#) from W3C MUST be used as
 - [ ] Financial identifier, like national VAT-number, is in some cases known (example `gr:vatID`);
 - [ ] A website with more information about the tasks and activities of the organisation (`foaf:homepage`);
 
-## ORG pattern 
+## ORG pattern
+
 The figure of the [Organisation pattern](https://linkedvocabs.org/data/era-ontology/3.1.0/image/orgPattern.png) as modelled and reused by ERA ontology. It depicts the main classes and relations. The corresponding `skos:conceptScheme`for organisation roles is also available [here](https://github.com/Interoperable-data/ERA-Ontology-3.1.0/blob/main/era-skos/era-skos-OrgRoles.ttl) for consultation.
 
 ## Specific properties

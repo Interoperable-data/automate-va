@@ -1,25 +1,9 @@
-@base <http://data.europa.eu/949/> .
-@prefix : <http://data.europa.eu/949/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix time: <http://www.w3.org/2006/time#> .
-@prefix unit: <http://qudt.org/vocab/unit/> .
-@prefix vpa: <http://w3id.org/vpa/> .
-@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@base <http://data.europa.eu/949/shapes/> .
+
 
 # For inclusion in the ERA ontology
-
 ### Organisations with the mandate to issue CLD's
-# The CLD-issuing organisation MUST have the suitable era:hasRole <era-skos:NoBo> role.
+# The CLD-issuing organisation MUST have the suitable era:hasRole <era-organisation-roles:NoBo> role.
 :EvidenceProvidingOrganisation a sh:NodeShape , era:Body ;
     sh:sparql [
         a sh:SPARQLConstraint ;
@@ -32,7 +16,7 @@
     ].
 
 # Organisations with the mandate to use CLD's as Applicant in an Authorisation process
-# The applying organisation MUST have the suitable era:hasRole <era-skos:NoBo> role.
+# The applying organisation MUST have the suitable era:hasRole <era-organisation-roles:NoBo> role.
 :ApplyingOrganisation a sh:NodeShape , era:Body ;
     sh:sparql [
         a sh:SPARQLConstraint ;
@@ -45,7 +29,7 @@
     ].
 
 # Organisations with the mandate to issue Authorisations in an Authorisation process
-# The permitting organisation MUST have the suitable era:hasRole <era-skos:NoBo> role.
+# The permitting organisation MUST have the suitable era:hasRole <era-organisation-roles:NoBo> role.
 :PermittingOrganisation a sh:NodeShape , era:Body ;
     sh:sparql [
         a sh:SPARQLConstraint ;

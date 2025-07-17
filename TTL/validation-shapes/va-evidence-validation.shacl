@@ -1,26 +1,5 @@
-@base <http://data.europa.eu/949/shapes/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix era-sh: <http://data.europa.eu/949/shapes/> .
-
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix gr: <http://purl.org/goodrelations/v1#> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix time: <http://www.w3.org/2006/time#> .
-@prefix unit: <http://qudt.org/vocab/unit/> .
-@prefix vpa: <http://w3id.org/vpa#> .
-@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
-
 # 1. Link between Application, Authorisation, and Case
-era-sh:VehicleTypeAuthorisationCaseLinkShape a sh:NodeShape ;
+:VehicleTypeAuthorisationCaseLinkShape a sh:NodeShape ;
   rdfs:label "Vehicle Type Authorisation Case Link Shape"@en ;
   rdfs:comment "Validates that a VehicleTypeAuthorisationCase is linked to an Application and exactly one VehicleType."@en ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
@@ -45,7 +24,7 @@ era-sh:VehicleTypeAuthorisationCaseLinkShape a sh:NodeShape ;
     sh:message "A VehicleTypeAuthorisationCase must link to exactly one VehicleType (Violation)." ;
   ] .
 
-era-sh:VehicleTypeAuthorisationLinkShape a sh:NodeShape ;
+:VehicleTypeAuthorisationLinkShape a sh:NodeShape ;
   rdfs:label "Vehicle Type Authorisation Link Shape"@en ;
   rdfs:comment "Validates that a VehicleTypeAuthorisation is linked to an Application."@en ;
   sh:targetClass era:VehicleTypeAuthorisation ;
@@ -61,7 +40,7 @@ era-sh:VehicleTypeAuthorisationLinkShape a sh:NodeShape ;
   ] .
 
 # 2. PermissionType NEW: VehicleType must not have dcterms:issued, but must have dcterms:created and era:vehicleTypeManufacturer
-era-sh:NewPermissionTypeVehicleTypeShape a sh:NodeShape ;
+:NewPermissionTypeVehicleTypeShape a sh:NodeShape ;
   rdfs:label "New PermissionType VehicleType Shape"@en ;
   rdfs:comment "Validates that if permissionType is NEW, the VehicleType must not have dcterms:issued, but must have dcterms:created and era:vehicleTypeManufacturer."@en ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
@@ -97,7 +76,7 @@ era-sh:NewPermissionTypeVehicleTypeShape a sh:NodeShape ;
   ] .
 
 # 3. Vehicle must be of same type as VehicleType in the case
-era-sh:VehicleTypeMatchShape a sh:NodeShape ;
+:VehicleTypeMatchShape a sh:NodeShape ;
   rdfs:label "Vehicle Type Match Shape"@en ;
   rdfs:comment "Validates that each Vehicle in the case is of the same type as the VehicleType linked to the case."@en ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
@@ -116,7 +95,7 @@ era-sh:VehicleTypeMatchShape a sh:NodeShape ;
 # Note: sh:equals is not standard; in practice, this may require a SPARQL-based constraint.
 
 # 4. CABEvidence validation
-era-sh:CABEvidenceShape a sh:NodeShape ;
+:CABEvidenceShape a sh:NodeShape ;
   rdfs:label "CAB Evidence Shape"@en ;
   rdfs:comment "Validates that each rdfs:member of CABEvidence is a CABEvidence, CLD, ECDeclaration, or Certificate resource."@en ;
   sh:targetClass era:CABEvidence ;
@@ -133,7 +112,7 @@ era-sh:CABEvidenceShape a sh:NodeShape ;
     sh:message "rdfs:member must be CABEvidence, CLD, ECDeclaration, or Certificate." ;
   ] .
 
-era-sh:ECDeclarationValidityShape a sh:NodeShape ;
+:ECDeclarationValidityShape a sh:NodeShape ;
   rdfs:label "ECDeclaration Validity Shape"@en ;
   rdfs:comment "Validates that dcterms:requires resources for ECDeclaration have a valid time interval."@en ;
   sh:targetClass era:ECDeclaration ;
@@ -155,7 +134,7 @@ era-sh:ECDeclarationValidityShape a sh:NodeShape ;
     sh:message "dcterms:requires resources must have a valid ending date (or valid interval)." ;
   ] .
 
-era-sh:CLDandECCertificateValidityShape a sh:NodeShape ;
+:CLDandECCertificateValidityShape a sh:NodeShape ;
   rdfs:label "CLD and ECCertificate Validity Shape"@en ;
   rdfs:comment "Validates that CLD and ECCertificate have a validity property with a valid time interval."@en ;
   sh:targetClass era:CLD ;

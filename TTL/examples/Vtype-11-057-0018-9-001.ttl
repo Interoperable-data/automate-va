@@ -1,25 +1,7 @@
 @base <http://data.europa.eu/949/> .
-@prefix : <http://data.europa.eu/949/cld/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix eralex: <http://data.europa.eu/949/eli/> .
-@prefix eva: <http://data.europa.eu/949/eva/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix time: <http://www.w3.org/2006/time#> .
-@prefix unit: <http://qudt.org/vocab/unit/> .
-@prefix vpa: <http://w3id.org/vpa/> .
-@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix erava: <http://data.europa.eu/949/eva/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
 @prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 
@@ -32,7 +14,7 @@ eratv:vt-11-057-0018-9-001 a era:VehicleType ;
     era:alternativeTypeName "E193 DE-AT-CH-IT-NL_Rel. E1.11" ;
     era:vehicleTypeCategory era-vehicle-types-eratv:tractionVehicles ;
     era:vehicleTypeSubCategory  era-vehicle-types-eratv:locomotive ;
-    vpa:definesCase eva:vac-11-057-0018-9-001-1 , eva:vac-11-057-0018-9-001-2 , eva:vac-11-057-0018-9-001-3 ;
+    vpa:definesCase erava:vac-11-057-0018-9-001-1 , erava:vac-11-057-0018-9-001-2 , erava:vac-11-057-0018-9-001-3 ;
     era:vehicleTypeManufacturer [
         a era:OrganisationRole ;
         era:roleOf rorg:MF-DE-12435-44 ; # as per current /ORG
@@ -64,13 +46,13 @@ eratv:NCCFU-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationRestriction ;
     # ... both are identical and coded only.
 
 #### AuthorisationCase
-eva:vac-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationCase ;                 # Uses: era:VAAuthorisationCase subClassOf vpa:Case
-    vpa:permissionType era-skos-va:HistoricalAuthorisationCase ;                 # implies absence of a era:VehicleAuthorisation
-    era:typeRegistrationMethod era-vehicle-types-regmethod:NewTypeOfRegisteredPlatform ; # see https://github.com/Certiman/automate-va/issues/2
+erava:vac-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationCase ;                 # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+    vpa:permissionType era-va-authcase:PRE4RP ;                 # implies absence of a era:VehicleAuthorisation
+    era:typeRegistrationMethod era-va-trm:NewTypeOfRegisteredPlatform ; # see https://github.com/Certiman/automate-va/issues/2
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ; # Whole memberstate
     vpa:supportsRequest [
         a vpa:Request ; # blankNode as it was never physically submitted
-        vpa:requestFor eva:auth-11-057-0018-9-001-DE-1 ; # Only the first is needed as we can find corrections by following dcterms:isReplacedBy*
+        vpa:requestFor erava:auth-11-057-0018-9-001-DE-1 ; # Only the first is needed as we can find corrections by following dcterms:isReplacedBy*
     ];
     # Conditions linked to a Configuration
     era:configDependentCondition [ 
@@ -80,7 +62,7 @@ eva:vac-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationCase ;                
     ] ;
 
 # 3.1.3.1 Initial Registration
-eva:auth-11-057-0018-9-001-DE-1 a era:VehicleTypeAuthorisation ;
+erava:auth-11-057-0018-9-001-DE-1 a era:VehicleTypeAuthorisation ;
     dcterms:identifier "DE5920201005" ;
     dcterms:issued "2020-01-31"^^xsd:date ; # the document issue date
     era:vehicleTypeAuthorisationHolder 
@@ -89,7 +71,7 @@ eva:auth-11-057-0018-9-001-DE-1 a era:VehicleTypeAuthorisation ;
             era:roleOf rorg:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
             era:hasOrganisationRole era-organisation-roles:Holder .
         ];
-    dcterms:isReplacedBy eva:auth-11-057-0018-9-001-1-2 ;
+    dcterms:isReplacedBy erava:auth-11-057-0018-9-001-1-2 ;
     vpa:valid [
         a time:ProperInterval ;
         time:hasBeginning "2020-01-31"^^xsd:date ; #start of validity
@@ -100,26 +82,26 @@ eva:auth-11-057-0018-9-001-DE-1 a era:VehicleTypeAuthorisation ;
     ].
 
 # 3.1.3.2 Correction
-eva:auth-11-057-0018-9-001-DE-2 a era:VehicleTypeAuthorisation  ;
+erava:auth-11-057-0018-9-001-DE-2 a era:VehicleTypeAuthorisation  ;
     dcterms:issued "2020-09-10"^^xsd:date ; # the issue date of the correction
     era:vehicleTypeAuthorisationHolder [
         a era:OrganisationRole ;
-        era:roleOf era-org:MF-DE-12435-44 ;
+        era:roleOf rorg:MF-DE-12435-44 ;
         era:hasOrganisationRole era-organisation-roles:Holder 
     ] .
 
 # SWITZERLAND - See all authorisation data under 3.2.X.X
-eva:vac-11-057-0018-9-001-2 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VAAuthorisationCase subClassOf vpa:Case
-    vpa:permissionType era-skos-va:HistoricalAuthorisationCase ;  # implies absence of a era:VehicleAuthorisation
-    era:typeRegistrationMethod era-vehicle-types-regmethod:NewTypeOfRegisteredPlatform ; # does not yet exist, see issue on CS
+erava:vac-11-057-0018-9-001-2 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+    vpa:permissionType era-va-authcase:PRE4RP ;  # implies absence of a era:VehicleAuthorisation
+    era:typeRegistrationMethod era-va-trm:NewTypeOfRegisteredPlatform ; # does not yet exist, see issue on CS
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/CHE> ; # Whole memberstate
     vpa:supportsRequest [
         a vpa:Request ; # blankNode as it was never physically submitted
-        vpa:requestFor eva:auth-11-057-0018-9-001-CH-1 ; # Only the first is needed as we can find corrections by following dcterms:isReplacedBy*
+        vpa:requestFor erava:auth-11-057-0018-9-001-CH-1 ; # Only the first is needed as we can find corrections by following dcterms:isReplacedBy*
     ].
 
 # 3.2.3.1 Initial Registration
-eva:auth-11-057-0018-9-001-CH-1 a era:VehicleTypeAuthorisation ;
+erava:auth-11-057-0018-9-001-CH-1 a era:VehicleTypeAuthorisation ;
     dcterms:identifier "CH5920191114" ;
     dcterms:issued "2019-12-16"^^xsd:date ; # the document issue date
     era:vehicleTypeAuthorisationHolder [  
@@ -127,7 +109,7 @@ eva:auth-11-057-0018-9-001-CH-1 a era:VehicleTypeAuthorisation ;
           era:roleOf rorg:MF-DE-12435-44 ; # label was 'Siemens AG', in Berlin.
           era:hasOrganisationRole era-organisation-roles:Holder 
     ];
-    dcterms:isReplacedBy eva:auth-11-057-0018-9-001-2-2 ;
+    dcterms:isReplacedBy erava:auth-11-057-0018-9-001-2-2 ;
     vpa:valid [
         a time:ProperInterval ;
         time:hasBeginning "2019-12-16"^^xsd:date ; #start of validity
@@ -138,21 +120,21 @@ eva:auth-11-057-0018-9-001-CH-1 a era:VehicleTypeAuthorisation ;
     ].
 
 # 3.2.3.2 Correction
-eva:auth-11-057-0018-9-001-CH-2 a era:VehicleTypeAuthorisation ;
+erava:auth-11-057-0018-9-001-CH-2 a era:VehicleTypeAuthorisation ;
     dcterms:issued "2020-08-28"^^xsd:date . # the issue date of the correction .
 
 # AUSTRIA - See all authorisation data under 3.3.X.X
-eva:vac-11-057-0018-9-001-3 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VAAuthorisationCase subClassOf vpa:Case
-    vpa:permissionType era-skos-va:HistoricalAuthorisationCase ;  # implies absence of a era:VehicleAuthorisation
-    era:typeRegistrationMethod era-vehicle-types-regmethod:NewTypeOfRegisteredPlatform ; # does not yet exist, see issue on CS
+erava:vac-11-057-0018-9-001-3 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+    vpa:permissionType era-va-authcase:PRE4RP ;  # implies absence of a era:VehicleAuthorisation
+    era:typeRegistrationMethod era-va-trm:NewTypeOfRegisteredPlatform ; # does not yet exist, see issue on CS
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/AUT> ; # Whole memberstate
     vpa:supportsRequest [
         a vpa:Request ; # blankNode as it was never physically submitted
-        vpa:requestFor eva:auth-11-057-0018-9-001-AT-1 ; # Only the first is needed as we can find corrections by following dcterms:isReplacedBy*
+        vpa:requestFor erava:auth-11-057-0018-9-001-AT-1 ; # Only the first is needed as we can find corrections by following dcterms:isReplacedBy*
     ].
 
 # 3.3.3.1 Initial Registration
-eva:auth-11-057-0018-9-001-AT-1 a era:VehicleTypeAuthorisation ;
+erava:auth-11-057-0018-9-001-AT-1 a era:VehicleTypeAuthorisation ;
     dcterms:identifier "AT5920211015" ;
     dcterms:issued "2021-06-10"^^xsd:date ; # the document issue date
     era:vehicleTypeAuthorisationHolder [

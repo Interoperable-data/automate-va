@@ -1,12 +1,9 @@
 @base <https://example.org/va-poc-micro/> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix dct:  <http://purl.org/dc/terms/> .
-@prefix dul:  <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
 @prefix org:  <http://www.w3.org/ns/org#> .
 @prefix schema: <http://schema.org/> .
-@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 @prefix :     <#> .
 
 :OrganisationProcess
@@ -30,18 +27,18 @@
 :step_addOrg_1
     a dul:Action ;
     rdfs:label "Add Organisation - Step 1" ;
-    dct:description "Add your organisation’s basic data." ;
-    dct:source <../form-shapes/organisation-start.ttl> ;
-    dct:subject "http://data.europa.eu/949/OrgOrFormalOrgShape" ; # Added subject for SHACL form
+    dcterms:description "Add your organisation’s basic data." ;
+    dcterms:source <../form-shapes/organisation-start.ttl> ;
+    dcterms:subject "http://data.europa.eu/949/OrgOrFormalOrgShape" ; # Added subject for SHACL form
     schema:version "1.0" ;
     rdf:rest :step_addOrg_2 .
 
 :step_addOrg_2
     a dul:Action ;
     rdfs:label "Add Organisation - Step 2" ;
-    dct:description "Additional organisation properties, e.g. classification, contact info." ;
-    dct:source <../shapes/orgDetailsShape.ttl> ;
-    dct:subject "http://data.europa.eu/949/OrgDetailsShape" ; # Added subject for SHACL form
+    dcterms:description "Additional organisation properties, e.g. classification, contact info." ;
+    dcterms:source <../shapes/orgDetailsShape.ttl> ;
+    dcterms:subject "http://data.europa.eu/949/OrgDetailsShape" ; # Added subject for SHACL form
     schema:version "1.0" ;
     rdf:rest rdf:nil .
 
@@ -54,8 +51,8 @@
 :step_addSite_1
     a dul:Action ;
     rdfs:label "Add Site - Step 1" ;
-    dct:description "Create a Site resource (org:Site) for the chosen Organisation." ;
-    dct:source <../shapes/addSiteShape.ttl> ;
-    dct:subject "http://data.europa.eu/949/SiteShape" ; # Added subject for SHACL form
+    dcterms:description "Create a Site resource (org:Site) for the chosen Organisation." ;
+    dcterms:source <../shapes/addSiteShape.ttl> ;
+    dcterms:subject "http://data.europa.eu/949/SiteShape" ; # Added subject for SHACL form
     schema:version "1.0" ;
     rdf:rest rdf:nil .

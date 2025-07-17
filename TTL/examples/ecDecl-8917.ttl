@@ -1,51 +1,22 @@
 # prefixes.ttl
-@base <http://data.europa.eu/949/> .
-@prefix : <era-cld:> .
-@prefix era: <http://data.europa.eu/949/> .
-
-# General
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix time: <http://www.w3.org/2006/time#> .
-@prefix unit: <http://qudt.org/vocab/unit/> .
-@prefix vpa: <http://w3id.org/vpa/> .
-@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
-
-# Domain-specific
-@prefix era-cld: <http://data.europa.eu/949/eradis/cld/> .
-@prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
-@prefix era-ecd: <http://data.europa.eu/949/eradis/declaration/> .
-@prefix era-lex: <http://data.europa.eu/949/eli/> .
-@prefix era-org: <http://data.europa.eu/949/organisations/> .
-@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix erava: <http://data.europa.eu/949/vehicleAuthorisations/> .
-@prefix eravr: <http://data.europa.eu/949/vehicleRegistrations/> .
 
 # TO DO: the Amended and Revoked status should not come from an ERATV SKOS CS.
 # REFERENCES ARE INCOMPLETE vav ERADIS, as this EC DoC covers a lot of EC DECLs
 
-:ecd-ecDecl-8917 
+era-ecd:ecd-ecDecl-8917 
     a era:ECDeclaration ;
     dcterms:type era-cld-types:ECDoC ;
     dcterms:created "2024-12-18"^^xsd:date ; # the creation of this resource in the KG
     dcterms:issued "2021-04-27"^^xsd:date ; # the document issue date
     dcterms:available "2021-04-28"^^xsd:date ; # the availability of this resource in the ERADIS db
-    dcterms:creator [ a era:OrganisationRole ; era:roleOf era-org:MF-AT-4822-62 ; era:hasOrganisationRole era-organisation-roles:Manufacturer ]  ;
+    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-AT-4822-62 ; era:hasOrganisationRole era-organisation-roles:Manufacturer ]  ;
     dcterms:contributor [ a era:OrganisationRole ; era:roleOf rorg:NoBo-1714 ; era:hasOrganisationRole era-organisation-roles:NoBo ] ;
-    dcterms:coverage era-lex:dir-2016-797 ,
-                     era-lex:reg-2014-1302 ;
+    dcterms:coverage eralex:dir-2016-797 ,
+                     eralex:reg-2014-1302 ;
     dcterms:description "" ; # Amendment description not given
     rdfs:label "Pantograph contact strips" ;
     rdfs:comment "For detailed info, please see ANNEX" ;
-    dcterms:subject era-lex:ic-1302-2014-5_3.11 ; # The URI of the exact IC in scope
+    dcterms:subject eralex:ic-1302-2014-5_3.11 ; # The URI of the exact IC in scope
     dcterms:identifier "AT/000000FN93653a/2021/001714" ;
     rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=8917"^^xsd:anyURI ;
     era:eradisVersion "1";

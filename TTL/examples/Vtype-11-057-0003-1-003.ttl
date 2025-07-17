@@ -1,27 +1,9 @@
 @base <http://data.europa.eu/949/> .
-@prefix : <http://data.europa.eu/949/cld/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix eralex: <http://data.europa.eu/949/eli/> .
-@prefix eva: <http://data.europa.eu/949/eva/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix time: <http://www.w3.org/2006/time#> .
-@prefix unit: <http://qudt.org/vocab/unit/> .
-@prefix vpa: <http://w3id.org/vpa/> .
-@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix erava: <http://data.europa.eu/949/eva/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
 @prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
-@prefix era-org: <http://data.europa.eu/949/organisations/> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
 
 ### VehicleType
 eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
@@ -36,12 +18,12 @@ eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
     era:vehicleTypeSubCategory era-vehicle-types-eratv:locomotive ;
     era:vehicleTypeManufacturer [
         a era:OrganisationRole ;
-        era:roleOf era-org:MF-DE-81739-1 ;  # Siemens AG (era:Body, see above)
+        era:roleOf rorg:MF-DE-81739-1 ;  # Siemens AG (era:Body, see above)
         era:hasOrganisationRole era-organisation-roles:Manufacturer
     ] ;
 
     ## LINKED AUTHS
-    vpa:definesCase eva:vac-11-057-0003-1-003-1 , eva:vac-11-057-0003-1-003-2 ; # DE, AT
+    vpa:definesCase erava:vac-11-057-0003-1-003-1 , erava:vac-11-057-0003-1-003-2 ; # DE, AT
 
     ## CONFIGURATIONS
     era:wheelSetGauge era-ntg-rinf:30 ;
@@ -111,7 +93,7 @@ eratv:Config1435LZB a era:VehicleTypeConfiguration ;
 # Others are needed in other contexts.
 
 #### Restrictions
-eratv:nccfu-11-057-0003-1-003-1-1 a era:VehicleTypeAuthorisationRestriction ;
+eratv:nccfu-11-057-0003-1-003-1 a era:VehicleTypeAuthorisationRestriction ;
   # vpa:regarding must link to a vpa:Requirement.
   era:forConfiguration eratv:Config1435LZB , eratv:Config1435IndusiPZB ;
   # ... both are MOSTLY identical and coded only.
@@ -135,14 +117,14 @@ eratv:nccfu-11-057-0003-1-003-1-3 a era:VehicleTypeAuthorisationRestriction ;
 
 #### Authorisation(Case)(s)
 # GERMANY
-eva:vac-11-057-0003-1-003-1 a era:VehicleAuthorisationCase  ;   # Uses: era:VAAuthorisationCase subClassOf vpa:Case
-  vpa:permissionType era-skos-va:HistoricalAuthCase ; 
-  era:typeRegistrationMethod era-vehicle-types-regmethod:NewVersionOfRegisteredType ;
+erava:vac-11-057-0003-1-003-1 a era:VehicleAuthorisationCase  ;   # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+  vpa:permissionType era-va-authcase:PRE4RP ; 
+  era:typeRegistrationMethod era-va-trm:NewVersionOfRegisteredType ;
   era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ; # Whole memberstate
   vpa:supportsRequest [
     a vpa:Request ; # blankNode (physical submission outside of OSS)
     vpa:requestFor 
-      eva:auth-11-057-0003-1-003-DE-1 ;
+      erava:auth-11-057-0003-1-003-DE-1 ;
   ];
   # Conditions linked to a Configuration
   era:configDependentCondition [ 
@@ -180,30 +162,30 @@ eva:vac-11-057-0003-1-003-1 a era:VehicleAuthorisationCase  ;   # Uses: era:VAAu
 
  ...
 
-eva:auth-11-057-0003-1-003-DE-1 a era:VehicleAuthorisation  ;
+erava:auth-11-057-0003-1-003-DE-1 a era:VehicleAuthorisation  ;
   dcterms:identifier "DE5920191006" ;
   skos:altLabel "DE5120190000; 3129-31tae/016-3110#001" ;
   dcterms:issued "2019-03-19"^^xsd:date ; # the document issue date
   era:vehicleTypeAuthorisationHolder [
         a era:OrganisationRole ;
-        era:roleOf era-org:MF-DE-12435-44 ;  # label was 'Siemens AG', in Berlin
+        era:roleOf rorg:MF-DE-12435-44 ;  # label was 'Siemens AG', in Berlin
         era:hasOrganisationRole era-organisation-roles:Holder ;
     ]; 
-  dcterms:isReplacedBy eva:auth-11-057-0003-1-003-DE-2 .
+  dcterms:isReplacedBy erava:auth-11-057-0003-1-003-DE-2 .
 
-eva:auth-11-057-0003-1-003-DE-2 a era:VehicleAuthorisation  ;
+erava:auth-11-057-0003-1-003-DE-2 a era:VehicleAuthorisation  ;
   dcterms:identifier "DE5920191006" ;
   skos:altLabel "DE5120190000; 3129-31tae/016-3110#001" ;
   dcterms:issued "2019-09-06"^^xsd:date ; # First correction
-  dcterms:isReplacedBy eva:auth-11-057-0003-1-003-DE-3 .
+  dcterms:isReplacedBy erava:auth-11-057-0003-1-003-DE-3 .
 
-eva:auth-11-057-0003-1-003-DE-3 a era:VehicleAuthorisation  ;
+erava:auth-11-057-0003-1-003-DE-3 a era:VehicleAuthorisation  ;
   dcterms:issued "2020-02-12"^^xsd:date . # Second correction
 
 # AUSTRIA
-eva:vac-11-057-0003-1-003-2 a era:VehicleAuthorisationCase  ;   # Uses: era:VAAuthorisationCase subClassOf vpa:Case
-  vpa:permissionType era-skos-va:HistoricalAuthorisationCase ; 
-  era:typeRegistrationMethod era-vehicle-types-regmethod:NewVersionOfRegisteredType ;
+erava:vac-11-057-0003-1-003-2 a era:VehicleAuthorisationCase  ;   # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+  vpa:permissionType era-va-authcase:PRE4RP ; 
+  era:typeRegistrationMethod era-va-trm:NewVersionOfRegisteredType ;
   era:areaOfUse <http://publications.europa.eu/resource/authority/country/AUT> ; # Whole memberstate
   
   # 3.2.3.1.5 Parameters for which conformity to applicable national rules has been assessed
@@ -219,17 +201,17 @@ eva:vac-11-057-0003-1-003-2 a era:VehicleAuthorisationCase  ;   # Uses: era:VAAu
   vpa:supportsRequest [
     a era:VehicleAuthorisationApplication ; # blankNode (physical submission outside of OSS)
     vpa:requestFor 
-      eva:auth-11-057-0003-1-003-AT-1 ;
+      erava:auth-11-057-0003-1-003-AT-1 ;
   ].
   # No restrictions in ERATV.
 
-eva:auth-11-057-0003-1-003-AT-1 a era:VehicleTypeAuthorisation ;
+erava:auth-11-057-0003-1-003-AT-1 a era:VehicleTypeAuthorisation ;
   dcterms:identifier "AT5920211002" ;
   skos:altLabel "GZ 2021-0.395.278" ;
   dcterms:issued "2021-06-04"^^xsd:date ; # the document issue date
   era:vehicleTypeAuthorisationHolder  [
         a era:OrganisationRole ;
-        era:roleOf era-org:MF-DE-12435-44 ;  # label was 'Siemens AG', in Berlin
+        era:roleOf rorg:MF-DE-12435-44 ;  # label was 'Siemens AG', in Berlin
         era:hasOrganisationRole era-organisation-roles:Holder ;
     ]. 
-# era-org:MF-DE-12435-44 would be Siemens Mobility GmbH previous name AG.
+# rorg:MF-DE-12435-44 would be Siemens Mobility GmbH previous name AG.

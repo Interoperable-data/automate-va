@@ -1,12 +1,11 @@
-@prefix dash:    <http://datashapes.org/dash#> .
-@prefix era:     <http://data.europa.eu/949/> .      
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
-@prefix geo:     <http://www.opengis.net/ont/geosparql#> .
-@prefix owl:     <http://www.w3.org/2002/07/owl#> .
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix schema:  <http://schema.org/> .
+# @prefix dash:    <http://datashapes.org/dash#> .
+# @prefix era:     <http://data.europa.eu/949/> .
+# @prefix dcterms: <http://purl.org/dc/terms/> .
+# @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+# @prefix org:     <http://www.w3.org/ns/org#> .
+# @prefix owl:     <http://www.w3.org/2002/07/owl#> .
+# @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+# @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix sh:      <http://www.w3.org/ns/shacl#> .
 @prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
@@ -21,8 +20,8 @@
 @prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
 @prefix iss-rs: <http://data.europa.eu/949/iss/concepts/record-statuses/> .
 
-@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
-@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+# @prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
+# @prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
 
 # In version 0.0.0.x, the shacl-form requires first node to be issform:RecordFormShape
 issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
@@ -150,7 +149,7 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
   ], [
     # Always a set of C2T auth cases, no option there
     sh:path vpa:constitutedBy ;
-    sh:node era:C2TAuthCaseShape ;
+    sh:node era-sh:C2TAuthCaseShape ;
     sh:name "Authorisation Case" ;
     sh:description "The Authorisation Cases within this pplication, all of C2T permission type."@en ;
     sh:minCount 1 ;
@@ -186,7 +185,7 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
     sh:maxCount 1
   ] , [
     # dcterms:creator [ a era:OrganisationRole ; era:roleOf <URI of Applicant> ] ;
-    sh:node era:ApplicantOrgRoleShape ;
+    sh:node era-sh:ApplicantOrgRoleShape ;
     sh:path dcterms:creator ;
     sh:name "Applicant's Information" ;
     sh:description "Identify the Applicant by its organisation code." ;
@@ -195,7 +194,7 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
   ] .
 
 # All authorisation cases within a C2T application are of type C2t
-era:C2TAuthCaseShape a sh:NodeShape ;
+era-sh:C2TAuthCaseShape a sh:NodeShape ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
 
   sh:property [
@@ -216,18 +215,18 @@ era:C2TAuthCaseShape a sh:NodeShape ;
     sh:path vpa:concerns ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:node era:VehicleTypeScopeShape 
+    sh:node era-sh:VehicleTypeScopeShape 
   ], [
     sh:name "Authorisation Case Scope (Vehicles)"@en ;
     sh:description "Add at least one set of vehicles to this scope"@en ;
     sh:path vpa:concerns ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:node era:VehicleNumberScopeShape
+    sh:node era-sh:VehicleNumberScopeShape
   ].
 
 # The Scope can be one VehicleTypeScopeShape per case
-era:VehicleTypeScopeShape a era:NodeShape ;
+era-sh:VehicleTypeScopeShape a era:NodeShape ;
   sh:targetClass era:VehicleType ;
   sh:property [
     sh:path dcterms:identifier ;
@@ -239,7 +238,7 @@ era:VehicleTypeScopeShape a era:NodeShape ;
   ].
 
 # The Scope can be one or more Vehicle Numbers per case
-era:VehicleNumberScopeShape a era:NodeShape ;
+era-sh:VehicleNumberScopeShape a era:NodeShape ;
   sh:targetClass era:VehicleSet ;
   sh:property [
     sh:name "Vehicle Identifier (EVN or pre-reserved number)"@en ;
@@ -250,7 +249,7 @@ era:VehicleNumberScopeShape a era:NodeShape ;
   ].
 
 # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
-era:ApplicantOrgRoleShape a sh:NodeShape ;
+era-sh:ApplicantOrgRoleShape a sh:NodeShape ;
   sh:targetClass era:OrganisationalRole ;
   sh:property [
      # For conversion to an org URI
@@ -272,7 +271,7 @@ era:ApplicantOrgRoleShape a sh:NodeShape ;
   ].
 
 # Id By Name
-era:ApplicantByNamShape a sh:NodeShape ;
+era-sh:ApplicantByNameShape a sh:NodeShape ;
   sh:targetClass era:Body ;
   sh:property [
     sh:path era:roleOf ;
@@ -283,7 +282,7 @@ era:ApplicantByNamShape a sh:NodeShape ;
   ].
 
 # Id by orgCode
-era:ApplicantByCodeShape a sh:NodeShape ;
+era-sh:ApplicantByCodeShape a sh:NodeShape ;
   sh:targetClass era:Role ;
   sh:property [
     sh:path era:orgCode ;
@@ -294,7 +293,7 @@ era:ApplicantByCodeShape a sh:NodeShape ;
   ].
 
 # If PreEngagement, a Reference to pre-engagement baseline is required
-era:PreEngagementShape a sh:NodeShape ;
+era-sh:PreEngagementShape a sh:NodeShape ;
   sh:property [
     # era:preEngagementBaseline era:Document
     sh:path era:preEngagementBaseline ;
@@ -304,7 +303,7 @@ era:PreEngagementShape a sh:NodeShape ;
   ] .
 
 # If NO PreEngagement, only boolean as already marked
-era:noPreEngagementShape a sh:NodeShape ;
+era-sh:noPreEngagementShape a sh:NodeShape ;
   rdfs:label "No pre-engagement" .
 
 # UI Groups

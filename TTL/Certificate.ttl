@@ -1,20 +1,4 @@
-@base <http://data.europa.eu/949/> .
-@prefix : <http://data.europa.eu/949/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix time: <http://www.w3.org/2006/time#> .
-@prefix unit: <http://qudt.org/vocab/unit/> .
-@prefix vpa: <http://w3id.org/vpa/> .
-@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@base <http://data.europa.eu/949/shapes/> .
 
 # For inclusion in the ERA ontology, after review
 # Do not use currently
@@ -42,7 +26,7 @@
     ## shape ----------
     # The following `era:` Classes must conform to the shape of a CLD.
     # TODO: DeBo, AsBo certificates can conform to this shape as well.
-    sh:targetClass era:ECCertificate, era:QMSApproval  ;  # era:IntermediateStatement is not a separate class
+    sh:targetClass era:CLD  ;  # the TYPE is ion a SKOS concept
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:identifier ;
