@@ -1,4 +1,20 @@
 ## See prefixes.ttl for common, specific and SKOS CS prefixes
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vpa: <http://w3id.org/vpa/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix era: <http://data.europa.eu/949/> .
 
 ### VehicleType
 eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
@@ -41,17 +57,18 @@ eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
         ## Joined AC-configurations 
         a era:VTConfigParameterSet ;
         era:forConfiguration eratv:Config15kV167Hz , eratv:Config25kV50Hz ;
-        era:energySupplyMaxPower 6400^^xsd:double ;
+        era:energySupplyMaxPower "6400"^^xsd:double ;
         era:maximumContactWireHeight 4.51, 6.51 ;
         era:vehiclePantographHead "1950 sc DE and AT mm" ;
         era:contactStripMaterial era-csm-rinf:20 ; # plain carbon
         era:numberOfPantographsInContactWithOCL 1 ;
         # ...
-    ] , [
+    ] 
+    #, [
         ## Other values
 
-    ] , [ .. ] ;
-    ...
+   # ] , [ .. ] ;
+   # ...
 .
 
 ### VehicleTypeConfigurations
@@ -96,7 +113,7 @@ eratv:nccfu-11-057-0003-1-003-1-1 a era:VehicleTypeAuthorisationRestriction ;
 
   # ... coded 2.4, 2.5 as they are identical for both configs.
   era:etcsEquipmentOnBoardLevel era-etcslevel:30 ; # L2, without details on what TSI
-  
+  .
   # correct SKOS CS, check whether era-tpls:TrainProtectionLegacySystems is as per 
   # TSI CCS - Annex II.3.3.   List of Class B train protection systems
 
@@ -133,8 +150,9 @@ eva:vac-11-057-0003-1-003-1 a era:VehicleTypeAuthorisationCase ;   # Uses: era:V
   # Section 2 Conformity must be linked to the authorisation case where type appeared.
   era:configDependentCompliance [
       a era:VehicleTypeCompliance ;
-      vpa:checkedSection <SKOS:TSI-section> .
- ...
+      vpa:checkedSection <http://data.europa.eu/949/requirement/legislation/ic-2008-232-5_3-7> ; #SKOS:TSI-section
+ # other tripes...
+   ] .
 
 eva:auth-11-057-0003-1-003-DE-1 a era:VehicleTypeAuthorisation ;
   dcterms:identifier "DE5920191006" ;
