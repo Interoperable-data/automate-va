@@ -17,6 +17,8 @@
 @prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix era-org: <http://data.europa.eu/949/organisations/> .
+@prefix era-states-eratv: <http://data.europa.eu/949/concepts/states/eratv/> .
 
 # FIXME: the Amended and Revoked status should not come from an ERATV SKOS CS.
 # REFERENCES ARE INCOMPLETE vav ERADIS, as this EC DoC covers a lot of EC DECLs
@@ -39,21 +41,21 @@
     dcterms:hasVersion "1";
     dcterms:isReplacedBy :ecd-ecDecl-9627 ;
     era:status era-states-eratv:ammended ; # typo is in the SKOS CS
-    dcterm:references [
+    dcterms:references [
          a era:CertificateSet ;
-         dct:hasPart 
-            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3474" ], # NOT IN eradis?
+         dcterms:hasPart 
+            [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3474" ], # NOT IN eradis?
             :cld-NoBoCert-12325 # equals [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
          ;
     ], [
          a era:CertificateSet ;
-         dct:hasPart 
-            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3480" ], 
+         dcterms:hasPart 
+            [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3480" ], 
             :cld-NoBoCert-12325 # equals [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
     ], [
          a era:CertificateSet ;
-         dct:hasPart 
-            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3482" ],
+         dcterms:hasPart 
+            [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3482" ],
             :cld-NoBoCert-12325 # equals [ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
          
     ] .
@@ -76,20 +78,20 @@
     dcterms:hasVersion "11";
     dcterms:replaces :ecd-ecDecl-12000 ;
     era:status era-states-eratv:revoked ; # !! 
-    dcterm:references [
+    dcterms:references [
          a era:CertificateSet ;
-         dct:hasPart 
-            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3474" ], # 
+         dcterms:hasPart 
+            [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3474" ], # 
             :cld-NoBoCert-17158 # equals[ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
          ;
     ], [
          a era:CertificateSet ;
-         dct:hasPart 
-            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3480" ],
+         dcterms:hasPart 
+            [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3480" ],
             :cld-NoBoCert-17158 # equals[ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
     ], [
          a era:CertificateSet ;
-         dct:hasPart 
-            [ a era:CLD ; dct:identifier "1714/2/CH1/2020/RST/EN/3482" ],
+         dcterms:hasPart 
+            [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3482" ],
             :cld-NoBoCert-17158 # equals[ a era:CLD ; dct:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]        
     ] .
