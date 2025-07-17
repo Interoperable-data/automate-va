@@ -3,10 +3,10 @@ name: Validate Turtle Files with Apache Jena (riot)
 on:
   push:
     paths:
-      - '**.ttl'
+      - 'TTL/**/*.ttl'
   pull_request:
     paths:
-      - '**.ttl'
+      - 'TTL/**/*.ttl'
 
 jobs:
   validate:
@@ -19,9 +19,11 @@ jobs:
 
       - name: Install Apache Jena (riot)
         run: |
-          curl -L -O https://downloads.apache.org/jena/binaries/apache-jena-5.0.0.tar.gz
-          tar -xzf apache-jena-5.0.0.tar.gz
-          echo "$PWD/apache-jena-5.0.0/bin" >> $GITHUB_PATH
+
+          curl -L -O https://downloads.apache.org/jena/binaries/apache-jena-5.4.0.tar.gz
+          tar -xzf apache-jena-5.4.0.tar.gz
+          echo "$PWD/apache-jena-5.4.0/bin" >> $GITHUB_PATH
+
 
       - name: Validate .ttl files with riot
         run: |
