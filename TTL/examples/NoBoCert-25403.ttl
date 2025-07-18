@@ -11,18 +11,10 @@ era-cld:cld-NoBoCert-25403
     dcterms:conformsTo era-cld-modules:CH1 ; # the module
     dcterms:source eralex:dir-2016-797 ; # the EU Legislation
     dcterms:subject eralex:ic-2020-420-OB-5 , eralex:ic-2020-420-OB-2 , eralex:ic-2020-420-OB-1 ; # The CCS IC's as mentioned in the CLD
-    vpa:checkedCompliance [ a era:CABAssessment ;
-        era:cabAssessmentResult  """This certificate has been issued in respect of compliance with the applicable requirements of the above Directive. The Interoperability Constituent was shown to comply, subject to any restrictions listed on the
-attached annex, which forms part of this certificate.
-        
-This EC Design Examination has been issued under consideration of Module CH1 of the relevant decision adopted pursuant to the Directive. Details regarding this certificate are described in the annex.
-        
-The essential requirements have been assessed as being met through compliance with the technical requirements of the relevant TSI only."""@en ;
-        era:cabValidityStatement """This certificate is valid for the Object of Assessment as mentioned above as long as compliance of the
-Object of Assessment with certification requirements is maintained by the Applicant."""@en ;
-        rdfs:seeAlso "RC0317A-CAR-FP-230109-01 Rev. 2.0 dated 18/04/2023" ;
-        vpa:checkedRequirement 
-            eralex:cir-2016-919, eralex:cir-2019-776, eralex:cir-2020-387, eralex:cir-2020-420 ; 
+    vpa:checkedCompliance [ 
+        # Assessment Requirements regarding TSI
+        a era:CABAssessmentCheck ;
+        vpa:checkedRequirement eralex:cir-2016-919, eralex:cir-2019-776, eralex:cir-2020-387, eralex:cir-2020-420 ; 
     ] , nobo:Assmt-RC0317A-02 ;
 
     # Human readable content
@@ -41,7 +33,16 @@ ICs included in the GoIC: ETCS on-board, Odometry Equipment, GSM-R Data only rad
             time:years 99 ;
         ]
     ];
-    rdfs:comment """This certificate restricts certificate number: 0941/2/CH1/2023/CCO/EN/RC0317A-01/V01 dated 31/01/2023 which is withdrawn."""@en ;
+    era:sequenceStatement """This certificate restricts certificate number: 0941/2/CH1/2023/CCO/EN/RC0317A-01/V01 dated 31/01/2023 which is withdrawn."""@en ;
+    era:resultStatement  """This certificate has been issued in respect of compliance with the applicable requirements of the above Directive. The Interoperability Constituent was shown to comply, subject to any restrictions listed on the
+attached annex, which forms part of this certificate.
+        
+This EC Design Examination has been issued under consideration of Module CH1 of the relevant decision adopted pursuant to the Directive. Details regarding this certificate are described in the annex.
+        
+The essential requirements have been assessed as being met through compliance with the technical requirements of the relevant TSI only."""@en ;
+    era:validityStatement """This certificate is valid for the Object of Assessment as mentioned above as long as compliance of the
+Object of Assessment with certification requirements is maintained by the Applicant."""@en ;
+    era:resultReport "RC0317A-CAR-FP-230109-01 Rev. 2.0 dated 18/04/2023" ;
     dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-SE-11473-29 ; era:hasOrganisationRole era-organisation-roles:Applicant  ] ; # <http://data.europa.eu/949/taxonomies/org#MF-SE-11743-29> 
     dcterms:contributor [ a era:OrganisationRole ; era:roleOf rorg:MF-SE-11473-29 ; era:hasOrganisationRole era-organisation-roles:Manufacturer ] ; # Manufacturer
     dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-0941 ; era:hasOrganisationRole era-organisation-roles:NoBo ] ; # The NoBo itself /ORGS (<http://data.europa.eu/949/taxonomies/org#NoBo-2826>)
@@ -49,16 +50,19 @@ ICs included in the GoIC: ETCS on-board, Odometry Equipment, GSM-R Data only rad
     vpa:versionNumber 1 .
 
 # Details of confidential nature can be stored separately
-nobo:Assmt-RC0317A-02 a era:CABAssessment ;
+nobo:Assmt-RC0317A-02 a era:CABAssessmentCheck ;
     schema:version "2.0" ;
     dcterms:issued "2023-04-18" ;
     dcterms:identifier "RC0317A-CAR-FP-230109-01" ;
     # etc. details are here, like List of applied standards - section 4.2.1.
+    vpa:isCompliant "false"^^xsd:boolean ;
+    # Not needed in the case of isCompliant: era:wasChecked "true"^^xsd:boolean ;
+    era:isOptional "false"^^xsd:boolean ;
     vpa:checkedRequirements <STD1>, <STD2>  ;
 
     # The CLOUs as per https://www.era.europa.eu/system/files?file=2024-06/restrictions_and_added_functions_en.pdf
     # Model to be discussed internally
-    era:cabCLOU [
+    vpa:withRestriction [
         a era:CABRestriction ; # subClassOf era:Restriction, vpa:Restriction
         vpa:regarding <URI to exact Legal RQT relevant for this restriction> ;
         dcterms:type 
