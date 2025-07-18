@@ -154,9 +154,34 @@ era-sh:CLD a
         a sh:PropertyShape ;
         sh:path dcterms:conformsTo ;
         sh:nodeKind sh:IRI ;
-        sh:description "Module(s) or standards to which the CLD conforms."@en ;
-        sh:minCount 1
+        sh:description "Module and preferably ERA `Technical Document 000MRA1044` to which the CLD conforms. Should include exactly one era:Document (ERA Technical Document), and must include one SKOS Concept (module)."@en ;
+        sh:minCount 1 ; sh:maxCount 2 ;
     ];
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Warning ;
+        sh:message "No era:Document is present in dcterms:conformsTo (warning)."@en ;
+        sh:select """
+            SELECT $this WHERE {
+              FILTER NOT EXISTS {
+                $this dcterms:conformsTo ?doc .
+                ?doc a era:Document .
+              }
+            }
+        """
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "The era:Document in dcterms:conformsTo must not have a version 1.1 or 2017 (violation)."@en ;
+        sh:select """
+            SELECT $this ?doc ?comment WHERE {
+              $this dcterms:conformsTo ?doc .
+              ?doc a era:Document ;
+                   rdfs:comment ?comment .
+              FILTER(CONTAINS(LCASE(STR(?comment)), "1.1") || CONTAINS(LCASE(STR(?comment)), "2017"))
+            }
+        """
+    ] ;
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:source ;
