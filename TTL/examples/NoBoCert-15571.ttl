@@ -31,7 +31,7 @@ era-cld:cld-NoBoCert-15571
             time:years 10 ;
         ]
     ];
-    rdfs:comment """This certificate follows certificate number 0038/1/SB/2016/RST/EN/20161113 issue 2 dated
+    era:sequenceStatement """This certificate follows certificate number 0038/1/SB/2016/RST/EN/20161113 issue 2 dated
 02/09/2016 and certificate number 2673/1/SB/2016/RST/EN/N20160045/02 dated 29/05/2020"""@en ;
     dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-RO-310141-2931 ; era:hasOrganisationRole era-organisation-roles:Applicant  ] ; # Applicant 
     dcterms:contributor [ a era:OrganisationRole ; era:roleOf rorg:MF-RO-310141-2931 ; era:hasOrganisationRole era-organisation-roles:Manufacturer ] ; # Manufacturer
@@ -45,10 +45,10 @@ era-cld:cld-NoBoCert-15571
 # Stored in a confidential data pod and inaccessible
 # The following is illustrative only
 erapod:check-NoBoCert-15571-1
-    a era:CABAssessment ; # vpa:Compliance
+    a era:CABAssessmentCheck ; # vpa:Compliance
     vpa:checkedSection era-lex-sections:TSI-WAG-Section-6.2.2.1.StrengthOfUnit ; # See also the Non-disclosed properties
     vpa:isCompliant "false"^^xsd:boolean ;
-    era:cabCLOU [                                     # subProperty of vpa:withRestriction
+    vpa:withRestriction [                             # subProperty not foreseen
         a era:CABRestriction ;                        # subClassOf vpa:Restriction ;
         vpa:regarding eralex:reg-2015-924 ;
         dcterms:source eralex:reg-2015-924 ;
@@ -57,7 +57,7 @@ erapod:check-NoBoCert-15571-1
 
 # Example of a check without a restriction
 erapod:check-NoBoCert-15571-2
-    a era:CABAssessment ; # vpa:Compliance
+    a era:CABAssessmentCheck ; # vpa:Compliance
     vpa:checkedSection era-lex-sections:TSI-WAG-Section-6.2.2.3.RunningDynamicBehaviour ;
     dcterms:source eralex:reg-2013-1236 ;
     rdfs:comment "The WAG is compliant in regard to 6.2.2.3 of TSI WAG." ;
