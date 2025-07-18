@@ -4,3 +4,4 @@ cache/
 packages/va-poc/vitest.config.ts.timestamp*.mjs
 validation-results/
 *.log
+*.bak

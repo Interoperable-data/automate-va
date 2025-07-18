@@ -200,14 +200,14 @@ The following data could be stored in *non-disclosed* graphs.
 ### ASSESSMENT RESULT
 
 Use the property `vpa:checkedCompliance` to link to an instance of:
-- [ ] `era:CABAssessment` / `era:CABAudit`, which is a `vpa:Compliance` subClass, with extra properties:
+- [ ] `era:CABAssessmentCheck` / `era:CABAudit`, which is a `vpa:Compliance` subClass, with extra properties:
 - [ ] `era:cabAssessmentResult` and `era:cabAuditResult` (range: `xsd:string`) with the strings:
   - [ ] `The Object of Assessment as identified above was shown to comply with the Assessment Requirements, subject to any Conditions and Limits of use as listed below. The Assessment Results are provided in detail within the accompanying [EC Assessment Report or NoBo-File/ Accompanying Documentation section 4]. The Essential Requirements have been assessed as being met through compliance with the requirements of the relevant TSI only.`
 - [ ] `era:cabValidityStatement`, with the strings as in RFU-STR-001 ar alike:
   - [ ] `This certificate is valid for the Object of Assessment as mentioned above as long as compliance of the Object of Assessment with certification requirements is maintained by the Applicant.`
   - [ ] (only for SD, SH1 modules) `Within the validity duration of this Certificate, the Applicant can perform production/installation and final product/installation inspection of the Object of Assessment as long as the product/installation conforms to the EC Type/Design Examination Certificate. This validity duration may be extended on the basis of future updating of related Certificates/QMS approvals.`
 - [ ] `era:cabAssessmentReport` and `era:cabAuditReport` (range: `xsd:anyURI`)
-- [ ] `era:cabCLOU`, allowing the confidential formulation of conditions and limits of use by a CAB (range: `era:CABRestriction`).
+- [ ] `vpa:withRestriction`, allowing the confidential formulation of conditions and limits of use by a CAB (range: `era:CABRestriction`).
 
 This is the core statement of the Certificate. NoBo statement that the object of assessment (Interoperability Constituent/Subsystem, or its phase/part/Quality Management System), was shown to comply with the assessment requirements, subject to any restrictions and conditions as listed in the relevant field. The essential requirements have been assessed as being met through compliance with the requirements of the relevant TSI only. The details of the assessment results are provided within the documentation part of the NoBo File and/or NoBo Assessment Report.
 
@@ -233,12 +233,12 @@ To express these references, use link under `vpa:checkedCompliance` and privatel
    vpa:checkedCompliance <nobo:Assessment-123> , <nobo:Compliance-123-45> ; # a private URI
 
 # Elsewhere in this private KG
-<nobo:Assessment-123> a era:CABAssessment , vpa:Compliance ;
+<nobo:Assessment-123> a era:CABAssessmentCheck , vpa:Compliance ;
   dct:description "General Validity statement" ;
   rdfs:seeAlso "URL of the CAB report" ;
   era:cabValidityStatement """This certificate is valid for the Object of Assessment as mentioned above as long as compliance of the Object of Assessment with certification requirements is maintained by the Applicant."""@en
 
-<nobo:Compliance-123-45> a era:CABAssessment , vpa:Compliance ;
+<nobo:Compliance-123-45> a era:CABAssessmentCheck , vpa:Compliance ;
   vpa:checkedRequirement <URI of the standards , TSI, etc> ; # <<<<<< Assessment Requirements can be expressed here
   vpa:checkedSection <URI of Concept representing - Precise Section of the above> ;
   vpa:compliant "true"^^xsd:boolean ;
