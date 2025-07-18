@@ -172,6 +172,7 @@ era-sh:CLD a
     ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
+        sh:severity sh:Violation ;
         sh:message "The era:Document in dcterms:conformsTo must not have a version 1.1 or 2017 (violation)."@en ;
         sh:select """
             SELECT $this ?doc ?comment WHERE {
@@ -179,6 +180,19 @@ era-sh:CLD a
               ?doc a era:Document ;
                    rdfs:comment ?comment .
               FILTER(CONTAINS(LCASE(STR(?comment)), "1.1") || CONTAINS(LCASE(STR(?comment)), "2017"))
+            }
+        """
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Violation ;
+        sh:message "No SKOS Concept (for the module) is present in dcterms:conformsTo (violation)."@en ;
+        sh:select """
+            SELECT $this WHERE {
+            FILTER NOT EXISTS {
+                $this dcterms:conformsTo ?mod .
+                ?mod a skos:Concept .
+            }
             }
         """
     ] ;
