@@ -143,7 +143,7 @@ erava:71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisation ;
   dcterms:identifier "US5120250001" ;
   # NOT YET dcterms:issued
   # NOT YET vpa:valid
-  # NOT YET era:vehicleTypeAuthorisationHolder [ a era:OrganisationRole ] ;
+  # Invalid for a NEW authcase: era:vehicleTypeAuthorisationHolder [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ];
   vpa:requestedIn erava:va-71-001-0001-1-001-US-1 .
 
 gotham:debo-71-001-0001-1-001-US a era:CABEvidence ;
