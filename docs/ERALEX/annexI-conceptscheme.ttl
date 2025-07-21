@@ -312,10 +312,17 @@ eralex:PAVA-AnnexI-4-2 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 5. Applicant's information
-eralex:PAVA-AnnexI-5 a skos:Concept ;
+eralex:PAVA-AnnexI-5 a skos:Concept , sh:NodeShape ;
     skos:inScheme eralex:AnnexIConceptScheme ;
     skos:prefLabel "(I) 5. Applicant's information"@en ;
     skos:definition "Applicant's information (name, address, contact details, VAT, etc.)."@en ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:property [
+        sh:path ( vpa:constitutes dcterms:creator era:roleOf ) ;
+        sh:minCount 1 ;
+        sh:message "The VehicleTypeAuthorisationCase must link to an Application (vpa:constitutes) with a creator (dcterms:creator) specifying the organisation (era:roleOf)."@en ;
+        sh:severity sh:Violation
+    ] ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 6. Contact person information
