@@ -134,8 +134,8 @@ erava:vac-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationCase ; # subClass
   vpa:permissionType era-va-authcase:NEW ;
   era:typeRegistrationMethod era-va-trm:NewType ;
   rdfs:label "Case 'NEW' to achieve APOM of type 71-001-0001-1-001 in the US"@en ;
-  era:areaOfUse <http://publications.europa.eu/resource/authority/country/USA> ;
-  era:authorisingMemberState <http://publications.europa.eu/resource/authority/country/USA> ; 
+  era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
+  era:authorisingMemberState <http://publications.europa.eu/resource/authority/country/DEU> ; 
   vpa:concerns eratv:vt-71-001-0001-1-001 , evr:bat-mobile-metro-001 ;
   vpa:constitutes erava:va-71-001-0001-1-001-US-1 .
 

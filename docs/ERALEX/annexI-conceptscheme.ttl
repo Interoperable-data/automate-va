@@ -1,11 +1,87 @@
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
+@base <http://data.europa.eu/949/> .
 @prefix era: <http://data.europa.eu/949/> .
-@prefix eralex: <http://data.europa.eu/eralex/> .
 @prefix era-sh: <http://data.europa.eu/949/shapes/> .
-@prefix era-sh-pava: <http://data.europa.eu/949/shapes/PAVA/> .
-@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
 
+# From examples
+@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
+@prefix gotham: <https://batman.fandom.com/wiki/> .
+
+# General
+@prefix as:    <https://www.w3.org/ns/activitystreams#> .
+@prefix cc:    <http://creativecommons.org/ns#> .
+@prefix dash:  <http://datashapes.org/dash#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix dul:  <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix geo:  <http://www.opengis.net/ont/geosparql#> .
+@prefix gr:   <http://purl.org/goodrelations/v1#> .
+@prefix org:  <http://www.w3.org/ns/org#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema:  <http://schema.org/> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Domain-specific
+@prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
+@prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
+@prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
+@prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
+@prefix uorg: <http://data.europa.eu/949/organisations/units/> .
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix erava: <http://data.europa.eu/949/vehicleTypeAuthorisations/> .
+@prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
+@prefix evr: <http://data.europa.eu/949/vehicles/> .
+@prefix iss: <http://data.europa.eu/949/iss/> . 
+
+
+# Relevant SKOS Concept Schemes
+@prefix era-skos: <http://data.europa.eu/949/concepts/> .
+@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
+@prefix era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
+@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
+@prefix era-vtc: <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+# unused @prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
+@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
+@prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
+@prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
+@prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
+
+ # WARNING: DO NOT (YET) EXIST
+@prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
+@prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
+@prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
+@prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
+@prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
+@prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
+@prefix issform:  <http://era.europa.eu/forms/iss/> . 
+
+# From ISS
+@prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
+@prefix iss-rs:   <http://data.europa.eu/949/iss/concepts/record-statuses/> .
+@prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
+
+# EU Countries
+@prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
+
+# Properties to be post-processed, if shacl-form 
+@prefix update: <http://data.europa.eu/949/update/> .
 
 # ConceptScheme for Annex I of 2018/545
 eralex:AnnexIConceptScheme a skos:ConceptScheme ;
@@ -15,18 +91,23 @@ eralex:AnnexIConceptScheme a skos:ConceptScheme ;
     skos:hasTopConcept eralex:PAVA-AnnexI-1, eralex:PAVA-AnnexI-2, eralex:PAVA-AnnexI-3, eralex:PAVA-AnnexI-4, eralex:PAVA-AnnexI-5, eralex:PAVA-AnnexI-6, eralex:PAVA-AnnexI-7, eralex:PAVA-AnnexI-8, eralex:PAVA-AnnexI-9, eralex:PAVA-AnnexI-10, eralex:PAVA-AnnexI-11, eralex:PAVA-AnnexI-12, eralex:PAVA-AnnexI-13, eralex:PAVA-AnnexI-16, eralex:PAVA-AnnexI-17, eralex:PAVA-AnnexI-18 .
 
 # 1. Type of application
-eralex:PAVA-AnnexI-1 a skos:Concept ;
+eralex:PAVA-AnnexI-1 a skos:Concept , sh:NodeShape ;
     skos:inScheme eralex:AnnexIConceptScheme ;
     skos:prefLabel "(I) 1. Type of application"@en ;
     skos:definition "Type of application (type authorisation or authorisation for placing on the market, including variants/versions, single vehicle or series)."@en ;
     skos:narrower eralex:PAVA-AnnexI-1-1, eralex:PAVA-AnnexI-1-2 ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:xone (
+        [ sh:path era:typeRegistrationMethod ; sh:minCount 1 ; sh:maxCount 1 ; sh:message "Type authorisation: typeRegistrationMethod must be present (I 1.1)."@en ; sh:severity sh:Info ]
+        [ sh:path era:typeRegistrationMethod ; sh:maxCount 0 ; sh:message "Authorisation for placing on the market: typeRegistrationMethod must NOT be present (I 1.2)."@en ; sh:severity sh:Info ]
+    ) ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 1.1. Type authorisation
 eralex:PAVA-AnnexI-1-1 a skos:Concept ;
     skos:inScheme eralex:AnnexIConceptScheme ;
     skos:prefLabel "(I) 1.1. Type authorisation"@en ;
-    skos:definition "Type authorisation (including variants and versions if any)."@en ;
+    skos:definition "Type authorisation (including variants and versions if any). This applies when the application is for a type authorisation, including all versions and variants."@en ;
     skos:broader eralex:PAVA-AnnexI-1 ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
@@ -34,16 +115,32 @@ eralex:PAVA-AnnexI-1-1 a skos:Concept ;
 eralex:PAVA-AnnexI-1-2 a skos:Concept ;
     skos:inScheme eralex:AnnexIConceptScheme ;
     skos:prefLabel "(I) 1.2. Authorisation for placing on the market"@en ;
-    skos:definition "Authorisation for placing on the market (single vehicle or series of vehicles)."@en ;
+    skos:definition "Authorisation for placing on the market (single vehicle or series of vehicles). This applies when the application is for placing vehicles on the market, not for type authorisation."@en ;
     skos:broader eralex:PAVA-AnnexI-1 ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 2. Authorisation case
-eralex:PAVA-AnnexI-2 a skos:Concept ;
+eralex:PAVA-AnnexI-2 a skos:Concept , sh:NodeShape ;
     skos:inScheme eralex:AnnexIConceptScheme ;
     skos:prefLabel "(I) 2. Authorisation case"@en ;
     skos:definition "Authorisation case (first, new, extended area of use, renewed, conformity to type)."@en ;
     skos:narrower eralex:PAVA-AnnexI-2-1, eralex:PAVA-AnnexI-2-2, eralex:PAVA-AnnexI-2-3, eralex:PAVA-AnnexI-2-4, eralex:PAVA-AnnexI-2-5 ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:property [
+        sh:path vpa:permissionType ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ( era-va-authcase:FA era-va-authcase:NEW era-va-authcase:EXT era-va-authcase:RENEW era-va-authcase:C2T ) ;
+        sh:xone (
+            [ sh:hasValue era-va-authcase:FA ; sh:message "Authorisation case is 'First authorisation'."@en ; sh:severity sh:Info ]
+            [ sh:hasValue era-va-authcase:NEW ; sh:message "Authorisation case is 'New authorisation'."@en ; sh:severity sh:Info ]
+            [ sh:hasValue era-va-authcase:EXT ; sh:message "Authorisation case is 'Extended area of use'."@en ; sh:severity sh:Info ]
+            [ sh:hasValue era-va-authcase:RENEW ; sh:message "Authorisation case is 'Renewed type authorisation'."@en ; sh:severity sh:Info ]
+            [ sh:hasValue era-va-authcase:C2T ; sh:message "Authorisation case is 'Authorisation in conformity to type'."@en ; sh:severity sh:Info ]
+        ) ;
+        sh:message "Authorisation case must have exactly one vpa:permissionType linking to one of: FA, NEW, EXT, RENEW, C2T."@en ;
+        sh:severity sh:Violation
+    ] ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 2.1. First authorisation
@@ -87,11 +184,18 @@ eralex:PAVA-AnnexI-2-5 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 3. Area of use
-eralex:PAVA-AnnexI-3 a skos:Concept ;
+eralex:PAVA-AnnexI-3 a skos:Concept , sh:NodeShape ;
     skos:inScheme eralex:AnnexIConceptScheme ;
     skos:prefLabel "(I) 3. Area of use"@en ;
     skos:definition "Area of use (Member States, networks, border stations, extended area, whole EU network)."@en ;
     skos:narrower eralex:PAVA-AnnexI-3-1, eralex:PAVA-AnnexI-3-2, eralex:PAVA-AnnexI-3-3, eralex:PAVA-AnnexI-3-4, eralex:PAVA-AnnexI-3-5 ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:property [
+        sh:path era:areaOfUse ;
+        sh:minCount 1 ;
+        sh:message "Area of use (era:areaOfUse) must be present for every VehicleTypeAuthorisationCase (Annex I, section 3)."@en ;
+        sh:severity sh:Violation
+    ] ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 3.1. Member States
@@ -135,11 +239,60 @@ eralex:PAVA-AnnexI-3-5 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 4. Issuing authority
-eralex:PAVA-AnnexI-4 a skos:Concept ;
+eralex:PAVA-AnnexI-4 a skos:Concept , sh:NodeShape ;
     skos:inScheme eralex:AnnexIConceptScheme ;
     skos:prefLabel "(I) 4. Issuing authority"@en ;
     skos:definition "Issuing authority (Agency or national safety authority, as applicable)."@en ;
     skos:narrower eralex:PAVA-AnnexI-4-1, eralex:PAVA-AnnexI-4-2 ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:property [
+        sh:path era:authorisingMemberState ;
+        sh:minCount 1 ;
+        sh:message "Issuing authority (era:authorisingMemberState) must be present for every VehicleTypeAuthorisationCase (Annex I, section 4)."@en ;
+        sh:severity sh:Violation
+    ] ;
+    sh:or (
+        [
+            sh:path era:authorisingMemberState ;
+            sh:hasValue <http://publications.europa.eu/resource/authority/country/EUR> ;
+            sh:message "Annex I 4.1: The Agency is the issuing authority (era:authorisingMemberState = EUR)."@en ;
+            sh:severity sh:Info
+        ]
+        [
+            sh:path era:authorisingMemberState ;
+            sh:in (
+                <http://publications.europa.eu/resource/authority/country/AUT>
+                <http://publications.europa.eu/resource/authority/country/BEL>
+                <http://publications.europa.eu/resource/authority/country/BGR>
+                <http://publications.europa.eu/resource/authority/country/HRV>
+                <http://publications.europa.eu/resource/authority/country/CYP>
+                <http://publications.europa.eu/resource/authority/country/CZE>
+                <http://publications.europa.eu/resource/authority/country/DNK>
+                <http://publications.europa.eu/resource/authority/country/EST>
+                <http://publications.europa.eu/resource/authority/country/FIN>
+                <http://publications.europa.eu/resource/authority/country/FRA>
+                <http://publications.europa.eu/resource/authority/country/DEU>
+                <http://publications.europa.eu/resource/authority/country/GRC>
+                <http://publications.europa.eu/resource/authority/country/HUN>
+                <http://publications.europa.eu/resource/authority/country/IRL>
+                <http://publications.europa.eu/resource/authority/country/ITA>
+                <http://publications.europa.eu/resource/authority/country/LVA>
+                <http://publications.europa.eu/resource/authority/country/LTU>
+                <http://publications.europa.eu/resource/authority/country/LUX>
+                <http://publications.europa.eu/resource/authority/country/MLT>
+                <http://publications.europa.eu/resource/authority/country/NLD>
+                <http://publications.europa.eu/resource/authority/country/POL>
+                <http://publications.europa.eu/resource/authority/country/PRT>
+                <http://publications.europa.eu/resource/authority/country/ROU>
+                <http://publications.europa.eu/resource/authority/country/SVK>
+                <http://publications.europa.eu/resource/authority/country/SVN>
+                <http://publications.europa.eu/resource/authority/country/ESP>
+                <http://publications.europa.eu/resource/authority/country/SWE>
+            ) ;
+            sh:message "Annex I 4.2: The national safety authority of the Member State is the issuing authority (era:authorisingMemberState is an EU Member State URI)."@en ;
+            sh:severity sh:Info
+        ]
+    ) ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 4.1. The Agency
