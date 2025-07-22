@@ -39,17 +39,14 @@ eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
         ## Joined AC-configurations 
         a era:VehicleTypeConfigParameterSet ;
         era:forConfiguration eratv:Config15kV167Hz , eratv:Config25kV50Hz ;
-        era:energySupplyMaxPower 6400^^xsd:double ;
+        era:energySupplyMaxPower "6400"^^xsd:double ;
         era:maximumContactWireHeight 4.51, 6.51 ;
         era:vehiclePantographHead "1950 sc DE and AT mm" ;
         era:contactStripMaterial era-csm-rinf:20 ; # plain carbon
-        era:numberOfPantographsInContactWithOCL 1 ;
-        # ...
-    ] , [
-        ## Other values
-
-    ] , [ .. ] ;
-    ...
+        era:numberOfPantographsInContactWithOCL 1 ; ]
+        # ...    ] 
+    ## Other values
+    #[ .. ] , [ .. ] ;  ...
 .
 
 ### VehicleTypeConfigurations
