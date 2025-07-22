@@ -92,6 +92,8 @@ rorg:EUAR a era:Body ;
 
 eratv:vt-71-001-0001-1-001 a era:VehicleType ;
   dcterms:identifier "71-001-0001-1-001" ;
+  era:vehicleTypeNumber "71-001-0001-1" ;
+  era:includedVersionsVariant "001" ;
   dcterms:created "2025-07-16"^^xsd:date ;
   # dcterms:issued SHALL NOT BE PRESENT, given the type is in DRAFT, and many parameters are still being filled in.
   rdfs:label "A non-existent self-propelled special vehicle";

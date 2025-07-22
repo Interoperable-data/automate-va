@@ -517,75 +517,12 @@ eralex:PAVA-AnnexI-9-2 a skos:Concept , sh:NodeShape ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 10. Description of the vehicle type
-eralex:PAVA-AnnexI-10 a skos:Concept ;
+# Detailed shapes are in annexI-10-shapes.ttl
+eralex:PAVA-AnnexI-10 a skos:Concept , sh:NodeShape ;
     skos:inScheme eralex:AnnexIConceptScheme ;
     skos:prefLabel "(I) 10. Description of the vehicle type"@en ;
     skos:definition "Description of the vehicle type (type ID, versions, variants, date of record, name, category, subcategory)."@en ;
     skos:narrower eralex:PAVA-AnnexI-10-1, eralex:PAVA-AnnexI-10-2 ;
-    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
-
-# 10.1. Type identification
-eralex:PAVA-AnnexI-10-1 a skos:Concept ;
-    skos:inScheme eralex:AnnexIConceptScheme ;
-    skos:prefLabel "(I) 10.1. Type identification"@en ;
-    skos:definition "Type identification (ID, name, date of record)."@en ;
-    skos:broader eralex:PAVA-AnnexI-10 ;
-    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
-
-# 10.2. Vehicle type versions (when applicable)
-eralex:PAVA-AnnexI-10-2 a skos:Concept ;
-    skos:inScheme eralex:AnnexIConceptScheme ;
-    skos:prefLabel "(I) 10.2. Vehicle type versions (when applicable)"@en ;
-    skos:definition "Vehicle type versions as defined in Decision 2011/665/EU Annex II, when applicable."@en ;
-    skos:broader eralex:PAVA-AnnexI-10 ;
-    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
-
-# 10.3. Vehicle type variants (when applicable)
-eralex:PAVA-AnnexI-10-3 a skos:Concept ;
-    skos:inScheme eralex:AnnexIConceptScheme ;
-    skos:prefLabel "(I) 10.3. Vehicle type variants (when applicable)"@en ;
-    skos:definition "Vehicle type variants as defined in Decision 2011/665/EU Annex II, when applicable."@en ;
-    skos:broader eralex:PAVA-AnnexI-10 ;
-    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
-
-# 10.4. Date of record in ERATV (not applicable for first authorisation)
-eralex:PAVA-AnnexI-10-4 a skos:Concept ;
-    skos:inScheme eralex:AnnexIConceptScheme ;
-    skos:prefLabel "(I) 10.4. Date of record in ERATV (not applicable for first authorisation)"@en ;
-    skos:definition "Date of record in the European Register of Authorised Types of Vehicles (ERATV), not applicable for first authorisation."@en ;
-    skos:broader eralex:PAVA-AnnexI-10 ;
-    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
-
-# 10.5. Type name (*)
-eralex:PAVA-AnnexI-10-5 a skos:Concept ;
-    skos:inScheme eralex:AnnexIConceptScheme ;
-    skos:prefLabel "(I) 10.5. Type name (*)"@en ;
-    skos:definition "Type name as specified in Decision 2011/665/EU Annex II."@en ;
-    skos:broader eralex:PAVA-AnnexI-10 ;
-    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
-
-# 10.6. Alternative type name (when applicable)
-eralex:PAVA-AnnexI-10-6 a skos:Concept ;
-    skos:inScheme eralex:AnnexIConceptScheme ;
-    skos:prefLabel "(I) 10.6. Alternative type name (when applicable)"@en ;
-    skos:definition "Alternative type name, when applicable, as specified in Decision 2011/665/EU Annex II."@en ;
-    skos:broader eralex:PAVA-AnnexI-10 ;
-    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
-
-# 10.7. Category (*)
-eralex:PAVA-AnnexI-10-7 a skos:Concept ;
-    skos:inScheme eralex:AnnexIConceptScheme ;
-    skos:prefLabel "(I) 10.7. Category (*)"@en ;
-    skos:definition "Category of the vehicle type as specified in Decision 2011/665/EU Annex II."@en ;
-    skos:broader eralex:PAVA-AnnexI-10 ;
-    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
-
-# 10.8. Subcategory (*)
-eralex:PAVA-AnnexI-10-8 a skos:Concept ;
-    skos:inScheme eralex:AnnexIConceptScheme ;
-    skos:prefLabel "(I) 10.8. Subcategory (*)"@en ;
-    skos:definition "Subcategory of the vehicle type as specified in Decision 2011/665/EU Annex II."@en ;
-    skos:broader eralex:PAVA-AnnexI-10 ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 11. Information on the vehicles

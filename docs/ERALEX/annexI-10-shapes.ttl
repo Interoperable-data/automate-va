@@ -1,0 +1,225 @@
+@base <http://data.europa.eu/949/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix eralex: <http://data.europa.eu/949/requirements/> .
+
+# Section 10: Description of the vehicle type (Annex I-10)
+
+eralex:PAVA-AnnexI-10 a skos:Concept , sh:NodeShape ;
+    skos:inScheme eralex:AnnexIConceptScheme ;
+    skos:prefLabel "(I) 10. Description of the vehicle type"@en ;
+    skos:definition "Description of the vehicle type (type ID, versions, variants, date of record, name, category, subcategory)."@en ;
+    skos:narrower eralex:PAVA-AnnexI-10-1, eralex:PAVA-AnnexI-10-2 ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    # Does not check in full - sh:property [
+    #     sh:path ( vpa:concerns era:includedVersions ) ;
+    #     sh:datatype xsd:string ;
+    #     sh:name "VehicleType has property era:includedVersions"@en ;
+    #     sh:message "When the VehicleType contains `era:includedVersions`, it is assumed to be from before the 4th Railway Package (Annex I-10)."@en ;
+    #     sh:severity sh:Warning
+    # ] ;
+
+    # Does not check in full - sh:property [
+    #     sh:path ( vpa:concerns era:includedVersionsVariant ) ;
+    #     sh:datatype xsd:string ;
+    #     sh:name "VehicleType has property era:includedVersionsVariant"@en ;
+    #     sh:message "When the VehicleType contains `era:includedVersionsVariant`, it is assumed to be from after the 4th Railway Package (Annex I-10)."@en ;
+    #     sh:severity sh:Warning
+    # ] ;
+
+    # May check a Vehicle! sh:property [
+    #     sh:path ( vpa:concerns dcterms:identifier ) ;
+    #     sh:datatype xsd:string ;
+    #     sh:minCount 1 ;
+    #     sh:name "VehicleType identifier present"@en ;
+    #     sh:message "Each VehicleType linked via vpa:concerns must have a dcterms:identifier string (Annex I-10)."@en ;
+    #     sh:severity sh:Violation
+    # ] ;
+
+    # sh:sparql [
+    #     sh:name "VehicleType (Fourth railway package) required fields (SPARQL)"@en ;
+    #     sh:message "Each VehicleType (Fourth railway package) linked via vpa:concerns must have: era:vehicleTypeNumber matching '71-001-0001-1', era:includedVersionsVariant matching '001' or 'NNN-NNN', and dcterms:identifier (Annex I-10)."@en ;
+    #     sh:severity sh:Violation ;
+    #     sh:select '''
+    #         PREFIX era: <http://data.europa.eu/949/>
+    #         PREFIX vpa: <http://w3id.org/vpa#>
+    #         PREFIX dcterms: <http://purl.org/dc/terms/>
+    #         SELECT $this ?vehicletype ?number ?variant ?identifier
+    #         WHERE {
+    #           $this vpa:concerns ?vehicletype .
+    #           ?vehicletype a era:VehicleType .
+    #           ?vehicletype era:vehicleTypeNumber ?number .
+    #           FILTER regex(str(?number), "^\\d{2}-\\d{3}-\\d{4}-\\d{1}$")
+    #           ?vehicletype era:includedVersionsVariant ?variant .
+    #           FILTER (regex(str(?variant), "^\\d{3}$") || regex(str(?variant), "^\\d{3}-\\d{3}$"))
+    #           FILTER NOT EXISTS {
+    #             ?vehicletype dcterms:identifier ?identifier .
+    #           }
+    #         }
+    #     '''
+    # ] ;
+    # sh:sparql [
+    #     sh:name "VehicleType (Before Fourth railway Package) required fields (SPARQL)"@en ;
+    #     sh:message "Each VehicleType (Before Fourth railway Package) linked via vpa:concerns must have: era:vehicleTypeNumber matching '71-001-0001-1', era:includedVersion matching '001', and dcterms:identifier (Annex I-10)."@en ;
+    #     sh:severity sh:Violation ;
+    #     sh:select '''
+    #         PREFIX era: <http://data.europa.eu/949/>
+    #         PREFIX vpa: <http://w3id.org/vpa#>
+    #         PREFIX dcterms: <http://purl.org/dc/terms/>
+    #         SELECT $this ?vehicletype ?number ?version ?identifier
+    #         WHERE {
+    #           $this vpa:concerns ?vehicletype .
+    #           ?vehicletype a era:VehicleType .
+    #           ?vehicletype era:vehicleTypeNumber ?number .
+    #           FILTER regex(str(?number), "^\\d{2}-\\d{3}-\\d{4}-\\d{1}$")
+    #           ?vehicletype era:includedVersion ?version .
+    #           FILTER regex(str(?version), "^\\d{3}$")
+    #           FILTER NOT EXISTS {
+    #             ?vehicletype dcterms:identifier ?identifier .
+    #           }
+    #         }
+    #     '''
+    # ] ;
+    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
+
+# Harmonized and merged SKOS concepts for AnnexI-10-1 to AnnexI-10-8
+# 10.1. Type identification
+eralex:PAVA-AnnexI-10-1 a skos:Concept , sh:NodeShape ;
+    skos:inScheme eralex:AnnexIConceptScheme ;
+    skos:prefLabel "(I) 10.1. Type identification"@en ;
+    skos:definition "Type identification (ID, name, date of record)."@en ;
+    skos:broader eralex:PAVA-AnnexI-10 ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:sparql [
+        sh:name "VehicleType identifier present (SPARQL)"@en ;
+        sh:message "Each VehicleType of an AuthorisationCase must have a dcterms:identifier string (Annex I-10)."@en ;
+        sh:severity sh:Violation ;
+        sh:select '''
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            SELECT $this ?vehicletype ?identifier
+            WHERE {
+              $this vpa:concerns ?vehicletype .
+              ?vehicletype a era:VehicleType .
+              FILTER NOT EXISTS {
+                ?vehicletype dcterms:identifier ?identifier .
+                FILTER (datatype(?identifier) = xsd:string)
+              }
+            }
+        '''
+    ] ;
+
+    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
+
+# 10.2. Vehicle type versions (when applicable)
+eralex:PAVA-AnnexI-10-2 a skos:Concept , sh:NodeShape ;
+    skos:inScheme eralex:AnnexIConceptScheme ;
+    skos:prefLabel "(I) 10.2. Vehicle type versions (when applicable)"@en ;
+    skos:definition "Vehicle type versions as defined in Decision 2011/665/EU Annex II, when applicable."@en ;
+    skos:broader eralex:PAVA-AnnexI-10 ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:sparql [
+        sh:name "VehicleType is before 4th RP (era:includedVersions present)"@en ;
+        sh:message "(I) 10.2. VehicleType is before the 4th Railway Package: era:includedVersions is present. dcterms:identifier and era:vehicleTypeNumber must also be present."@en ;
+        sh:severity sh:Warning ;
+        sh:select '''
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            SELECT $this ?vehicletype
+            WHERE {
+              $this vpa:concerns ?vehicletype .
+              ?vehicletype era:includedVersions ?v .
+              FILTER NOT EXISTS { ?vehicletype dcterms:identifier ?id }
+              FILTER NOT EXISTS { ?vehicletype era:vehicleTypeNumber ?num }
+            }
+        '''
+    ] ;
+    sh:sparql [
+        sh:name "VehicleType cannot have both includedVersions and includedVersionsVariant"@en ;
+        sh:message "(I) 10.2. VehicleType cannot have both era:includedVersions and era:includedVersionsVariant present at the same time."@en ;
+        sh:severity sh:Violation ;
+        sh:select '''
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            SELECT $this ?vehicletype
+            WHERE {
+              $this vpa:concerns ?vehicletype .
+              ?vehicletype era:includedVersions ?v1 .
+              ?vehicletype era:includedVersionsVariant ?v2 .
+            }
+        '''
+    ] ;
+    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
+
+# 10.3. Vehicle type variants (when applicable)
+eralex:PAVA-AnnexI-10-3 a skos:Concept , sh:NodeShape ;
+    skos:inScheme eralex:AnnexIConceptScheme ;
+    skos:prefLabel "(I) 10.3. Vehicle type variants (when applicable)"@en ;
+    skos:definition "Vehicle type variants as defined in Decision 2011/665/EU Annex II, when applicable."@en ;
+    skos:broader eralex:PAVA-AnnexI-10 ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:sparql [
+        sh:name "VehicleType is after 4th RP (era:includedVersionsVariant present)"@en ;
+        sh:message "(I) 10.3. VehicleType from the 4th Railway Package: era:includedVersionsVariant is present. dcterms:identifier and era:vehicleTypeNumber must also be present."@en ;
+        sh:severity sh:Warning ;
+        sh:select '''
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            SELECT $this ?vehicletype
+            WHERE {
+              $this vpa:concerns ?vehicletype .
+              ?vehicletype era:includedVersionsVariant ?v .
+              FILTER NOT EXISTS { ?vehicletype dcterms:identifier ?id }
+              FILTER NOT EXISTS { ?vehicletype era:vehicleTypeNumber ?num }
+            }
+        '''
+    ] ;
+    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
+
+# 10.4. Date of record in ERATV (not applicable for first authorisation)
+eralex:PAVA-AnnexI-10-4 a skos:Concept ;
+    skos:inScheme eralex:AnnexIConceptScheme ;
+    skos:prefLabel "(I) 10.4. Date of record in ERATV (not applicable for first authorisation)"@en ;
+    skos:definition "Date of record in the European Register of Authorised Types of Vehicles (ERATV), not applicable for first authorisation."@en ;
+    skos:broader eralex:PAVA-AnnexI-10 ;
+    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
+
+# 10.5. Type name (*)
+eralex:PAVA-AnnexI-10-5 a skos:Concept ;
+    skos:inScheme eralex:AnnexIConceptScheme ;
+    skos:prefLabel "(I) 10.5. Type name (*)"@en ;
+    skos:definition "Type name as specified in Decision 2011/665/EU Annex II."@en ;
+    skos:broader eralex:PAVA-AnnexI-10 ;
+    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
+
+# 10.6. Alternative type name (when applicable)
+eralex:PAVA-AnnexI-10-6 a skos:Concept ;
+    skos:inScheme eralex:AnnexIConceptScheme ;
+    skos:prefLabel "(I) 10.6. Alternative type name (when applicable)"@en ;
+    skos:definition "Alternative type name, when applicable, as specified in Decision 2011/665/EU Annex II."@en ;
+    skos:broader eralex:PAVA-AnnexI-10 ;
+    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
+
+# 10.7. Category (*)
+eralex:PAVA-AnnexI-10-7 a skos:Concept ;
+    skos:inScheme eralex:AnnexIConceptScheme ;
+    skos:prefLabel "(I) 10.7. Category (*)"@en ;
+    skos:definition "Category of the vehicle type as specified in Decision 2011/665/EU Annex II."@en ;
+    skos:broader eralex:PAVA-AnnexI-10 ;
+    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
+
+# 10.8. Subcategory (*)
+eralex:PAVA-AnnexI-10-8 a skos:Concept ;
+    skos:inScheme eralex:AnnexIConceptScheme ;
+    skos:prefLabel "(I) 10.8. Subcategory (*)"@en ;
+    skos:definition "Subcategory of the vehicle type as specified in Decision 2011/665/EU Annex II."@en ;
+    skos:broader eralex:PAVA-AnnexI-10 ;
+    dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
