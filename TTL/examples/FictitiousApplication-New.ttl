@@ -122,7 +122,9 @@ evr:bat-mobile-metro-001 a era:Vehicle ;
 
 erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
   rdfs:label "Authorisation project of the Batman spacial railway Vehicle"@de ;
-  era:preEngagementBaseline [ a era:preEngagement ; era:hasPreEngagementBaseline false ];
+  era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline false] ;
+  # SHACL Valid: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ; era:preEngagementBaseline "https://example.com/pre-engagement-baseline" ] ;
+  # SHACL Invalid, given baseline is missing: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ];
   dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasRole era-organisation-roles:Applicant ] ;
   dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasRole era-organisation-roles:AuthorisingEntity ] ;
   dcterms:identifier "VA-20250715-001" ;

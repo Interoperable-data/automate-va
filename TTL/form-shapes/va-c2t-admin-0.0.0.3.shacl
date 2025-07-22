@@ -212,9 +212,9 @@ This version has been updated with the SHACL message and severities needed in a 
                 sh:name "PreEngagement Reference Document"@en ;
                 sh:datatype xsd:anyURI; # unstable, unchecked
             ]
-         ] ; 
-        ]
-        [ sh:name "No pre-engagement baseline" ;
+          ] 
+       ] [ 
+          sh:name "No pre-engagement baseline" ;
           sh:node [
             a sh:NodeShape ;
             sh:targetClass era:PreEngagement ;
