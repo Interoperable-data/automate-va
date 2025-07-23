@@ -1,0 +1,46 @@
+@prefix : <http://example.org/mfct/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix issform: <http://era.europa.eu/forms/iss/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
+@prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
+@prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+:cert1 a era:ECMCertificate ;
+    dcterms:identifier "BE/32/2025/0001" ;
+    dcterms:type era-permission-types:MaintenanceFunctionCertificate ;
+    dcterms:audience :role1 ;
+    dcterms:creator :role2 ;
+    era:state <http://data.europa.eu/949/iss/concepts/record-statuses/New> ;
+    dcterms:replaces [ 
+        a era:ECMCertificate ;
+        dcterms:identifier "BE/32/2024/0001" 
+    ] ;
+    dcterms:valid :validity1 ;
+    era:ecmCategory <http://data.europa.eu/949/concepts/vehicle-types/eratv/FreightWagon> ;
+    era:ecmSubCategory era-vehicle-types-eratv:freightWagonsRake ;
+    era:ecmForRIDWagons true ;
+    era:ecmHighSpeed false ;
+    era:ecmMaintenanceFunctions era-ecm-maintenance-functions:MaintenanceDevelopment ;
+    era:ecmPartialMaintenanceFunctions "Partial description" ;
+    dcterms:issued "2025-06-19"^^xsd:date ;
+    dcterms:relation "BE/31/2023/0002" ;
+    rdfs:label "MFCT-REF-2025-01" ;
+    rdfs:comment "Additional info here." .
+
+:role1 a era:OrganisationRole ;
+    # era:inCountry <http://publications.europa.eu/resource/authority/country/BEL> ;
+    era:roleOf <http://example.org/org/CertifiedEntity> .
+
+:role2 a era:OrganisationRole ;
+    # era:inCountry <http://publications.europa.eu/resource/authority/country/BEL> ;
+    era:roleOf <http://example.org/org/CertifyingBody> .
+
+:validity1 a <http://www.w3.org/2006/time#Interval> ;
+    <http://www.w3.org/2006/time#hasBeginning> [ <http://www.w3.org/2006/time#inXSDDate> "2025-06-19"^^xsd:date ] ;
+    <http://www.w3.org/2006/time#hasEnd> [ <http://www.w3.org/2006/time#inXSDDate> "2030-06-18"^^xsd:date ] .

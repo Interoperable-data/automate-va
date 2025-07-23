@@ -432,14 +432,7 @@
   # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
   era:CBOrgRoleShape a sh:NodeShape ;
     sh:targetClass era:OrganisationRole ;
-    sh:property [ 
-      sh:name "2.1 Country" ;
-      sh:path era:inCountry ;
-      owl:imports vac:eumemberstates.ttl ;
-      sh:description "Country" ;
-      sh:maxCount 1 ;
-      sh:class skos:Concept ;
-    ], [
+    sh:property [
       sh:name "Certified Body Role" ;
       sh:path era:hasOrganisationRole ;
       sh:hasValue era-organisation-roles:CertifiedBody ;
@@ -463,15 +456,7 @@
   # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
   era:CFBOrgRoleShape a sh:NodeShape ;
     sh:targetClass era:OrganisationRole ;
-    sh:property [ 
-      sh:path era:inCountry ;
-      sh:name "3.1 Country" ;
-      owl:imports vac:eumemberstates.ttl ;
-      sh:description "Country" ;
-      sh:maxCount 1 ;
-      sh:class skos:Concept ;
-      sh:nodeKind sh:IRI ;
-    ] , [
+    sh:property [
       # For conversion to an org URI
       sh:name "Confirm Certifying Body" ;
       sh:path era:roleOf ;
@@ -487,10 +472,11 @@
     ];
     sh:property [
       sh:name "Certifying Body Role" ;
+      sh:description "Role of the certifying body" ;
       sh:path era:hasOrganisationRole ;
       sh:hasValue era-organisation-roles:CertifyingBody  ;
       sh:nodeKind sh:IRI ;
-      sh:maxCount 1 ;
+      sh:minCount 1 ; sh:maxCount 1 ;
     ].
 
   # Id By Name

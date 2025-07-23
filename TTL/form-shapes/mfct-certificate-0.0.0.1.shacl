@@ -83,127 +83,6 @@
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
 ## Form serves: 1.2 maintenance Function Certificate
-# Due to use in ISS prototype, can not be removed for now:
-issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
-  sh:property [ 
-    sh:description "Record ID" ; 
-    sh:name "Record ID" ; 
-    sh:group issform:RecordGroup ; 
-    sh:datatype xsd:string ; 
-    sh:path iss:recordId ;
-    dash:readonly true;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
- ] ; 
- sh:property [ 
-  sh:description "Record Type" ; 
-  sh:name "Record Type" ; 
-  sh:group issform:RecordGroup ; 
-  sh:datatype skos:Concept ; 
-  sh:path iss:recordType ;
-  dash:readonly true;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
- ] ; 
-  sh:property [ 
-  sh:description "Record Definition Version" ; 
-  sh:name "Record Definition Version" ; 
-  sh:group issform:RecordGroup ; 
-  sh:path iss:recordDefVersion ;
-  sh:datatype xsd:string ;
-  sh:hasValue '0.0.0.3' ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
- ] ; 
- sh:property [ 
-  sh:description "Record Version" ; 
-  sh:name "Record Version" ; 
-  sh:group issform:RecordGroup ; 
-  sh:path iss:recordVersionNumber ;
-  sh:datatype xsd:string ;
-  sh:hasValue '0.0.0.1' ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
- ] ; 
- sh:property [ 
-  sh:description "Record Date & Time" ; 
-  sh:name "Record Date & Time" ; 
-  sh:group issform:RecordGroup ; 
-  sh:datatype xsd:string ; 
-  dash:readonly true;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
-  sh:path iss:recordDateTime
- ] ; 
- sh:property [ 
-  sh:description "Record Title" ; 
-  sh:name "Record Title" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  sh:datatype xsd:string ; 
-  sh:path iss:recordTitle ;
-  sh:minCount 0 ;
-  sh:maxCount 1 ;
- ] ; 
-  sh:property [ 
-  sh:description "Report Status" ; 
-  sh:name "Report Status" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  sh:path iss:recordStatus ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
-  sh:in (iss-rs:New iss-rs:Updated iss-rs:Submitted iss-rs:Validated iss-rs:Published iss-rs:Corrected iss-rs:Archived) ;
-  owl:imports iss-skos:era-skos-recordStatuses.ttl ;
-  sh:class  skos:Concept
- ] ; 
- sh:property [ 
-  sh:description "Reporting entity name" ; 
-  sh:name "Reporting entity name" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  dash:readonly true;
-  sh:maxCount 1 ;
-  sh:minCount 1 ;
-  sh:path iss:reportingEntityName
- ] ; 
- sh:property [ 
-  sh:description "Reporting entity category" ; 
-  sh:name "Reporting entity category" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
-  # owl:imports iss-skos:era-skos-orgRoles.ttl ;
-  # sh:class  skos:Concept ;
-  sh:path iss:reportingEntityCategory ;
-  dash:readonly true;
- ] ; 
- sh:property [ 
-  sh:description "Reporter Name" ; 
-  sh:name "Reporter Name" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  sh:datatype xsd:string ; 
-  sh:path iss:user ;
-  dash:readonly true;
-  sh:maxCount 1 ;
-  sh:minCount 1 ;
- ] ; 
- sh:property [ 
-  sh:description "Reporter e-mail" ; 
-  sh:name "Reporter e-mail" ; 
-  sh:group issform:ReportingDetailsGroup ; 
-  sh:datatype xsd:string ; 
-  sh:path iss:userEmail ;
-  dash:readonly true;
-  sh:maxCount 1 ;
-  sh:minCount 1 ;
- ] ; 
- sh:property [ 
-  sh:description "CERTIFICATE OF CONFORMITY FOR MAINTENANCE FUNCTIONS" ; 
-  sh:name "CERTIFICATE OF CONFORMITY FOR MAINTENANCE FUNCTIONS" ; 
-  sh:node era:MaintFuncCertificateShape  ;
-  sh:path iss:hasInfoInRecord ;
-  sh:minCount 1 ;
-  sh:maxCount 1 ;
- ] ;  
-sh:targetClass iss:Record .
 
 ###################################### 
 ################## FORM-defining SHACL
@@ -222,12 +101,12 @@ era:MaintFuncCertificateShape a sh:NodeShape, rdfs:Class ;
   ] ;
   rdfs:seeAlso "https://eradis.era.europa.eu/safety_docs/ecm/certificates/submit.aspx?DocType=3"^^xsd:anyURI ;
   dcterms:created "2025-06-19"^^xsd:date ;
-  # dcterms:modified "2025-05-23"^^xsd:date ;
+  dcterms:modified "2025-07-23"^^xsd:date ;
   # ----------
 
   # 1 -- Certificate Type
   sh:property [
-    sh:description "EIN Number" ;
+    sh:description "EIN Number (CC/32)" ;
     sh:name "1. EIN Number" ;
     sh:pattern "^[A-Z]{2}/32/\\d{4}/\\d{4}$" ; # EIN of maintenance Function Certificate
     sh:path dcterms:identifier ;
@@ -247,20 +126,12 @@ era:MaintFuncCertificateShape a sh:NodeShape, rdfs:Class ;
   ] ;
 
   # 2 -- Certified Entity
-  sh:property  [ 
-    sh:path era:inCountry ;
-    sh:name "2.1 Country" ;
-    owl:imports vac:eumemberstates.ttl ;
-    sh:description "Country" ;
-    sh:maxCount 1 ;
-    sh:class skos:Concept ;
-    sh:group issform:CE
-  ] , [
+  sh:property [
     sh:name "2. Certified Entity" ;
     sh:path dcterms:audience ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:node era:OrganisationRoleShape  ;
+    sh:node era:MWSOrganisationRoleShape  ;
     sh:group issform:CE
   ] , [
     sh:name "Certified Body is Newcomer" ;
@@ -271,20 +142,11 @@ era:MaintFuncCertificateShape a sh:NodeShape, rdfs:Class ;
   ] ; 
 
   # 3 -- Certification Body
-  sh:property  [ 
-    sh:path era:inCountry ;
-    sh:name "3.1 Country" ;
-    owl:imports vac:eumemberstates.ttl ;
-    sh:description "Country" ;
-    sh:maxCount 1 ;
-    sh:class skos:Concept ;
-    sh:group issform:CB
-  ] , [
+  sh:property [
     sh:name "3. Certification Body" ;
     sh:path dcterms:creator ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:node era:OrganisationRoleShape  ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:node era:CBOrganisationRoleShape  ;
     sh:group issform:CB
   ]; 
 
@@ -294,7 +156,7 @@ era:MaintFuncCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:name "4.1 Certificate type" ;
     sh:path era:state ;
     sh:hasValue iss-rs:New ;
-    sh:nodeKinde sh:IRI ;
+    sh:nodeKind sh:IRI ;
     sh:group issform:CI
   ] , [
     sh:name "4.2 Previous Certificate" ;
@@ -331,13 +193,13 @@ era:MaintFuncCertificateShape a sh:NodeShape, rdfs:Class ;
   sh:property  [
     sh:name "Category (ERATV)";
     sh:path era:ecmCategory ;
-    owl:imports era-skos:era-skos-Categories.ttl ;
+    owl:imports <https://data-interop.era.europa.eu/era-vocabulary/skos/era-skos-Categories.ttl> ;
     sh:class skos:Concept ;
     sh:group issform:S
   ] ,  [
     sh:name "Subcategory (ERATV)";
     sh:path era:ecmSubCategory ;
-    owl:imports era-skos:era-skos-SubCategories.ttl ;
+    owl:imports <https://data-interop.era.europa.eu/era-vocabulary/skos/era-skos-SubCategories.ttl> ;
     sh:class skos:Concept ;
     sh:group issform:S
   ] , [ 
@@ -470,8 +332,9 @@ issform:FileFormShape a sh:NodeShape, rdfs:Class ;
   sh:targetClass iss:File .
 
 # ECM name and role (to convert into URI!)
-era-sh:OrganisationRoleShape a sh:NodeShape , rdfs:Class ;
+era-sh:CBOrganisationRoleShape a sh:NodeShape , rdfs:Class ;
   sh:targetClass era:OrganisationRole ;
+
   sh:property [
     # For conversion of the string to an org URI
     sh:description "Legal title" ;
@@ -488,7 +351,41 @@ era-sh:OrganisationRoleShape a sh:NodeShape , rdfs:Class ;
     sh:datatype xsd:string ;
     sh:nodeKind sh:IRI ;
     sh:maxCount 1
-  ].
+  ] , [   
+    sh:path era:hasRole ;
+    sh:hasValue era-organisation-roles:ECM-CB ;
+    sh:nodeKind sh:IRI ;
+    sh:name "Role of ECM-CB" ;
+    sh:maxCount 1 
+  ] .
+
+# ECM name and role (to convert into URI!)
+era-sh:MWSOrganisationRoleShape a sh:NodeShape ;
+  sh:targetClass era:OrganisationRole ;
+
+  sh:property [
+    # For conversion of the string to an org URI
+    sh:description "Legal title" ;
+    sh:name "Legal title" ;
+    sh:path era:roleOf ;
+    sh:datatype xsd:string ;
+    sh:nodeKind sh:IRI ;
+    sh:maxCount 1
+  ] , [
+    # For conversion of the string to an org URI
+    sh:description "Organisation Code" ;
+    sh:name "Organisation Code" ;
+    sh:path era:roleOf ;
+    sh:datatype xsd:string ;
+    sh:nodeKind sh:IRI ;
+    sh:maxCount 1
+  ] , [   
+    sh:path era:hasRole ;
+    sh:in ( era-organisation-roles:MWS era-organisation-roles:MWS-b era-organisation-roles:MWS-c era-organisation-roles:MWS-d )   ;
+    sh:nodeKind sh:IRI ;
+    sh:name "Role of MWS" ;
+    sh:maxCount 1 
+  ] .
 
 # Main parts of the form
 issform:CT a sh:PropertyGroup ;

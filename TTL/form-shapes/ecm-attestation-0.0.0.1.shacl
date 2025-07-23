@@ -82,9 +82,10 @@
 
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
+
 ## Form serves: 1.2 maintenance Function Certificate
 # Due to use in ISS prototype, can not be removed for now:
-issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
+issform:RecordFormShape a sh:NodeShape ;
   sh:property [ 
     sh:description "Record ID" ; 
     sh:name "Record ID" ; 
@@ -208,7 +209,7 @@ sh:targetClass iss:Record .
 ###################################### 
 ################## FORM-defining SHACL
 ######################################
-era:ECMAttestationShape a sh:NodeShape, rdfs:Class ;
+era:ECMAttestationShape a sh:NodeShape ;
 
   sh:targetClass era:ECMAttestation ; # subClassOf vpa:Permission !
   rdfs:label "ECM Attestation" ;
@@ -225,16 +226,8 @@ era:ECMAttestationShape a sh:NodeShape, rdfs:Class ;
   # dcterms:modified "2025-05-23"^^xsd:date ;
   # ----------
 
-  # 1 -- Certification Body
-  sh:property  [ 
-    sh:path era:inCountry ;
-    sh:name "Country" ;
-    owl:imports vac:eumemberstates.ttl ;
-    sh:description "Country" ;
-    sh:maxCount 1 ;
-    sh:class skos:Concept ;
-    sh:group issform:CB
-  ] , [
+  # 1 -- Certification Body, UI will use Country to pre-filter on the CB's
+  sh:property  [
     sh:name "Certification Body" ;
     sh:path dcterms:creator ;
     sh:minCount 1 ;
@@ -244,15 +237,7 @@ era:ECMAttestationShape a sh:NodeShape, rdfs:Class ;
   ]; 
 
   # 2 -- Applicant
-  sh:property  [ 
-    sh:path era:inCountry ;
-    sh:name "Applicant Country" ;
-    owl:imports vac:eumemberstates.ttl ;
-    sh:description "Country of the Applicant" ;
-    sh:maxCount 1 ;
-    sh:class skos:Concept ;
-    sh:group issform:CE
-  ] , [
+  sh:property [
     sh:name "Applicant" ;
     sh:path dcterms:audience ;
     sh:minCount 1 ;

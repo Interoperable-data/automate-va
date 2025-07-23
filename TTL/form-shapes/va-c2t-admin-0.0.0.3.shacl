@@ -288,7 +288,7 @@ This version has been updated with the SHACL message and severities needed in a 
       sh:name "Area of Use (all networks in the country)" ;
       sh:description "All networks of a country forming the Area Of Use" ;
       sh:group dash:AUTHC ;
-      owl:imports vac:eumemberstates.ttl ; # FAILS <http://publications.europa.eu/resource/authority/country> ;
+      owl:imports vac:eumemberstates.ttlx ; # FAILS <http://publications.europa.eu/resource/authority/country> ;
       sh:message "Each Authorisation Case must refer to the intended Area Of use, which shall be compared with the AoU of the Vehicle Type" ;
       sh:minCount 1 ;
       sh:class skos:Concept ;
