@@ -36,7 +36,7 @@
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
@@ -108,6 +108,8 @@ era-cld:cld-NoBoCert-15571
             time:years 10 ;
         ]
     ];
+    era:resultStatement "- mandatory field (result) -"@en;
+    era:validityStatement "- mandatory field (validity) -"@en;
     era:sequenceStatement """This certificate follows certificate number 0038/1/SB/2016/RST/EN/20161113 issue 2 dated
 02/09/2016 and certificate number 2673/1/SB/2016/RST/EN/N20160045/02 dated 29/05/2020"""@en ;
     dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-RO-310141-2931 ; era:hasOrganisationRole era-organisation-roles:Applicant  ] ; # Applicant 

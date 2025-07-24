@@ -36,7 +36,7 @@
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
@@ -103,24 +103,27 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:identifier ;
+        sh:name "CLD identifier"@en ;
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
-        sh:description "The CLD ID, as defined in RFU-STR-001.";
+        sh:description "The CLD ID, as defined in RFU-STR-001."@en;
         sh:minCount 1;
         sh:maxCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
         sh:path vpa:versionNumber ;
+        sh:name "CLD Version Number"@en ;
         sh:datatype xsd:integer ;
         sh:nodeKind sh:Literal ;
-        sh:description "The Version Counter of the CLD, as defined in RFU-STR-001.";
+        sh:description "The Version Counter of the CLD, as defined in RFU-STR-001."@en;
         sh:minCount 1;
         sh:maxCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:created ;
+        sh:name "CLD entry created in KG"@en ;
         sh:datatype xsd:date ;
         sh:nodeKind sh:Literal ;
         sh:description "Date the CLD was created in ERADIS+."@en ;
@@ -130,6 +133,7 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:issued ;
+        sh:name "CLD Issue date"@en ;
         sh:datatype xsd:date ;
         sh:nodeKind sh:Literal ;
         sh:description "Date the CLD was issued by the CAB."@en ;
@@ -139,6 +143,7 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:replaces ;
+        sh:name "Which CLD this CLD replaces"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "The previous CLD replaced by this one, if any."@en ;
         sh:maxCount 1
@@ -146,6 +151,7 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:type ;
+        sh:name "CLD type"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "SKOS Concept indicating what type of CLD is represented."@en ;
         sh:maxCount 1
@@ -153,6 +159,7 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:conformsTo ;
+        sh:name "CLD module and ERA Document"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "Module and preferably ERA `Technical Document 000MRA1044` to which the CLD conforms. Should include exactly one era:Document (ERA Technical Document), and must include one SKOS Concept (module)."@en ;
         sh:minCount 1 ; sh:maxCount 2 ;
@@ -196,16 +203,18 @@ era-sh:CLD a
             }
         """
     ] ;
-    sh:property [
-        a sh:PropertyShape ;
-        sh:path dcterms:source ;
-        sh:nodeKind sh:IRI ;
-        sh:description "Legal basis for the CLD."@en ;
-        sh:minCount 1
-    ];
+    # sh:property [
+    #     a sh:PropertyShape ;
+    #     sh:path dcterms:source ;
+    #     sh:name "CLD legal basis"@en ;
+    #     sh:nodeKind sh:IRI ;
+    #     sh:description "Legal basis for the CLD."@en ;
+    #     sh:minCount 1
+    # ];
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:subject ;
+        sh:name "CLD Subject of Assessment"@en ;
         sh:nodeKind sh:IRI ;
         sh:or (
             [ sh:class era:IC ]
@@ -237,6 +246,7 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path vpa:checkedCompliance ;
+        sh:name "CLD Compliances Checked"@en ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:or (
             [ sh:class era:CABAssessmentCheck ]
@@ -248,6 +258,7 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:description ;
+        sh:name "CLD description"@en ;
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
         sh:description "Human-readable description of the CLD."@en ;
@@ -257,6 +268,7 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path rdfs:seeAlso ;
+        sh:name "CLD link to ERADIS URL"@en ;
         sh:datatype xsd:anyURI ;
         sh:nodeKind sh:Literal ;
         sh:description "The ERADIS or other URL of the CLD, if available."@en ;
@@ -265,6 +277,7 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path vpa:valid ;
+        sh:name "CLD time validity"@en ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class time:ProperInterval ;
         sh:description "Validity interval of the CLD."@en ;
@@ -274,20 +287,23 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:audience ;
-        sh:nodeKind sh:IRI ;
+        sh:name "Organisation receiving the CLD"@en ;
         sh:class era:OrganisationRole ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
         sh:description "The organisation using the CLD as Applicant (must be an era:OrganisationRole)."@en ;
         sh:node [
             sh:property [
                 sh:path era:roleOf ;
+                sh:name "The IRI of the receiving organisation"@en ;
+                sh:description "The body to which this role applies (must be an era:Body)."@en ;
                 sh:nodeKind sh:IRI ;
                 sh:class era:Body ;
-                sh:description "The body to which this role applies (must be an era:Body)."@en ;
                 sh:minCount 1 ;
                 sh:maxCount 1
             ] ;
             sh:property [
                 sh:path era:hasRole ;
+                sh:name "The role of the receiving Organisation"@en ;
                 sh:nodeKind sh:IRI ;
                 sh:description "The role held, must be a SKOS Concept from era-organisation-roles."@en ;
                 sh:in (era-organisation-roles:Applicant era-organisation-roles:Manufacturer ) ; # TODO: To be checked
@@ -301,12 +317,14 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:contributor ;
-        sh:nodeKind sh:IRI ;
+        sh:name "Involved organisations"@en ;
         sh:class era:OrganisationRole ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
         sh:description "The manufacturer involved in the assessment (must be an era:OrganisationRole)."@en ;
         sh:node [
             sh:property [
                 sh:path era:roleOf ;
+                sh:name "The IRI of the involved organisation"@en ;
                 sh:nodeKind sh:IRI ;
                 sh:class era:Body ;
                 sh:description "The body to which this role applies (must be an era:Body)."@en ;
@@ -315,6 +333,7 @@ era-sh:CLD a
             ] ;
             sh:property [
                 sh:path era:hasRole ;
+                sh:name "The role of the involved Organisation"@en ;
                 sh:nodeKind sh:IRI ;
                 sh:description "The role held, must be a SKOS Concept from era-organisation-roles."@en ;
                 sh:in (era-organisation-roles:Manufacturer era-organisation-roles:AssessmentBody) ; # TODO: to be checked
@@ -328,12 +347,14 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:creator ;
-        sh:nodeKind sh:IRI ;
+        sh:name "The CAB producing the CLD"@en ;
         sh:class era:OrganisationRole ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
         sh:description "The assessment body having issued the CLD (must be an era:OrganisationRole)."@en ;
         sh:node [
             sh:property [
                 sh:path era:roleOf ;
+                sh:name "The IRI of the issuing organisation"@en ;
                 sh:nodeKind sh:IRI ;
                 sh:class era:Body ;
                 sh:description "The body to which this role applies (must be an era:Body)."@en ;
@@ -342,6 +363,7 @@ era-sh:CLD a
             ] ;
             sh:property [
                 sh:path era:hasRole ;
+                sh:name "The role of the issuing Organisation"@en ;
                 sh:nodeKind sh:IRI ;
                 sh:description "The role held, must be a SKOS Concept from era-organisation-roles."@en ;
                 sh:in (era-organisation-roles:CAB era-organisation-roles:AssessmentBody) ; # TODO: to be checked
@@ -354,17 +376,18 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dcterms:coverage ;
+        sh:path dcterms:source ;
+        sh:name "CLD: Covered Directives"@en ;
         sh:nodeKind sh:IRI ;
         sh:class vpa:Requirement ;
-        sh:description "Requirement(s) covered by the CLD. Must be a vpa:Requirement, and NOT an era:TSI or era:IC."@en ;
-        sh:message "dcterms:coverage must point to a vpa:Requirement that is not an era:TSI nor an era:IC."@en ;
+        sh:description "Legal Requirement(s), but not TSI's, covered by the CLD. Must be a `vpa:Requirement`, and NOT an `era:TSI` or `era:IC`."@en ;
+        sh:message "The property `dcterms:source` MUST be present and link to a `vpa:Requirement` that is not an `era:TSI` nor an `era:IC`."@en ;
         sh:sparql [
             a sh:SPARQLConstraint ;
-            sh:message "dcterms:coverage must not be an era:TSI or era:IC."@en ;
+            sh:message "dcterms:source must not be an era:TSI or era:IC."@en ;
             sh:select """
                 SELECT $this ?covered WHERE {
-                  $this dcterms:coverage ?covered .
+                  $this dcterms:source ?covered .
                   FILTER (EXISTS { ?covered a era:TSI } || EXISTS { ?covered a era:IC })
                 }
             """
@@ -374,7 +397,8 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:spatial ;
-        sh:nodeKind sh:IRI ;
+        sh:name "CLD: spatial validity to a Site"@en ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class org:Site ;
         sh:description "Manufacturing or assessment site(s), if relevant."@en ;
         sh:maxCount 1
@@ -382,6 +406,7 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path rdfs:comment ;
+        sh:name "CLD comment"@en ;
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
         sh:description "Free-text comment about the CLD."@en ;
@@ -390,6 +415,7 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:isReplacedBy ;
+        sh:name "Replacing CLD"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "IRI of the newer CLD that replaces this one, if any."@en ;
         sh:maxCount 1
@@ -434,6 +460,35 @@ era-sh:CLD a
             }
         """
 ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:resultStatement ;
+        sh:name "CLD Assessment Result"@en ;
+        sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
+        sh:nodeKind sh:Literal ;
+        sh:description "Assessment result (free text, required)."@en ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:validityStatement ;
+        sh:name "CLD Validity Statement"@en ;
+        sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
+        sh:nodeKind sh:Literal ;
+        sh:description "Validity statement (free text, required)."@en ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:sequenceStatement ;
+        sh:name "CLD Sequence Statement"@en ;
+        sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
+        sh:nodeKind sh:Literal ;
+        sh:description "Sequence statement (free text, optional)."@en ;
+        sh:maxCount 1
+    ] ;
 .
 
 # --- CABCheck shape (for vpa:checkedCompliance, covers both assessment and audit checks) ---
@@ -442,6 +497,7 @@ era-sh:CABCheckShape a sh:NodeShape ;
     sh:property [
         a sh:PropertyShape ;
         sh:path vpa:checkedSection ;
+        sh:name "Sections checked"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "Section of the legal text checked in this check."@en ;
         sh:minCount 1
@@ -451,6 +507,7 @@ era-sh:CABCheckShape a sh:NodeShape ;
         sh:or (
             [
                 sh:path vpa:isCompliant ;
+                sh:name "Compliance Check (Y/N)"@en ;
                 sh:datatype xsd:boolean ;
                 sh:nodeKind sh:Literal ;
                 sh:description "Whether the section is compliant (true/false)."@en ;
@@ -458,6 +515,7 @@ era-sh:CABCheckShape a sh:NodeShape ;
             ]
             [
                 sh:path era:isCompliant ;
+                sh:name "Compliance Check (Yes/No/Partial/...)"@en ;
                 sh:nodeKind sh:IRI ;
                 sh:class skos:Concept ;
                 sh:description "IRI to a skos:Concept indicating compliance (Y/N/P)."@en ;
@@ -468,6 +526,7 @@ era-sh:CABCheckShape a sh:NodeShape ;
     sh:property [
         a sh:PropertyShape ;
         sh:path vpa:checkedRequirement ;
+        sh:name "The Legal source of the check"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "Legal requirement(s) checked in this check."@en ;
         sh:minCount 0
@@ -475,6 +534,7 @@ era-sh:CABCheckShape a sh:NodeShape ;
     sh:property [
         a sh:PropertyShape ;
         sh:path vpa:withRestriction ;
+        sh:name "Restriction formulated during Check"@en ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class era:CABRestriction ;
         sh:description "Restriction, addition, or condition (CLOU) attached to this check."@en ;
@@ -482,6 +542,7 @@ era-sh:CABCheckShape a sh:NodeShape ;
     sh:property [
         a sh:PropertyShape ;
         sh:path rdfs:comment ;
+        sh:name "Check comment"@en ;
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
         sh:description "Free-text comment about the check."@en ;
@@ -489,36 +550,12 @@ era-sh:CABCheckShape a sh:NodeShape ;
     ] ;
     sh:property [
         a sh:PropertyShape ;
-        sh:path dcterms:source ;
-        sh:nodeKind sh:IRI ;
-        sh:description "Legal source for the check."@en ;
-        sh:maxCount 1
-    ] ;
-    sh:property [
-        a sh:PropertyShape ;
         sh:path rdfs:seeAlso ;
+        sh:name "seeAlso"@en ;
         sh:datatype xsd:anyURI ;
         sh:nodeKind sh:Literal ;
         sh:description "Reference to supporting documents or reports."@en ;
-        sh:maxCount 1
-    ] ;
-    sh:property [
-        a sh:PropertyShape ;
-        sh:path era:cabAssessmentResult ;
-        sh:datatype xsd:string ;
-        sh:nodeKind sh:Literal ;
-        sh:description "Assessment result (free text, optional)."@en ;
-        sh:maxCount 1
-    ] ;
-    sh:property [
-        a sh:PropertyShape ;
-        sh:path era:cabValidityStatement ;
-        sh:datatype xsd:string ;
-        sh:nodeKind sh:Literal ;
-        sh:description "Validity statement (free text, optional)."@en ;
-        sh:maxCount 1
-    ] ;
-.
+    ] .
 
 # Section 2 of a vehicle type should be resolved through Restriction and Compliance resources.
 # Conformity of a VehicleType to TSI's
@@ -535,6 +572,7 @@ era-sh:TSIConformity a
     ## Properties -----------
     sh:property [
         a sh:PropertyShape ;
+        sh:name "TSI Check restriction related to TSI"@en ;
         sh:path vpa:regarding ;
         sh:nodeKind sh:IRI ;
         sh:class era:Requirement ; # Use an exact link to the vehicle-related TSI examined /ERALEX
@@ -556,6 +594,7 @@ era-sh:TSIComplianceCheck  a
     sh:property [
         a sh:PropertyShape ;
         sh:inversePath vpa:checked ;
+        sh:name "checked"@en ;
         sh:class era-sh:ECCertificate ;
         era:eratvIndex "2.2" ;
         sh:description  "The certificate, to be mentioned under 2.2 of the VehicleType, which examined Sections and Specific Cases, and their conclusion."@en , 
@@ -564,18 +603,20 @@ era-sh:TSIComplianceCheck  a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:isCompliant ; ## see vpa:isCompliant (allows only boolean)
+        sh:name "TSI Compliance Check Result"@en ;
         sh:nodeKind sh:IRI ;
-        era:inSkosConceptScheme <http://data.europa.eu/949/concepts/tsi-conformities/ConformityResults> ;# to be created in ERA Vocabulary
+        era:inSkosConceptScheme <http://data.europa.eu/949/concepts/tsi-conformities/ConformityResults/> ;# to be created in ERA Vocabulary
         sh:class <http://www.w3.org/2004/02/skos/core#Concept> ; 
         sh:description "Y: Compliant, N: Non-compliant, P: Partially compliant."@en
     ];
     sh:property [
         a sh:PropertyShape ;
         sh:path era:checkedSection ;
+        sh:name "TSI Compliance Check (Section checked)"@en ;
         sh:nodeKind sh:IRI ;
         sh:or (
             [
-                era:inSkosConceptScheme <http://data.europa.eu/949/concepts/tsi-conformities/TSISpecificCases> ;# to be created in ERA Vocabulary
+                era:inSkosConceptScheme <http://data.europa.eu/949/concepts/tsi-conformities/TSISpecificCases/> ;# to be created in ERA Vocabulary
                 sh:class <http://www.w3.org/2004/02/skos/core#Concept> ; 
                 sh:description "Applicable specific cases (specific cases conformity with which has been assessed)."@en ;
                 era:eratvIndex "2.3"
@@ -593,7 +634,8 @@ era-sh:TSIComplianceCheck  a
     ## TODO: In some cases, the ComplianceCheck MUST be linked to a Vehicle Configuration
     sh:property [
         a sh:PropertyShape ;
-        # sh:path :forConfiguration ;
+        sh:name "Compliance Check TSI valid for Configuration"@en ;
+        sh:path era:forConfiguration ;
         sh:nodeKind sh:IRI ;
         sh:class era-sh:VehicleTypeConfiguration ;
     ]

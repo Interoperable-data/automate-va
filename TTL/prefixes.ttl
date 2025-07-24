@@ -36,7 +36,8 @@
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
+@prefix eralex-pava: <http://data.europa.eu/949/requirement/legislation/pava/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
@@ -70,6 +71,7 @@
 @prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
 @prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
 @prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
+@prefix erava-tsi-conforms: <http://data.europa.eu/949/concepts/tsi-conformities/> .
 @prefix issform:  <http://era.europa.eu/forms/iss/> . 
 
 # From ISS

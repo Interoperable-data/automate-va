@@ -169,7 +169,7 @@ In the C2T-completeness assessment we have to execute many SHACL validations on 
    ] , [
       # The vehicle number check
       a era:AssessmentElement ; # subClassOf vpa:Compliance
-      vpa:checkedSection eralex:PAVA-AnnexI-11 ;              # ... as they exist in ERALEX
+      vpa:checkedSection eralex-pava:AnnexI-11 ;              # ... as they exist in ERALEX
       vpa:isCompliant "true"^^xsd:boolean ; # CONSTRUCTed from the SHACL validation report ("false|true"^^xsd:boolean) ;
    ] , [
      # other records of the completeness assessment

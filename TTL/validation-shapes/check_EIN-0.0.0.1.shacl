@@ -40,7 +40,7 @@
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
@@ -88,21 +88,21 @@
 @prefix update: <http://data.europa.eu/949/update/> .
 
 ## Configuration
-:Config
-    :currentYear "2025"^^xsd:string .
+era-sh:Config
+    era-sh:currentYear "2025"^^xsd:string .
 
 ### VALIDATION SHAPES
 
 # Checks a EIN-number (CC, NN, YYYY)
-:EINConstraintComponent 
+era-sh:CurrentYearEINConstraintComponent 
   a sh:ConstraintComponent ;
-  rdfs:label "Correct EIN numbers"@en , "Correcte EIN nummers"@nl ;
+  rdfs:label "Correct EIN numbers for current year"@en , "Correcte EIN nummers voor dit jaar"@nl ;
   rdfs:description "ECM EIN must be `CC/NN/YYYY/nnnn`, where NN is a predefined number, CC is two-letter ISO country code and YYYY is the current year."@en ;
   rdfs:seeAlso "https://www.era.europa.eu/system/files/2022-11/European%20Identification%20Number.pdf"^^xsd:anyURI ;
   dcterms:created "2025-05-22"^^xsd:date ;
   
   sh:parameter [
-    sh:path :CC ;
+    sh:path era-sh:CC ;
     sh:datatype xsd:string ;
     sh:minLenght 2 ;
     sh:maxLength 2 ;
@@ -110,7 +110,7 @@
     sh:description "EIN Field 1 (Code relevant for the issuing authority (2 letters))" ;
   ] ;   
   sh:parameter [
-    sh:path :NN ;
+    sh:path era-sh:NN ;
     sh:datatype xsd:string ;
     sh:minLenght 2 ;
     sh:maxLength 2 ;
@@ -118,7 +118,7 @@
     sh:description "EIN Field 2 (Type of document(2 digits))" ;
   ] ;   
   sh:parameter [
-    sh:path :YYYY ;
+    sh:path era-sh:YYYY ;
     sh:datatype xsd:string ;
     sh:minLenght 4 ;
     sh:maxLength 4 ;
@@ -127,19 +127,68 @@
   ] ;   
   sh:propertyValidator  [
     a sh:SPARQLSelectValidator ;
-    sh:message "The identifier must have the format {$CC}/{$NN}/YYYY/NNNN where YYYY is the current year ({$YYYY})." ;
-    sh:severity sh:Violation ;
+    sh:message "The identifier {$CC}/{$NN}/YYYY/{$NNNN} is not from the current year ({$YYYY})." ;
+    sh:severity sh:Warning ;
     sh:select """
         PREFIX dcterms: <http://purl.org/dc/terms/>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
         SELECT $this ?value
         WHERE {
             $this dcterms:identifier ?value .
-            :Config :currentYear ?currentYear .
-            BIND (CONCAT('^?CC//?NN//', ?currentYear, '/\\\\d{4}$') AS ?pattern)
+            era-sh:Config era-sh:currentYear ?currentYear .
+            BIND (CONCAT('^', ?CC, '//', ?NN, '//', ?currentYear, '/\\\\d{4}$') AS ?pattern)
             FILTER (
                 !REGEX(?value, ?pattern, 'i')
             )
         }
     """ ;
-  ] .
+  ].
+  
+era-sh:GeneralEINConstraintComponent 
+  a sh:ConstraintComponent ;
+  rdfs:label "Correct EIN numbers"@en , "Correcte EIN nummers"@nl ;
+  rdfs:description "ECM EIN must be `CC/NN/YYYY/nnnn`, where NN is a predefined number, CC is two-letter ISO country code and YYYY is a valid year."@en ;
+  rdfs:seeAlso "https://www.era.europa.eu/system/files/2022-11/European%20Identification%20Number.pdf"^^xsd:anyURI ;
+  dcterms:created "2025-07-24"^^xsd:date ;
+  
+  sh:parameter [
+    sh:path era-sh:CC ;
+    sh:datatype xsd:string ;
+    sh:minLenght 2 ;
+    sh:maxLength 2 ;
+    sh:name "Issuing Authority" ;
+    sh:description "EIN Field 1 (Code relevant for the issuing authority (2 letters))" ;
+  ] ;   
+  sh:parameter [
+    sh:path era-sh:NN ;
+    sh:datatype xsd:string ;
+    sh:minLenght 2 ;
+    sh:maxLength 2 ;
+    sh:description "Document Type" ;
+    sh:description "EIN Field 2 (Type of document(2 digits))" ;
+  ] ;   
+  sh:parameter [
+    sh:path era-sh:YYYY ;
+    sh:datatype xsd:string ;
+    sh:minLenght 4 ;
+    sh:maxLength 4 ;
+    sh:description "Issue Year" ;
+    sh:description "EIN Field 3 (Issue Year (4 digits))" ;
+  ] ;   
+  sh:propertyValidator [
+    a sh:SPARQLSelectValidator ;
+    sh:message "The identifier {$value} does not pass validation criteria." ;
+    sh:severity sh:Warning ;
+    sh:select """
+        PREFIX dcterms: <http://purl.org/dc/terms/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        SELECT $this ?value
+        WHERE {
+            $this dcterms:identifier ?value .
+            BIND (CONCAT('^', ?CC, '//', ?NN, '//', ?YYYY, '/\\\\d{4}$') AS ?pattern)
+            FILTER (
+                !REGEX(?value, ?pattern, 'i')
+            )
+        }
+    """ ;
+  ].
