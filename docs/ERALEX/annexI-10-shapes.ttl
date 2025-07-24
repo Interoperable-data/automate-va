@@ -170,7 +170,47 @@ eralex:PAVA-AnnexI-10-1 a skos:Concept , sh:NodeShape ;
     skos:definition "Type identification"@en ;
     skos:broader eralex:PAVA-AnnexI-10 ;
     sh:targetClass era:VehicleTypeAuthorisationCase ;
-    # the shape checking dcterms:identifier and other required properties is in 10.2 and 10.3
+    # Individual checks: 
+    sh:property [
+        sh:path vpa:concerns ;
+        sh:node [
+            a sh:NodeShape ;
+            sh:targetClass era:VehicleType ;
+            sh:property [
+                sh:path dcterms:identifier ;
+                sh:minCount 1 ;
+                sh:name "VehicleType identifier present"@en ;
+                sh:message "VehicleType must have dcterms:identifier (Annex I-10.1)."@en ;
+                sh:severity sh:Violation
+            ] ;
+            sh:property [
+                sh:path rdfs:label ;
+                sh:minCount 1 ;
+                sh:name "VehicleType label present"@en ;
+                sh:message "VehicleType must have rdfs:label (Annex I-10.1)."@en ;
+                sh:severity sh:Violation
+            ] ;
+        ] ;
+        # sh:severity sh:Info ;
+        # sh:name "VehicleType constraints for vpa:concerns"@en ;
+        # sh:message "If vpa:concerns points to a VehicleType, it must satisfy all Annex I-10.1 constraints. Other types are ignored."@en ;
+    ] ;
+    # the COMBINED shape checking dcterms:identifier and other required properties is in 10.2 and 10.3
+    sh:sparql [
+        sh:name "VehicleType cannot have both includedVersions and includedVersionsVariant"@en ;
+        sh:message "(I) 10.1. VehicleType cannot have both era:includedVersions and era:includedVersionsVariant present at the same time."@en ;
+        sh:severity sh:Violation ;
+        sh:select '''
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            SELECT $this ?vehicletype
+            WHERE {
+              $this vpa:concerns ?vehicletype .
+              ?vehicletype era:includedVersions ?v1 .
+              ?vehicletype era:includedVersionsVariant ?v2 .
+            }
+        '''
+    ] ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 10.2. Vehicle type versions (when applicable)
@@ -197,21 +237,6 @@ eralex:PAVA-AnnexI-10-2 a skos:Concept , sh:NodeShape ;
             }
         '''
     ] ;
-    sh:sparql [
-        sh:name "VehicleType cannot have both includedVersions and includedVersionsVariant"@en ;
-        sh:message "(I) 10.2. VehicleType cannot have both era:includedVersions and era:includedVersionsVariant present at the same time."@en ;
-        sh:severity sh:Violation ;
-        sh:select '''
-            PREFIX era: <http://data.europa.eu/949/>
-            PREFIX vpa: <http://w3id.org/vpa#>
-            SELECT $this ?vehicletype
-            WHERE {
-              $this vpa:concerns ?vehicletype .
-              ?vehicletype era:includedVersions ?v1 .
-              ?vehicletype era:includedVersionsVariant ?v2 .
-            }
-        '''
-    ] ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 10.3. Vehicle type variants (when applicable)
@@ -221,21 +246,36 @@ eralex:PAVA-AnnexI-10-3 a skos:Concept , sh:NodeShape ;
     skos:definition "Vehicle type variants as defined in Decision 2011/665/EU Annex II, when applicable."@en ;
     skos:broader eralex:PAVA-AnnexI-10 ;
     sh:targetClass era:VehicleTypeAuthorisationCase ;
+    # Individual checks: 
     sh:property [
         sh:path vpa:concerns ;
-        sh:class era:VehicleType ;
-        sh:property [
-            sh:path era:includedVersionsVariant ;
-            sh:minCount 1 ;
+        sh:node [
+            a sh:NodeShape ;
+            sh:targetClass era:VehicleType ;
+            sh:property [
+                sh:path era:includedVersionsVariant ;
+                sh:minCount 1 ;
+                sh:name "VehicleType includedVersionsVariant present"@en ;
+                sh:message "VehicleType must have era:includedVersionsVariant (Annex I-10.3)."@en ;
+            ] ;
+            sh:property [
+                sh:severity sh:Violation ;
+                sh:path dcterms:identifier ;
+                sh:minCount 1 ;
+                sh:name "VehicleType identifier present"@en ;
+                sh:message "VehicleType must have dcterms:identifier (Annex I-10.3)."@en ;
+            ] ;
+            sh:property [
+                sh:path era:vehicleTypeNumber ;
+                sh:severity sh:Violation ;
+                sh:minCount 1 ;
+                sh:name "VehicleType vehicleTypeNumber present"@en ;
+                sh:message "VehicleType must have era:vehicleTypeNumber (Annex I-10.3)."@en ;
+            ] ;
         ] ;
-        sh:property [
-            sh:path dcterms:identifier ;
-            sh:minCount 1 ;
-        ] ;
-        sh:property [
-            sh:path era:vehicleTypeNumber ;
-            sh:minCount 1 ;
-        ] ;
+        # sh:severity sh:Info ;
+        # sh:name "VehicleType constraints for vpa:concerns"@en ;
+        # sh:message "If vpa:concerns points to a VehicleType, it must satisfy all Annex I-10.3 constraints. Other types are ignored."@en ;
     ] ;
     sh:sparql [
         sh:name "VehicleType after 4th RP (era:includedVersionsVariant present)"@en ;
@@ -248,6 +288,7 @@ eralex:PAVA-AnnexI-10-3 a skos:Concept , sh:NodeShape ;
             SELECT $this ?vehicletype
             WHERE {
               $this vpa:concerns ?vehicletype .
+              ?vehicletype a era:VehicleType .
               ?vehicletype era:includedVersionsVariant ?v .
               FILTER NOT EXISTS { ?vehicletype dcterms:identifier ?id }
               FILTER NOT EXISTS { ?vehicletype era:vehicleTypeNumber ?num }
@@ -306,7 +347,7 @@ eralex:PAVA-AnnexI-10-5 a skos:Concept, sh:NodeShape ;
     skos:definition "Type name as specified in Decision 2011/665/EU Annex II."@en ;
     skos:broader eralex:PAVA-AnnexI-10 ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> ;
-    sh:targetObjectsOf vpa:concerns ;
+    sh:targetClass era:VehicleType ;
     sh:property [
         sh:path rdfs:label ;
         sh:minCount 1 ;
@@ -324,11 +365,11 @@ eralex:PAVA-AnnexI-10-6 a skos:Concept , sh:NodeShape ;
     skos:definition "Alternative type name, when applicable, as specified in Decision 2011/665/EU Annex II."@en ;
     skos:broader eralex:PAVA-AnnexI-10 ;
     dcterms:source <https://eur-lex.europe.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> ;
-    sh:targetObjectsOf vpa:concerns ;
+    sh:targetClass era:VehicleType ;
     sh:property [
         sh:path era:alternativeTypeName ;
         sh:datatype xsd:string ;
-        sh:name "Alternative type name (era:alternativeTypeName) is optional"@en ;
+        sh:name "Alternative type name (era:alternativeTypeName)"@en ;
         sh:message "(I) 10.6. VehicleType may have an alternative type name (era:alternativeTypeName)."@en ;
         sh:severity sh:Info
     ] .
@@ -340,20 +381,34 @@ eralex:PAVA-AnnexI-10-7 a skos:Concept, sh:NodeShape ;
     skos:definition "Category of the vehicle type as specified in Decision 2011/665/EU Annex II."@en ;
     skos:broader eralex:PAVA-AnnexI-10 ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> ;
-    sh:targetObjectsOf vpa:concerns ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
     sh:property [
-        sh:path era:vehicleTypeCategory ;
-        sh:minCount 1 ;
-        sh:class skos:Concept ;
+        sh:path vpa:concerns ;
         sh:node [
+            a sh:NodeShape ;
+            sh:targetClass era:VehicleType ;
             sh:property [
-                sh:path skos:inScheme ;
-                sh:hasValue era-vehicle-types-eratv: ;
+                sh:path era:vehicleTypeCategory ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+                sh:class skos:Concept ;
+                # Requires additional triples in the dataset
+                # sh:node [
+                #     sh:property [
+                #         sh:path skos:inScheme ;
+                #         sh:hasValue era-vehicle-types-eratv: ;
+                #         sh:name "VehicleTypeCategory Concept Scheme"@en ;
+                #         sh:message "(I) 10.7. VehicleTypeCategory skos:Concept must be in era-vehicle-types-eratv."@en ;
+                #         sh:severity sh:Warning
+                #     ]
+                # ] ;
+                sh:name "VehicleTypeCategory (era:vehicleTypeCategory)"@en ;
+                sh:message "(I) 10.7. VehicleType must have a category (era:vehicleTypeCategory)."@en ;
+                sh:severity sh:Violation
             ]
         ] ;
-        sh:name "VehicleTypeCategory must be a skos:Concept in era-vehicle-types-eratv"@en ;
-        sh:message "(I) 10.7. VehicleType must have a category (era:vehicleTypeCategory) that is a skos:Concept in era-vehicle-types-eratv."@en ;
-        sh:severity sh:Violation
+        sh:name "VehicleType category constraints for vpa:concerns"@en ;
+        sh:message "(I) 10.7. If vpa:concerns points to a VehicleType, it must satisfy all Annex I-10.7 constraints. Other types are ignored."@en ;
+        sh:severity sh:Info
     ] .
 
 # 10.8. Subcategory (*)
@@ -363,18 +418,33 @@ eralex:PAVA-AnnexI-10-8 a skos:Concept, sh:NodeShape ;
     skos:definition "Subcategory of the vehicle type as specified in Decision 2011/665/EU Annex II."@en ;
     skos:broader eralex:PAVA-AnnexI-10 ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> ;
-    sh:targetObjectsOf vpa:concerns ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
     sh:property [
-        sh:path era:vehicleTypeSubCategory ;
-        sh:minCount 1 ;
-        sh:class skos:Concept ;
+        sh:path vpa:concerns ;
         sh:node [
+            a sh:NodeShape ;
+            sh:targetClass era:VehicleType ;
             sh:property [
-                sh:path skos:inScheme ;
-                sh:hasValue era-vehicle-types-eratv: ;
-            ]
+                sh:path era:vehicleTypeSubCategory ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+                sh:class skos:Concept ;
+                # sh:node [
+                #     sh:property [
+                #         sh:path skos:inScheme ;
+                #         sh:hasValue era-vehicle-types-eratv: ;
+                #         sh:name "VehicleTypeSubCategory inScheme"@en ;
+                #         sh:message "VehicleTypeSubCategory skos:Concept must be in era-vehicle-types-eratv."@en ;
+                #         sh:severity sh:Violation
+                #     ]
+                # ] ;
+                sh:name "VehicleTypeSubCategory (era:vehicleTypeSubCategory)"@en ;
+                sh:message "(I) 10.8. VehicleType must have a subcategory (era:vehicleTypeSubCategory)"@en ;
+                sh:severity sh:Violation
+            ] ;
+            # sh:closed true ;
+            # sh:ignoredProperties ( rdf:type ) ;
         ] ;
-        sh:name "VehicleTypeSubCategory must be a skos:Concept in era-vehicle-types-eratv"@en ;
-        sh:message "(I) 10.8. VehicleType must have a subcategory (era:vehicleTypeSubCategory) that is a skos:Concept in era-vehicle-types-eratv."@en ;
-        sh:severity sh:Violation
+        sh:name "VehicleType subcategory constraints for vpa:concerns"@en ;
+        sh:message "If vpa:concerns points to a VehicleType, it must satisfy all Annex I-10.8 constraints. Other types are ignored."@en ;
+        sh:severity sh:Info
     ] .

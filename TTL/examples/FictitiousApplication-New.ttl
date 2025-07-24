@@ -91,14 +91,27 @@ rorg:EUAR a era:Body ;
   rdfs:label "EU Agency for Railways" .
 
 eratv:vt-71-001-0001-1-001 a era:VehicleType ;
+  # FIXME: MISSING UNDETECTED:
   dcterms:identifier "71-001-0001-1-001" ;
+
+  # FIXME: must both be present 
   era:vehicleTypeNumber "71-001-0001-1" ;
   era:includedVersionsVariant "001" ;
   dcterms:created "2025-07-16"^^xsd:date ;
-  # dcterms:issued SHALL NOT BE PRESENT, given the type is in DRAFT, and many parameters are still being filled in.
+
+  # FIXME: dcterms:issued SHALL NOT BE PRESENT, given the type is in DRAFT, and many parameters are still being filled in.
+  dcterms:issued "2025-01-01"^^xsd:date ;
+  
+  # 10-5 OK: missing label
   rdfs:label "A non-existent self-propelled special vehicle";
+  
+  # FIXME: MISSING UNDETECTED:
   era:vehicleTypeCategory era-vehicle-types-eratv:71 ; # special vehicles
+  
+  # FIXME: MISSING UNDETECTED:
   era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledSpecialVehicle ;
+  
+  # FIXME: MISSING UNDETECTED
   era:vehicleTypeManufacturer [
     a era:OrganisationRole ;
     era:roleOf rorg:MF-US-GC001-224 ;  
@@ -130,6 +143,7 @@ erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # su
   dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasRole era-organisation-roles:Applicant ] ;
   dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasRole era-organisation-roles:AuthorisingEntity ] ;
   dcterms:identifier "VA-20250715-001" ;
+  # dcterms:issued "2025-01-01"^^xsd:date ; # UNTESTED
   vpa:constitutedBy erava:vac-71-001-0001-1-001-US-1 ;
   vpa:requestFor erava:71-001-0001-1-001-US-1 ;
   rdfs:comment "To combat terror on the Gotham Railway system, we need the approval to place on the market."@en .
@@ -146,6 +160,7 @@ erava:vac-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationCase ; # subClass
 erava:71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisation ;
   dcterms:identifier "US5120250001" ;
   # NOT YET dcterms:issued
+  # dcterms:issued "2025-01-01"^^xsd:date ; # TEST
   # NOT YET vpa:valid
   # Invalid for a NEW authcase: era:vehicleTypeAuthorisationHolder [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ];
   vpa:requestedIn erava:va-71-001-0001-1-001-US-1 .
@@ -167,6 +182,7 @@ gotham:debo-71-001-0001-1-001-US a era:CABEvidence ;
 gotham:debo-123 a era:ECCertificate ;
   dcterms:identifier "US001/1/NNTR/2025/RST/EN/WAYNE-001/V01" ;
   dcterms:type era-cld-types:1 ;
+  # dcterms:issued "2025-01-01"^^xsd:date ; # UNDETECTED MISSING
   dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
   rdfs:label "NNTR verification certificate - underbody, wheelsets, axles, wheels" ;
   vpa:valid [
@@ -181,6 +197,7 @@ gotham:debo-123 a era:ECCertificate ;
 gotham:debo-456 a era:ECCertificate ;
   dcterms:identifier "US001/1/NNTR/2025/RST/EN/WAYNE-002/V01" ;
   dcterms:type era-cld-types:1 ;
+  # dcterms:issued "2025-01-01"^^xsd:date ; # UNDETECTED MISSING
   dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
   rdfs:label "NNTR verification certificate - plating, weapons and structure" ;
   vpa:valid [
