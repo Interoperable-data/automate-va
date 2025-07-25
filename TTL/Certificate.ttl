@@ -98,6 +98,30 @@ era-sh:CLD a
         <http://data.europa.eu/eli/dec/2010/713/oj> ;
 
     sh:targetClass era:CLD  ;
+    sh:declare [
+        sh:prefix "era" ;
+        sh:namespace "http://data.europa.eu/949/"^^xsd:anyURI 
+    ];
+    sh:declare [
+        sh:prefix "vpa" ;
+        sh:namespace "http://w3id.org/vpa#"^^xsd:anyURI 
+    ];
+    sh:declare [
+        sh:prefix "dcterms" ;
+        sh:namespace "http://purl.org/dc/terms/"^^xsd:anyURI 
+    ];
+    sh:declare [
+        sh:prefix "skos" ;
+        sh:namespace "http://www.w3.org/2004/02/skos/core#"^^xsd:anyURI 
+    ];
+    sh:declare [
+        sh:prefix "rdfs" ;
+        sh:namespace "http://www.w3.org/2000/01/rdf-schema#"^^xsd:anyURI 
+    ];
+    sh:declare [
+        sh:prefix "xsd" ;
+        sh:namespace "http://www.w3.org/2001/XMLSchema#"^^xsd:anyURI 
+    ];
 
     # --- CLD properties (updated for real data) ---
     sh:property [
@@ -107,6 +131,8 @@ era-sh:CLD a
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
         sh:description "The CLD ID, as defined in RFU-STR-001."@en;
+        sh:message "The CLD ID, as defined in RFU-STR-001, MUST be present."@en;
+        sh:severity sh:Violation ;
         sh:minCount 1;
         sh:maxCount 1
     ];
@@ -117,6 +143,8 @@ era-sh:CLD a
         sh:datatype xsd:integer ;
         sh:nodeKind sh:Literal ;
         sh:description "The Version Counter of the CLD, as defined in RFU-STR-001."@en;
+        sh:message "The Version Counter of the CLD, as defined in RFU-STR-001, MUST be present."@en;
+        sh:severity sh:Violation ;
         sh:minCount 1;
         sh:maxCount 1
     ];
@@ -127,6 +155,8 @@ era-sh:CLD a
         sh:datatype xsd:date ;
         sh:nodeKind sh:Literal ;
         sh:description "Date the CLD was created in ERADIS+."@en ;
+        sh:message "Date the CLD was created in ERADIS+ MUST be present."@en ;
+        sh:severity sh:Violation ;
         sh:minCount 1 ;
         sh:maxCount 1
     ];
@@ -137,6 +167,8 @@ era-sh:CLD a
         sh:datatype xsd:date ;
         sh:nodeKind sh:Literal ;
         sh:description "Date the CLD was issued by the CAB."@en ;
+        sh:message "Date the CLD was issued by the CAB, MUST be present."@en ;
+        sh:severity sh:Violation ;
         sh:minCount 1 ;
         sh:maxCount 1
     ];
@@ -146,6 +178,8 @@ era-sh:CLD a
         sh:name "Which CLD this CLD replaces"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "The previous CLD replaced by this one, if any."@en ;
+        sh:message "(Check) This CLD replaces no other CLD."@en ;
+        sh:severity sh:Warning ;
         sh:maxCount 1
     ];
     sh:property [
@@ -154,21 +188,41 @@ era-sh:CLD a
         sh:name "CLD type"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "SKOS Concept indicating what type of CLD is represented."@en ;
+        sh:message "Type of CLD MUST be present."@en ;
+        sh:severity sh:Violation ;
+        sh:minCount 1 ;
         sh:maxCount 1
     ];
-    sh:property [
-        a sh:PropertyShape ;
-        sh:path dcterms:conformsTo ;
-        sh:name "CLD module and ERA Document"@en ;
-        sh:nodeKind sh:IRI ;
-        sh:description "Module and preferably ERA `Technical Document 000MRA1044` to which the CLD conforms. Should include exactly one era:Document (ERA Technical Document), and must include one SKOS Concept (module)."@en ;
-        sh:minCount 1 ; sh:maxCount 2 ;
-    ];
+    # see next sparql constraint sh:property [
+    #     a sh:PropertyShape ;
+    #     sh:path dcterms:conformsTo ;
+    #     sh:name "CLD module"@en ;
+    #     sh:nodeKind sh:IRI ;
+    #     sh:class skos:Concept ;
+    #     sh:description "CLD Module (SKOS Concept) must be present."@en ;
+    #     sh:message "Module MUST be included as exactly ONE SKOS Concept (module)."@en ;
+    #     sh:severity sh:Violation ;
+    #     sh:minCount 2 ;
+    # ];
+    # See next sparql constraint sh:property [
+    #     a sh:PropertyShape ;
+    #     sh:path dcterms:conformsTo ;
+    #     sh:name "Conforming ERA Document SHOULD be present"@en ;
+    #     sh:nodeKind sh:BlankNodeOrIRI ;
+    #     sh:class era:Document ;
+    #     sh:description "The latest version of ERA `Technical Document 000MRA1044` to which the CLD conforms should be included as exactly one era:Document (ERA Technical Document)."@en ;
+    #     sh:message "Preferably, the ERA Technical Document 000MRA1044 to which the CLD conforms SHOULD be included as exactly one era:Document (ERA Technical Document)."@en ;
+    #     sh:severity sh:Warning ;
+    #     sh:minCount 1 ; sh:maxCount 1 ;
+    # ];
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:severity sh:Warning ;
-        sh:message "No era:Document is present in dcterms:conformsTo (warning)."@en ;
+        sh:message "No `era:Document` (representing ERA Technical Document 000MRA1044) is present in `dcterms:conformsTo`."@en ;
+        sh:prefixes dcterms: , era: , vpa: ;
         sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
             SELECT $this WHERE {
               FILTER NOT EXISTS {
                 $this dcterms:conformsTo ?doc .
@@ -180,21 +234,50 @@ era-sh:CLD a
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:severity sh:Violation ;
-        sh:message "The era:Document in dcterms:conformsTo must not have a version 1.1 or 2017 (violation)."@en ;
+        sh:description "CLD Module (SKOS Concept) must be present."@en ;
+        sh:message "Module MUST be included as exactly ONE SKOS Concept (module)."@en ;
+        sh:prefixes dcterms: , era: , vpa: ;
         sh:select """
-            SELECT $this ?doc ?comment WHERE {
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            SELECT $this (COUNT(?doc) AS ?moduleCount) WHERE {
               $this dcterms:conformsTo ?doc .
+              ?doc a skos:Concept .
+            } GROUP BY $this HAVING (?moduleCount != 1)
+        """
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Violation ;
+        sh:message "The `era:Document` in `dcterms:conformsTo` MUST not have a version 1.1 or 2017 as it was issued on {?issued}, which is after Decision ERA-ED-DEC 2110-2022 of 13/12/2022."@en ;
+        sh:prefixes dcterms: , era: , vpa: ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+            SELECT $this ?doc ?comment ?issued WHERE {
+              $this dcterms:conformsTo ?doc ; dcterms:issued ?issued .
               ?doc a era:Document ;
                    rdfs:comment ?comment .
-              FILTER(CONTAINS(LCASE(STR(?comment)), "1.1") || CONTAINS(LCASE(STR(?comment)), "2017"))
+              FILTER(
+                (CONTAINS(LCASE(STR(?comment)), "1.1") || CONTAINS(LCASE(STR(?comment)), "2017")) &&
+                (?issued > "2022-12-13"^^xsd:date)
+              )
             }
         """
     ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:severity sh:Violation ;
-        sh:message "No SKOS Concept (for the module) is present in dcterms:conformsTo (violation)."@en ;
+        sh:message "No SKOS Concept (for the module) is present in dcterms:conformsTo."@en ;
+        sh:prefixes dcterms: , era: , vpa: ;
         sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
             SELECT $this WHERE {
             FILTER NOT EXISTS {
                 $this dcterms:conformsTo ?mod .
@@ -203,14 +286,6 @@ era-sh:CLD a
             }
         """
     ] ;
-    # sh:property [
-    #     a sh:PropertyShape ;
-    #     sh:path dcterms:source ;
-    #     sh:name "CLD legal basis"@en ;
-    #     sh:nodeKind sh:IRI ;
-    #     sh:description "Legal basis for the CLD."@en ;
-    #     sh:minCount 1
-    # ];
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:subject ;
@@ -220,23 +295,35 @@ era-sh:CLD a
             [ sh:class era:IC ]
             [ sh:class era:TSI ]
         ) ;
-        sh:description "Object of assessment (must be an era:IC or era:TSI). If an IC, exactly one; if TSI, multiple allowed. If no TSI, warning. If no subject, violation."@en ;
+        sh:description "Object of assessment be an era:IC and/or era:TSI). If an IC, exactly one; if TSI, multiple allowed."@en ;
+        sh:message "Object of assessment MUST be an era:IC or era:TSI. If an IC, exactly one; if TSI, multiple allowed. If no TSI, warning. If no subject, violation."@en ;
+        sh:severity sh:Violation ;
         sh:minCount 1 ;
         sh:sparql [
             a sh:SPARQLConstraint ;
             sh:message "There must be at most one era:IC as dcterms:subject."@en ;
+            sh:prefixes dcterms: , era: , vpa: ;
             sh:select """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX era: <http://data.europa.eu/949/>
+                PREFIX vpa: <http://w3id.org/vpa#>
+
                 SELECT $this (COUNT(?ic) AS ?icCount) WHERE {
                   $this dcterms:subject ?ic .
                   ?ic a era:IC .
-                } GROUP BY $this HAVING (COUNT(?ic) > 1)
+                } GROUP BY $this HAVING (?icCount > 1)
             """
         ] ;
         sh:sparql [
             a sh:SPARQLConstraint ;
             sh:severity sh:Warning ;
-            sh:message "No era:TSI is present as dcterms:subject (warning)."@en ;
+            sh:message "No `era:TSI` is present as `dcterms:subject`."@en ;
+            sh:prefixes dcterms: , era: , vpa: ;
             sh:select """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX era: <http://data.europa.eu/949/>
+                PREFIX vpa: <http://w3id.org/vpa#>
+
                 SELECT $this WHERE {
                   FILTER NOT EXISTS { $this dcterms:subject ?tsi . ?tsi a era:TSI }
                 }
@@ -253,7 +340,9 @@ era-sh:CLD a
             [ sh:class era:CABAuditCheck ]
         ) ;
         sh:description "Any compliance or audit checks (CABAssessmentCheck or CABAuditCheck) performed for this CLD."@en ;
-        sh:minCount 0
+        sh:message "CLD contains no compliance or audit checks (CABAssessmentCheck or CABAuditCheck)."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -262,8 +351,9 @@ era-sh:CLD a
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
         sh:description "Human-readable description of the CLD."@en ;
-        sh:minCount 1 ;
-        sh:maxCount 1
+        sh:message "Human-readable Object of Assessment of the CLD MUST be present."@en ;
+        sh:severity sh:Violation ;
+        sh:minCount 1 ; sh:maxCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -272,7 +362,9 @@ era-sh:CLD a
         sh:datatype xsd:anyURI ;
         sh:nodeKind sh:Literal ;
         sh:description "The ERADIS or other URL of the CLD, if available."@en ;
-        sh:maxCount 1
+        sh:message "(Check) No ERADIS or other URL of the CLD available?"@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1 ; sh:maxCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -281,8 +373,9 @@ era-sh:CLD a
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class time:ProperInterval ;
         sh:description "Validity interval of the CLD."@en ;
-        sh:minCount 1 ;
-        sh:maxCount 1
+        sh:message "Validity interval of the CLD MUST be present."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1 ; sh:maxCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -291,28 +384,31 @@ era-sh:CLD a
         sh:class era:OrganisationRole ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:description "The organisation using the CLD as Applicant (must be an era:OrganisationRole)."@en ;
+        sh:message "Organisation using the CLD as Applicant MUST be an `era:OrganisationRole`, not an `era:Body`."@en ;
+        sh:severity sh:Violation ;
+        sh:minCount 1 ; sh:maxCount 1 ;
         sh:node [
             sh:property [
                 sh:path era:roleOf ;
                 sh:name "The IRI of the receiving organisation"@en ;
                 sh:description "The body to which this role applies (must be an era:Body)."@en ;
+                sh:message "Exactly one `era:Body` must be linked to as the Applicant." ;
                 sh:nodeKind sh:IRI ;
                 sh:class era:Body ;
-                sh:minCount 1 ;
-                sh:maxCount 1
+                sh:severity sh:Violation ;
+                sh:minCount 1 ; sh:maxCount 1
             ] ;
             sh:property [
-                sh:path era:hasRole ;
+                sh:path era:hasOrganisationRole ;
                 sh:name "The role of the receiving Organisation"@en ;
                 sh:nodeKind sh:IRI ;
                 sh:description "The role held, must be a SKOS Concept from era-organisation-roles."@en ;
                 sh:in (era-organisation-roles:Applicant era-organisation-roles:Manufacturer ) ; # TODO: To be checked
-                sh:minCount 1 ;
-                sh:maxCount 1
+                sh:message "No role of Applicant was linked to the OrganisationRole for the CLD receiving organisation.";
+                sh:severity sh:Violation;
+                sh:minCount 1 ; sh:maxCount 1
             ]
         ] ;
-        sh:minCount 1 ;
-        sh:maxCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -321,6 +417,9 @@ era-sh:CLD a
         sh:class era:OrganisationRole ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:description "The manufacturer involved in the assessment (must be an era:OrganisationRole)."@en ;
+        sh:message "No Manufacturer involved in the assessment (missing era:OrganisationRole)."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1 ;
         sh:node [
             sh:property [
                 sh:path era:roleOf ;
@@ -328,21 +427,24 @@ era-sh:CLD a
                 sh:nodeKind sh:IRI ;
                 sh:class era:Body ;
                 sh:description "The body to which this role applies (must be an era:Body)."@en ;
+                sh:message "No involved `era:Body` was linked to this CLD (normally the Manufacturer)." ;
+                sh:severity sh:Warning ;
                 sh:minCount 1 ;
-                sh:maxCount 1
             ] ;
             sh:property [
-                sh:path era:hasRole ;
+                sh:path era:hasOrganisationRole ;
                 sh:name "The role of the involved Organisation"@en ;
                 sh:nodeKind sh:IRI ;
                 sh:description "The role held, must be a SKOS Concept from era-organisation-roles."@en ;
                 sh:in (era-organisation-roles:Manufacturer era-organisation-roles:AssessmentBody) ; # TODO: to be checked
                 sh:minCount 1 ;
-                sh:maxCount 1
+                sh:message "For the organisation(s) contributing to the CLD, no role(s) were linked to. We therefore cannot determine how they contributed." ;
+
+                sh:severity sh:Warning 
+                
             ]
         ] ;
-        sh:minCount 1 ;
-        sh:maxCount 1
+
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -350,7 +452,10 @@ era-sh:CLD a
         sh:name "The CAB producing the CLD"@en ;
         sh:class era:OrganisationRole ;
         sh:nodeKind sh:BlankNodeOrIRI ;
-        sh:description "The assessment body having issued the CLD (must be an era:OrganisationRole)."@en ;
+        sh:description "CAB issuing the CLD (must be an era:OrganisationRole, with `era:roleOf` and `era:hasOrganisationRole`)."@en ;
+        sh:message "CAB issuing the CLD MUST be an `era:OrganisationRole` (not an `era:Body`)."@en ;
+        sh:severity sh:Violation ;
+        sh:minCount 1 ; sh:maxCount 1 ;
         sh:node [
             sh:property [
                 sh:path era:roleOf ;
@@ -358,21 +463,22 @@ era-sh:CLD a
                 sh:nodeKind sh:IRI ;
                 sh:class era:Body ;
                 sh:description "The body to which this role applies (must be an era:Body)."@en ;
-                sh:minCount 1 ;
-                sh:maxCount 1
+                sh:message "The era:Body (CAB) with role NoBo MUST be linked to in the OrganisationRole.";
+                sh:severity sh:Violation;
+                sh:minCount 1 ; sh:maxCount 1
             ] ;
             sh:property [
-                sh:path era:hasRole ;
+                sh:path era:hasOrganisationRole ;
                 sh:name "The role of the issuing Organisation"@en ;
                 sh:nodeKind sh:IRI ;
                 sh:description "The role held, must be a SKOS Concept from era-organisation-roles."@en ;
-                sh:in (era-organisation-roles:CAB era-organisation-roles:AssessmentBody) ; # TODO: to be checked
-                sh:minCount 1 ;
-                sh:maxCount 1
+                sh:message "No role of NoBo@CAB was linked to the OrganisationRole for the CLD issuing organisation.";
+                
+                sh:in (era-organisation-roles:CAB era-organisation-roles:AssessmentBody era-organisation-roles:NoBo ) ; # TODO: to be checked
+                sh:severity sh:Violation;
+                sh:minCount 1 ; sh:maxCount 1
             ]
         ] ;
-        sh:minCount 1 ;
-        sh:maxCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -385,7 +491,11 @@ era-sh:CLD a
         sh:sparql [
             a sh:SPARQLConstraint ;
             sh:message "dcterms:source must not be an era:TSI or era:IC."@en ;
+            sh:prefixes dcterms: , era: , vpa: ;
             sh:select """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX era: <http://data.europa.eu/949/>
+                PREFIX vpa: <http://w3id.org/vpa#>
                 SELECT $this ?covered WHERE {
                   $this dcterms:source ?covered .
                   FILTER (EXISTS { ?covered a era:TSI } || EXISTS { ?covered a era:IC })
@@ -397,11 +507,14 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:spatial ;
+        # FIXME: if the module is 4 then this should be a Violation!
         sh:name "CLD: spatial validity to a Site"@en ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class org:Site ;
         sh:description "Manufacturing or assessment site(s), if relevant."@en ;
-        sh:maxCount 1
+        sh:message "No Manufacturing or assessment site(s) mentioned in the CLD."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -410,7 +523,9 @@ era-sh:CLD a
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
         sh:description "Free-text comment about the CLD."@en ;
-        sh:maxCount 1
+        sh:message "No Free-text comment about the CLD is present"@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1 ; sh:maxCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -418,38 +533,58 @@ era-sh:CLD a
         sh:name "Replacing CLD"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "IRI of the newer CLD that replaces this one, if any."@en ;
-        sh:maxCount 1
+        sh:message "(Check) This CLD is not linking to a newer CLD."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1 ; sh:maxCount 1
     ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
-        sh:message "If dcterms:isReplacedBy is present, the replacing CLD must have a higher vpa:versionNumber than this CLD."@en ;
+        sh:severity sh:Violation ;
+        sh:message "If `dcterms:isReplacedBy` is present, the replacing CLD MUST have a higher `vpa:versionNumber` than this CLD."@en ;
+        sh:prefixes dcterms: , era: , vpa: ;
         sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
             SELECT $this ?replacer ?thisVersion ?replacerVersion WHERE {
-                OPTIONAL { $this vpa:versionNumber ?thisVersion . }
-                OPTIONAL { $this dcterms:isReplacedBy ?replacer .
-                           ?replacer vpa:versionNumber ?replacerVersion . }
-                FILTER(bound(?replacer) && bound(?thisVersion) && bound(?replacerVersion) && (?replacerVersion <= ?thisVersion))
+              OPTIONAL { $this vpa:versionNumber ?thisVersion . }
+              OPTIONAL { 
+                $this dcterms:isReplacedBy ?replacer .
+                ?replacer vpa:versionNumber ?replacerVersion . 
+              }
+              FILTER(bound(?replacer) && bound(?thisVersion) && bound(?replacerVersion) && (?replacerVersion <= ?thisVersion))
             }
         """
     ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
-        sh:message "If dcterms:isReplacedBy is present, the replacing CLD must have a later dcterms:issued date than this CLD."@en ;
+        sh:message "If `dcterms:isReplacedBy` is present, the replacing CLD MUST have a later `dcterms:issued` date than this CLD."@en ;
+        sh:severity sh:Violation ;
+        sh:prefixes dcterms: , era: , vpa: ;
         sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
             SELECT $this ?replacer ?thisIssued ?replacerIssued WHERE {
                 OPTIONAL { $this dcterms:issued ?thisIssued . }
-                OPTIONAL { $this dcterms:isReplacedBy ?replacer .
-                           ?replacer dcterms:issued ?replacerIssued . }
+                OPTIONAL { 
+                  $this dcterms:isReplacedBy ?replacer .
+                  ?replacer dcterms:issued ?replacerIssued . }
                 FILTER(bound(?replacer) && bound(?thisIssued) && bound(?replacerIssued) && (?replacerIssued <= ?thisIssued))
             }
         """
     ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
+        sh:message "Both `dcterms:subject` and `vpa:checkedCompliance/vpa:checkedRequirement` are used to express compliance to TSI/IC. Prefer only one method."@en ;
+        sh:prefixes dcterms: , era: , vpa: ;
         sh:severity sh:Warning ;
-        sh:message "Both dcterms:subject and vpa:checkedCompliance/vpa:checkedRequirement are used to express compliance to TSI/IC. Prefer only one method."@en ;
         sh:select """
-            SELECT $this WHERE {
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT $this ?subj ?req ?check WHERE {
             $this dcterms:subject ?subj .
             FILTER EXISTS {
                 $this vpa:checkedCompliance ?check .
@@ -459,7 +594,7 @@ era-sh:CLD a
             }
             }
         """
-] ;
+    ] ;
     sh:property [
         a sh:PropertyShape ;
         sh:path era:resultStatement ;
@@ -467,8 +602,9 @@ era-sh:CLD a
         sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
         sh:nodeKind sh:Literal ;
         sh:description "Assessment result (free text, required)."@en ;
-        sh:minCount 1 ;
-        sh:maxCount 1
+        sh:message "Assessment result is required."@en ;
+        sh:severity sh:Violation ;
+        sh:minCount 1 ; sh:maxCount 1
     ] ;
     sh:property [
         a sh:PropertyShape ;
@@ -477,8 +613,9 @@ era-sh:CLD a
         sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
         sh:nodeKind sh:Literal ;
         sh:description "Validity statement (free text, required)."@en ;
-        sh:minCount 1 ;
-        sh:maxCount 1
+        sh:message "Validity statement is required."@en ;
+        sh:severity sh:Violation ;
+        sh:minCount 1 ; sh:maxCount 1
     ] ;
     sh:property [
         a sh:PropertyShape ;
@@ -487,7 +624,9 @@ era-sh:CLD a
         sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
         sh:nodeKind sh:Literal ;
         sh:description "Sequence statement (free text, optional)."@en ;
-        sh:maxCount 1
+        sh:message "Sequence statement is not present."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1 ; sh:maxCount 1
     ] ;
 .
 
@@ -500,6 +639,8 @@ era-sh:CABCheckShape a sh:NodeShape ;
         sh:name "Sections checked"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "Section of the legal text checked in this check."@en ;
+        sh:message "The CAB's Check does not refer to a section of legal text."@en ;
+        sh:severity sh:Warning ;
         sh:minCount 1
     ] ;
     sh:property [
@@ -511,7 +652,9 @@ era-sh:CABCheckShape a sh:NodeShape ;
                 sh:datatype xsd:boolean ;
                 sh:nodeKind sh:Literal ;
                 sh:description "Whether the section is compliant (true/false)."@en ;
-                sh:maxCount 1
+                sh:message "The CAB's Check has not expressed compliance using `vpa:isCompliant`."@en ;
+                sh:severity sh:Warning ;
+                sh:maxCount 1; sh:minCount 1
             ]
             [
                 sh:path era:isCompliant ;
@@ -519,7 +662,9 @@ era-sh:CABCheckShape a sh:NodeShape ;
                 sh:nodeKind sh:IRI ;
                 sh:class skos:Concept ;
                 sh:description "IRI to a skos:Concept indicating compliance (Y/N/P)."@en ;
-                sh:maxCount 1
+                sh:message "The CAB's Check has not expressed compliance using `era:isCompliant`."@en ;
+                sh:severity sh:Warning ;
+                sh:maxCount 1; sh:minCount 1
             ]
         )
     ] ;
@@ -529,7 +674,9 @@ era-sh:CABCheckShape a sh:NodeShape ;
         sh:name "The Legal source of the check"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "Legal requirement(s) checked in this check."@en ;
-        sh:minCount 0
+        sh:message "The CAB's Check has not cited the Legal reference used (TSI, or other LegalWork)."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1
     ] ;
     sh:property [
         a sh:PropertyShape ;
@@ -538,6 +685,9 @@ era-sh:CABCheckShape a sh:NodeShape ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class era:CABRestriction ;
         sh:description "Restriction, addition, or condition (CLOU) attached to this check."@en ;
+        sh:message "The CAB's Check has not expressed any Restriction."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1
     ] ;
     sh:property [
         a sh:PropertyShape ;
@@ -546,7 +696,9 @@ era-sh:CABCheckShape a sh:NodeShape ;
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
         sh:description "Free-text comment about the check."@en ;
-        sh:maxCount 1
+        sh:message "The CAB's Check was not commented."@en ;
+        sh:severity sh:Warning ;
+        sh:maxCount 1; sh:minCount 1
     ] ;
     sh:property [
         a sh:PropertyShape ;
@@ -555,6 +707,9 @@ era-sh:CABCheckShape a sh:NodeShape ;
         sh:datatype xsd:anyURI ;
         sh:nodeKind sh:Literal ;
         sh:description "Reference to supporting documents or reports."@en ;
+        sh:message "The CAB's Check has not refered to a further documented reference URL."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1
     ] .
 
 # Section 2 of a vehicle type should be resolved through Restriction and Compliance resources.
@@ -576,14 +731,21 @@ era-sh:TSIConformity a
         sh:path vpa:regarding ;
         sh:nodeKind sh:IRI ;
         sh:class era:Requirement ; # Use an exact link to the vehicle-related TSI examined /ERALEX
-        sh:description "The TSI for which conformity was checked in this VehicleType. Selection from a predefined list of vehicle related TSIs (both in force and those that were previously in force) (multiple selection possible)"@en
+        sh:description "The TSI for which conformity was checked in this VehicleType. Selection from a predefined list of vehicle related TSIs (both in force and those that were previously in force) (multiple selection possible)"@en ;
+        sh:message "The TSI conformity did not express what TSI was the source."@en ;
+        sh:severity sh:Violation ;
+        sh:minCount 1
     ].
 
 era-sh:TSIComplianceCheck  a 
     owl:Class , sh:NodeShape ;
     rdfs:subClassOf vpa:Compliance ;
+    rdfs:comment "This shape protects a type against abesence of 2.2 or 2.3" ;
     dcterms:created "2024-10-25"^^xsd:date ;
     # dcterms:modified "_RESERVED_"^^xsd:date ;
+
+    # FIXME: targetClass is missing and exact use is not certain through Certifcate,
+   # It may not be era:VehicleType but the compliance check IN there.
 
     ## definitions ----------
     rdfs:label "Vehicle Type Certificate: Conformity with TSI - compliance check"@en;
@@ -595,10 +757,14 @@ era-sh:TSIComplianceCheck  a
         a sh:PropertyShape ;
         sh:inversePath vpa:checked ;
         sh:name "checked"@en ;
-        sh:class era-sh:ECCertificate ;
+        sh:class era-sh:CLD ; # FIXME: cannot be right
         era:eratvIndex "2.2" ;
-        sh:description  "The certificate, to be mentioned under 2.2 of the VehicleType, which examined Sections and Specific Cases, and their conclusion."@en , 
-                        "EC certificate of verification : Reference of ‘EC type examination certificates’ (if module SB applied) and/or ‘EC design examination certificates’ (if module SH1 applied)"@en
+        sh:description  "The certificate, to be mentioned under 2.2 of the VehicleType, which examined Sections and Specific Cases, and their conclusion."@en ;
+        # "EC certificate of verification : Reference of ‘EC type examination certificates’ (if module SB applied) and/or ‘EC design examination certificates’ (if module SH1 applied)"@en
+        sh:message "The certificate, to be mentioned under 2.2 of the VehicleType, which examined Sections and Specific Cases, and their conclusion. EC certificate of verification : Reference of ‘EC type examination certificates’ (if module SB applied) and/or ‘EC design examination certificates’ (if module SH1 applied)"@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1
+
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -608,6 +774,10 @@ era-sh:TSIComplianceCheck  a
         era:inSkosConceptScheme <http://data.europa.eu/949/concepts/tsi-conformities/ConformityResults/> ;# to be created in ERA Vocabulary
         sh:class <http://www.w3.org/2004/02/skos/core#Concept> ; 
         sh:description "Y: Compliant, N: Non-compliant, P: Partially compliant."@en
+        ;
+        sh:message "The type's TSI Compliance Check has not expressed compliance using `era:isCompliant`."@en ;
+        sh:severity sh:Warning ;
+        sh:maxCount 1; sh:minCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
@@ -619,13 +789,20 @@ era-sh:TSIComplianceCheck  a
                 era:inSkosConceptScheme <http://data.europa.eu/949/concepts/tsi-conformities/TSISpecificCases/> ;# to be created in ERA Vocabulary
                 sh:class <http://www.w3.org/2004/02/skos/core#Concept> ; 
                 sh:description "Applicable specific cases (specific cases conformity with which has been assessed)."@en ;
-                era:eratvIndex "2.3"
+                sh:message "The type's TSI Compliance Check does not contain `Applicable specific cases`."@en ;
+                sh:severity sh:Warning ;
+                era:eratvIndex "2.3" ;
+                sh:maxCount 1; sh:minCount 1
             ]
             [
                 era:inSkosConceptScheme <http://data.europa.eu/949/concepts/tsi-conformities/TSISections> ;# to be created in ERA Vocabulary
                 sh:class <http://www.w3.org/2004/02/skos/core#Concept> ; 
                 sh:description "Sections of TSI not complied with."@en ;
-                era:eratvIndex "2.1"
+                sh:message "The type's TSI Compliance Check does not contain `Sections of TSI not complied with`."@en ;
+                sh:severity sh:Warning ;
+                era:eratvIndex "2.1" ;
+                sh:maxCount 1; sh:minCount 1
+
                 # Instances of this TSIComplianceCheck must have vpa:isCompliant "false"^^xsd:boolean
             ]
         )
@@ -638,5 +815,8 @@ era-sh:TSIComplianceCheck  a
         sh:path era:forConfiguration ;
         sh:nodeKind sh:IRI ;
         sh:class era-sh:VehicleTypeConfiguration ;
+        sh:minCount 1 ;
+        sh:severity sh:Violation ;
+        sh:message "The type's TSI Compliance Check does not contain a link to the Configuration it is applicable for."
     ]
 .

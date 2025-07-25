@@ -142,8 +142,8 @@ erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # su
   era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline false] ;
   # SHACL Valid: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ; era:preEngagementBaseline "https://example.com/pre-engagement-baseline" ] ;
   # SHACL Invalid, given baseline is missing: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ];
-  dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasRole era-organisation-roles:Applicant ] ;
-  dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasRole era-organisation-roles:AuthorisingEntity ] ;
+  dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasOrganisationRole era-organisation-roles:Applicant ] ;
+  dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasOrganisationRole era-organisation-roles:AuthorisingEntity ] ;
   dcterms:identifier "VA-20250715-001" ;
   # dcterms:issued "2025-01-01"^^xsd:date ; # UNTESTED
   vpa:constitutedBy erava:vac-71-001-0001-1-001-US-1 ;

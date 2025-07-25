@@ -77,6 +77,15 @@
 @prefix iss-rs:   <http://data.europa.eu/949/iss/concepts/record-statuses/> .
 # prefixes.ttl
 
+eralex:dir-2016-797 a vpa:Requirement .
+eralex:reg-2015-924 a era:TSI .
+eralex:reg-2013-1236 a era:TSI .
+eralex:reg-2014-1304 a era:TSI .
+eralex:reg-2013-321 a era:TSI .
+era-cld-modules:SB a skos:Concept .
+rorg:MF-RO-310141-2931 a era:Body .
+rorg:NoBo-2826 a era:Body .
+
 era-cld:cld-NoBoCert-15571 
     a era:CLD , vpa:EvidenceDocument ; 
     dcterms:created "2024-12-16"^^xsd:date ; # the creation of this resource in the KG
@@ -85,10 +94,16 @@ era-cld:cld-NoBoCert-15571
 
     # What this CLD uses as legal basis:
     dcterms:type era-cld-types:1 ;
-    dcterms:conformsTo era-cld-modules:SB ; # the module
+    dcterms:conformsTo era-cld-modules:SB , [ 
+		a era:Document ;
+		rdfs:label "ERA Technical Document 000MRA1044"@en ;
+		rdfs:seeAlso "https://www.era.europa.eu/system/files/2022-10/Technical%20Document%20Requirements%20for%20NoBos.pdf?t=1751549597"^^xsd:anyURI ; # "https://www.era.europa.eu/system/files/2022-12/Technical%20Document%20Requirements%20for%20NoBos%20ver%202.0.pdf"^^xsd:anyURI ;
+		rdfs:comment "Version 1.1 of June 2017"@en ; # "Version 2.0 of December 2022"@en
+	]; # the module and the ERA doc
     dcterms:source eralex:dir-2016-797 ; # the EU Legislation
     dcterms:subject eralex:reg-2015-924 ; # The RST subsystem as a whole
     vpa:checkedCompliance [ 
+        a era:CABAssessmentCheck ;
         vpa:checkedRequirement 
             eralex:reg-2013-1236 , 
             eralex:reg-2014-1304 ,
