@@ -34,14 +34,15 @@
 
 # Domain-specific
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
-@prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
+@prefix eradis1: <http://data.europa.eu/949/eradis/permissions/> .
 @prefix eralex: <http://data.europa.eu/949/requirements/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypeAuthorisations/> .
+@prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
+@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix iss: <http://data.europa.eu/949/iss/> . 
@@ -62,6 +63,7 @@
 @prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
 @prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
 @prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
+
 
  # WARNING: DO NOT (YET) EXIST
 @prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .

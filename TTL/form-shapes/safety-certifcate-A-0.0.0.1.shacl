@@ -1,0 +1,162 @@
+@base <http://data.europa.eu/949/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix issform: <http://era.europa.eu/forms/iss/> .
+
+# NodeShape for Safety Certificate - Part A
+era:SafetyCertificateAShape a sh:NodeShape ;
+  sh:targetClass era:SafetyCertificateA ;
+  sh:property 
+    # [ sh:name "Certificate language" ;
+    #   Is not needed: languages are determined by langString usage.
+    # ],
+    # [ sh:name "Certificate type" ;
+    #   sh:path dcterms:type ;
+    #   Is not needed: RENEW|REVOKE|AMEND is another form, and leads to dcterms:isReplacedBy
+    # ],
+    [ sh:name "EU Identification Number" ;
+      sh:path dcterms:identifier ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:CT
+    ],
+    # [ sh:name "Country Issuing The Safety Certificate" ;
+    #   Is not needed as it is deduced from the Site of the Issuing Organisation
+    # ],
+    [ sh:name "EU identification number of the previous certificate" ;
+      sh:path dcterms:replaced ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:CT
+    ],
+    [ sh:name "ECM certificate number" ;
+      sh:path era:ecmCertificateNumber ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:CT
+    ],
+    [ sh:name "Railway Undertaking" ;
+      sh:path era:railwayUndertaking ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:RU
+    ],
+    [ sh:name "Legal Denomination" ;
+      sh:path era:legalDenomination ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:RU
+    ],
+    [ sh:name "National Registration No" ;
+      sh:path era:nationalRegistrationNumber ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:RU
+    ],
+    [ sh:name "Website" ;
+      sh:path era:website ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:datatype xsd:anyURI ;
+      sh:group issform:RU
+    ],
+    [ sh:name "Acronym" ;
+      sh:path era:acronym ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:RU
+    ],
+    [ sh:name "VAT no." ;
+      sh:path era:vatNumber ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:RU
+    ],
+    [ sh:name "Validity From" ;
+      sh:path era:validFrom ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:datatype xsd:date ;
+      sh:group issform:VAL
+    ],
+    [ sh:name "Validity To" ;
+      sh:path era:validTo ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:datatype xsd:date ;
+      sh:group issform:VAL
+    ],
+    [ sh:name "Railway Undertaking Size" ;
+      sh:path era:undertakingSize ;
+      sh:in ( "Micro enterprise" "Small enterprise" "Medium enterprise" "Large enterprise" ) ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:SERV
+    ],
+    [ sh:name "Including high-speed services" ;
+      sh:path era:highSpeedServices ;
+      sh:datatype xsd:boolean ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:group issform:SERV
+    ],
+    [ sh:name "Excluding high-speed services" ;
+      sh:path era:excludingHighSpeedServices ;
+      sh:datatype xsd:boolean ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:group issform:SERV
+    ],
+    [ sh:name "Including dangerous goods services" ;
+      sh:path era:dangerousGoodsServices ;
+      sh:datatype xsd:boolean ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:group issform:SERV
+    ],
+    [ sh:name "Excluding dangerous goods services" ;
+      sh:path era:excludingDangerousGoodsServices ;
+      sh:datatype xsd:boolean ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:group issform:SERV
+    ],
+    [ sh:name "Shunting only" ;
+      sh:path era:shuntingOnly ;
+      sh:datatype xsd:boolean ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:group issform:SERV
+    ],
+    [ sh:name "Service/s to begin in" ;
+      sh:path era:serviceBegin ;
+      sh:datatype xsd:string ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:group issform:SERV
+    ],
+    [ sh:name "Transportation Volume Passenger" ;
+      sh:path era:transportationVolumePassenger ;
+      sh:in ( "Low" "Medium" "High" ) ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:SERV
+    ],
+    [ sh:name "Transportation Volume Freight" ;
+      sh:path era:transportationVolumeFreight ;
+      sh:in ( "Low" "Medium" "High" ) ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:SERV
+    ],
+    [ sh:name "Applicable national legislation" ;
+      sh:path era:applicableNationalLegislation ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:datatype xsd:string ;
+      sh:group issform:OTH
+    ] ;
+
+issform:CT a sh:PropertyGroup ;
+  rdfs:label "Certificate Details"@en .
+issform:RU a sh:PropertyGroup ;
+  rdfs:label "Railway Undertaking"@en .
+issform:VAL a sh:PropertyGroup ;
+  rdfs:label "Validity"@en .
+issform:SERV a sh:PropertyGroup ;
+  rdfs:label "Type and Extent of Service"@en .
+issform:OTH a sh:PropertyGroup ;
+  rdfs:label "Other"@en .
