@@ -36,7 +36,7 @@
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
@@ -77,6 +77,25 @@
 # prefixes.ttl
 @prefix nobo: <http://data.some_nobo.org/conditions/> .
 
+eralex:dir-2016-797 a vpa:Requirement .
+
+eralex:reg-2015-924 a era:TSI .
+eralex:reg-2013-1236 a era:TSI .
+eralex:reg-2014-1304 a era:TSI .
+eralex:reg-2013-321 a era:TSI .
+eralex:cir-2016-919 a era:TSI .
+eralex:cir-2019-776 a era:TSI .
+eralex:cir-2020-387 a era:TSI .
+eralex:cir-2020-420 a era:TSI .
+
+eralex:ic-2020-420-OB-5 a era:IC .
+eralex:ic-2020-420-OB-2 a era:IC .
+eralex:ic-2020-420-OB-1 a era:IC . # The CCS IC's as mentioned in the CLD
+
+era-cld-modules:CH1 a skos:Concept .
+rorg:MF-SE-11473-29 a era:Body .
+rorg:NoBo-0941 a era:Body .
+
 
 era-cld:cld-NoBoCert-25403 
     a era:CLD , vpa:EvidenceDocument ; 
@@ -86,7 +105,12 @@ era-cld:cld-NoBoCert-25403
 
     # What this CLD uses as legal basis:
     dcterms:type era-cld-types:2 ;
-    dcterms:conformsTo era-cld-modules:CH1 ; # the module
+    dcterms:conformsTo era-cld-modules:CH1 , [ 
+		a era:Document ;
+		rdfs:label "ERA Technical Document 000MRA1044"@en ;
+		rdfs:seeAlso "https://www.era.europa.eu/system/files/2022-10/Technical%20Document%20Requirements%20for%20NoBos.pdf?t=1751549597"^^xsd:anyURI ; # "https://www.era.europa.eu/system/files/2022-12/Technical%20Document%20Requirements%20for%20NoBos%20ver%202.0.pdf"^^xsd:anyURI ;
+		rdfs:comment "Version 1.1 of June 2017"@en ; # "Version 2.0 of December 2022"@en
+	]; # the module and the ERA doc
     dcterms:source eralex:dir-2016-797 ; # the EU Legislation
     dcterms:subject eralex:ic-2020-420-OB-5 , eralex:ic-2020-420-OB-2 , eralex:ic-2020-420-OB-1 ; # The CCS IC's as mentioned in the CLD
     vpa:checkedCompliance [ 
@@ -136,33 +160,33 @@ nobo:Assmt-RC0317A-02 a era:CABAssessmentCheck ;
     vpa:isCompliant "false"^^xsd:boolean ;
     # Not needed in the case of isCompliant: era:wasChecked "true"^^xsd:boolean ;
     era:isOptional "false"^^xsd:boolean ;
-    vpa:checkedRequirements <STD1>, <STD2>  ;
+    # vpa:checkedRequirements <STD1>, <STD2>  ;
 
     # The CLOUs as per https://www.era.europa.eu/system/files?file=2024-06/restrictions_and_added_functions_en.pdf
     # Model to be discussed internally
     vpa:withRestriction [
         a era:CABRestriction ; # subClassOf era:Restriction, vpa:Restriction
-        vpa:regarding <URI to exact Legal RQT relevant for this restriction> ;
-        dcterms:type 
-            <SKOS CS – 6.3.2 of the ERA document: Type of the Restriction>, 
-            <SKOS CS – 6.7.2 of the ERA document: Type of Condition>, 
-            <SKOS CS – 6.4.2 of the ERA document: Type of the Non-conformity>,
-            <SKOS CS – 6.5.2 of the ERA document: Type of consequences> ;
-        vpa:consequences "Description of Consequences: ..."@en; # Warning: non-existing property in the vpa: ontology
-        rdfs:comment “ ”@en;
+        # vpa:regarding <URI to exact Legal RQT relevant for this restriction> ;
+        # dcterms:type 
+        #     <SKOS CS – 6.3.2 of the ERA document: Type of the Restriction>, 
+        #     <SKOS CS – 6.7.2 of the ERA document: Type of Condition>, 
+        #     <SKOS CS – 6.4.2 of the ERA document: Type of the Non-conformity>,
+        #     <SKOS CS – 6.5.2 of the ERA document: Type of consequences> ;
+        vpa:consequences "Description of Consequences: ..."@en ; # Warning: non-existing property in the vpa: ontology
+        rdfs:comment "No comment"@en ;
         era:nonCodedRestriction "Description of the Condition: ...."@en
     ] , [
         a era:CABRestriction ;
-        vpa:regarding <URI to exact Legal RQT relevant for other restriction> ;
+        # vpa:regarding <URI to exact Legal RQT relevant for other restriction> ;
         era:nonCodedRestriction "restriction N. 2";
         rdfs:comment "Other restriction" 
     ] , [
         a era:CABAddition ;
-        dcterms:type <era-skos-addition-types:Option> | <era-skos-addition-types:AddedFunction> ;
+        dcterms:type <era-skos-addition-types:Option> , <era-skos-addition-types:AddedFunction> ;
         dcterms:description "6.1.3 Description of the Option | 6.4.3 Description of the added functionality" ;
         era:nonCodedRestriction "6.2.3 CLOU | 6.5.3 CLOU" ;
         vpa:consequences "Description of Consequences: ..."@en; # Warning: non-existing property in the vpa: ontology
-        dcterms:source 
-            <SKOS era-skos-reasons-for-addition:6.3.3.X> , # When added function
-            <SKOS era-skos-ertms-added-functions:XYZ> ; # When Added functionality.
+        # dcterms:source 
+        #     <SKOS era-skos-reasons-for-addition:6.3.3.X> , # When added function
+        #     <SKOS era-skos-ertms-added-functions:XYZ> ; # When Added functionality.
     ].

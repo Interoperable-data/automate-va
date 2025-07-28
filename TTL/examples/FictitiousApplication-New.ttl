@@ -36,7 +36,7 @@
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
@@ -117,6 +117,8 @@ eratv:vt-71-001-0001-1-001 a era:VehicleType ;
     era:roleOf rorg:MF-US-GC001-224 ;  
     era:hasOrganisationRole era-organisation-roles:Manufacturer
   ] ;
+
+  # Configuration (rest of parameters not relevant for testcases)
   era:wheelSetGauge era-ntg-rinf:30 ;
   era:energySupplySystem era-ess-rinf:DC30 ;
   era:vehicleTypePlatform "Batman Rail Vehicles"@en .
@@ -140,8 +142,8 @@ erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # su
   era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline false] ;
   # SHACL Valid: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ; era:preEngagementBaseline "https://example.com/pre-engagement-baseline" ] ;
   # SHACL Invalid, given baseline is missing: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ];
-  dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasRole era-organisation-roles:Applicant ] ;
-  dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasRole era-organisation-roles:AuthorisingEntity ] ;
+  dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasOrganisationRole era-organisation-roles:Applicant ] ;
+  dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasOrganisationRole era-organisation-roles:AuthorisingEntity ] ;
   dcterms:identifier "VA-20250715-001" ;
   # dcterms:issued "2025-01-01"^^xsd:date ; # UNTESTED
   vpa:constitutedBy erava:vac-71-001-0001-1-001-US-1 ;
@@ -158,7 +160,7 @@ erava:vac-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationCase ; # subClass
   vpa:constitutes erava:va-71-001-0001-1-001-US-1 .
 
 erava:71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisation ;
-  dcterms:identifier "US5120250001" ;
+  dcterms:identifier "EU/81/2025/0001" ;
   # NOT YET dcterms:issued
   # dcterms:issued "2025-01-01"^^xsd:date ; # TEST
   # NOT YET vpa:valid
@@ -239,7 +241,7 @@ era-cld:cld-NoBoCert-123000 a era:CLD ;
   rdfs:label "TSI RST TE verification certificate" ;
   dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
   dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ] ;
-  vpa:checkedCompliance [ a era:CABCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-123 ] ;
+  vpa:checkedCompliance [ a era:CABAssessmentCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-123 ] ;
   vpa:valid [
     a time:ProperInterval ;
     time:hasBeginning "2022-04-02"^^xsd:date ; #start of validity
@@ -261,7 +263,7 @@ era-cld:cld-NoBoCert-456000 a era:CLD ;
   rdfs:label "TSI RST QMSA verification certificate - secret site" ;
   dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
   dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ] ;
-  vpa:checkedCompliance [ a era:CABCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-456 ] ;
+  vpa:checkedCompliance [ a era:CABAuditCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-456 ] ;
   vpa:valid [
     a time:ProperInterval ;
     time:hasBeginning "2022-04-01"^^xsd:date ; #start of validity

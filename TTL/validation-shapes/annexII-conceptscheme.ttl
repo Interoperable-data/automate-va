@@ -37,7 +37,8 @@
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
+@prefix eralex-pava: <http://data.europa.eu/949/requirement/legislation/pava/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
@@ -89,12 +90,12 @@ eralex:AnnexIIConceptScheme a skos:ConceptScheme ;
     skos:prefLabel "Annex II Aspects for Assessment (2018/545)"@en ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> ;
     skos:note "Each concept represents a row or sub-row from the Annex II table. Hierarchy is modeled using skos:broader/narrower. Applicability per authorisation case is documented in the concept. Coverage is up to section 21 as per the regulation."@en ;
-    skos:hasTopConcept eralex:PAVA-AnnexII-1, eralex:PAVA-AnnexII-2, eralex:PAVA-AnnexII-3, eralex:PAVA-AnnexII-4, eralex:PAVA-AnnexII-5, eralex:PAVA-AnnexII-6, eralex:PAVA-AnnexII-7, eralex:PAVA-AnnexII-8, eralex:PAVA-AnnexII-9, eralex:PAVA-AnnexII-10, eralex:PAVA-AnnexII-11, eralex:PAVA-AnnexII-12, eralex:PAVA-AnnexII-13, eralex:PAVA-AnnexII-14, eralex:PAVA-AnnexII-15, eralex:PAVA-AnnexII-16, eralex:PAVA-AnnexII-17, eralex:PAVA-AnnexII-18, eralex:PAVA-AnnexII-19, eralex:PAVA-AnnexII-20, eralex:PAVA-AnnexII-21 .
+    skos:hasTopConcept eralex-pava:AnnexII-1, eralex-pava:AnnexII-2, eralex-pava:AnnexII-3, eralex-pava:AnnexII-4, eralex-pava:AnnexII-5, eralex-pava:AnnexII-6, eralex-pava:AnnexII-7, eralex-pava:AnnexII-8, eralex-pava:AnnexII-9, eralex-pava:AnnexII-10, eralex-pava:AnnexII-11, eralex-pava:AnnexII-12, eralex-pava:AnnexII-13, eralex-pava:AnnexII-14, eralex-pava:AnnexII-15, eralex-pava:AnnexII-16, eralex-pava:AnnexII-17, eralex-pava:AnnexII-18, eralex-pava:AnnexII-19, eralex-pava:AnnexII-20, eralex-pava:AnnexII-21 .
 
 # Example for the first few sections. The full annex would continue this pattern for all 21 sections and their subsections/items.
 
 # 1. Application consistent with the pre-engagement baseline (when applicable)
-eralex:PAVA-AnnexII-1 a skos:Concept ;
+eralex-pava:AnnexII-1 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 1. Application consistent with the pre-engagement baseline (when applicable)"@en ;
     skos:definition "Application consistent with the pre-engagement baseline (when applicable)"@en ;
@@ -103,7 +104,7 @@ eralex:PAVA-AnnexII-1 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 2. Authorisation case selected by the applicant is adequate
-eralex:PAVA-AnnexII-2 a skos:Concept ;
+eralex-pava:AnnexII-2 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 2. Authorisation case selected by the applicant is adequate"@en ;
     skos:definition "Authorisation case selected by the applicant is adequate"@en ;
@@ -113,7 +114,7 @@ eralex:PAVA-AnnexII-2 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 3. The TSIs and other applicable Union law identified by the applicant are correct
-eralex:PAVA-AnnexII-3 a skos:Concept ;
+eralex-pava:AnnexII-3 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 3. The TSIs and other applicable Union law identified by the applicant are correct"@en ;
     skos:definition "The TSIs and other applicable Union law identified by the applicant are correct"@en ;
@@ -123,7 +124,7 @@ eralex:PAVA-AnnexII-3 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 4. Selected conformity assessment bodies have the proper accreditation or recognition as applicable
-eralex:PAVA-AnnexII-4 a skos:Concept ;
+eralex-pava:AnnexII-4 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 4. Selected conformity assessment bodies (notified body(ies), assessment body (CSM RA)) have the proper accreditation or recognition as applicable"@en ;
     skos:definition "Selected conformity assessment bodies (notified body(ies), assessment body (CSM RA)) have the proper accreditation or recognition as applicable"@en ;
@@ -133,419 +134,419 @@ eralex:PAVA-AnnexII-4 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 5. Non-applications of TSIs according to the provisions of Article 7 of Directive (EU) 2016/797:
-eralex:PAVA-AnnexII-5 a skos:Concept ;
+eralex-pava:AnnexII-5 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 5. Non-applications of TSIs according to the provisions of Article 7 of Directive (EU) 2016/797"@en ;
     skos:definition "Non-applications of TSIs according to the provisions of Article 7 of Directive (EU) 2016/797."@en ;
-    skos:narrower eralex:PAVA-AnnexII-5-1, eralex:PAVA-AnnexII-5-2, eralex:PAVA-AnnexII-5-3 ;
+    skos:narrower eralex-pava:AnnexII-5-1, eralex-pava:AnnexII-5-2, eralex-pava:AnnexII-5-3 ;
     skos:related era-va-authcase:FA, era-va-authcase:RENEW, era-va-authcase:EXT, era-va-authcase:NEW, era-va-authcase:C2T ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 5.1. Validity (time and area of use)
-eralex:PAVA-AnnexII-5-1 a skos:Concept ;
+eralex-pava:AnnexII-5-1 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 5.1. Validity (time and area of use)"@en ;
     skos:definition "5.1.  Validity (time and area of use);"@en ;
-    skos:broader eralex:PAVA-AnnexII-5 ;
+    skos:broader eralex-pava:AnnexII-5 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 5.2. Applicable to the project
-eralex:PAVA-AnnexII-5-2 a skos:Concept ;
+eralex-pava:AnnexII-5-2 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 5.2. Applicable to the project"@en ;
     skos:definition "5.2.  Applicable to the project;"@en ;
-    skos:broader eralex:PAVA-AnnexII-5 ;
+    skos:broader eralex-pava:AnnexII-5 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 5.3. Consistent with the identified and applied rules
-eralex:PAVA-AnnexII-5-3 a skos:Concept ;
+eralex-pava:AnnexII-5-3 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 5.3. Consistent with the identified and applied rules"@en ;
     skos:definition "5.3.  Consistent with the identified and applied rules."@en ;
-    skos:broader eralex:PAVA-AnnexII-5 ;
+    skos:broader eralex-pava:AnnexII-5 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6. Methodology for requirements capture
-eralex:PAVA-AnnexII-6 a skos:Concept ;
+eralex-pava:AnnexII-6 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6. Methodology for requirements capture"@en ;
     skos:definition "Covers the methodology used for requirements capture, including fit for purpose and adequacy of non-standard methods."@en ;
-    skos:narrower eralex:PAVA-AnnexII-6-1, eralex:PAVA-AnnexII-6-2 ;
+    skos:narrower eralex-pava:AnnexII-6-1, eralex-pava:AnnexII-6-2 ;
     skos:related era-va-authcase:FA, era-va-authcase:EXT, era-va-authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.1. Fit for purpose methodology
-eralex:PAVA-AnnexII-6-1 a skos:Concept ;
+eralex-pava:AnnexII-6-1 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.1. Fit for purpose methodology"@en ;
     skos:definition "Is the applied methodology used for the requirements capture fit for purpose concerning the following aspects?"@en ;
-    skos:broader eralex:PAVA-AnnexII-6 ;
-    skos:narrower eralex:PAVA-AnnexII-6-1-a, eralex:PAVA-AnnexII-6-1-b ;
+    skos:broader eralex-pava:AnnexII-6 ;
+    skos:narrower eralex-pava:AnnexII-6-1-a, eralex-pava:AnnexII-6-1-b ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.1.(a) Standardised/accepted methodology
-eralex:PAVA-AnnexII-6-1-a a skos:Concept ;
+eralex-pava:AnnexII-6-1-a a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.1.(a) Standardised/accepted methodology"@en ;
     skos:definition "Has a standardised/accepted methodology been used?"@en ;
-    skos:broader eralex:PAVA-AnnexII-6-1 ;
+    skos:broader eralex-pava:AnnexII-6-1 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.1.(b) Method suitability
-eralex:PAVA-AnnexII-6-1-b a skos:Concept ;
+eralex-pava:AnnexII-6-1-b a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.1.(b) Method suitability"@en ;
     skos:definition "Is the method intended for and suitable for the essential requirements it covers?"@en ;
-    skos:broader eralex:PAVA-AnnexII-6-1 ;
+    skos:broader eralex-pava:AnnexII-6-1 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.2. Adequacy of non-standard methods
-eralex:PAVA-AnnexII-6-2 a skos:Concept ;
+eralex-pava:AnnexII-6-2 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.2. Adequacy of non-standard methods"@en ;
     skos:definition "When the methodology applied is not standardised or covers other essential requirements than it is intended for, the following aspects shall be checked to evaluate if they are sufficiently considered and covered by the methodology."@en ;
-    skos:broader eralex:PAVA-AnnexII-6 ;
-    skos:narrower eralex:PAVA-AnnexII-6-2-a, eralex:PAVA-AnnexII-6-2-b, eralex:PAVA-AnnexII-6-2-c, eralex:PAVA-AnnexII-6-2-d, eralex:PAVA-AnnexII-6-2-e, eralex:PAVA-AnnexII-6-2-f, eralex:PAVA-AnnexII-6-2-g, eralex:PAVA-AnnexII-6-2-h ;
+    skos:broader eralex-pava:AnnexII-6 ;
+    skos:narrower eralex-pava:AnnexII-6-2-a, eralex-pava:AnnexII-6-2-b, eralex-pava:AnnexII-6-2-c, eralex-pava:AnnexII-6-2-d, eralex-pava:AnnexII-6-2-e, eralex-pava:AnnexII-6-2-f, eralex-pava:AnnexII-6-2-g, eralex-pava:AnnexII-6-2-h ;
     skos:note "MANUAL" ;
     skos:related era-va-authcase:FA, era-va-authcase:RENEW, era-va-authcase:EXT, era-va-authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.2.(a) Degree of independent assessment
-eralex:PAVA-AnnexII-6-2-a a skos:Concept ;
+eralex-pava:AnnexII-6-2-a a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.2.(a) Degree of independent assessment"@en ;
     skos:definition "Degree of independent assessment applied"@en ;
-    skos:broader eralex:PAVA-AnnexII-6-2 ;
+    skos:broader eralex-pava:AnnexII-6-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.2.(b) System definition
-eralex:PAVA-AnnexII-6-2-b a skos:Concept ;
+eralex-pava:AnnexII-6-2-b a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.2.(b) System definition"@en ;
     skos:definition "System definition"@en ;
-    skos:broader eralex:PAVA-AnnexII-6-2 ;
+    skos:broader eralex-pava:AnnexII-6-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.2.(c) Hazard identification and classification
-eralex:PAVA-AnnexII-6-2-c a skos:Concept ;
+eralex-pava:AnnexII-6-2-c a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.2.(c) Hazard identification and classification"@en ;
     skos:definition "Hazard identification and classification"@en ;
-    skos:broader eralex:PAVA-AnnexII-6-2 ;
+    skos:broader eralex-pava:AnnexII-6-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.2.(d) Risk acceptance principles
-eralex:PAVA-AnnexII-6-2-d a skos:Concept ;
+eralex-pava:AnnexII-6-2-d a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.2.(d) Risk acceptance principles"@en ;
     skos:definition "Risk acceptance principles"@en ;
-    skos:broader eralex:PAVA-AnnexII-6-2 ;
+    skos:broader eralex-pava:AnnexII-6-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.2.(e) Risk evaluation
-eralex:PAVA-AnnexII-6-2-e a skos:Concept ;
+eralex-pava:AnnexII-6-2-e a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.2.(e) Risk evaluation"@en ;
     skos:definition "Risk evaluation"@en ;
-    skos:broader eralex:PAVA-AnnexII-6-2 ;
+    skos:broader eralex-pava:AnnexII-6-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.2.(f) Requirements established
-eralex:PAVA-AnnexII-6-2-f a skos:Concept ;
+eralex-pava:AnnexII-6-2-f a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.2.(f) Requirements established"@en ;
     skos:definition "Requirements established"@en ;
-    skos:broader eralex:PAVA-AnnexII-6-2 ;
+    skos:broader eralex-pava:AnnexII-6-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.2.(g) Demonstration of compliance
-eralex:PAVA-AnnexII-6-2-g a skos:Concept ;
+eralex-pava:AnnexII-6-2-g a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.2.(g) Demonstration of compliance"@en ;
     skos:definition "Demonstration of compliance with the requirements"@en ;
-    skos:broader eralex:PAVA-AnnexII-6-2 ;
+    skos:broader eralex-pava:AnnexII-6-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 6.2.(h) Hazard management (log)
-eralex:PAVA-AnnexII-6-2-h a skos:Concept ;
+eralex-pava:AnnexII-6-2-h a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 6.2.(h) Hazard management (log)"@en ;
     skos:definition "Hazard management (log)"@en ;
-    skos:broader eralex:PAVA-AnnexII-6-2 ;
+    skos:broader eralex-pava:AnnexII-6-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7. Sufficient evidence from the methodology used for the requirements capture
-eralex:PAVA-AnnexII-7 a skos:Concept ;
+eralex-pava:AnnexII-7 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7. Sufficient evidence from the methodology used for the requirements capture"@en ;
     skos:definition "Covers the sufficiency of evidence from the methodology used for requirements capture, including checks for both CSM and other methodologies."@en ;
-    skos:narrower eralex:PAVA-AnnexII-7-1, eralex:PAVA-AnnexII-7-2 ;
+    skos:narrower eralex-pava:AnnexII-7-1, eralex-pava:AnnexII-7-2 ;
     skos:related era-va-authcase:FA, era-va-authcase:EXT, era-va-authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7.1. CSM risk management process used
-eralex:PAVA-AnnexII-7-1 a skos:Concept ;
+eralex-pava:AnnexII-7-1 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7.1. CSM risk management process used"@en ;
     skos:definition "When the risk management process set out in Annex I of Regulation (EU) No 402/2013 has been used as the methodology for requirements capture, the following shall be checked:"@en ;
-    skos:broader eralex:PAVA-AnnexII-7 ;
-    skos:narrower eralex:PAVA-AnnexII-7-1-a, eralex:PAVA-AnnexII-7-1-b ;
+    skos:broader eralex-pava:AnnexII-7 ;
+    skos:narrower eralex-pava:AnnexII-7-1-a, eralex-pava:AnnexII-7-1-b ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7.1.(a) CSM declaration by proposer
-eralex:PAVA-AnnexII-7-1-a a skos:Concept ;
+eralex-pava:AnnexII-7-1-a a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7.1.(a) CSM declaration by proposer"@en ;
     skos:definition "CSM on risk assessment, declaration by the proposer (Article 16 Regulation (EU) No 402/2013) is signed by the proposer and supports that all identified hazards and associated risks are controlled to an acceptable level."@en ;
-    skos:broader eralex:PAVA-AnnexII-7-1 ;
+    skos:broader eralex-pava:AnnexII-7-1 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7.1.(b) CSM safety assessment report
-eralex:PAVA-AnnexII-7-1-b a skos:Concept ;
+eralex-pava:AnnexII-7-1-b a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7.1.(b) CSM safety assessment report"@en ;
     skos:definition "CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) supports the declaration by the proposer for the specified scope according to Article 13 and at least the essential requirement safety for subsystems and safe integration between subsystems within the vehicle."@en ;
-    skos:broader eralex:PAVA-AnnexII-7-1 ;
+    skos:broader eralex-pava:AnnexII-7-1 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7.2. Other methodology used
-eralex:PAVA-AnnexII-7-2 a skos:Concept ;
+eralex-pava:AnnexII-7-2 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7.2. Other methodology used"@en ;
     skos:definition "When another methodology than the risk management process set out in Annex I of Regulation (EU) No 402/2013 has been used as the methodology for requirements capture, the following shall be checked:"@en ;
-    skos:broader eralex:PAVA-AnnexII-7 ;
-    skos:narrower eralex:PAVA-AnnexII-7-2-a, eralex:PAVA-AnnexII-7-2-b, eralex:PAVA-AnnexII-7-2-c, eralex:PAVA-AnnexII-7-2-d, eralex:PAVA-AnnexII-7-2-e, eralex:PAVA-AnnexII-7-2-f ;
+    skos:broader eralex-pava:AnnexII-7 ;
+    skos:narrower eralex-pava:AnnexII-7-2-a, eralex-pava:AnnexII-7-2-b, eralex-pava:AnnexII-7-2-c, eralex-pava:AnnexII-7-2-d, eralex-pava:AnnexII-7-2-e, eralex-pava:AnnexII-7-2-f ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7.2.(a) System definition complete
-eralex:PAVA-AnnexII-7-2-a a skos:Concept ;
+eralex-pava:AnnexII-7-2-a a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7.2.(a) System definition complete"@en ;
     skos:definition "System definition is complete and consistent with the design of the vehicle?"@en ;
-    skos:broader eralex:PAVA-AnnexII-7-2 ;
+    skos:broader eralex-pava:AnnexII-7-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7.2.(b) Hazard identification plausible
-eralex:PAVA-AnnexII-7-2-b a skos:Concept ;
+eralex-pava:AnnexII-7-2-b a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7.2.(b) Hazard identification plausible"@en ;
     skos:definition "Hazard identification and classification is consistent and plausible?"@en ;
-    skos:broader eralex:PAVA-AnnexII-7-2 ;
+    skos:broader eralex-pava:AnnexII-7-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7.2.(c) All risks managed
-eralex:PAVA-AnnexII-7-2-c a skos:Concept ;
+eralex-pava:AnnexII-7-2-c a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7.2.(c) All risks managed"@en ;
     skos:definition "All risks have been properly managed and mitigated?"@en ;
-    skos:broader eralex:PAVA-AnnexII-7-2 ;
+    skos:broader eralex-pava:AnnexII-7-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7.2.(d) Requirements traced
-eralex:PAVA-AnnexII-7-2-d a skos:Concept ;
+eralex-pava:AnnexII-7-2-d a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7.2.(d) Requirements traced"@en ;
     skos:definition "Requirements derived from the risk management are properly traced to the risk and to the evidence of compliance with the requirement?"@en ;
-    skos:broader eralex:PAVA-AnnexII-7-2 ;
+    skos:broader eralex-pava:AnnexII-7-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7.2.(e) Hazard management structured
-eralex:PAVA-AnnexII-7-2-e a skos:Concept ;
+eralex-pava:AnnexII-7-2-e a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7.2.(e) Hazard management structured"@en ;
     skos:definition "Structured and consistent management of the hazards throughout the process?"@en ;
-    skos:broader eralex:PAVA-AnnexII-7-2 ;
+    skos:broader eralex-pava:AnnexII-7-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 7.2.(f) Positive opinion from independent assessment
-eralex:PAVA-AnnexII-7-2-f a skos:Concept ;
+eralex-pava:AnnexII-7-2-f a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 7.2.(f) Positive opinion from independent assessment"@en ;
     skos:definition "Is there a positive opinion from the independent assessment?"@en ;
-    skos:broader eralex:PAVA-AnnexII-7-2 ;
+    skos:broader eralex-pava:AnnexII-7-2 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 8. EC Declarations of Verification and EC certificates (Article 15 Directive (EU) 2016/797), check
-eralex:PAVA-AnnexII-8 a skos:Concept ;
+eralex-pava:AnnexII-8 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 8. EC Declarations of Verification and EC certificates (Article 15 Directive (EU) 2016/797), check"@en ;
     skos:definition "Covers the checks for EC Declarations of Verification and EC certificates as per Article 15 Directive (EU) 2016/797."@en ;
-    skos:narrower eralex:PAVA-AnnexII-8-1, eralex:PAVA-AnnexII-8-2, eralex:PAVA-AnnexII-8-3, eralex:PAVA-AnnexII-8-4, eralex:PAVA-AnnexII-8-5, eralex:PAVA-AnnexII-8-6, eralex:PAVA-AnnexII-8-7 ;
+    skos:narrower eralex-pava:AnnexII-8-1, eralex-pava:AnnexII-8-2, eralex-pava:AnnexII-8-3, eralex-pava:AnnexII-8-4, eralex-pava:AnnexII-8-5, eralex-pava:AnnexII-8-6, eralex-pava:AnnexII-8-7 ;
     skos:related era-va-authcase:FA, era-va-authcase:RENEW, era-va-authcase:EXT, era-va-authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 8.1. Signatures
-eralex:PAVA-AnnexII-8-1 a skos:Concept ;
+eralex-pava:AnnexII-8-1 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 8.1. Signatures"@en ;
     skos:definition "8.1.  Signatures"@en ;
-    skos:broader eralex:PAVA-AnnexII-8 ;
+    skos:broader eralex-pava:AnnexII-8 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 8.2. Validity
-eralex:PAVA-AnnexII-8-2 a skos:Concept ;
+eralex-pava:AnnexII-8-2 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 8.2. Validity"@en ;
     skos:definition "8.2.  Validity"@en ;
-    skos:broader eralex:PAVA-AnnexII-8 ;
+    skos:broader eralex-pava:AnnexII-8 ;
     skos:note "AUTOMATIC" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 8.3. Scope
-eralex:PAVA-AnnexII-8-3 a skos:Concept ;
+eralex-pava:AnnexII-8-3 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 8.3. Scope"@en ;
     skos:definition "8.3.  Scope"@en ;
-    skos:broader eralex:PAVA-AnnexII-8 ;
+    skos:broader eralex-pava:AnnexII-8 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 8.4. Conditions for use and other restrictions
-eralex:PAVA-AnnexII-8-4 a skos:Concept ;
+eralex-pava:AnnexII-8-4 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 8.4. Conditions for use of the vehicle and other restrictions, non-compliances"@en ;
     skos:definition "8.4.  Conditions for use of the vehicle and other restrictions, non-compliances"@en ;
-    skos:broader eralex:PAVA-AnnexII-8 ;
+    skos:broader eralex-pava:AnnexII-8 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 8.5. Non-application of TSIs
-eralex:PAVA-AnnexII-8-5 a skos:Concept ;
+eralex-pava:AnnexII-8-5 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 8.5. Non-application of TSIs (when applicable)"@en ;
     skos:definition "8.5.  Non-application of TSIs (when applicable)"@en ;
-    skos:broader eralex:PAVA-AnnexII-8 ;
+    skos:broader eralex-pava:AnnexII-8 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 8.6. All applicable legislation is covered
-eralex:PAVA-AnnexII-8-6 a skos:Concept ;
+eralex-pava:AnnexII-8-6 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 8.6. All applicable legislation is covered, including other non-railway related legislation"@en ;
     skos:definition "8.6.  All applicable legislation is covered, including other non-railway related legislation"@en ;
-    skos:broader eralex:PAVA-AnnexII-8 ;
+    skos:broader eralex-pava:AnnexII-8 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 8.7. Interoperability constituents
-eralex:PAVA-AnnexII-8-7 a skos:Concept ;
+eralex-pava:AnnexII-8-7 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 8.7. Interoperability constituents (validity, scope, conditions for use and other restrictions)"@en ;
     skos:definition "8.7.  Interoperability constituents (validity, scope, conditions for use and other restrictions):"@en ;
-    skos:broader eralex:PAVA-AnnexII-8 ;
-    skos:narrower eralex:PAVA-AnnexII-8-7-a, eralex:PAVA-AnnexII-8-7-b ;
+    skos:broader eralex-pava:AnnexII-8 ;
+    skos:narrower eralex-pava:AnnexII-8-7-a, eralex-pava:AnnexII-8-7-b ;
     skos:note "MANUAL" ;
     skos:related era-va-authcase:FA, era-va-authcase:RENEW, era-va-authcase:EXT, era-va-authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 8.7.(a) EC certificates of conformity
-eralex:PAVA-AnnexII-8-7-a a skos:Concept ;
+eralex-pava:AnnexII-8-7-a a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 8.7.(a) EC certificates of conformity"@en ;
     skos:definition "EC certificates of conformity"@en ;
-    skos:broader eralex:PAVA-AnnexII-8-7 ;
+    skos:broader eralex-pava:AnnexII-8-7 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 8.7.(b) EC certificates of suitability of use
-eralex:PAVA-AnnexII-8-7-b a skos:Concept ;
+eralex-pava:AnnexII-8-7-b a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 8.7.(b) EC certificates of suitability of use"@en ;
     skos:definition "EC certificates of suitability of use"@en ;
-    skos:broader eralex:PAVA-AnnexII-8-7 ;
+    skos:broader eralex-pava:AnnexII-8-7 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 9. Reports from Conformity assessment bodies (Article 15 Directive (EU) 2016/797), check
-eralex:PAVA-AnnexII-9 a skos:Concept ;
+eralex-pava:AnnexII-9 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 9. Reports from Conformity assessment bodies (Article 15 Directive (EU) 2016/797), check"@en ;
     skos:definition "Covers the checks for reports from conformity assessment bodies as per Article 15 Directive (EU) 2016/797."@en ;
-    skos:narrower eralex:PAVA-AnnexII-9-1, eralex:PAVA-AnnexII-9-2, eralex:PAVA-AnnexII-9-3, eralex:PAVA-AnnexII-9-4, eralex:PAVA-AnnexII-9-5, eralex:PAVA-AnnexII-9-6 ;
+    skos:narrower eralex-pava:AnnexII-9-1, eralex-pava:AnnexII-9-2, eralex-pava:AnnexII-9-3, eralex-pava:AnnexII-9-4, eralex-pava:AnnexII-9-5, eralex-pava:AnnexII-9-6 ;
     skos:related era-va-authcase:FA, era-va-authcase:RENEW, era-va-authcase:EXT, era-va-authcase:NEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 9.1. Consistency with EC Declarations of Verification and EC certificates
-eralex:PAVA-AnnexII-9-1 a skos:Concept ;
+eralex-pava:AnnexII-9-1 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 9.1. Consistency with EC Declarations of Verification and EC certificates"@en ;
     skos:definition "9.1.  Consistency with EC Declarations of Verification and EC certificates"@en ;
-    skos:broader eralex:PAVA-AnnexII-9 ;
+    skos:broader eralex-pava:AnnexII-9 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 9.2. All applicable rules are covered
-eralex:PAVA-AnnexII-9-2 a skos:Concept ;
+eralex-pava:AnnexII-9-2 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 9.2. All applicable rules are covered"@en ;
     skos:definition "9.2.  All applicable rules are covered"@en ;
-    skos:broader eralex:PAVA-AnnexII-9 ;
+    skos:broader eralex-pava:AnnexII-9 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 9.3. Deviations & non-conformities
-eralex:PAVA-AnnexII-9-3 a skos:Concept ;
+eralex-pava:AnnexII-9-3 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 9.3. Deviations & non-conformities (when applicable) are identified and match the non-application requests"@en ;
     skos:definition "9.3.  Deviations & non-conformities (when applicable) are identified and match the non-application requests"@en ;
-    skos:broader eralex:PAVA-AnnexII-9 ;
+    skos:broader eralex-pava:AnnexII-9 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 9.4. Combination of modules used is allowed
-eralex:PAVA-AnnexII-9-4 a skos:Concept ;
+eralex-pava:AnnexII-9-4 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 9.4. Combination of modules used is allowed"@en ;
     skos:definition "9.4.  Combination of modules used is allowed"@en ;
-    skos:broader eralex:PAVA-AnnexII-9 ;
+    skos:broader eralex-pava:AnnexII-9 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 9.5. Conditions for use of the vehicle and other restrictions
-eralex:PAVA-AnnexII-9-5 a skos:Concept ;
+eralex-pava:AnnexII-9-5 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 9.5. Conditions for use of the vehicle and other restrictions are properly identified and are consistent with the conditions in the application for authorisation"@en ;
     skos:definition "9.5.  Conditions for use of the vehicle and other restrictions are properly identified and are consistent with the conditions in the application for authorisation"@en ;
-    skos:broader eralex:PAVA-AnnexII-9 ;
+    skos:broader eralex-pava:AnnexII-9 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 9.6. Supporting evidences used by the conformity assessment bodies
-eralex:PAVA-AnnexII-9-6 a skos:Concept ;
+eralex-pava:AnnexII-9-6 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 9.6. The supporting evidences used by the conformity assessment bodies are matching the applicable assessment phases described in TSIs (design review, type test, etc.)"@en ;
     skos:definition "9.6.  The supporting evidences used by the conformity assessment bodies are matching the applicable assessment phases described in TSIs (design review, type test, etc.)."@en ;
-    skos:broader eralex:PAVA-AnnexII-9 ;
+    skos:broader eralex-pava:AnnexII-9 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 10. Check of assessments from NSAs for the area of use, as specified in Article 43
-eralex:PAVA-AnnexII-10 a skos:Concept ;
+eralex-pava:AnnexII-10 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 10. Check of assessments from NSAs for the area of use, as specified in Article 43"@en ;
     skos:definition "10. Check of assessments from NSAs for the area of use, as specified in Article 43"@en ;
@@ -554,7 +555,7 @@ eralex:PAVA-AnnexII-10 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 11. Validity of the original vehicle type authorisation
-eralex:PAVA-AnnexII-11 a skos:Concept ;
+eralex-pava:AnnexII-11 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 11. Validity of the original vehicle type authorisation"@en ;
     skos:definition "11. Validity of the original vehicle type authorisation"@en ;
@@ -563,7 +564,7 @@ eralex:PAVA-AnnexII-11 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 12. Original vehicle type authorisation is valid for the concerned area of use
-eralex:PAVA-AnnexII-12 a skos:Concept ;
+eralex-pava:AnnexII-12 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 12. Original vehicle type authorisation is valid for the concerned area of use"@en ;
     skos:definition "12. Original vehicle type authorisation is valid for the concerned area of use"@en ;
@@ -572,7 +573,7 @@ eralex:PAVA-AnnexII-12 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 13. Existing conditions for use of the vehicle and other restrictions
-eralex:PAVA-AnnexII-13 a skos:Concept ;
+eralex-pava:AnnexII-13 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 13. Existing conditions for use of the vehicle and other restrictions"@en ;
     skos:definition "13. Existing conditions for use of the vehicle and other restrictions"@en ;
@@ -581,7 +582,7 @@ eralex:PAVA-AnnexII-13 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 14. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the requirements capture for the essential requirements ‘safety’ for the subsystems and safe integration between subsystems positive opinion.
-eralex:PAVA-AnnexII-14 a skos:Concept ;
+eralex-pava:AnnexII-14 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 14. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the requirements capture for the essential requirements ‘safety’ for the subsystems and safe integration between subsystems positive opinion."@en ;
     skos:definition "14. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the requirements capture for the essential requirements ‘safety’ for the subsystems and safe integration between subsystems positive opinion."@en ;
@@ -590,7 +591,7 @@ eralex:PAVA-AnnexII-14 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 15. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the potential modification of the overall safety level for the vehicle (significant change) positive opinion
-eralex:PAVA-AnnexII-15 a skos:Concept ;
+eralex-pava:AnnexII-15 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 15. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the potential modification of the overall safety level for the vehicle (significant change) positive opinion"@en ;
     skos:definition "15. CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013) covering the potential modification of the overall safety level for the vehicle (significant change) positive opinion"@en ;
@@ -599,7 +600,7 @@ eralex:PAVA-AnnexII-15 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 16. Changes as compared to the authorised vehicle type are sufficiently described and match the CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013)
-eralex:PAVA-AnnexII-16 a skos:Concept ;
+eralex-pava:AnnexII-16 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 16. Changes as compared to the authorised vehicle type are sufficiently described and match the CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013)"@en ;
     skos:definition "16. Changes as compared to the authorised vehicle type are sufficiently described and match the CSM on risk assessment, safety assessment report (Article 15 Regulation (EU) No 402/2013)"@en ;
@@ -608,7 +609,7 @@ eralex:PAVA-AnnexII-16 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 17. EC Declarations of Verification and EC certificates are properly updated in relation to the changed and/or updated rules
-eralex:PAVA-AnnexII-17 a skos:Concept ;
+eralex-pava:AnnexII-17 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 17. EC Declarations of Verification and EC certificates are properly updated in relation to the changed and/or updated rules"@en ;
     skos:definition "17. EC Declarations of Verification and EC certificates are properly updated in relation to the changed and/or updated rules"@en ;
@@ -617,35 +618,35 @@ eralex:PAVA-AnnexII-17 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 18. Reports from conformity assessment bodies are properly updated in relation to the changed and/or updated rules
-eralex:PAVA-AnnexII-18 a skos:Concept ;
+eralex-pava:AnnexII-18 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 18. Reports from conformity assessment bodies are properly updated in relation to the changed and/or updated rules"@en ;
     skos:definition "18. Reports from conformity assessment bodies are properly updated in relation to the changed and/or updated rules"@en ;
-    skos:narrower eralex:PAVA-AnnexII-18-1, eralex:PAVA-AnnexII-18-2 ;
+    skos:narrower eralex-pava:AnnexII-18-1, eralex-pava:AnnexII-18-2 ;
     skos:note "MANUAL" ;
     skos:related era-va-authcase:RENEW ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 18.1. Changed and/or updated rules are covered
-eralex:PAVA-AnnexII-18-1 a skos:Concept ;
+eralex-pava:AnnexII-18-1 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 18.1. Changed and/or updated rules are covered"@en ;
     skos:definition "18.1. Changed and/or updated rules are covered"@en ;
-    skos:broader eralex:PAVA-AnnexII-18 ;
+    skos:broader eralex-pava:AnnexII-18 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 18.2. There is evidence that the vehicle type still fulfils the requirements
-eralex:PAVA-AnnexII-18-2 a skos:Concept ;
+eralex-pava:AnnexII-18-2 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 18.2. There is evidence that the vehicle type still fulfils the requirements"@en ;
     skos:definition "18.2. There is evidence that the vehicle type still fulfils the requirements"@en ;
-    skos:broader eralex:PAVA-AnnexII-18 ;
+    skos:broader eralex-pava:AnnexII-18 ;
     skos:note "MANUAL" ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 19. Evidence that the design of the vehicle type has not changed
-eralex:PAVA-AnnexII-19 a skos:Concept ;
+eralex-pava:AnnexII-19 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 19. Evidence that the design of the vehicle type has not changed"@en ;
     skos:definition "19. Evidence that the design of the vehicle type has not changed"@en ;
@@ -654,7 +655,7 @@ eralex:PAVA-AnnexII-19 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 20. Identification of the vehicle or series of vehicles covered by the declaration of conformity to the vehicle type
-eralex:PAVA-AnnexII-20 a skos:Concept ;
+eralex-pava:AnnexII-20 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 20. Identification of the vehicle or series of vehicles covered by the declaration of conformity to the vehicle type"@en ;
     skos:definition "20. Identification of the vehicle or series of vehicles covered by the declaration of conformity to the vehicle type"@en ;
@@ -663,7 +664,7 @@ eralex:PAVA-AnnexII-20 a skos:Concept ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_II> .
 
 # 21. Declaration of conformity to the type and supporting documents (Article 24 Directive (EU) 2016/797)
-eralex:PAVA-AnnexII-21 a skos:Concept ;
+eralex-pava:AnnexII-21 a skos:Concept ;
     skos:inScheme eralex:AnnexIIConceptScheme ;
     skos:prefLabel "(II) 21. Declaration of conformity to the type and supporting documents (Article 24 Directive (EU) 2016/797)"@en ;
     skos:definition "21. Declaration of conformity to the type and supporting documents (Article 24 Directive (EU) 2016/797)"@en ;

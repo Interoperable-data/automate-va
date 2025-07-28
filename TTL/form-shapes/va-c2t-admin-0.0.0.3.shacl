@@ -36,7 +36,7 @@
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eralex: <http://data.europa.eu/949/requirements/> .
+@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
@@ -107,7 +107,7 @@ This version has been updated with the SHACL message and severities needed in a 
     sh:path dcterms:identifier ;
     sh:name "Application ID" ;
     sh:description "Internal applicant's identifier for the application, allows retrieval in search systems"@en ;
-    sh:group dash:APPD ;
+    # sh:group dash:APPD ;
     sh:datatype xsd:string ;
     sh:message "Without an internal application identifier, with at least 8 characters, the search function will not work!"@en ;
     sh:severity sh:Violation ;
@@ -192,28 +192,30 @@ This version has been updated with the SHACL message and severities needed in a 
    	sh:qualifiedMaxCount 1 ;
     sh:message "Each Application must clarify whether Chapter 3 of (EU)2018/545 is applied before or not."@en ;
     sh:severity sh:Violation ;
-    sh:qualifiedValueShape [ sh:or (
-       [ sh:name "Yes, pre-engagement baseline" ;
-        sh:node [
-            a sh:NodeShape ;
-            sh:targetClass era:PreEngagement ;
-            sh:property [
-                # era:preEngagementBaseline era:Document
-                sh:path era:hasPreEngagementBaseline ;
-                sh:name "Pre-engagement baseline present"@en ;
-                sh:datatype xsd:boolean;
-                sh:hasValue "true"^^xsd:boolean;
-                # AVOID sh:nodeKind sh:Literal ;
-                sh:minCount 1 ;
-                sh:maxCount 1
-            ] , [
-                # era:preEngagementBaseline era:Document
-                sh:path era:preEngagementBaseline ;
-                sh:name "PreEngagement Reference Document"@en ;
-                sh:datatype xsd:anyURI; # unstable, unchecked
-            ]
+    sh:qualifiedValueShape [ 
+      sh:or (
+        [ sh:name "Yes, pre-engagement baseline" ;
+          sh:node [
+              a sh:NodeShape ;
+              sh:targetClass era:PreEngagement ;
+              sh:property [
+                  # era:preEngagementBaseline era:Document
+                  sh:path era:hasPreEngagementBaseline ;
+                  sh:name "Pre-engagement baseline present"@en ;
+                  sh:datatype xsd:boolean;
+                  sh:hasValue "true"^^xsd:boolean;
+                  # AVOID sh:nodeKind sh:Literal ;
+                  sh:minCount 1 ;
+                  sh:maxCount 1
+              ] , [
+                  # era:preEngagementBaseline era:Document
+                  sh:path era:preEngagementBaseline ;
+                  sh:name "PreEngagement Reference Document"@en ;
+                  sh:datatype xsd:anyURI; # unstable, unchecked
+              ]
           ] 
-       ] [ 
+        ]
+        [ 
           sh:name "No pre-engagement baseline" ;
           sh:node [
             a sh:NodeShape ;
@@ -249,13 +251,27 @@ This version has been updated with the SHACL message and severities needed in a 
     sh:path vpa:constitutedBy ;
     sh:name "Authorisation Case";
     sh:description "The Application in C2T consists of at least one Authorisation Case, each defining one exact type and vehicles to be authorised to that type."@en ;
-    sh:group dash:APP ;
-    sh:node era:VehicleTypeAuthorisationCaseShape ;
+    # sh:group dash:APP ;
+    sh:node era-sh:VehicleTypeAuthorisationCaseShape ;
     sh:message "An Application for Vehicle Authorisation in Conformity to Type MUST exist at least out of one C2T Authorisation Case"@en ;
     sh:severity sh:Violation ;
     sh:minCount 1 ;
     sh:maxCount 8
   ] .
+
+era-sh:VehicleTypeAuthorisationCaseTestShape a sh:NodeShape ;
+  sh:targetClass era:VehicleTypeAuthorisationCase ;
+  sh:property [
+    sh:path vpa:permissionType ;
+    sh:name "Authorisation Case Type"@en ;
+    # sh:group dash:AUTHC ;
+    sh:nodeKind sh:IRI ;
+    sh:hasValue era-va-authcase:C2T ;
+    sh:message "Each Authorisation Case in C2T MUST refer to the SKOS Concept of that case type." ;
+    sh:severity sh:Violation ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ].
 
 era-sh:VehicleTypeAuthorisationCaseShape a sh:NodeShape ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
@@ -313,7 +329,7 @@ This version has been updated with the SHACL message and severities needed in a 
    	sh:path vpa:concerns ;
    	sh:name "Concerns Vehicles" ;
     sh:group dash:AUTHC ;
-   	sh:qualifiedValueShape [ sh:node era:VehiclesSetShape ] ;
+   	sh:qualifiedValueShape [ sh:node era-sh:VehiclesSetShape ] ;
     sh:message "One set of vehicles, containing minimally one vehicle, must define each Authorisation Case, and must be of the unique vehicle type."@en ;
     sh:severity sh:Violation ;
    	sh:qualifiedMinCount 1 ;

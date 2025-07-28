@@ -201,9 +201,9 @@ The following data could be stored in *non-disclosed* graphs.
 
 Use the property `vpa:checkedCompliance` to link to an instance of:
 - [ ] `era:CABAssessmentCheck` / `era:CABAudit`, which is a `vpa:Compliance` subClass, with extra properties:
-- [ ] `era:cabAssessmentResult` and `era:cabAuditResult` (range: `xsd:string`) with the strings:
+- [ ] `era:resultStatement` and `era:cabAuditResult` (range: `xsd:string`) with the strings:
   - [ ] `The Object of Assessment as identified above was shown to comply with the Assessment Requirements, subject to any Conditions and Limits of use as listed below. The Assessment Results are provided in detail within the accompanying [EC Assessment Report or NoBo-File/ Accompanying Documentation section 4]. The Essential Requirements have been assessed as being met through compliance with the requirements of the relevant TSI only.`
-- [ ] `era:cabValidityStatement`, with the strings as in RFU-STR-001 ar alike:
+- [ ] `era:validityStatement`, with the strings as in RFU-STR-001 ar alike:
   - [ ] `This certificate is valid for the Object of Assessment as mentioned above as long as compliance of the Object of Assessment with certification requirements is maintained by the Applicant.`
   - [ ] (only for SD, SH1 modules) `Within the validity duration of this Certificate, the Applicant can perform production/installation and final product/installation inspection of the Object of Assessment as long as the product/installation conforms to the EC Type/Design Examination Certificate. This validity duration may be extended on the basis of future updating of related Certificates/QMS approvals.`
 - [ ] `era:cabAssessmentReport` and `era:cabAuditReport` (range: `xsd:anyURI`)
@@ -236,7 +236,7 @@ To express these references, use link under `vpa:checkedCompliance` and privatel
 <nobo:Assessment-123> a era:CABAssessmentCheck , vpa:Compliance ;
   dct:description "General Validity statement" ;
   rdfs:seeAlso "URL of the CAB report" ;
-  era:cabValidityStatement """This certificate is valid for the Object of Assessment as mentioned above as long as compliance of the Object of Assessment with certification requirements is maintained by the Applicant."""@en
+  era:validityStatement """This certificate is valid for the Object of Assessment as mentioned above as long as compliance of the Object of Assessment with certification requirements is maintained by the Applicant."""@en
 
 <nobo:Compliance-123-45> a era:CABAssessmentCheck , vpa:Compliance ;
   vpa:checkedRequirement <URI of the standards , TSI, etc> ; # <<<<<< Assessment Requirements can be expressed here
