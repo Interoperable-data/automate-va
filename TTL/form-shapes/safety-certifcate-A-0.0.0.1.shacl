@@ -1,11 +1,91 @@
 @base <http://data.europa.eu/949/> .
 @prefix era: <http://data.europa.eu/949/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix issform: <http://era.europa.eu/forms/iss/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
 
+# From examples
+@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
+@prefix gotham: <https://batman.fandom.com/wiki/> .
+
+# General
+@prefix as:    <https://www.w3.org/ns/activitystreams#> .
+@prefix cc:    <http://creativecommons.org/ns#> .
+@prefix dash:  <http://datashapes.org/dash#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix dul:  <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix geo:  <http://www.opengis.net/ont/geosparql#> .
+@prefix gr:   <http://purl.org/goodrelations/v1#> .
+@prefix org:  <http://www.w3.org/ns/org#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema:  <http://schema.org/> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Domain-specific
+@prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
+@prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
+@prefix eradis1: <http://data.europa.eu/949/eradis/permissions/> .
+@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
+@prefix eralex-pava: <http://data.europa.eu/949/requirement/legislation/pava/> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
+@prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
+@prefix uorg: <http://data.europa.eu/949/organisations/units/> .
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
+@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
+@prefix evr: <http://data.europa.eu/949/vehicles/> .
+@prefix iss: <http://data.europa.eu/949/iss/> . 
+
+
+# Relevant SKOS Concept Schemes
+@prefix era-skos: <http://data.europa.eu/949/concepts/> .
+@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
+@prefix era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
+@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
+@prefix era-vtc: <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+# unused @prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
+@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
+@prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
+@prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
+@prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
+
+
+ # WARNING: DO NOT (YET) EXIST
+@prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
+@prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
+@prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
+@prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
+@prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
+@prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
+@prefix erava-tsi-conforms: <http://data.europa.eu/949/concepts/tsi-conformities/> .
+@prefix issform:  <http://era.europa.eu/forms/iss/> . 
+
+# From ISS
+@prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
+@prefix iss-rs:   <http://data.europa.eu/949/iss/concepts/record-statuses/> .
+@prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
+
+# EU Countries
+@prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
+
+# Properties to be post-processed, if shacl-form 
+@prefix update: <http://data.europa.eu/949/update/> .
 # NodeShape for Safety Certificate - Part A
 era:SafetyCertificateAShape a sh:NodeShape ;
   sh:targetClass era:SafetyCertificateA ;
@@ -17,146 +97,232 @@ era:SafetyCertificateAShape a sh:NodeShape ;
     #   sh:path dcterms:type ;
     #   Is not needed: RENEW|REVOKE|AMEND is another form, and leads to dcterms:isReplacedBy
     # ],
-    [ sh:name "EU Identification Number" ;
+    [ sh:name "1.5 EU Identification Number" ;
       sh:path dcterms:identifier ;
       sh:minCount 1 ; sh:maxCount 1 ;
       sh:datatype xsd:string ;
+      sh:pattern "^[A-Z]{2}(10|11)[2-9][0-9]{3}[0-9]{4}$" ;
       sh:group issform:CT
     ],
     # [ sh:name "Country Issuing The Safety Certificate" ;
     #   Is not needed as it is deduced from the Site of the Issuing Organisation
     # ],
-    [ sh:name "EU identification number of the previous certificate" ;
-      sh:path dcterms:replaced ;
-      sh:minCount 0 ; sh:maxCount 1 ;
-      sh:datatype xsd:string ;
-      sh:group issform:CT
-    ],
-    [ sh:name "ECM certificate number" ;
+    # [ sh:name "EU identification number of the previous certificate" ;
+    #   sh:path dcterms:replaces ;
+    #   Is not needed as link is created automatically when the previous certificate is replaced
+    # ],
+    [ sh:name "1.7 ECM certificate number" ;
       sh:path era:ecmCertificateNumber ;
       sh:minCount 0 ; sh:maxCount 1 ;
       sh:datatype xsd:string ;
       sh:group issform:CT
     ],
-    [ sh:name "Railway Undertaking" ;
-      sh:path era:railwayUndertaking ;
+    [ sh:name "2 Railway Undertaking (Lookup by OrgCode or name)" ;
+      sh:path dcterms:audience ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      sh:datatype xsd:string ;
+      sh:nodeKind sh:IRI ;
+      sh:qualifiedValueShape [ sh:node era:RUOrgRoleShape ] ;
       sh:group issform:RU
-    ],
-    [ sh:name "Legal Denomination" ;
-      sh:path era:legalDenomination ;
+    ] , [
+      sh:name "3 Validity" ;
+      sh:path dcterms:valid ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      sh:datatype xsd:string ;
-      sh:group issform:RU
-    ],
-    [ sh:name "National Registration No" ;
-      sh:path era:nationalRegistrationNumber ;
-      sh:minCount 0 ; sh:maxCount 1 ;
-      sh:datatype xsd:string ;
-      sh:group issform:RU
-    ],
-    [ sh:name "Website" ;
-      sh:path era:website ;
-      sh:minCount 0 ; sh:maxCount 1 ;
-      sh:datatype xsd:anyURI ;
-      sh:group issform:RU
-    ],
-    [ sh:name "Acronym" ;
-      sh:path era:acronym ;
-      sh:minCount 0 ; sh:maxCount 1 ;
-      sh:datatype xsd:string ;
-      sh:group issform:RU
-    ],
-    [ sh:name "VAT no." ;
-      sh:path era:vatNumber ;
-      sh:minCount 0 ; sh:maxCount 1 ;
-      sh:datatype xsd:string ;
-      sh:group issform:RU
-    ],
-    [ sh:name "Validity From" ;
-      sh:path era:validFrom ;
-      sh:minCount 1 ; sh:maxCount 1 ;
-      sh:datatype xsd:date ;
-      sh:group issform:VAL
-    ],
-    [ sh:name "Validity To" ;
-      sh:path era:validTo ;
-      sh:minCount 1 ; sh:maxCount 1 ;
-      sh:datatype xsd:date ;
-      sh:group issform:VAL
-    ],
-    [ sh:name "Railway Undertaking Size" ;
+      sh:node era:CertificateValidityShape ;
+      sh:group issform:CI 
+    ];
+
+    # TYPE AND EXTENT OF SERVICE of the RU
+    sh:property     
+    [ sh:name "4.1 Railway Undertaking Size" ;
       sh:path era:undertakingSize ;
       sh:in ( "Micro enterprise" "Small enterprise" "Medium enterprise" "Large enterprise" ) ;
       sh:minCount 1 ; sh:maxCount 1 ;
       sh:datatype xsd:string ;
       sh:group issform:SERV
     ],
-    [ sh:name "Including high-speed services" ;
-      sh:path era:highSpeedServices ;
+    [ sh:name "High-speed operation" ;
+      sh:path era:highSpeedOperation ;
       sh:datatype xsd:boolean ;
-      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:minCount 1 ; sh:maxCount 1 ;
       sh:group issform:SERV
     ],
-    [ sh:name "Excluding high-speed services" ;
-      sh:path era:excludingHighSpeedServices ;
+    [ sh:name "Dangerous goods operation" ;
+      sh:path era:dangerousGoodsOperation ;
       sh:datatype xsd:boolean ;
-      sh:minCount 0 ; sh:maxCount 1 ;
-      sh:group issform:SERV
-    ],
-    [ sh:name "Including dangerous goods services" ;
-      sh:path era:dangerousGoodsServices ;
-      sh:datatype xsd:boolean ;
-      sh:minCount 0 ; sh:maxCount 1 ;
-      sh:group issform:SERV
-    ],
-    [ sh:name "Excluding dangerous goods services" ;
-      sh:path era:excludingDangerousGoodsServices ;
-      sh:datatype xsd:boolean ;
-      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:minCount 1 ; sh:maxCount 1 ;
       sh:group issform:SERV
     ],
     [ sh:name "Shunting only" ;
-      sh:path era:shuntingOnly ;
+      sh:path era:shuntingOnlyOperation ;
       sh:datatype xsd:boolean ;
-      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:minCount 1 ; sh:maxCount 1 ;
       sh:group issform:SERV
     ],
     [ sh:name "Service/s to begin in" ;
-      sh:path era:serviceBegin ;
-      sh:datatype xsd:string ;
+      sh:path dcterms: ;
+      sh:datatype xsd:date ;
       sh:minCount 0 ; sh:maxCount 1 ;
       sh:group issform:SERV
     ],
     [ sh:name "Transportation Volume Passenger" ;
       sh:path era:transportationVolumePassenger ;
-      sh:in ( "Low" "Medium" "High" ) ;
+      sh:in ( "Less than 200 MPkm/year" "200MPkm/year and more" ) ;
       sh:minCount 0 ; sh:maxCount 1 ;
       sh:datatype xsd:string ;
       sh:group issform:SERV
     ],
     [ sh:name "Transportation Volume Freight" ;
       sh:path era:transportationVolumeFreight ;
-      sh:in ( "Low" "Medium" "High" ) ;
+      sh:in ( "Less than 500 MTonneskm/year" "500 MTonneskm/year and more" ) ;
       sh:minCount 0 ; sh:maxCount 1 ;
       sh:datatype xsd:string ;
       sh:group issform:SERV
-    ],
-    [ sh:name "Applicable national legislation" ;
-      sh:path era:applicableNationalLegislation ;
+    ];
+
+    # 5 -- Other
+    sh:property [ 
+      sh:name "5.1 Applicable national legislation" ;
+      sh:path dcterms:source ;
       sh:minCount 1 ; sh:maxCount 1 ;
       sh:datatype xsd:string ;
       sh:group issform:OTH
-    ] ;
+    ],[
+      sh:name "5.2 Additional Information"@en ;
+      sh:path rdfs:comment ;
+      dash:singleLine false ;
+      sh:datatype xsd:string ;
+      sh:group issform:OTH
+    ]    ;
+    
+    # 6 -- Issuing Organisation
+    sh:property  [
+      sh:name "6. Issuing Organisation" ;
+      sh:path dcterms:creator ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:qualifiedValueShape[sh:node era:NSAOrgRoleShape]  ;
+      sh:group issform:CB
+    ].
+
+
+####### Additional helper NODES
+  # Name OR role (to convert into URI!)
+  # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
+  era:RUOrgRoleShape a sh:NodeShape ;
+    sh:targetClass era:OrganisationRole ;
+    sh:property [
+      sh:name "Railway Undertaking Role" ;
+      sh:path era:hasOrganisationRole ;
+      sh:hasValue era-organisation-roles:RailwayUndertaking ;
+      sh:nodeKind sh:IRI ;
+      sh:maxCount 1 ;
+    ] , [
+      # For conversion to an org URI
+      sh:path era:roleOf ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:name "Confirm Railway Undertaking" ;
+      sh:or (
+        [ sh:node era:ByNameShape ; 
+          sh:name "Railway Undertaking Name" ]
+        [ 
+          sh:node era:ByCodeShape ; 
+          sh:name "Railway Undertaking Code" ]
+      )
+    ] .
+
+
+
+# The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
+  era:NSAOrgRoleShape a sh:NodeShape ;
+    sh:targetClass era:OrganisationRole ;
+    sh:property [
+      # For conversion to an org URI
+      sh:name "Confirm Issuing Organisation" ;
+      sh:path era:roleOf ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:or (
+        [ sh:node era:ByNameShape ; 
+          sh:name "Issuing Organisation Name" ]
+        [ 
+          sh:node era:ByCodeShape ; 
+          sh:name "Issuing Organisation Code" ]
+      )
+    ];
+    sh:property [
+      sh:name "Issuing Organisation Role" ;
+      sh:description "Role of the Issuing Organisation" ;
+      sh:path era:hasOrganisationRole ;
+      sh:hasValue era-organisation-roles:NationalSafetyAuthority ;
+      sh:nodeKind sh:IRI ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+    ].
+
+  # Id By Name
+  era:ByNameShape a sh:NodeShape ;
+    sh:targetClass era:Body ;
+    sh:property [
+      sh:path era:roleOf ;
+      sh:name "Name" ;
+      sh:description "Name" ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1
+    ].
+
+  # Id by orgCode
+  era:ByCodeShape a sh:NodeShape ;
+    sh:targetClass era:Body;
+    sh:property [
+      sh:path era:orgCode ;
+      sh:pattern "^\\w{4}$" ; # K3L8 eg.
+      sh:description "Confirm your OrgCode" ;
+      sh:name "Organisation Code" ;
+      sh:maxCount 1
+    ].
+
+
+  # Validity is a time: instance
+  era:CertificateValidityShape  a sh:NodeShape ;
+    sh:targetClass time:Interval ;
+    sh:property [
+      sh:name "Starting date" ;
+      sh:path time:hasBeginning ;
+      sh:minCount 1 ;     sh:maxCount 1 ;
+      sh:node [
+        sh:targetClass time:Instant ;
+        sh:property [
+          sh:maxCount 1 ;
+          sh:path time:inXSDDate ;
+          sh:datatype xsd:date ;
+          sh:name "3.1 Validity from" ;
+        ]
+      ];
+  ] , [
+      sh:path time:hasEnd ;
+      sh:name "Ending date" ;
+      sh:minCount 1 ;     sh:maxCount 1 ;
+      sh:node [
+        sh:targetClass time:Instant ;
+        sh:minCount 1 ;   sh:maxCount 1 ;
+        sh:property [
+          sh:maxCount 1 ;
+          sh:path time:inXSDDate ;
+          sh:datatype xsd:date ;
+          sh:name "3.2 Validity to (included)" ;
+        ]
+      ]
+  ] .
+
+
 
 issform:CT a sh:PropertyGroup ;
-  rdfs:label "Certificate Details"@en .
+  rdfs:label "1 - Certificate Details"@en .
 issform:RU a sh:PropertyGroup ;
-  rdfs:label "Railway Undertaking"@en .
+  rdfs:label "2 - Railway Undertaking"@en .
 issform:VAL a sh:PropertyGroup ;
-  rdfs:label "Validity"@en .
+  rdfs:label "3 - Validity"@en .
 issform:SERV a sh:PropertyGroup ;
-  rdfs:label "Type and Extent of Service"@en .
+  rdfs:label "4 - Type and Extent of Service"@en .
 issform:OTH a sh:PropertyGroup ;
-  rdfs:label "Other"@en .
+  rdfs:label "5 - Other"@en .

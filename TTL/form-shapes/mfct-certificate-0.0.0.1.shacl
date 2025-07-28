@@ -211,7 +211,7 @@ era:MaintFuncCertificateShape a sh:NodeShape, rdfs:Class ;
   ],[ 
     sh:name "Covers High-speed Trainsets" ;
     sh:datatype xsd:boolean ;
-    sh:path era:ecmHighSpeed ;
+    sh:path era:highSpeedOperation ;
     sh:maxCount 1 ;
     sh:group issform:S
   ];

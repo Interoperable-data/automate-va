@@ -92,132 +92,10 @@
   @prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
   @prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
  
-  # Due to use in ISS prototype, can not be removed for now:
-  issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
-    sh:property [ 
-      sh:description "Record ID" ; 
-      sh:name "Record ID" ; 
-      sh:group issform:RecordGroup ; 
-      sh:datatype xsd:string ; 
-      sh:path iss:recordId ;
-      dash:readonly true;
-      sh:minCount 1 ;
-      sh:maxCount 1 ;
-  ] ; 
-  sh:property [ 
-    sh:description "Record Type" ; 
-    sh:name "Record Type" ; 
-    sh:group issform:RecordGroup ; 
-    sh:datatype skos:Concept ; 
-    sh:path iss:recordType ;
-    dash:readonly true;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-  ] ; 
-    sh:property [ 
-    sh:description "Record Definition Version" ; 
-    sh:name "Record Definition Version" ; 
-    sh:group issform:RecordGroup ; 
-    sh:path iss:recordDefVersion ;
-    sh:datatype xsd:string ;
-    sh:hasValue '0.0.0.3' ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-  ] ; 
-  sh:property [ 
-    sh:description "Record Version" ; 
-    sh:name "Record Version" ; 
-    sh:group issform:RecordGroup ; 
-    sh:path iss:recordVersionNumber ;
-    sh:datatype xsd:string ;
-    sh:hasValue '0.0.0.1' ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-  ] ; 
-  sh:property [ 
-    sh:description "Record Date & Time" ; 
-    sh:name "Record Date & Time" ; 
-    sh:group issform:RecordGroup ; 
-    sh:datatype xsd:string ; 
-    dash:readonly true;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:path iss:recordDateTime
-  ] ; 
-  sh:property [ 
-    sh:description "Record Title" ; 
-    sh:name "Record Title" ; 
-    sh:group issform:ReportingDetailsGroup ; 
-    sh:datatype xsd:string ; 
-    sh:path iss:recordTitle ;
-    sh:minCount 0 ;
-    sh:maxCount 1 ;
-  ] ; 
-    sh:property [ 
-    sh:description "Report Status" ; 
-    sh:name "Report Status" ; 
-    sh:group issform:ReportingDetailsGroup ; 
-    sh:path iss:recordStatus ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:in (iss-rs:New iss-rs:Updated iss-rs:Submitted iss-rs:Validated iss-rs:Published iss-rs:Corrected iss-rs:Archived) ;
-    owl:imports iss-skos:era-skos-recordStatuses.ttl ;
-    sh:class  skos:Concept
-  ] ; 
-  sh:property [ 
-    sh:description "Reporting entity name" ; 
-    sh:name "Reporting entity name" ; 
-    sh:group issform:ReportingDetailsGroup ; 
-    dash:readonly true;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:path iss:reportingEntityName
-  ] ; 
-  sh:property [ 
-    sh:description "Reporting entity category" ; 
-    sh:name "Reporting entity category" ; 
-    sh:group issform:ReportingDetailsGroup ; 
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    # owl:imports iss-skos:era-skos-orgRoles.ttl ;
-    # sh:class  skos:Concept ;
-    sh:path iss:reportingEntityCategory ;
-    dash:readonly true;
-  ] ; 
-  sh:property [ 
-    sh:description "Reporter Name" ; 
-    sh:name "Reporter Name" ; 
-    sh:group issform:ReportingDetailsGroup ; 
-    sh:datatype xsd:string ; 
-    sh:path iss:user ;
-    dash:readonly true;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-  ] ; 
-  sh:property [ 
-    sh:description "Reporter e-mail" ; 
-    sh:name "Reporter e-mail" ; 
-    sh:group issform:ReportingDetailsGroup ; 
-    sh:datatype xsd:string ; 
-    sh:path iss:userEmail ;
-    dash:readonly true;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-  ] ; 
-  sh:property [ 
-    sh:description "ECM Certificate" ; 
-    sh:name "ECM Certificate" ; 
-    sh:node era:ECMCertificateShape  ;
-    sh:path iss:hasInfoInRecord ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-  ] ;  
-  sh:targetClass iss:Record .
-
   ###################################### 
   ################## FORM-defining SHACL
   ######################################
-  era:ECMCertificateShape a sh:NodeShape, rdfs:Class ;
+  era:ECMCertificateShape a sh:NodeShape ;
 
     sh:targetClass era:ECMCertificate ;
     rdfs:label "ECM Certificate" ;
@@ -326,13 +204,13 @@
     ] , [ 
       sh:name "Covers wagons specialised in transport of dangerous goods" ;
       sh:datatype xsd:boolean ;
-      sh:path era:ecmForRIDWagons ;
+      sh:path era:dangerousGoodsOperation ;
       sh:maxCount 1 ;
       sh:group issform:S
     ],[ 
       sh:name "Covers High-speed Trainsets" ;
       sh:datatype xsd:boolean ;
-      sh:path era:ecmHighSpeed ;
+      sh:path era:highSpeedOperation ;
       sh:maxCount 1 ;
       sh:group issform:S
     ];
