@@ -87,9 +87,9 @@
 ###################################### 
 ################## FORM-defining SHACL
 ######################################
-era:MaintFuncCertificateShape a sh:NodeShape, rdfs:Class ;
+era:MaintFuncCertificateShape a sh:NodeShape ;
 
-  sh:targetClass era:ECMCertificate ; # subClassOf vpa:Permission !
+  sh:targetClass era:Certificate ; # subClassOf vpa:Permission !
   rdfs:label "CERTIFICATE OF CONFORMITY FOR MAINTENANCE FUNCTIONS" ;
   rdfs:comment "CERTIFICATE OF CONFORMITY OF ENTITY IN CHARGE OF MAINTENANCE - ECM Certificate"@en;
 
@@ -118,7 +118,7 @@ era:MaintFuncCertificateShape a sh:NodeShape, rdfs:Class ;
     sh:description "This is a Maintenance Function Certificate" ;
     sh:name "This is a" ;
     sh:path dcterms:type ;
-    sh:hasValue era-permission-types:MaintenanceFunctionCertificate ; # WARNING
+    sh:hasValue era-permission-types:MaintenanceFunctionCertificate ; # OK
     sh:nodeKind sh:IRI ;
     sh:maxCount 1 ;
     sh:minCount 1 ;

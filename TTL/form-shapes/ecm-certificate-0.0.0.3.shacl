@@ -97,7 +97,7 @@
   ######################################
   era:ECMCertificateShape a sh:NodeShape ;
 
-    sh:targetClass era:ECMCertificate ;
+    sh:targetClass era:Certificate ;
     rdfs:label "ECM Certificate" ;
     rdfs:comment "CERTIFICATE OF CONFORMITY OF ENTITY IN CHARGE OF MAINTENANCE - ECM Certificate"@en;
 
@@ -169,7 +169,7 @@
       sh:name "Validity" ;
       sh:path dcterms:valid ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      sh:node era:CertificateValidityShape ;
+      # sh:node era:CertificateValidityShape ;
       sh:group issform:CI 
     ], [ 
       sh:description "Type of Company"@en ;

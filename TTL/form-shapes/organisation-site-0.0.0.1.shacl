@@ -1,0 +1,115 @@
+# https://github.com/ULB-Darmstadt/shacl-form
+@prefix dash:    <http://datashapes.org/dash#> .
+@prefix dbpedia: <http://dbpedia.org/ontology/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era:     <http://data.europa.eu/949/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix geo:     <http://www.opengis.net/ont/geosparql#> .
+@prefix locn:    <http://www.w3.org/ns/locn> .
+@prefix org:     <http://www.w3.org/ns/org#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix era-sh:  <http://data.europa.eu/949/shapes/> .
+
+era-sh:SiteShape a sh:NodeShape ;
+  rdfs:label "Organisation Site (v0.0.0.1)" ;
+  sh:targetClass org:Site ;
+  sh:property [
+    sh:path rdfs:label ;
+    sh:datatype xsd:string ;
+    sh:name "Site Name" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:description "The name of the site."
+  ] ;
+  sh:property [
+    sh:path org:siteAddress ;
+    sh:name "Site Address" ;
+    sh:node era-sh:AddressNodeShape ;
+    sh:minCount 0 ;
+    sh:maxCount 1 ;
+    sh:description "The address of the site."
+  ] ;
+  sh:property [
+    sh:path org:siteOf ;
+    sh:name "Site Of (Organisation)" ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 0 ;
+    sh:maxCount 1 ;
+    sh:description "The organisation this site belongs to."
+  ] ;
+  sh:property [
+    sh:path org:location ;
+    sh:name "Geolocation" ;
+    sh:node era-sh:Location ;
+    sh:minCount 0 ;
+    sh:maxCount 1 ;
+    sh:description "The geolocation of the site."
+  ] .
+
+era-sh:Location
+  a               sh:NodeShape ;
+  rdfs:label      "Location" ;
+  sh:property   [ sh:datatype     geo:wktLiteral ;
+                  sh:description  "Format WKT, e.g. POINT(8.65 49.87)" ;
+                  sh:maxCount     1 ;
+                  sh:minCount     1 ;
+                  sh:name         "Coordinates" ;
+                  sh:path         geo:asWKT ;
+                  sh:pattern      "^POINT\\([+\\-]?(?:[0-9]*[.])?[0-9]+ [+\\-]?(?:[0-9]*[.])?[0-9]+\\)$|^POLYGON\\(\\((?:[+\\-]?(?:[0-9]*[.])?[0-9]+[ ,]?){3,}\\)\\)$"
+                ] ;
+  sh:property   [ dash:singleLine false ;
+                  sh:description  "Description of the location" ;
+                  sh:maxCount     1 ;
+                  sh:name         "Description" ;
+                  sh:path         dcterms:description
+                ] ;
+  sh:targetClass  dcterms:Location .
+
+era-sh:AddressNodeShape
+  a sh:NodeShape ;
+  sh:targetClass <http://www.w3.org/ns/locn#Address> ;
+  sh:property [
+    sh:path <http://www.w3.org/ns/locn#fullAddress> ;
+    sh:datatype xsd:string ;
+    sh:hasValue "Rue M. Lefrancq 120, BP 56921, Valenciennes, France" ;
+    sh:name "Full Address" ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:description "The complete address as a single string."
+  ] ;
+  sh:property [
+    sh:path <http://www.w3.org/ns/locn#postName> ;
+    sh:datatype xsd:string ;
+    sh:name "City/Town" ;
+    sh:minCount 0 ; sh:maxCount 1 ;
+    sh:description "The city or town name."
+  ] ;
+  sh:property [
+    sh:path <http://www.w3.org/ns/locn#postCode> ;
+    sh:datatype xsd:string ;
+    sh:name "Postal Code" ;
+    sh:minCount 0 ; sh:maxCount 1 ;
+    sh:description "The postal code."
+  ] ;
+  sh:property [
+    sh:path <http://www.w3.org/ns/locn#thoroughfare> ;
+    sh:datatype xsd:string ;
+    sh:name "Street" ;
+    sh:minCount 0 ; sh:maxCount 1 ;
+    sh:description "The street name and number."
+  ] ;
+  sh:property [
+    # owl:imports <http://publications.europa.eu/resource/authority/country> ;
+    owl:imports <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/era-skos-countries.ttl> ;
+    sh:path <http://www.w3.org/ns/locn#adminUnitL1> ;
+    sh:class skos:Concept ;
+    sh:nodeKind sh:IRI ;
+    sh:name "Country" ;
+    sh:minCount 0 ; sh:maxCount 1 ;
+    sh:description "The country (e.g., 'Germany', 'France')."
+  ] .

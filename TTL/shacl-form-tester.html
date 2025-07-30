@@ -4,8 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>SHACL Form Tester</title>
-    <script src="https://cdn.jsdelivr.net/npm/@ulb-darmstadt/shacl-form/dist/form-default.js" type="module"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script type="importmap">
+    {   "imports": { 
+        "@ulb-darmstadt/": "https://cdn.jsdelivr.net/npm/@ulb-darmstadt/shacl-form@1.9.2/dist/",
+        "@demoutiez/": "https://ai.test-era.europa.eu/iss/static/shacl-form/" } }
+    </script>
     <style>
         html,
         body {
@@ -80,30 +84,8 @@
 </head>
 
 <body>
-    <div id="topbar">
-        <label for="shape-select">Select SHACL shape:</label>
-        <select id="shape-select"
-            hx-trigger="change"
-            hx-on="change: updateShaclForm()">
-            <option value="form-shapes/ecm-certificate-0.0.0.3.shacl">ECM Certificate</option>
-            <option value="form-shapes/ecm-attestation-0.0.0.1.shacl">ECM Attestation</option>
-            <option value="form-shapes/mfct-certificate-0.0.0.1.shacl">MFCT Certificate</option>
-            <option value="form-shapes/va-c2t-evidence-full-0.0.0.1.shacl">VA C2T Evidence Full</option>
-            <option value="form-shapes/va-c2t-admin-0.0.0.3.shacl">VA C2T Admin v0.0.0.3</option>
-        </select>
-        <span style="color:#888;font-size:0.95em;">(from /TTL/form-shapes/)</span>
-    </div>
-    <div id="container">
-        <div id="form-panel">
-            <shacl-form id="shaclform" data-shapes-url="form-shapes/ecm-certificate-0.0.0.3.shacl" data-collapse="open"
-                data-submit-button="Submit" data-language="en" style="width:100%;"></shacl-form>
-        </div>
-        <div id="rdf-panel">
-            <h3>Generated RDF (Turtle)</h3>
-            <pre id="output">(Fill the form to see RDF output)</pre>
-        </div>
-    </div>
     <script>
+
         function updateShaclForm() {
             const select = document.getElementById('shape-select');
             const form = document.getElementById('shaclform');
@@ -115,22 +97,115 @@
             newForm.setAttribute('data-collapse', 'open');
             newForm.setAttribute('data-submit-button', 'Submit');
             newForm.setAttribute('data-language', 'en');
+            newForm.setAttribute('data-values-subject', 'http://data.europa.eu/949/organisations/sites/ERA')
             newForm.style.width = '100%';
             form.parentNode.replaceChild(newForm, form);
             output.textContent = '(Fill the form to see RDF output)';
-            newForm.addEventListener('change', function(event) {
+            newForm.addEventListener('change', function (event) {
                 if (event.detail?.valid) {
                     output.textContent = event.target.serialize();
                 }
             });
         }
+        function save(e) {
+            // onSubmit
+        const form = document.getElementById('shaclform');
+
+            const triples = form.serialize();
+            const endpoint = 'http://era-ioss01.era.eu.int:3030/ORGS/data'; // <-- Set your endpoint URL
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/turtle',
+                    'Charset': 'utf-8'
+                },
+                body: triples
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Data submitted successfully!');
+                    } else {
+                        alert('Submission failed: ' + response.statusText);
+                    }
+                })
+                .catch(error => {
+                    alert('Error submitting data: ' + error);
+                });
+
+        }
+    </script>
+    <div id="topbar">
+        <label for="shape-select">Select SHACL shape:</label>
+        <select id="shape-select" hx-trigger="change" hx-on="change: updateShaclForm()">
+            <option value="form-shapes/ecm-certificate-0.0.0.3.shacl">ECM Certificate</option>
+            <option value="form-shapes/ecm-attestation-0.0.0.1.shacl">ECM Attestation</option>
+            <option value="form-shapes/mfct-certificate-0.0.0.1.shacl">MFCT Certificate</option>
+            <option value="form-shapes/va-c2t-evidence-full-0.0.0.1.shacl">VA C2T Evidence Full</option>
+            <option value="form-shapes/va-c2t-admin-0.0.0.3.shacl">VA C2T Admin v0.0.0.3</option>
+            <option value="form-shapes/safety-certifcate-A-0.0.0.1.shacl">Safety Certificate A</option>
+            <option value="form-shapes/license-0.0.0.1.shacl">Rail Transport Licence</option>
+            <option value="form-shapes/organisation-start.shacl">Organisation (full)</option>
+            <option value="form-shapes/organisation-site-0.0.0.1.shacl">Site (full)</option>
+            <option value="Certificate.ttl">CLD (full)</option>
+        </select>
+        <span style="color:#888;font-size:0.95em;">(from /TTL/form-shapes/)</span>
+    </div>
+    <div id="container">
+        <div id="form-panel">
+            <shacl-form id="shaclform" data-shapes-url="form-shapes/ecm-certificate-0.0.0.3.shacl" data-collapse="open"
+                data-language="en" style="width:100%;"></shacl-form>
+            <button onclick="save()">Save</button>
+        </div>
+        <div id="rdf-panel">
+            <h3>Generated RDF (Turtle)</h3>
+            <pre id="output">(Fill the form to see RDF output)</pre>
+        </div>
+    </div>
+    <script type="module">
+        import '@ulb-darmstadt/form-default.js'
+        import { registerPlugin } from '@ulb-darmstadt/form-default.js'
+        import { LeafletPlugin } from '@ulb-darmstadt/plugins/leaflet.js'
+        // import { UrlPlugin } from '@ulb-darmstadt/url.js'
+        import { ButtonPlugin } from '@demoutiez/button.js'
+        import { SelectorPlugin } from '@demoutiez/selector.js'
+        import { TreeSelectorPlugin } from '@demoutiez/tree-selector.js'
+
         // Initial form event binding
-        document.getElementById('shaclform').addEventListener('change', function(event) {
+        const form = document.getElementById('shaclform');
+
+        form.addEventListener('change', function (event) {
             const output = document.getElementById('output');
             if (event.detail?.valid) {
                 output.textContent = event.target.serialize();
             }
         });
+        
+        // form.addEventListener('submit', save())
+        form.registerPlugin(new LeafletPlugin({ datatype: 'http://www.opengis.net/ont/geosparql#wktLiteral' }))
+        form.registerPlugin(new SelectorPlugin(
+            { predicate: 'http://www.w3.org/ns/org#siteOf' },
+            'Please select a record:',
+            window.location.protocol + '//' + window.location.host + '/iss/TS/query',
+            'PREFIX iss: <http://data.europa.eu/949/iss/>' +
+            'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
+            'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>' +
+            'SELECT DISTINCT ?Record ?Type ?Title ?Entity ?Creation ' +
+            'WHERE {' +
+            '  GRAPH <${sessionScope.graphname}> {' +
+            '    ?Record rdf:type iss:Record ;' +
+            '            iss:recordType ?Type ;' +
+            '            iss:recordTitle ?Title ;' +
+            '            iss:reportingEntityName ?Entity ;' +
+            '            iss:recordDateTime ?Creation ;' +
+            '            iss:recordId ?ID .' +
+            '    FILTER (?Type = "RCM"^^skos:Concept)' +
+            '  }' +
+            '}',
+            'Record',
+            'RecordViewer.jsp?id='
+        ))
+
     </script>
 </body>
 

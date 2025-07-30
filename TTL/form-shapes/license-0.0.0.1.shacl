@@ -86,139 +86,115 @@
 
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
-# NodeShape for Safety Certificate - Part A
-era:SafetyCertificateAShape a sh:NodeShape ;
-  sh:targetClass era:Certificate ;
-  sh:property 
-    # [ sh:name "Certificate language" ;
-    #   Is not needed: languages are determined by langString usage.
+era:RailTransportLicenceShape a sh:NodeShape ;
+  sh:targetClass era:RailTransportLicense ;
+  # 1. Licence issuing State
+    # [ sh:name "Issuing State" ;
+    #   Is not needed: deduced from the country of dcterms:creator
     # ],
-    [
-    sh:description "This is a Safety Certificate - Part A" ;
-    sh:name "This is a" ;
-    sh:path dcterms:type ;
-    sh:hasValue era-permission-types:SafetyCertificateA ; # OK
-    sh:nodeKind sh:IRI ;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:group issform:CT
-    ], 
-    # [ sh:name "Certificate type" ;
-    #   sh:path dcterms:type ;
-    #   Is not needed: RENEW|REVOKE|AMEND is another form, and leads to dcterms:isReplacedBy
-    # ],
-    [ sh:name "1.5 EU Identification Number" ;
+  sh:property
+    [ sh:name "National licence No" ;
       sh:path dcterms:identifier ;
+      sh:datatype xsd:string ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      sh:datatype xsd:string ;
-      sh:pattern "^[A-Z]{2}(10|11)[2-9][0-9]{3}[0-9]{4}$" ;
-      sh:group issform:CT
+      sh:group issform:ISSUING
     ],
-    # [ sh:name "Country Issuing The Safety Certificate" ;
-    #   Is not needed as it is deduced from the Site of the Issuing Organisation
-    # ],
-    # [ sh:name "EU identification number of the previous certificate" ;
-    #   sh:path dcterms:replaces ;
-    #   Is not needed as link is created automatically when the previous certificate is replaced
-    # ],
-    [ sh:name "1.7 ECM certificate number" ;
-      sh:path era:certificateNumber ;
-      sh:minCount 0 ; sh:maxCount 1 ;
+    [ sh:name "Applicable legislation" ;
+      sh:path era:applicableLegislation ;
       sh:datatype xsd:string ;
-      sh:group issform:CT
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:group issform:ISSUING
     ],
-    [ sh:name "2 Railway Undertaking (Lookup by OrgCode or name)" ;
+    [ sh:name "Licensing authority" ;
+      sh:path era:licensingAuthority ;
+      sh:node   era:LAOrgRoleShape ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:group issform:ISSUING
+    ],
+    [ sh:name "Decision identification" ;
+      sh:path era:decisionIdentification ;
+      sh:datatype xsd:string ;
+      sh:minCount 1 ; sh:maxCount 1 ;
+      sh:group issform:ISSUING
+    ];
+    # [ sh:name "New or Amended" ;
+    #   Is not needed: should be through the update/new process (dcterms:replaces...)
+    # ]
+
+  # 2.2. Licence holder
+  sh:property 
+    [ sh:name "Railway Undertaking" ;
       sh:path dcterms:audience ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      sh:nodeKind sh:IRI ;
-      sh:qualifiedValueShape [ sh:node era:RUOrgRoleShape ] ;
-      sh:group issform:RU
-    ] , [
-      sh:name "3 Validity" ;
-      sh:path dcterms:valid ;
-      sh:minCount 1 ; sh:maxCount 1 ;
-      sh:node era:CertificateValidityShape ;
-      sh:group issform:CI 
+      sh:node era:LicenseHolderOrgRoleShape ;
+      sh:group issform:HOLDER
     ];
 
-    # TYPE AND EXTENT OF SERVICE of the RU
-    sh:property     
-    [ sh:name "4.1 Railway Undertaking Size" ;
-      sh:path era:undertakingSize ;
-      sh:in ( "Micro enterprise" "Small enterprise" "Medium enterprise" "Large enterprise" ) ;
+    # 3. Validity
+    sh:property 
+    [ sh:name "Valid from" ;
+      sh:path vpa:valid ;
+      sh:node era:LicenseValidityShape ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      sh:datatype xsd:string ;
-      sh:group issform:SERV
+      sh:group issform:VALIDITY
     ],
-    [ sh:name "High-speed operation" ;
-      sh:path era:highSpeedOperation ;
+    [ sh:name "Temporary licence" ;
+      sh:path era:isTemporary ;
       sh:datatype xsd:boolean ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      sh:group issform:SERV
+      sh:group issform:VALIDITY
     ],
-    [ sh:name "Dangerous goods operation" ;
-      sh:path era:dangerousGoodsOperation ;
-      sh:datatype xsd:boolean ;
-      sh:minCount 1 ; sh:maxCount 1 ;
-      sh:group issform:SERV
-    ],
-    [ sh:name "Shunting only" ;
-      sh:path era:shuntingOnlyOperation ;
-      sh:datatype xsd:boolean ;
-      sh:minCount 1 ; sh:maxCount 1 ;
-      sh:group issform:SERV
-    ],
-    [ sh:name "Service/s to begin in" ;
-      sh:path dcterms: ;
+    [ sh:name "Type of services" ;
+      sh:path era:typeOfServices ;
+
+      sh:minCount 1 ; sh:maxCount 3 ;
+      sh:group issform:VALIDITY 
+    ];
+
+    # 4. Amendments
+    sh:property [ sh:name "Amended on" ;
+      sh:path era:amendedOn ;
       sh:datatype xsd:date ;
       sh:minCount 0 ; sh:maxCount 1 ;
-      sh:group issform:SERV
+      sh:group issform:AMENDMENT
     ],
-    [ sh:name "Transportation Volume Passenger" ;
-      sh:path era:transportationVolumePassenger ;
-      sh:in ( "Less than 200 MPkm/year" "200MPkm/year and more" ) ;
-      sh:minCount 0 ; sh:maxCount 1 ;
+    [ sh:name "Description of amendment" ;
+      sh:path era:amendmentDescription ;
       sh:datatype xsd:string ;
-      sh:group issform:SERV
-    ],
-    [ sh:name "Transportation Volume Freight" ;
-      sh:path era:transportationVolumeFreight ;
-      sh:in ( "Less than 500 MTonneskm/year" "500 MTonneskm/year and more" ) ;
       sh:minCount 0 ; sh:maxCount 1 ;
-      sh:datatype xsd:string ;
-      sh:group issform:SERV
+      sh:group issform:AMENDMENT
     ];
 
-    # 5 -- Other
-    sh:property [ 
-      sh:name "5.1 Applicable national legislation" ;
-      sh:path dcterms:source ;
+    # 5. Conditions and obligations
+    sh:property [ sh:name "Conditions and obligations" ;
+      sh:path era:conditionsObligations ;
+      sh:datatype xsd:string ;
       sh:minCount 1 ; sh:maxCount 1 ;
+      sh:group issform:CONDITIONS
+    ],
+    [ sh:name "EC licence-notification No" ;
+      sh:path era:ecLicenceNotificationNumber ;
       sh:datatype xsd:string ;
-      sh:group issform:OTH
-    ],[
-      sh:name "5.2 Additional Information"@en ;
-      sh:path rdfs:comment ;
-      dash:singleLine false ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:group issform:CONDITIONS
+    ],
+    [ sh:name "Date" ;
+      sh:path era:notificationDate ;
+      sh:datatype xsd:date ;
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:group issform:CONDITIONS
+    ],
+    [ sh:name "Name" ;
+      sh:path foaf:name ;
       sh:datatype xsd:string ;
-      sh:group issform:OTH
-    ]    ;
-    
-    # 6 -- Issuing Organisation
-    sh:property  [
-      sh:name "6. Issuing Organisation" ;
-      sh:path dcterms:creator ;
-      sh:minCount 1 ;
-      sh:maxCount 1 ;
-      sh:qualifiedValueShape[sh:node era:NSAOrgRoleShape]  ;
-      sh:group issform:CB
-    ].
+      sh:minCount 0 ; sh:maxCount 1 ;
+      sh:group issform:CONDITIONS
+    ]
+  .
 
-
-####### Additional helper NODES
-# Name OR role (to convert into URI!)
+  # Name OR role (to convert into URI!)
 # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
-era:RUOrgRoleShape a sh:NodeShape ;
+era:LicenseHolderOrgRoleShape a sh:NodeShape ;
   sh:targetClass era:OrganisationRole ;
   sh:property [
     sh:name "Railway Undertaking Role" ;
@@ -242,27 +218,26 @@ era:RUOrgRoleShape a sh:NodeShape ;
   ] .
 
 
-
-# The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
-  era:NSAOrgRoleShape a sh:NodeShape ;
+  # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
+  era:LAOrgRoleShape a sh:NodeShape ;
     sh:targetClass era:OrganisationRole ;
     sh:property [
       # For conversion to an org URI
-      sh:name "Confirm Issuing Organisation" ;
+      sh:name "Confirm Licensing Authority" ;
       sh:path era:roleOf ;
       sh:minCount 1 ;
       sh:maxCount 1 ;
       sh:or (
         [ sh:node era:ByNameShape ; 
-          sh:name "Issuing Organisation Name" ]
+          sh:name "Licensing Authority Name" ]
         [ 
           sh:node era:ByCodeShape ; 
-          sh:name "Issuing Organisation Code" ]
+          sh:name "Licensing Authority Code" ]
       )
     ];
     sh:property [
-      sh:name "Issuing Organisation Role" ;
-      sh:description "Role of the Issuing Organisation" ;
+      sh:name "Licensing Authority Role" ;
+      sh:description "Role of the Licensing Authority" ;
       sh:path era:hasOrganisationRole ;
       sh:hasValue era-organisation-roles:NationalSafetyAuthority ;
       sh:nodeKind sh:IRI ;
@@ -293,7 +268,7 @@ era:RUOrgRoleShape a sh:NodeShape ;
 
 
   # Validity is a time: instance
-  era:CertificateValidityShape  a sh:NodeShape ;
+  era:LicenseValidityShape  a sh:NodeShape ;
     sh:targetClass time:Interval ;
     sh:property [
       sh:name "Starting date" ;
@@ -325,14 +300,19 @@ era:RUOrgRoleShape a sh:NodeShape ;
   ] .
 
 
+# LICENCE INFORMATION FOR THE PERFORMANCE OF RAIL TRANSPORT SERVICES
 
-issform:CT a sh:PropertyGroup ;
-  rdfs:label "1 - Certificate Details"@en .
-issform:RU a sh:PropertyGroup ;
-  rdfs:label "2 - Railway Undertaking"@en .
-issform:VAL a sh:PropertyGroup ;
-  rdfs:label "3 - Validity"@en .
-issform:SERV a sh:PropertyGroup ;
-  rdfs:label "4 - Type and Extent of Service"@en .
-issform:OTH a sh:PropertyGroup ;
-  rdfs:label "5 - Other"@en .
+issform:ISSUING a sh:PropertyGroup ;
+  rdfs:label "1 - LICENCE INFORMATION FOR THE PERFORMANCE OF RAIL TRANSPORT SERVICES"@en ;
+
+issform:HOLDER a sh:PropertyGroup ;
+  rdfs:label "2 - Licence Holder"@en ;
+
+issform:VALIDITY a sh:PropertyGroup ;
+  rdfs:label "3 - Validity"@en ;
+
+issform:AMENDMENT a sh:PropertyGroup ;
+  rdfs:label "4 - Amendments"@en ;
+
+issform:CONDITIONS a sh:PropertyGroup ;
+  rdfs:label "5 - Conditions and Obligations"@en .

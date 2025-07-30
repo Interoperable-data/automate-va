@@ -85,7 +85,7 @@
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
 
-eradis1:cert1 a era:ECMCertificate ; # subClassOf vpa:Permission
+eradis1:cert1 a era:Certificate ; # subClassOf vpa:Permission
     dcterms:identifier "BE/32/2025/0001" ;
     dcterms:type era-permission-types:MaintenanceFunctionCertificate ;
     dcterms:audience [ 
