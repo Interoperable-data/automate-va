@@ -85,7 +85,6 @@
 
 <body>
     <script>
-
         function updateShaclForm() {
             const select = document.getElementById('shape-select');
             const form = document.getElementById('shaclform');
@@ -109,8 +108,8 @@
         }
         function save(e) {
             // onSubmit
-        const form = document.getElementById('shaclform');
-
+            // FIXME: even run on same machien as JENA it results in CORS
+            const form = document.getElementById('shaclform');
             const triples = form.serialize();
             const endpoint = 'http://era-ioss01.era.eu.int:3030/ORGS/data'; // <-- Set your endpoint URL
 
@@ -151,11 +150,13 @@
         </select>
         <span style="color:#888;font-size:0.95em;">(from /TTL/form-shapes/)</span>
     </div>
-    <div id="container">
-        <div id="form-panel">
+    <div id="container" hx-include="#output">
+        <div id="form-panel" >
             <shacl-form id="shaclform" data-shapes-url="form-shapes/ecm-certificate-0.0.0.3.shacl" data-collapse="open"
                 data-language="en" style="width:100%;"></shacl-form>
-            <button onclick="save()">Save</button>
+            <button hx-post="http://10.0.201.105:3030/ORGS/data" hx-trigger="click" hx-include="inherit"
+                hx-headers='{"Content-Type": "text/turtle"}'
+                hx-on="htmx:afterRequest: (e) => { if(e.detail.xhr.status === 200) alert('Data submitted successfully!'); else alert('Submission failed: ' + e.detail.xhr.statusText); }">Save</button>
         </div>
         <div id="rdf-panel">
             <h3>Generated RDF (Turtle)</h3>
