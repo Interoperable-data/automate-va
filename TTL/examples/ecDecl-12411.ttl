@@ -12,14 +12,14 @@
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 
 # Relevant SKOS Concept Schemes
-@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
 @prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
 @prefix era-states: <http://data.europa.eu/949/concepts/states/> .
 
 # The latest EC Declaration, an example of a revoked resource.
 era-ecd:ecd-ecDecl-12411 
     a era:ECDeclaration ;
-    dcterms:type era-cld-types:ECDoC ;
+    dcterms:type era-ecd-types:ECDoC ;
     dcterms:created "2024-12-18"^^xsd:date ; # the creation of this resource in the KG
     dcterms:issued "2021-12-09"^^xsd:date ; # the document issue date
     dcterms:available "2022-01-24"^^xsd:date ; # the availability of this resource in the ERADIS db

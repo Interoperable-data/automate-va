@@ -1,0 +1,62 @@
+@base <http://data.europa.eu/949/> .
+@prefix era: <http://data.europa.eu/949/> .
+
+# General
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Domain-specific
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
+@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
+@prefix era-cert: <http://data.europa.eu/949/evidences/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
+@prefix era-org-role: <http://data.europa.eu/949/organisations/roles/> .
+
+# ESC/RSC
+@prefix era-esc-rinf: <http://data.europa.eu/949/concepts/etcs-system-compatibilities/rinf/> .
+@prefix era-rscd-rinf: <http://data.europa.eu/949/concepts/radio-system-compatibilities-data/rinf/> .
+@prefix era-rscv-rinf: <http://data.europa.eu/949/concepts/radio-system-compatibilities-voice/rinf/> .
+
+# Relevant SKOS Concept Schemes
+@prefix era-cert-types: <http://data.europa.eu/949/concepts/cert-types/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
+
+# Radio System Compat Statement
+eratv:vt-13-178-0010-8-001-001 a era:VehicleType .
+
+rorg:MF-DE-91058-58 a era:Body ;
+    rdfs:label "Siemens Mobility GmbH" .
+
+era-org-role:P0EL_Applicant  a era:OrganisationRole ;
+    era:roleOf rorg:MF-DE-91058-58 ;
+    era:organisationCode "P0EL" ;
+    era:hasRole era-organisation-roles:Applicant .
+
+era-org-role:0893_NoBo a era:OrganisationRole ;
+    era:roleOf rorg:NoBo-0893 ;
+    era:hasRole era-organisation-roles:NoBo .
+
+era-cert:rsc-13-178-0010-8-001-001 a era:Certificate ; # subClassOf EvidenceDocument
+    dcterms:type era-cert-types:RSCStatement ;
+    dcterms:issued "2024-01-16"^^<xsd:date> ;
+    dcterms:identifier "PM2 A6Z000XXXXXXX 123" ;
+    dcterms:creator era-org-role:P0EL_Applicant ;
+    dcterms:contributor era-org-role:0893_NoBo ;
+    dcterms:subject eratv:vt-13-178-0010-8-001-001 ;
+    dcterms:conformsTo era-rscv-rinf:140 ;
+    rdfs:seeAlso "Reference to the NoBo file, version, identifier, issue date" ;
+    # NICHT ZUTREFFEND dcterms:replaces IRI to a previous RSC Statment ;
+    # NICHT ZUTREFFEND vpa:checkedCompliance era-cert:check-13-178-0010-8-001-001 ;
+    rdfs:label "RSC Statement for ETCS on-board voice radio" .
+
+era-cert:rsc-check-13-178-0010-8-001-001 a era:CABAssessmentCheck ;
+    vpa:isCompliant true ;
+    vpa:withRestriction era-cert:rsc-check-restriction-13-178-0010-8-001-001 .
+
+era-cert:rsc-check-restriction-13-178-0010-8-001-001 a era:CABRestriction ;
+    rdfs:comment "Conditions of Use and Other restrictions" .

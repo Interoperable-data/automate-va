@@ -16,6 +16,27 @@ The following guidelines follow from the documentation on CLDs and EC Declaratio
   - (for one specific certificate) through the path `?decl dcterms:requires/rdfs:member ?cert`, combined with `?cert vpa:valid/time:hasBeginning ?begin`, and using the same as above duration.
 - Given the non-disclosed nature of some properties, the `vpa:checked` property must link to triples stored in a private graph or container.
 
+## Other certificates and Statements
+
+Examples are also present in order to also cover the data model of the OSS Library documents:
+
+### Certificates referring to other EU legislation
+
+- RID-certificate (link with era:Vehicle)
+- EMC, SPV, SPD-certificate: validity
+
+These certificates will reuse all properties of era:Certificate and are therefore classified by using of `dcterms:type` linking to .
+
+### Statements by the NSA, IM, RU
+
+- Statements by the national Auth Ent.
+- ESC/RSC-statement
+
+### The Declaration of Conformity to an authorised Vehicle Type
+
+- DC2T (signed explicitly through the Application) is not explictly recreated as it can be constructed from the data in the VA Application (AuthCases).
+
+
 ## VA Applications
 
 The data model confirms what is registered in ERATV: a vehicleType must be supported by  `era:VehicleAuthorisation` (for C2T or placing in service authorisations) and `era:VehicleTypeAuthorisation`, both of which are a subClassOf `vpa:Permission`. 

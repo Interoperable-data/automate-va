@@ -14,7 +14,7 @@
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 
 # Relevant SKOS Concept Schemes
-@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
 @prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
 @prefix era-states: <http://data.europa.eu/949/concepts/states/> .
 # TO DO: the Amended and Revoked status should not come from an ERATV SKOS CS.
@@ -22,7 +22,7 @@
 
 era-ecd:ecd-ecDecl-8917 
     a era:ECDeclaration ;
-    dcterms:type era-cld-types:ECDoC ;
+    dcterms:type era-ecd-types:ECDoC ;
     dcterms:created "2024-12-18"^^xsd:date ; # the creation of this resource in the KG
     dcterms:issued "2021-04-27"^^xsd:date ; # the document issue date
     dcterms:available "2021-04-28"^^xsd:date ; # the availability of this resource in the ERADIS db

@@ -56,7 +56,6 @@
 @prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
 @prefix era-cld-modules:        <http://data.europa.eu/949/concepts/cld-modules/> .
 @prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
-
 @prefix era-states:      <http://data.europa.eu/949/concepts/states/> .
 @prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
 @prefix era-vtc:         <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
@@ -72,10 +71,14 @@
 @prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
 @prefix era-csm: <http://data.europa.eu/949/concepts/contact-strip-materials/> .
 @prefix era-tr: <http://data.europa.eu/949/concepts/temperature-ranges/> .
-@prefix era-rscv-rinf: <http://data.europa.eu/949/concepts/radio-system-compatibilities-voice/rinf/> .
 @prefix era-gsmr-rinf: <http://data.europa.eu/949/concepts/gsmr-networks/rinf/> .
 @prefix era-ic-eratv: <http://data.europa.eu/949/concepts/ice-conditions/eratv/> .
 @prefix era-rsf-eratv: <http://data.europa.eu/949/concepts/rolling-stock-fire/eratv/> .
+
+# ESC/RSC
+@prefix era-esc-rinf: <http://data.europa.eu/949/concepts/etcs-system-compatibilities/rinf/> .
+@prefix era-rscd-rinf: <http://data.europa.eu/949/concepts/radio-system-compatibilities-data/rinf/> .
+@prefix era-rscv-rinf: <http://data.europa.eu/949/concepts/radio-system-compatibilities-voice/rinf/> .
 
  # WARNING: DO NOT (YET) EXIST
 @prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
