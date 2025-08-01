@@ -84,7 +84,7 @@
 @prefix update: <http://data.europa.eu/949/update/> .
 
 # Vehicle validation shape for VA scope
-:VehicleShape a sh:NodeShape ;
+era-sh:VehicleShape a sh:NodeShape ;
   rdfs:label "Vehicle Validation Shape"@en ;
   rdfs:comment "Validates core requirements for Vehicle instances in the VA scope."@en ;
   sh:targetClass era:Vehicle ;

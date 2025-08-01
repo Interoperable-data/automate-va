@@ -4,4 +4,4 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix dc: <http://purl.org/dc/elements/1.1/> .
 
-:John a foaf:Person ; ex:name "John" .
+ex:John a foaf:Person ; ex:name "John" .
