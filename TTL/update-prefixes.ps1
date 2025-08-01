@@ -35,6 +35,7 @@ foreach ($file in $files) {
             break
         }
     }
+    # Detection of previous top blocks
     if ($firstPrefixIdx -eq -1) {
         # No prefix block found, just prepend the prefix block after comments/blank lines
         $newContent = $prefixBlock + $lines

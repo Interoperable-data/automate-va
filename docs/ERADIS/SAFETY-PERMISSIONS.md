@@ -41,21 +41,23 @@ For Infrastructure Managers, the term is '[Safety Authorisation](https://eur-lex
 
 Further specific data is firstly the Category (A, B will not be migrated, only the SSC will be):
 
-- Size of the RU
-- IncludesHighSpeed (`xsd:boolean`)
-- Passenger transport Volume (less or more than 300 MPgkm/yr)
-- Freight transport Volume (less or more than 500 Mtonkm/yr)
-- OnlyShunting (`xsd:boolean`)
-- IncludingRID (`xsd:boolean`)
-- AreaOfOperation <{URI to MS operated in}>
-- NonCodedRestictionsConditions (maybe subClassOf `vpa:Compliance`), mostly if NSA is creator.
+- [ ] Extent of Operation (**should be properties of era:OrganisationRole/Body?**):
+  - enterpriseSize (Size of the RU)
+  - transportVolume
+    - (SKOS) Passenger transport Volume (less or more than 300 MPgkm/yr)
+    - (SKOS) Freight transport Volume (less or more than 500 Mtonkm/yr)
+- [X] coversOnlyShunting (`xsd:boolean`)
+- [X] coversHighSpeed (`xsd:boolean`)
+- [X] coversDangerousGoods (`xsd:boolean`)
+- [X] areaOfOperation <{URI to MS NETWORK operated in}>
+- [X] era:nonCodedRestrictions (through a `vpa:Compliance` linked to the Certificate), mostly if NSA is creator.
 
 The Certificates type A may also indicate an ECM (link may then need to be encoded to that ORG).
 
 > [!INFO]
 > These documents mostly have a written scan as source! The data is present structured as well.
 
-### ECM Certificate
+### ECM and Maintenance Function Certificate / Attestation
 
 The same is valid for ECM's `era:ECMCertificate a vpa:Permission ;`, as registered in [ERADIS ECM Certificates data](https://eradis.era.europa.eu/safety_docs/ecm/certificates/default.aspx?DocType=1).
 
@@ -68,13 +70,19 @@ The same is valid for ECM's `era:ECMCertificate a vpa:Permission ;`, as register
 | `dct:contributor` | Unused, unless another accredited or recognised body was involved                                                   |
 | `dct:audience`    | the **ECM** who uses the certificate, so ie. `2. CERTIFIED ORGANISATION`                                            |
 
+If the ECM is a new-comer, this should be deduced from a property on the OrganisationRole as executed by that Organisation.
+
 For non-organisational properties:
 
-| Property      |                       Data | Datatype/ObjectProperty | dataset @ ERA |
-| :------------ | -------------------------: | :---------------------- | :-----------: |
-| `dct:subject` | Maintenance activity scope | ()                      |    /ERALEX    |
+| Property                     |                                                      Data | Datatype/ObjectProperty | dataset @ ERA |
+| :--------------------------- | --------------------------------------------------------: | :---------------------- | :-----------: |
+| `era:vehicleTypeCategory`    |                 Maintenance activity scope (5.1 Category) | (SKOS)                  |   /Concepts   |
+| `era:vehicleTypeSubCategory` |              Maintenance activity scope (5.2 SubCategory) | (SKOS)                  |   /Concepts   |
+| `dct:subject`                |         (1.2 Maintenance Functions Certificate) Functions | (Object)                |   /Concepts   |
+| TBD                          | (1.2 Maintenance Functions Certificate) Partial Functions | (Object)                |   /Concepts   |
 
-For the ECM-property (5. Scope of ECM activities) 'Covers wagons specialised in transport of dangerous goods' : (YES|NO), we could propose `era:ecmCertificateCoversRID` (a DatatypeProperty of `xsd:boolean`).
+
+For the ECM-property (5. Scope of ECM activities) 'Covers wagons specialised in transport of dangerous goods' : (YES|NO), we have introduced `era:coversDangerousGoods` (a DatatypeProperty of `xsd:boolean`).
 
 For the ECM-property (6. ADDITIONAL INFORMATION), which is free text, `rdfs:comment` (`xsd:string`) could be used.
 

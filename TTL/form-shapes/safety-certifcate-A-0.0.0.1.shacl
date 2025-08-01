@@ -35,7 +35,7 @@
 # Domain-specific
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eradis1: <http://data.europa.eu/949/eradis/permissions/> .
+@prefix era-perm: <http://data.europa.eu/949/eradis/permissions/> .
 @prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
 @prefix eralex-pava: <http://data.europa.eu/949/requirement/legislation/pava/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
@@ -151,19 +151,19 @@ era:SafetyCertificateAShape a sh:NodeShape ;
       sh:group issform:SERV
     ],
     [ sh:name "High-speed operation" ;
-      sh:path era:highSpeedOperation ;
+      sh:path era:coversHighSpeed ;
       sh:datatype xsd:boolean ;
       sh:minCount 1 ; sh:maxCount 1 ;
       sh:group issform:SERV
     ],
     [ sh:name "Dangerous goods operation" ;
-      sh:path era:dangerousGoodsOperation ;
+      sh:path era:coversDangerousGoods ;
       sh:datatype xsd:boolean ;
       sh:minCount 1 ; sh:maxCount 1 ;
       sh:group issform:SERV
     ],
     [ sh:name "Shunting only" ;
-      sh:path era:shuntingOnlyOperation ;
+      sh:path era:coversOnlyShunting ;
       sh:datatype xsd:boolean ;
       sh:minCount 1 ; sh:maxCount 1 ;
       sh:group issform:SERV

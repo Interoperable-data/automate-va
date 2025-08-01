@@ -131,7 +131,8 @@
       sh:maxCount 1 ;
       sh:node era:CBOrgRoleShape  ;
       sh:group issform:CE
-    ] , [
+    ];
+    sh:property [
       sh:name "Certified Body is Newcomer" ;
       sh:datatype xsd:boolean ;
       sh:path era:ecmNewComer ;
@@ -157,7 +158,8 @@
       sh:hasValue iss-rs:New ;
       sh:nodeKind sh:IRI ;
       sh:group issform:CI
-    ] , [
+    ];
+    sh:property [
       sh:name "4.2 Previous Certificate" ;
       sh:description "ECM identification number of the previous certificate" ;
       sh:path dcterms:replaces ;
@@ -165,13 +167,15 @@
       sh:datatype xsd:string ;
       sh:minCount 1 ; sh:maxCount 1 ;
       sh:group issform:CI
-    ] , [
+    ];
+    sh:property [
       sh:name "Validity" ;
       sh:path dcterms:valid ;
       sh:minCount 1 ; sh:maxCount 1 ;
       # sh:node era:CertificateValidityShape ;
       sh:group issform:CI 
-    ], [ 
+    ];
+    sh:property [ 
       sh:description "Type of Company"@en ;
       sh:name "4.5 Type of Company" ;
       sh:path era:role ;
@@ -191,26 +195,29 @@
     # 5 -- Scope
     sh:property  [
       sh:name "Category (ERATV)";
-      sh:path era:ecmCategory ;
+      sh:path era:vehicleTypeCategory ;
       owl:imports era-skos:era-skos-Categories.ttl ;
       sh:class skos:Concept ;
       sh:group issform:S
-    ] ,  [
+    ];
+    sh:property  [
       sh:name "Subcategory (ERATV)";
-      sh:path era:ecmSubCategory ;
+      sh:path era:vehicleTypeSubCategory ;
       owl:imports era-skos:era-skos-SubCategories.ttl ;
       sh:class skos:Concept ;
       sh:group issform:S
-    ] , [ 
+    ];
+    sh:property [ 
       sh:name "Covers wagons specialised in transport of dangerous goods" ;
       sh:datatype xsd:boolean ;
-      sh:path era:dangerousGoodsOperation ;
+      sh:path era:coversDangerousGoods ;
       sh:maxCount 1 ;
       sh:group issform:S
-    ],[ 
+    ];
+    sh:property[ 
       sh:name "Covers High-speed Trainsets" ;
       sh:datatype xsd:boolean ;
-      sh:path era:highSpeedOperation ;
+      sh:path era:coversHighSpeed ;
       sh:maxCount 1 ;
       sh:group issform:S
     ];
@@ -222,20 +229,23 @@
       dash:singleLine false ;
       sh:datatype xsd:string ;
       sh:group issform:OTH
-    ] , [
+    ];
+    sh:property [
       sh:name "Conditions for Use"@en ;
       rdfs:seeAlso "https://www.era.europa.eu/sites/default/files/2025-03/era1209-292%20clarification%20note%20about%20conditions%20for%20use.pdf?t=1741026457"^^xsd:anyURI ;
       sh:path rdfs:comment ;
       dash:singleLine false ;
       sh:datatype xsd:string ;
       sh:group issform:OTH
-    ] , [
+    ];
+    sh:property [
       sh:name "Date issued" ;
       sh:path dcterms:issued ;
       sh:datatype xsd:date ;
       sh:maxCount 1 ;
       sh:group issform:OTH
-    ] , [
+    ];
+    sh:property [
       sh:name "Transfered Certificate EIN" ;
       sh:description "ECM identification number of the transfered certificate" ;
       sh:pattern "^[A-Z]{2}/31/\\d{4}/\\d{4}$" ; # EIN of ECM Certificate
@@ -244,7 +254,8 @@
       sh:datatype xsd:string ;
       sh:maxCount 1 ;
       sh:group issform:OTH
-    ] ,  [
+    ];
+    sh:property  [
       sh:name "Internal Reference Number" ;
       sh:path dcterms:title ; # DCTERMS 'A name given to the resource.' 
       sh:description "EIN Certification Body Reference" ;
@@ -265,7 +276,7 @@
   ######## Additional helper NODES
 
   # Validity is a time: instance
-  era:CertificateValidityShape  a sh:NodeShape, rdfs:Class ;
+  era:CertificateValidityShape  a sh:NodeShape ;
     sh:targetClass time:Interval ;
     sh:property [
       sh:name "Starting date" ;
@@ -280,7 +291,8 @@
           sh:name "4.3 Validity from" ;
         ]
       ];
-  ] , [
+  ];
+  sh:property [
       sh:path time:hasEnd ;
       sh:name "Ending date" ;
       sh:minCount 1 ;     sh:maxCount 1 ;
@@ -297,7 +309,7 @@
   ] .
 
   # File ECM itself
-  issform:FileFormShape a sh:NodeShape, rdfs:Class ;
+  issform:FileFormShape a sh:NodeShape ;
     sh:property [
       sh:name "Upload File:" ;
       sh:minCount 1 ;
@@ -316,7 +328,8 @@
       sh:hasValue era-organisation-roles:CertifiedBody ;
       sh:nodeKind sh:IRI ;
       sh:maxCount 1 ;
-    ] , [
+    ];
+    sh:property [
       # For conversion to an org URI
       sh:path era:roleOf ;
       sh:minCount 1 ;

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Comunica SPARQL Endpoint Tester</title>
+    <script src="https://rdf.js.org/comunica-browser/versions/v4/engines/query-sparql/comunica-browser.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 2em;
+        }
+
+        label,
+        select,
+        input,
+        textarea,
+        button {
+            margin: 0.5em 0;
+            display: block;
+            width: 100%;
+        }
+
+        textarea {
+            height: 6em;
+        }
+
+        #results {
+            background: #f5f5f5;
+            border: 1px solid #ccc;
+            padding: 1em;
+            margin-top: 1em;
+            white-space: pre;
+        }
+
+        .row {
+            display: flex;
+            gap: 1em;
+        }
+
+        .col {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Comunica SPARQL Endpoint Tester</h2>
+    <form id="sparql-form" onsubmit="return false;">
+        <label for="endpoint">SPARQL Endpoint:</label>
+        <select id="endpoint">
+            <option value="https://dbpedia.org/sparql">DBpedia (public, no auth)</option>
+            <option value="https://query.wikidata.org/bigdata/namespace/wdq/sparql">Wikidata (public, no auth)</option>
+            <option value="https://era-dev.ontotext.com/repositories/era-lex" data-auth="true">ERALEX (Basic Auth)</option>
+            <option value="http://prod.virtuoso.ecdp.tech.ec.europa.eu/sparql">Virtuoso (public, no auth)</option>
+        </select>
+        <div id="auth-fields" style="display:none;">
+            <label>Username: <input type="text" id="username" autocomplete="username"></label>
+            <label>Password: <input type="password" id="password" autocomplete="current-password"></label>
+        </div>
+        <label for="query">SPARQL Query:</label>
+        <textarea id="query">SELECT * WHERE { ?s ?p ?o } LIMIT 10</textarea>
+        <button id="run-query" type="button">Run Query</button>
+    </form>
+    <div id="results">(Results will appear here)</div>
+
+    <script src="comunica-query.js"></script>
+    <script>
+        // https://era-dev.ontotext.com/repositories/era-lex
+        document.getElementById('endpoint').addEventListener('change', function () {
+            const selected = this.options[this.selectedIndex];
+            document.getElementById('auth-fields').style.display = selected.dataset.auth ? 'block' : 'none';
+        });
+
+        document.getElementById('run-query').addEventListener('click', async function () {
+            const endpoint = document.getElementById('endpoint').value;
+            const query = document.getElementById('query').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.textContent = 'Running query...';
+
+            try {
+                const results = await runSparqlQuery({ endpoint, query, username, password });
+                resultsDiv.innerHTML = (results && results.length)
+                    ? resultsToTable(results)
+                    : '(No results)';
+            } catch (err) {
+                resultsDiv.textContent = 'Error: ' + err.message;
+            }
+        });
+    </script>
+</body>
+
+</html>

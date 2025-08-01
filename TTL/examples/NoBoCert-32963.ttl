@@ -33,15 +33,17 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # Domain-specific
-@prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
-@prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
-@prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
+@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
+@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
+@prefix era-perm: <http://data.europa.eu/949/permissions/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
+@prefix eralex-pava: <http://data.europa.eu/949/requirements/legislations/pava/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypeAuthorisations/> .
+@prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
+@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix iss: <http://data.europa.eu/949/iss/> . 
@@ -63,19 +65,38 @@
 @prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
 @prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
 
+
  # WARNING: DO NOT (YET) EXIST
 @prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
 @prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
 @prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
+@prefix era-ecm-attestations: <http://data.europa.eu/949/concepts/ecm-attestations/> .
 @prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
 @prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
 @prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
+@prefix erava-tsi-conforms: <http://data.europa.eu/949/concepts/tsi-conformities/> .
 @prefix issform:  <http://era.europa.eu/forms/iss/> . 
 
 # From ISS
 @prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
 @prefix iss-rs:   <http://data.europa.eu/949/iss/concepts/record-statuses/> .
+@prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
+
+# EU Countries
+@prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
+
+# Properties to be post-processed, if shacl-form 
+@prefix update: <http://data.europa.eu/949/update/> .
 # prefixes.ttl
+era-cld-modules:CH1 a skos:Concept .
+eralex:dir-2016-797 a vpa:Requirement .
+eralex:reg-2014-1302 a era:TSI .
+eralex:cir-2019-776 a era:TSI .
+eralex:cir-2020-387 a era:TSI .
+eralex:cir-2023-1694 a era:TSI .
+eralex:ic-1302-2014-5_3.10 a era:IC .
+rorg:MF-AT-1210-90 a era:Body .
+
 era-cld:cld-NoBoCert-32963 a era:CLD , vpa:EvidenceDocument ;
     dcterms:created "2024-12-16"^^xsd:date ;         # creation in the KG
     dcterms:issued "2024-05-07"^^xsd:date ;          # the document issue date

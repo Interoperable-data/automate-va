@@ -283,7 +283,7 @@ era:ECMAttestationShape a sh:NodeShape ;
 ######## Additional helper NODES
 
 # Validity is a time: instance
-era:CertificateValidityShape  a sh:NodeShape, rdfs:Class ;
+era:CertificateValidityShape  a sh:NodeShape ;
   sh:targetClass time:Interval ;
   sh:property [
     sh:name "Starting date" ;

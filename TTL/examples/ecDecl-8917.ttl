@@ -1,5 +1,22 @@
-# prefixes.ttl
+@base <http://data.europa.eu/949/> .
+@prefix era: <http://data.europa.eu/949/> .
 
+# General
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Domain-specific
+@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
+@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
+
+# Relevant SKOS Concept Schemes
+@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
 # TO DO: the Amended and Revoked status should not come from an ERATV SKOS CS.
 # REFERENCES ARE INCOMPLETE vav ERADIS, as this EC DoC covers a lot of EC DECLs
 
@@ -11,32 +28,32 @@ era-ecd:ecd-ecDecl-8917
     dcterms:available "2021-04-28"^^xsd:date ; # the availability of this resource in the ERADIS db
     dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-AT-4822-62 ; era:hasOrganisationRole era-organisation-roles:Manufacturer ]  ;
     dcterms:contributor [ a era:OrganisationRole ; era:roleOf rorg:NoBo-1714 ; era:hasOrganisationRole era-organisation-roles:NoBo ] ;
-    dcterms:coverage eralex:dir-2016-797 ,
-                     eralex:reg-2014-1302 ;
+    dcterms:coverage eralex:dir-2016-797 , eralex:reg-2014-1302 ;
     dcterms:description "" ; # Amendment description not given
     rdfs:label "Pantograph contact strips" ;
     rdfs:comment "For detailed info, please see ANNEX" ;
     dcterms:subject eralex:ic-1302-2014-5_3.11 ; # The URI of the exact IC in scope
     dcterms:identifier "AT/000000FN93653a/2021/001714" ;
     rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=8917"^^xsd:anyURI ;
-    era:eradisVersion "1";
-    dcterms:isReplacedBy :ecd-ecDecl-9627 ;
-    era:status era-states-eratv:ammended ; # typo is in the SKOS CS
+    vpa:versionNumber 1 ;
+    dcterms:isReplacedBy era-ecd:ecd-ecDecl-9627 ;
+    era:status era-states:ammended ; # typo is in the SKOS CS
     dcterms:requires [
          a vpa:Evidence ;
          rdfs:member 
             [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3474" ], # NOT IN eradis?
-            :cld-NoBoCert-12325 # equals [ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
-         ;
+            era-cld:cld-NoBoCert-12325 
+            # equals [ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
     ], [
          a vpa:Evidence ;
          rdfs:member 
             [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3480" ], 
-            :cld-NoBoCert-12325 # equals [ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
+            era-cld:cld-NoBoCert-12325 
+            # equals [ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
     ], [
          a vpa:Evidence ;
          rdfs:member 
             [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3482" ],
-            :cld-NoBoCert-12325 # equals [ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
-         
+            era-cld:cld-NoBoCert-12325 
+            # equals [ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V09" ] 
     ] .

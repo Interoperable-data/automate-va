@@ -123,14 +123,14 @@ era-sh:VVTAuthorisationApplication a
         a sh:PropertyShape ;
         sh:path vpa:requestFor ;
         sh:nodekind sh:IRI ;
-        sh:class :VVTAuthorisation ;
+        sh:class era-sh:VVTAuthorisation ;
         sh:description "(b) (ii) The application which was issued in order to request this authorisation."
     ];
     sh:property [
         a sh:PropertyShape ;
         sh:inversePath vpa:supports ;
         sh:nodekind sh:IRI ;
-        sh:class :VVTAuthorisationCase ;
+        sh:class era-sh:VVTAuthorisationCase ;
         sh:description "The application's authorisation cases."
     ];
     sh:property [
@@ -158,7 +158,7 @@ era-sh:VVTAuthorisationApplication a
 # ------------------------------ PERMISSION
 era-sh:VVTAuthorisation a 
     owl:Class , sh:NodeShape ;
-    rdfs:subClassOf :TimeBoundDocument, vpa:Permission ;
+    rdfs:subClassOf era-sh:TimeBoundDocument, vpa:Permission ;
     dcterms:created "2024-10-25"^^xsd:date ;
     # dcterms:modified "_RESERVED_"^^xsd:date ;
 
@@ -207,28 +207,28 @@ era-sh:VVTAuthorisation a
         a sh:PropertyShape ;
         sh:inversePath vpa:grants ;
         sh:nodekind sh:IRI ;
-        sh:class :PermittingOrganisation ;
+        sh:class era-sh:PermittingOrganisation ;
         sh:description "(b) (i) The authorising entity, issuing authority which issued this authorisation. (Annex I, point 4)"
     ];
     sh:property [
         a sh:PropertyShape ;
         sh:inversePath vpa:requestFor ;
         sh:nodekind sh:IRI ;
-        sh:class :VVTAuthorisationApplication ;
+        sh:class era-sh:VVTAuthorisationApplication ;
         sh:description "(b) (ii) The application which was issued in order to request this authorisation."
     ];
     sh:property [
         a sh:PropertyShape ;
         sh:path vpa:submittedIn ;
         sh:nodekind sh:IRI ;
-        sh:class :VVTAuthorisationCase ;
+        sh:class era-sh:VVTAuthorisationCase ;
         sh:description "(b) (iii) The authorisation cases which supported the application, leading to this authorisation."
     ];
     sh:property [
         a sh:PropertyShape ;
         sh:inversePath vpa:requests ;
         sh:nodekind sh:IRI ;
-        sh:class :ApplyingOrganisation ;
+        sh:class era-sh:ApplyingOrganisation ;
         dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/anx_I/oj> ;
         sh:description "(b) (iv) The applicant which requested this authorisation. (Annex I, point 5)"
     ].
@@ -263,12 +263,12 @@ era-sh:VVTAuthorisationCase a
         - the (set of) vehicle(s) to be authorised, expressed preferably as an IRI to a vehicle collection resource;
         - the intended Area of Use of that specific vehicle type.
         - other information supporting this specific set."""@en ;      
-        sh:class era:VehicleType , :AreaOfUse , era:VehicleCollection, era:Vehicle ;
+        sh:class era:VehicleType , era-sh:AreaOfUse , era:VehicleCollection, era:Vehicle ;
         sh:description "The detailed technical scopes which are the intended vehicle types (and vehicles) to be authorised in the application case."
     ];
     sh:property [
         a sh:PropertyShape ; 
-        sh:path era:vehicleAuthorisationCaseType ; # subPropertyOf vpa:permissionType ;
+        sh:path dcterms:type ;
         dcterms:created "2024-06-26"^^xsd:date; # See 5.1.0, property had another name
         era:inSkosConceptScheme <http://data.europa.eu/949/concepts/va-authcases/VehicleAuthorisationCase> ;
         sh:description "Indicates one of 5 allowed authorisation cases from 2018/545"@en ;
@@ -414,7 +414,7 @@ era-sh:VehicleType a
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path dcterms:alternative ;
+        sh:path era:alternativeTypeName ;
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
         era:eratvIndex "1.2" ;
@@ -431,7 +431,7 @@ era-sh:VehicleType a
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path era:eratvCategory ; # See 5.1.0, property had another name era:category
+        sh:path era:vehicleTypeCategory ; # See 5.1.0, property had another name era:category
         sh:description "Indicates the Category of the VehicleType as defined in (Annex II - table 2 - 1.4)"@en ;
         era:eratvIndex "1.4" ;
         sh:nodekind sh:IRI ;
@@ -440,7 +440,7 @@ era-sh:VehicleType a
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path era:eratvSubCategory ; # See 5.1.0, property had another name era:category
+        sh:path era:vehicleTypeSubCategory ; # See 5.1.0, property had another name era:category
         sh:description "Indicates the Subcategory of the VehicleType as defined in (Annex II - table 2 - 1.3)"@en ;
         era:eratvIndex "1.5" ;
         sh:nodekind sh:IRI ;
@@ -454,7 +454,7 @@ era-sh:VehicleType a
         sh:description "Conformity with TSIs - certificate"@en ;
         era:eratvIndex "2.2" ;
         sh:nodekind sh:IRI ;
-        sh:class :ECCertificate ; # See CLD
+        sh:class era-sh:ECCertificate ; # See CLD
     ];
     sh:property [
         # Sections `3.0 Area Of Use:` of the VType, MUST be originating from the Authorisation-chain
@@ -463,5 +463,5 @@ era-sh:VehicleType a
         sh:description "Most recent authorisation of the type"@en ;
         era:eratvIndex "3.1.2" ;
         sh:nodekind sh:IRI ;
-        sh:class :VVTAuthorisation ; # See era:VTAAuthorisation
+        sh:class era-sh:VVTAuthorisation ; # See era:VTAAuthorisation
     ].

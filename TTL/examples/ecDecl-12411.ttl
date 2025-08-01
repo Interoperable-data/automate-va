@@ -1,4 +1,20 @@
-# prefixes.ttl
+@base <http://data.europa.eu/949/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Domain-specific
+@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
+@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
+
+# Relevant SKOS Concept Schemes
+@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
 
 # The latest EC Declaration, an example of a revoked resource.
 era-ecd:ecd-ecDecl-12411 
@@ -16,23 +32,25 @@ era-ecd:ecd-ecDecl-12411
     dcterms:subject eralex:ic-1302-2014-5_3.11 ; # The URI of the exact IC in scope
     dcterms:identifier "AT/000000FN93653a/2021/001714" ;
     rdfs:seeAlso "https://eradis.era.europa.eu/interop_docs/ecDecl/view.aspx?id=12411"^^xsd:anyURI ;
-    era:eradisVersion "11";
-    dcterms:replaces :ecd-ecDecl-12000 ;
-    era:status era-states-eratv:revoked ; # !! 
+    vpa:versionNumber 11 ;
+    dcterms:replaces era-ecd:ecd-ecDecl-12000 ;
+    era:status era-states:revoked ; # !! 
     dcterms:requires [
          a vpa:Evidence ;
          rdfs:member 
             [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3474" ], # 
-            :cld-NoBoCert-17158 # equals[ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
-         ;
+            era-cld:cld-NoBoCert-17158 
+            # equals[ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
     ], [
          a vpa:Evidence ;
          rdfs:member 
             [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3480" ],
-            :cld-NoBoCert-17158 # equals[ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
+            era-cld:cld-NoBoCert-17158 
+            # equals[ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]
     ], [
          a vpa:Evidence ;
          rdfs:member 
             [ a era:CLD ; dcterms:identifier "1714/2/CH1/2020/RST/EN/3482" ],
-            :cld-NoBoCert-17158 # equals[ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]        
+            era-cld:cld-NoBoCert-17158 
+            # equals[ a era:CLD ; dcterms:identifier "1714/4/CH1/2020/RST/EN/3451/V15" ]        
     ] .

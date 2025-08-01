@@ -35,7 +35,7 @@
 # Domain-specific
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eradis1: <http://data.europa.eu/949/eradis/permissions/> .
+@prefix era-perm: <http://data.europa.eu/949/eradis/permissions/> .
 @prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
 @prefix eralex-pava: <http://data.europa.eu/949/requirement/legislation/pava/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .

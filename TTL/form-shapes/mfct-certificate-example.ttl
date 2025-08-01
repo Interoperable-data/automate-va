@@ -35,7 +35,7 @@
 # Domain-specific
 @prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
 @prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eradis1: <http://data.europa.eu/949/eradis/permissions/> .
+@prefix era-perm: <http://data.europa.eu/949/eradis/permissions/> .
 @prefix eralex: <http://data.europa.eu/949/requirements/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
@@ -85,7 +85,7 @@
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
 
-eradis1:cert1 a era:Certificate ; # subClassOf vpa:Permission
+era-perm:cert1 a era:Certificate ; # subClassOf vpa:Permission
     dcterms:identifier "BE/32/2025/0001" ;
     dcterms:type era-permission-types:MaintenanceFunctionCertificate ;
     dcterms:audience [ 
@@ -108,11 +108,11 @@ eradis1:cert1 a era:Certificate ; # subClassOf vpa:Permission
         <http://www.w3.org/2006/time#hasBeginning> [ <http://www.w3.org/2006/time#inXSDDate> "2025-06-19"^^xsd:date ] ;
         <http://www.w3.org/2006/time#hasEnd> [ <http://www.w3.org/2006/time#inXSDDate> "2030-06-18"^^xsd:date ] 
     ];
-    era:ecmCategory <http://data.europa.eu/949/concepts/vehicle-types/eratv/FreightWagon> ;
-    era:ecmSubCategory era-vehicle-types-eratv:freightWagonsRake ;
-    era:ecmForRIDWagons true ;
-    era:ecmHighSpeed false ;
-    era:ecmMaintenanceFunctions era-ecm-maintenance-functions:MaintenanceDevelopment ;
+    era:vehicleTypeCategory era-vehicle-types-eratv:FreightWagon ;
+    era:vehicleTypeSubCategory era-vehicle-types-eratv:freightWagonsRake ;
+    era:coversDangerousGoods true ;
+    era:coversHighSpeed false ;
+    dcterms:subject era-ecm-maintenance-functions:MaintenanceDevelopment ;
     era:ecmPartialMaintenanceFunctions "Partial description" ;
     dcterms:issued "2025-06-19"^^xsd:date ;
     dcterms:relation "BE/31/2023/0002" ;

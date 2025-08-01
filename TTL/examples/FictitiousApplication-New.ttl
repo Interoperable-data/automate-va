@@ -33,15 +33,17 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # Domain-specific
-@prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
-@prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
-@prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
-@prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
+@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
+@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
+@prefix era-perm: <http://data.europa.eu/949/permissions/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
+@prefix eralex-pava: <http://data.europa.eu/949/requirements/legislations/pava/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypeAuthorisations/> .
+@prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
+@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix iss: <http://data.europa.eu/949/iss/> . 
@@ -63,18 +65,28 @@
 @prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
 @prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
 
+
  # WARNING: DO NOT (YET) EXIST
 @prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
 @prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
 @prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
+@prefix era-ecm-attestations: <http://data.europa.eu/949/concepts/ecm-attestations/> .
 @prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
 @prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
 @prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
+@prefix erava-tsi-conforms: <http://data.europa.eu/949/concepts/tsi-conformities/> .
 @prefix issform:  <http://era.europa.eu/forms/iss/> . 
 
 # From ISS
 @prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
 @prefix iss-rs:   <http://data.europa.eu/949/iss/concepts/record-statuses/> .
+@prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
+
+# EU Countries
+@prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
+
+# Properties to be post-processed, if shacl-form 
+@prefix update: <http://data.europa.eu/949/update/> .
 
 # The VehicleType is in DRAFT and being created.
 rorg:MF-US-GC001-224 a era:Body ; # Wayne Industries, Gotham City, USA (era:Body, see above)
@@ -91,125 +103,125 @@ rorg:EUAR a era:Body ;
   rdfs:label "EU Agency for Railways" .
 
 eratv:vt-71-001-0001-1-001 a era:VehicleType ;
-  # FIXME: MISSING UNDETECTED:
-  dcterms:identifier "71-001-0001-1-001" ;
+    # FIXME: MISSING UNDETECTED:
+    dcterms:identifier "71-001-0001-1-001" ;
 
-  # FIXME: must both be present 
-  era:vehicleTypeNumber "71-001-0001-1" ;
-  era:includedVersionsVariant "001" ;
-  dcterms:created "2025-07-16"^^xsd:date ;
+    # FIXME: must both be present 
+    era:vehicleTypeNumber "71-001-0001-1" ;
+    era:includedVersionsVariant "001" ;
+    dcterms:created "2025-07-16"^^xsd:date ;
 
-  # FIXME: dcterms:issued SHALL NOT BE PRESENT, given the type is in DRAFT, and many parameters are still being filled in.
-  dcterms:issued "2025-01-01"^^xsd:date ;
-  
-  # 10-5 OK: missing label
-  rdfs:label "A non-existent self-propelled special vehicle";
-  
-  # FIXME: MISSING UNDETECTED:
-  era:vehicleTypeCategory era-vehicle-types-eratv:71 ; # special vehicles
-  
-  # FIXME: MISSING UNDETECTED:
-  era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledSpecialVehicle ;
-  
-  # FIXME: MISSING UNDETECTED
-  era:vehicleTypeManufacturer [
-    a era:OrganisationRole ;
-    era:roleOf rorg:MF-US-GC001-224 ;  
-    era:hasOrganisationRole era-organisation-roles:Manufacturer
-  ] ;
+    # FIXME: dcterms:issued SHALL NOT BE PRESENT, given the type is in DRAFT, and many parameters are still being filled in.
+    dcterms:issued "2025-01-01"^^xsd:date ;
+    
+    # 10-5 OK: missing label
+    rdfs:label "A non-existent self-propelled special vehicle";
+    
+    # FIXME: MISSING UNDETECTED:
+    era:vehicleTypeCategory era-vehicle-types-eratv:71 ; # special vehicles
+    
+    # FIXME: MISSING UNDETECTED:
+    era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledSpecialVehicle ;
+    
+    # FIXME: MISSING UNDETECTED
+    era:vehicleTypeManufacturer [
+      a era:OrganisationRole ;
+      era:roleOf rorg:MF-US-GC001-224 ;  
+      era:hasOrganisationRole era-organisation-roles:Manufacturer
+    ] ;
 
-  # Configuration (rest of parameters not relevant for testcases)
-  era:wheelSetGauge era-ntg-rinf:30 ;
-  era:energySupplySystem era-ess-rinf:DC30 ;
-  era:vehicleTypePlatform "Batman Rail Vehicles"@en .
+    # Configuration (rest of parameters not relevant for testcases)
+    era:wheelSetGauge era-ntg-rinf:30 ;
+    era:energySupplySystem era-ess-rinf:DC30 ;
+    era:vehicleTypePlatform "Batman Rail Vehicles"@en .
 
 eratv:BatmanSpecial a era:VehicleTypeConfiguration ;
-  rdfs:label "3kV on US Standard Gauge";
-  era:wheelSetGauge era-ntg-rinf:30 ;
-  era:energySupplySystem era-ess-rinf:DC30 .
+    rdfs:label "3kV on US Standard Gauge";
+    era:wheelSetGauge era-ntg-rinf:30 ;
+    era:energySupplySystem era-ess-rinf:DC30 .
 
 evr:bat-mobile-metro-001 a era:Vehicle ;
-  dcterms:identifier "Wayne Railway Mobile 001-01" ;
-  era:vehicleKeeper [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasRole era-organisation-roles:Keeper ] ;
-  era:vehicleType eratv:vt-71-001-0001-1-002 ; # this typo should be detected through its authorisation chain.
-  era:compositeBrakeBlockRetrofitted true ;
-  era:vehicleNumber "01234567890-9" ; # should raise several problems
-  era:vehicleSeries "Wayne Railway Attack vehicles, series 001"@en ;
-  era:operationalRestriction era-noic:2-7-7 . # it is too loud
+    dcterms:identifier "Wayne Railway Mobile 001-01" ;
+    era:vehicleKeeper [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasRole era-organisation-roles:Keeper ] ;
+    era:vehicleType eratv:vt-71-001-0001-1-002 ; # this typo should be detected through its authorisation chain.
+    era:compositeBrakeBlockRetrofitted true ;
+    era:vehicleNumber "01234567890-9" ; # should raise several problems
+    era:vehicleSeries "Wayne Railway Attack vehicles, series 001"@en ;
+    era:operationalRestriction era-noic:2-7-7 . # it is too loud
 
 erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
-  rdfs:label "Authorisation project of the Batman spacial railway Vehicle"@de ;
-  era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline false] ;
-  # SHACL Valid: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ; era:preEngagementBaseline "https://example.com/pre-engagement-baseline" ] ;
-  # SHACL Invalid, given baseline is missing: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ];
-  dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasOrganisationRole era-organisation-roles:Applicant ] ;
-  dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasOrganisationRole era-organisation-roles:AuthorisingEntity ] ;
-  dcterms:identifier "VA-20250715-001" ;
-  # dcterms:issued "2025-01-01"^^xsd:date ; # UNTESTED
-  vpa:constitutedBy erava:vac-71-001-0001-1-001-US-1 ;
-  vpa:requestFor erava:71-001-0001-1-001-US-1 ;
-  rdfs:comment "To combat terror on the Gotham Railway system, we need the approval to place on the market."@en .
+    rdfs:label "Authorisation project of the Batman spacial railway Vehicle"@de ;
+    era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline false] ;
+    # SHACL Valid: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ; era:preEngagementBaseline "https://example.com/pre-engagement-baseline" ] ;
+    # SHACL Invalid, given baseline is missing: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ];
+    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasOrganisationRole era-organisation-roles:Applicant ] ;
+    dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasOrganisationRole era-organisation-roles:AuthorisingEntity ] ;
+    dcterms:identifier "VA-20250715-001" ;
+    # dcterms:issued "2025-01-01"^^xsd:date ; # UNTESTED
+    vpa:constitutedBy erava:vac-71-001-0001-1-001-US-1 ;
+    vpa:requestFor erava:71-001-0001-1-001-US-1 ;
+    rdfs:comment "To combat terror on the Gotham Railway system, we need the approval to place on the market."@en .
 
 erava:vac-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
-  vpa:permissionType era-va-authcase:NEW ;
-  era:typeRegistrationMethod era-va-trm:NewType ;
-  rdfs:label "Case 'NEW' to achieve APOM of type 71-001-0001-1-001 in the US"@en ;
-  era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
-  era:authorisingMemberState <http://publications.europa.eu/resource/authority/country/DEU> ; 
-  vpa:concerns eratv:vt-71-001-0001-1-001 , evr:bat-mobile-metro-001 ;
-  vpa:constitutes erava:va-71-001-0001-1-001-US-1 .
+    vpa:permissionType era-va-authcase:NEW ;
+    era:typeRegistrationMethod era-va-trm:NewType ;
+    rdfs:label "Case 'NEW' to achieve APOM of type 71-001-0001-1-001 in the US"@en ;
+    era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
+    era:authorisingMemberState <http://publications.europa.eu/resource/authority/country/DEU> ; 
+    vpa:concerns eratv:vt-71-001-0001-1-001 , evr:bat-mobile-metro-001 ;
+    vpa:constitutes erava:va-71-001-0001-1-001-US-1 .
 
 erava:71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisation ;
-  dcterms:identifier "EU/81/2025/0001" ;
-  # NOT YET dcterms:issued
-  # dcterms:issued "2025-01-01"^^xsd:date ; # TEST
-  # NOT YET vpa:valid
-  # Invalid for a NEW authcase: era:vehicleTypeAuthorisationHolder [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ];
-  vpa:requestedIn erava:va-71-001-0001-1-001-US-1 .
+    dcterms:identifier "EU/81/2025/0001" ;
+    # NOT YET dcterms:issued
+    # dcterms:issued "2025-01-01"^^xsd:date ; # TEST
+    # NOT YET vpa:valid
+    # Invalid for a NEW authcase: era:vehicleTypeAuthorisationHolder [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ];
+    vpa:requestedIn erava:va-71-001-0001-1-001-US-1 .
 
 gotham:debo-71-001-0001-1-001-US a era:CABEvidence ;
-  rdfs:label "DeBo checks on the Gotham City local rules";
-  rdfs:member gotham:debo-123 , gotham:debo-456 ;
-  vpa:statesCompliance [ a vpa:Compliance ;
-    vpa:compliant "true"^^xsd:boolean ;
-    vpa:checkedSection "2.1.1 Strength and integrity" , "3.1 Vehicle gauge" , "3.2.1 Running safety and dynamics", "3.3.5 Sanding system" , "3.3.7 Axle shaft", "4.1 Functional requirements for braking at train level" , "4.5 Brake performance" , "12.1.2.2 Other GSM-R requirements", "12.2.1 National on-board signalling systems" ;
-    vpa:withRestriction [
-      a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
-      era:forConfiguration eratv:BatmanSpecial  ;
-      era:nonCodedRestrictions "Should not be exposed to extra-terrestrial blast weapons"@en
-    ]
-  ] ;	
-  vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 .
+    rdfs:label "DeBo checks on the Gotham City local rules";
+    rdfs:member gotham:debo-123 , gotham:debo-456 ;
+    vpa:statesCompliance [ a vpa:Compliance ;
+      vpa:compliant "true"^^xsd:boolean ;
+      vpa:checkedSection "2.1.1 Strength and integrity" , "3.1 Vehicle gauge" , "3.2.1 Running safety and dynamics", "3.3.5 Sanding system" , "3.3.7 Axle shaft", "4.1 Functional requirements for braking at train level" , "4.5 Brake performance" , "12.1.2.2 Other GSM-R requirements", "12.2.1 National on-board signalling systems" ;
+      vpa:withRestriction [
+        a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
+        era:forConfiguration eratv:BatmanSpecial  ;
+        era:nonCodedRestrictions "Should not be exposed to extra-terrestrial blast weapons"@en
+      ]
+    ] ;	
+    vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 .
 
 gotham:debo-123 a era:ECCertificate ;
-  dcterms:identifier "US001/1/NNTR/2025/RST/EN/WAYNE-001/V01" ;
-  dcterms:type era-cld-types:1 ;
-  # dcterms:issued "2025-01-01"^^xsd:date ; # UNDETECTED MISSING
-  dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
-  rdfs:label "NNTR verification certificate - underbody, wheelsets, axles, wheels" ;
-  vpa:valid [
-    a time:ProperInterval ;
-    time:hasBeginning "2024-04-01"^^xsd:date ; #start of validity
-    time:hasDurationDescription [
-        # https://www.w3.org/TR/owl-time/#time:DurationDescription
-        time:years 10 ;
-    ]
-  ].
+    dcterms:identifier "US001/1/NNTR/2025/RST/EN/WAYNE-001/V01" ;
+    dcterms:type era-cld-types:1 ;
+    # dcterms:issued "2025-01-01"^^xsd:date ; # UNDETECTED MISSING
+    dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
+    rdfs:label "NNTR verification certificate - underbody, wheelsets, axles, wheels" ;
+    vpa:valid [
+      a time:ProperInterval ;
+      time:hasBeginning "2024-04-01"^^xsd:date ; #start of validity
+      time:hasDurationDescription [
+          # https://www.w3.org/TR/owl-time/#time:DurationDescription
+          time:years 10 ;
+      ]
+    ].
 
 gotham:debo-456 a era:ECCertificate ;
-  dcterms:identifier "US001/1/NNTR/2025/RST/EN/WAYNE-002/V01" ;
-  dcterms:type era-cld-types:1 ;
-  # dcterms:issued "2025-01-01"^^xsd:date ; # UNDETECTED MISSING
-  dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
-  rdfs:label "NNTR verification certificate - plating, weapons and structure" ;
-  vpa:valid [
-    a time:ProperInterval ;
-    time:hasBeginning "2019-04-01"^^xsd:date ; #start of validity
-    time:hasDurationDescription [
-        # https://www.w3.org/TR/owl-time/#time:DurationDescription
-        time:years 5 ; # example of an expired one.
-    ]
-  ].
+    dcterms:identifier "US001/1/NNTR/2025/RST/EN/WAYNE-002/V01" ;
+    dcterms:type era-cld-types:1 ;
+    # dcterms:issued "2025-01-01"^^xsd:date ; # UNDETECTED MISSING
+    dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
+    rdfs:label "NNTR verification certificate - plating, weapons and structure" ;
+    vpa:valid [
+      a time:ProperInterval ;
+      time:hasBeginning "2019-04-01"^^xsd:date ; #start of validity
+      time:hasDurationDescription [
+          # https://www.w3.org/TR/owl-time/#time:DurationDescription
+          time:years 5 ; # example of an expired one.
+      ]
+    ].
 
 gotham:nobo-71-001-0001-1-001-US a era:CABEvidence ;
   rdfs:label "NoBo covered declarations";
@@ -226,52 +238,52 @@ gotham:nobo-71-001-0001-1-001-US a era:CABEvidence ;
   vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 .
 
 era-ecd:ecd-123 a era:ECDeclaration ;
-  dcterms:type era-ecd-types:ECDoV ;
-  dcterms:identifier "US/000000GC93653a/2022/000014" ;
-  dcterms:label "DoV for Wayne Industries special railway attack vehicle";
-  dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
-  dcterms:requires [ a era:CABEvidence ; rdfs:member era-cld:cld-NoBoCert-123000 , era-cld:cld-NoBoCert-456000 ];
-  dcterms:issued "2022-04-03"^^xsd:date ;
-  vpa:versionNumber "1" .
+    dcterms:type era-ecd-types:ECDoV ;
+    dcterms:identifier "US/000000GC93653a/2022/000014" ;
+    dcterms:label "DoV for Wayne Industries special railway attack vehicle";
+    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
+    dcterms:requires [ a era:CABEvidence ; rdfs:member era-cld:cld-NoBoCert-123000 , era-cld:cld-NoBoCert-456000 ];
+    dcterms:issued "2022-04-03"^^xsd:date ;
+    vpa:versionNumber 1 .
 
 era-cld:cld-NoBoCert-123000 a era:CLD ;
-  dcterms:identifier "0001/1/SB/2022/RST/EN/WAYN0001/01" ;
-  dcterms:type era-cld-types:1 ;
-  dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
-  rdfs:label "TSI RST TE verification certificate" ;
-  dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
-  dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ] ;
-  vpa:checkedCompliance [ a era:CABAssessmentCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-123 ] ;
-  vpa:valid [
-    a time:ProperInterval ;
-    time:hasBeginning "2022-04-02"^^xsd:date ; #start of validity
-    time:hasDurationDescription [
-        # https://www.w3.org/TR/owl-time/#time:DurationDescription
-        time:years 10 ;
-    ]
-  ].
+    dcterms:identifier "0001/1/SB/2022/RST/EN/WAYN0001/01" ;
+    dcterms:type era-cld-types:1 ;
+    dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
+    rdfs:label "TSI RST TE verification certificate" ;
+    dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
+    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ] ;
+    vpa:checkedCompliance [ a era:CABAssessmentCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-123 ] ;
+    vpa:valid [
+      a time:ProperInterval ;
+      time:hasBeginning "2022-04-02"^^xsd:date ; #start of validity
+      time:hasDurationDescription [
+          # https://www.w3.org/TR/owl-time/#time:DurationDescription
+          time:years 10 ;
+      ]
+    ].
 
 gotham:clui-123 a era:CABRestriction ; # subClassOf era:Restriction
-  vpa:regarding eralex:reg-2014-1304 ;
-  era:nonCodedRestrictions "The vehicle has a non-compliant mass per wheel"@en .
+    vpa:regarding eralex:reg-2014-1304 ;
+    era:nonCodedRestrictions "The vehicle has a non-compliant mass per wheel"@en .
   
 era-cld:cld-NoBoCert-456000 a era:CLD ;
-  dcterms:identifier "0001/4/SD/2022/RST/EN/WAYN0001/01" ;
-  dcterms:type era-cld-types:4 ;
-  dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
-  dcterms:spatial lorg:MF-US-GC002-225 ; # restricted to the audit at production site.
-  rdfs:label "TSI RST QMSA verification certificate - secret site" ;
-  dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
-  dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ] ;
-  vpa:checkedCompliance [ a era:CABAuditCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-456 ] ;
-  vpa:valid [
-    a time:ProperInterval ;
-    time:hasBeginning "2022-04-01"^^xsd:date ; #start of validity
-    time:hasDurationDescription [
-        # https://www.w3.org/TR/owl-time/#time:DurationDescription
-        time:years 2 ; # example of an expired CLD, which should cause the ECD to be declared expired.
-    ]
-  ].
+    dcterms:identifier "0001/4/SD/2022/RST/EN/WAYN0001/01" ;
+    dcterms:type era-cld-types:4 ;
+    dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
+    dcterms:spatial lorg:MF-US-GC002-225 ; # restricted to the audit at production site.
+    rdfs:label "TSI RST QMSA verification certificate - secret site" ;
+    dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
+    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ] ;
+    vpa:checkedCompliance [ a era:CABAuditCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-456 ] ;
+    vpa:valid [
+      a time:ProperInterval ;
+      time:hasBeginning "2022-04-01"^^xsd:date ; #start of validity
+      time:hasDurationDescription [
+          # https://www.w3.org/TR/owl-time/#time:DurationDescription
+          time:years 2 ; # example of an expired CLD, which should cause the ECD to be declared expired.
+      ]
+    ].
 
 gotham:clui-456 a era:CABRestriction ; # subClassOf era:Restriction
   vpa:regarding eralex:reg-2014-1304 ;
