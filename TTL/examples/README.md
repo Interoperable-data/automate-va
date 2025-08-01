@@ -22,19 +22,19 @@ Examples are also present in order to also cover the data model of the OSS Libra
 
 ### Certificates referring to other EU legislation
 
-- RID-certificate (link with era:Vehicle)
-- EMC, SPV, SPD-certificate: validity
+- [ ] RID-certificate (link with era:Vehicle) - TODO, examples in V-20250417-006
+- [ ] EMC, SPV, SPD-certificate: validity and legal reference
 
-These certificates will reuse all properties of era:Certificate and are therefore classified by using of `dcterms:type` linking to .
+These certificates will reuse all properties of era:Certificate and are therefore classified by using of `dcterms:type` linking to `era-cert-types:`-Concept Scheme.
 
 ### Statements by the NSA, IM, RU
 
-- Statements by the national Auth Ent.
-- ESC/RSC-statement
+- [ ] Statements by the national Auth Ent.
+- [X] ESC/RSC-statement
 
 ### The Declaration of Conformity to an authorised Vehicle Type
 
-- DC2T (signed explicitly through the Application) is not explictly recreated as it can be constructed from the data in the VA Application (AuthCases).
+The DC2T (signed explicitly through the Application) is not explictly recreated as it can be constructed from the data in the VA Application (AuthCases).
 
 
 ## VA Applications
