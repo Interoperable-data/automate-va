@@ -96,8 +96,9 @@ eralex:cir-2020-387 a era:TSI .
 eralex:cir-2023-1694 a era:TSI .
 eralex:ic-1302-2014-5_3.10 a era:IC .
 rorg:MF-AT-1210-90 a era:Body .
+rorg:MF-AT-8020-31 a era:Body .
 
-era-cld:cld-NoBoCert-32963 a era:CLD , vpa:EvidenceDocument ;
+era-cld:cld-NoBoCert-32963 a era:CLD ;
     dcterms:created "2024-12-16"^^xsd:date ;         # creation in the KG
     dcterms:issued "2024-05-07"^^xsd:date ;          # the document issue date
 
@@ -138,18 +139,19 @@ era-cld:cld-NoBoCert-32963 a era:CLD , vpa:EvidenceDocument ;
 
     # Involved stakeholders
     dcterms:audience [
-	a era:OrganisationRole ;
+	    a era:OrganisationRole ;
         era:roleOf rorg:MF-AT-1210-90 ;            # Applicant FN 483145 h
         era:hasOrganisationRole era-organisation-roles:Applicant
     ] ; 
     dcterms:contributor [
-	a era:OrganisationRole ;
+	    a era:OrganisationRole ;
         era:roleOf rorg:MF-AT-8020-31 ;           # Manufacturer FN 483145 h (same ID!)
-        era:hasOrganisationRole era-organisation-roles:ConstituentManufacturer
+        era:hasOrganisationRole era-organisation-roles:Manufacturer
     ] ;
 	dcterms:spatial [] ; 						  # No Manufacturing locations
     dcterms:creator [
         a era:OrganisationRole ;
-        era:roleOf rorg:NoBo-0893
+        era:roleOf rorg:NoBo-0893 ;
+        era:hasOrganisationRole era-organisation-roles:NoBo
     ] ;
     vpa:versionNumber 1 .

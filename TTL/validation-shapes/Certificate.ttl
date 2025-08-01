@@ -348,7 +348,7 @@ era-sh:CLD a
         a sh:PropertyShape ;
         sh:path dcterms:description ;
         sh:name "CLD description"@en ;
-        sh:datatype xsd:string ;
+        sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
         sh:nodeKind sh:Literal ;
         sh:description "Human-readable description of the CLD."@en ;
         sh:message "Human-readable Object of Assessment of the CLD MUST be present."@en ;
@@ -366,17 +366,16 @@ era-sh:CLD a
         sh:severity sh:Warning ;
         sh:minCount 1 ; sh:maxCount 1
     ];
-    sh:property [
-        a sh:PropertyShape ;
-        sh:path vpa:valid ;
-        sh:name "CLD time validity"@en ;
-        sh:nodeKind sh:BlankNodeOrIRI ;
-        sh:class time:ProperInterval ;
-        sh:description "Validity interval of the CLD."@en ;
-        sh:message "Validity interval of the CLD MUST be present."@en ;
-        sh:severity sh:Warning ;
-        sh:minCount 1 ; sh:maxCount 1
-    ];
+    # Replaced by validity check shape sh:property [
+    #     a sh:PropertyShape ;
+    #     sh:path vpa:valid ;
+    #     sh:name "CLD time validity"@en ;
+    #     sh:nodeKind sh:BlankNodeOrIRI ;
+    #     sh:description "Validity interval of the CLD."@en ;
+    #     sh:message "Validity interval of the CLD MUST be present."@en ;
+    #     sh:severity sh:Warning ;
+    #     sh:minCount 1 ; sh:maxCount 1
+    # ];
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:audience ;
@@ -417,7 +416,7 @@ era-sh:CLD a
         sh:class era:OrganisationRole ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:description "The manufacturer involved in the assessment (must be an era:OrganisationRole)."@en ;
-        sh:message "No Manufacturer involved in the assessment (missing era:OrganisationRole)."@en ;
+        # sh:message "No Manufacturer involved in the assessment (missing era:OrganisationRole)."@en ;
         sh:severity sh:Warning ;
         sh:minCount 1 ;
         sh:node [
@@ -453,7 +452,7 @@ era-sh:CLD a
         sh:class era:OrganisationRole ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:description "CAB issuing the CLD (must be an era:OrganisationRole, with `era:roleOf` and `era:hasOrganisationRole`)."@en ;
-        sh:message "CAB issuing the CLD MUST be an `era:OrganisationRole` (not an `era:Body`)."@en ;
+        # sh:message "CAB issuing the CLD MUST be an `era:OrganisationRole` (not an `era:Body`)."@en ;
         sh:severity sh:Violation ;
         sh:minCount 1 ; sh:maxCount 1 ;
         sh:node [
@@ -473,7 +472,6 @@ era-sh:CLD a
                 sh:nodeKind sh:IRI ;
                 sh:description "The role held, must be a SKOS Concept from era-organisation-roles."@en ;
                 sh:message "No role of NoBo@CAB was linked to the OrganisationRole for the CLD issuing organisation.";
-                
                 sh:in (era-organisation-roles:CAB era-organisation-roles:AssessmentBody era-organisation-roles:NoBo ) ; # TODO: to be checked
                 sh:severity sh:Violation;
                 sh:minCount 1 ; sh:maxCount 1
@@ -520,7 +518,7 @@ era-sh:CLD a
         a sh:PropertyShape ;
         sh:path rdfs:comment ;
         sh:name "CLD comment"@en ;
-        sh:datatype xsd:string ;
+        sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
         sh:nodeKind sh:Literal ;
         sh:description "Free-text comment about the CLD."@en ;
         sh:message "No Free-text comment about the CLD is present"@en ;
@@ -693,7 +691,7 @@ era-sh:CABCheckShape a sh:NodeShape ;
         a sh:PropertyShape ;
         sh:path rdfs:comment ;
         sh:name "Check comment"@en ;
-        sh:datatype xsd:string ;
+        sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
         sh:nodeKind sh:Literal ;
         sh:description "Free-text comment about the check."@en ;
         sh:message "The CAB's Check was not commented."@en ;
@@ -820,3 +818,54 @@ era-sh:TSIComplianceCheck  a
         sh:message "The type's TSI Compliance Check does not contain a link to the Configuration it is applicable for."
     ]
 .
+
+era-sh:CLDandECCertificateValidityShape a sh:NodeShape ;
+  rdfs:label "CLD and ECCertificate Validity Shape"@en ;
+  rdfs:comment "Validates that CLD and ECCertificate have a validity property with a valid time interval."@en ;
+  sh:targetClass era:CLD ;
+  sh:or (
+    [ sh:property [
+        sh:path vpa:valid ;
+        sh:class time:ProperInterval ;
+        sh:name "Validity Interval (Begin/Duration)" ;
+        sh:description "The validity interval for the CLD or ECCertificate (should have a valid beginning and duration)." ;
+        sh:node [
+          sh:property [
+            sh:path time:hasBeginning ;
+            sh:name "Validity Start Date" ;
+            sh:datatype xsd:date ;
+            sh:description "Start date of the validity interval." ;
+          ] ;
+          sh:property [
+            sh:path time:hasDurationDescription ;
+            sh:name "Validity Duration" ;
+            sh:description "Duration of the validity interval." ;
+          ] ;
+        ] ;
+        sh:minCount 1 ;
+      ]
+    ]
+    [ sh:property [
+        sh:path vpa:valid ;
+        sh:name "Validity Interval (End)" ;
+        sh:description "The validity interval for the CLD or ECCertificate (should have a valid end date)." ;
+        sh:class time:ProperInterval ;
+        sh:node [
+          sh:property [
+            sh:path time:hasBeginning ;
+            sh:name "Validity Start Date" ;
+            sh:datatype xsd:date ;
+            sh:description "Start date of the validity interval." ;
+          ] ;
+          sh:property [
+            sh:path time:hasEnd ;
+            sh:name "Validity End Date" ;
+            sh:datatype xsd:date ;
+            sh:description "End date of the validity interval." ;
+          ] ;
+        ] ;
+        sh:minCount 1 ;
+      ]
+    ]
+  ) ;
+  sh:message "CLD and ECCertificate must have a validity property with a valid time interval." .

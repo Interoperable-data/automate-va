@@ -200,7 +200,7 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
     sh:path rdfs:label ;
     sh:name "Project Name"@en ;
     sh:description "Project Name"@en ;
-    sh:datatype xsd:langString ;
+    sh:datatype rdf:langString ;
     sh:languageIn ( "en" "fr" "de" "es" ) ;
     sh:maxCount 1 ;
     sh:minCount 1
@@ -228,7 +228,7 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
     sh:name "Other relevant Information"@en ;
     sh:description "Other relevant Information"@en ;
     dash:singleLine false ;
-    sh:datatype xsd:langString ;
+    sh:datatype rdf:langString ;
     sh:languageIn ( "en" "fr" "de" "es" ) ;
     sh:maxCount 1 ;
     sh:minCount 1

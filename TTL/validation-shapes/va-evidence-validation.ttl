@@ -83,7 +83,7 @@
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
 # 1. Link between Application, Authorisation, and Case
-:VehicleTypeAuthorisationCaseLinkShape a sh:NodeShape ;
+era-sh:VehicleTypeAuthorisationCaseLinkShape a sh:NodeShape ;
   rdfs:label "Vehicle Type Authorisation Case Link Shape"@en ;
   rdfs:comment "Validates that a VehicleTypeAuthorisationCase is linked to an Application and exactly one VehicleType."@en ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
@@ -108,7 +108,7 @@
     sh:message "A VehicleTypeAuthorisationCase must link to exactly one VehicleType (Violation)." ;
   ] .
 
-:VehicleTypeAuthorisationLinkShape a sh:NodeShape ;
+era-sh:VehicleTypeAuthorisationLinkShape a sh:NodeShape ;
   rdfs:label "Vehicle Type Authorisation Link Shape"@en ;
   rdfs:comment "Validates that a VehicleTypeAuthorisation is linked to an Application."@en ;
   sh:targetClass era:VehicleTypeAuthorisation ;
@@ -124,7 +124,7 @@
   ] .
 
 # 2. PermissionType NEW: VehicleType must not have dcterms:issued, but must have dcterms:created and era:vehicleTypeManufacturer
-:NewPermissionTypeVehicleTypeShape a sh:NodeShape ;
+era-sh:NewPermissionTypeVehicleTypeShape a sh:NodeShape ;
   rdfs:label "New PermissionType VehicleType Shape"@en ;
   rdfs:comment "Validates that if permissionType is NEW, the VehicleType must not have dcterms:issued, but must have dcterms:created and era:vehicleTypeManufacturer."@en ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
@@ -160,7 +160,7 @@
   ] .
 
 # 3. Vehicle must be of same type as VehicleType in the case
-:VehicleTypeMatchShape a sh:NodeShape ;
+era-sh:VehicleTypeMatchShape a sh:NodeShape ;
   rdfs:label "Vehicle Type Match Shape"@en ;
   rdfs:comment "Validates that each Vehicle in the case is of the same type as the VehicleType linked to the case."@en ;
   sh:targetClass era:VehicleTypeAuthorisationCase ;
@@ -179,7 +179,7 @@
 # Note: sh:equals is not standard; in practice, this may require a SPARQL-based constraint.
 
 # 4. CABEvidence validation
-:CABEvidenceShape a sh:NodeShape ;
+era-sh:CABEvidenceShape a sh:NodeShape ;
   rdfs:label "CAB Evidence Shape"@en ;
   rdfs:comment "Validates that each rdfs:member of CABEvidence is a CABEvidence, CLD, ECDeclaration, or Certificate resource."@en ;
   sh:targetClass era:CABEvidence ;
@@ -196,7 +196,7 @@
     sh:message "rdfs:member must be CABEvidence, CLD, ECDeclaration, or Certificate." ;
   ] .
 
-:ECDeclarationValidityShape a sh:NodeShape ;
+era-sh:ECDeclarationValidityShape a sh:NodeShape ;
   rdfs:label "ECDeclaration Validity Shape"@en ;
   rdfs:comment "Validates that dcterms:requires resources for ECDeclaration have a valid time interval."@en ;
   sh:targetClass era:ECDeclaration ;
@@ -217,46 +217,3 @@
     ] ;
     sh:message "dcterms:requires resources must have a valid ending date (or valid interval)." ;
   ] .
-
-:CLDandECCertificateValidityShape a sh:NodeShape ;
-  rdfs:label "CLD and ECCertificate Validity Shape"@en ;
-  rdfs:comment "Validates that CLD and ECCertificate have a validity property with a valid time interval."@en ;
-  sh:targetClass era:CLD ;
-  sh:or (
-    [ sh:property [
-        sh:path vpa:valid ;
-        sh:name "Validity Interval (Begin/Duration)" ;
-        sh:description "The validity interval for the CLD or ECCertificate (should have a valid beginning and duration)." ;
-        sh:node [
-          sh:property [
-            sh:path time:hasBeginning ;
-            sh:name "Validity Start Date" ;
-            sh:datatype xsd:date ;
-            sh:description "Start date of the validity interval." ;
-          ] ;
-          sh:property [
-            sh:path time:hasDurationDescription ;
-            sh:name "Validity Duration" ;
-            sh:description "Duration of the validity interval." ;
-          ] ;
-        ] ;
-        sh:minCount 1 ;
-      ]
-    ]
-    [ sh:property [
-        sh:path vpa:valid ;
-        sh:name "Validity Interval (End)" ;
-        sh:description "The validity interval for the CLD or ECCertificate (should have a valid end date)." ;
-        sh:node [
-          sh:property [
-            sh:path time:hasEnd ;
-            sh:name "Validity End Date" ;
-            sh:datatype xsd:date ;
-            sh:description "End date of the validity interval." ;
-          ] ;
-        ] ;
-        sh:minCount 1 ;
-      ]
-    ]
-  ) ;
-  sh:message "CLD and ECCertificate must have a validity property with a valid time interval." .

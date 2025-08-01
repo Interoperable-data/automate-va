@@ -102,28 +102,62 @@ era-sh:EvidenceProvidingOrganisationShape a sh:NodeShape ;
 
 # Organisations with the mandate to use CLD's as Applicant in an Authorisation process
 # The applying organisation MUST have the suitable era:hasRole <era-organisation-roles:NoBo> role.
-era-sh:ApplyingOrganisationShape a sh:NodeShape ;
-    sh:targetClass era:Body ;
-    sh:sparql [
-        a sh:SPARQLConstraint ;
-        sh:message "Values are Bodies with OrganisationRole belonging to the SKOS Collection for `Applicant`" ;
-        sh:select """
 # to be elaborated.
 # era:Body era:role era:OrganisationRole -> era:OrganisationRole era:hasOrganisationRole <SKOS Concept> 
 # http://data.europa.eu/949/concepts/organisation-roles/OrgRoles
-        """
-    ].
+era-sh:ApplyingOrganisationShape a sh:NodeShape ;
+    sh:targetClass era:Body ;
+    sh:property [
+        sh:path [
+            sh:inversePath dcterms:audience
+        ] ;
+        sh:class era:OrganisationRole ;
+        sh:property [
+            sh:path era:hasOrganisationRole ;
+            sh:hasValue era-organisation-roles:Applicant ;
+        ] ;
+        # Check that the OrganisationRole is the audience of a CLD
+        sh:property [
+            sh:path [
+                sh:inversePath dcterms:audience
+            ] ;
+            sh:class era:CLD ;
+            sh:minCount 1 ;
+            sh:description "This OrganisationRole must be the dcterms:audience of at least one era:CLD."
+        ] ;
+        sh:description "This Body must play the Applicant role in at least one OrganisationRole that is the dcterms:audience of a CLD."
+    ] ;
+    sh:property [
+        sh:path [
+            sh:inversePath dcterms:creator
+        ] ;
+        sh:class era:OrganisationRole ;
+        sh:property [
+            sh:path era:hasOrganisationRole ;
+            sh:hasValue era-organisation-roles:Manufacturer ;
+        ] ;
+        # Check that the OrganisationRole is the creator of an ECDeclaration
+        sh:property [
+            sh:path [
+                sh:inversePath dcterms:creator
+            ] ;
+            sh:class era:ECDeclaration ;
+            sh:minCount 1 ;
+            sh:description "This OrganisationRole must be the dcterms:creator of at least one era:ECDeclaration."
+        ] ;
+        sh:description "This Body may also play the Manufacturer role in at least one OrganisationRole that is the dcterms:creator of an ECDeclaration."
+    ] .
 
 # Organisations with the mandate to issue Authorisations in an Authorisation process
 # The permitting organisation MUST have the suitable era:hasRole <era-organisation-roles:NoBo> role.
-era-sh:PermittingOrganisation a sh:NodeShape ;
-    sh:targetClass era:Body ;
-    sh:sparql [
-        a sh:SPARQLConstraint ;
-        sh:message "Values are Bodies with OrganisationRole belonging to the SKOS Collection for `Authorising Entity`" ;
-        sh:select """
-# to be elaborated.
-# era:Body era:role era:OrganisationRole -> era:OrganisationRole era:hasOrganisationRole <SKOS Concept> 
-# http://data.europa.eu/949/concepts/organisation-roles/OrgRoles
-        """
-    ].
+# era-sh:PermittingOrganisation a sh:NodeShape ;
+#     sh:targetClass era:Body ;
+#     sh:sparql [
+#         a sh:SPARQLConstraint ;
+#         sh:message "Values are Bodies with OrganisationRole belonging to the SKOS Collection for `Authorising Entity`" ;
+#         sh:select """
+# # to be elaborated.
+# # era:Body era:role era:OrganisationRole -> era:OrganisationRole era:hasOrganisationRole <SKOS Concept> 
+# # http://data.europa.eu/949/concepts/organisation-roles/OrgRoles
+#         """
+#     ].
