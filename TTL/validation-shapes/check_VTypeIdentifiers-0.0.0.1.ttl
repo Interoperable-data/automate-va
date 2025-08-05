@@ -1,0 +1,45 @@
+# Define the custom constraint component
+era-sh:IdentifierConcatenationConstraintComponent a sh:ConstraintComponent ;
+    rdfs:label "Identifier Concatenation Constraint" ;
+    rdfs:comment "Validates that dcterms:identifier is the concatenation of vehicleTypeNumber and versions/variants" ;
+    sh:parameter era-sh:identifierConcatenationConstraintComponent ;
+    sh:validator era-sh:IdentifierConcatenationValidator .
+
+# Define the parameter
+era-sh:identifierConcatenationConstraintComponent a sh:Parameter ;
+    sh:path era-sh:identifierConcatenationConstraintComponent ;
+    sh:datatype xsd:boolean ;
+    sh:name "identifier concatenation constraint component" ;
+    sh:description "When true, validates identifier concatenation logic" .
+
+# Define the SPARQL validator
+era-sh:IdentifierConcatenationValidator a sh:SPARQLSelectValidator ;
+    sh:message "dcterms:identifier must be the concatenation of era:vehicleTypeNumber and era:includedVersionsVariant (or era:includedVersions)" ;
+    sh:select """
+        SELECT $this ?identifier ?vehicleTypeNumber ?versionsVariant ?versions
+        WHERE {
+            $this dcterms:identifier ?identifier .
+            $this era:vehicleTypeNumber ?vehicleTypeNumber .
+            
+            # Get either includedVersionsVariant or includedVersions (but not both)
+            OPTIONAL { $this era:includedVersionsVariant ?versionsVariant }
+            OPTIONAL { $this era:includedVersions ?versions }
+            
+            # Check that only one of the two version properties exists
+            FILTER(
+                (BOUND(?versionsVariant) && !BOUND(?versions)) ||
+                (!BOUND(?versionsVariant) && BOUND(?versions))
+            )
+            
+            # Build expected identifier based on which version property exists
+            BIND(
+                IF(BOUND(?versionsVariant),
+                   CONCAT(?vehicleTypeNumber, "-", ?versionsVariant),
+                   CONCAT(?vehicleTypeNumber, "-", ?versions)
+                ) AS ?expectedIdentifier
+            )
+            
+            # Violation occurs when actual identifier doesn't match expected
+            FILTER(?identifier != ?expectedIdentifier)
+        }
+    """ .

@@ -97,7 +97,7 @@ eratv:vt-11-057-0018-9-001 a era:VehicleType ; # Uses: era:VehicleType subClassO
 
 # MS 1
 # Uses: era:VehicleTypeAuthorisationCase subClassOf vpa:Case
-erava:vac-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationCase ;                 
+erava:vac-11-057-0018-9-001-MS1-1 a era:VehicleTypeAuthorisationCase ;                 
     vpa:permissionType era-va-authcase:PRE4RP ;  
     era:authorisingMemberState <MemberState-1> ; # Always the whole memberstate, AoU not used
     ...

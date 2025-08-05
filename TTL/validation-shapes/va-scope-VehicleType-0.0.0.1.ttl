@@ -92,11 +92,12 @@
 # Vehicles before the 3RWP can be authorised without a link to the authorisation as formalised here.
 
 # ------------------------------ REQUEST
-era-sh:VVTAuthorisationApplication a
+era-sh:VAApplicationShape a
     owl:Class , sh:NodeShape ;
     rdfs:subClassOf vpa:Request ;
     dcterms:created "2024-10-25"^^xsd:date ;
-    # dcterms:modified "_RESERVED_"^^xsd:date ;
+    dcterms:modified "2025-08-05"^^xsd:date ;
+    sh:targetClass era:VehicleAuthorisationApplication ;
 
     ## definitions ----------
     rdfs:label "Application for Vehicle (type) Authorisation"@en;
@@ -110,8 +111,8 @@ era-sh:VVTAuthorisationApplication a
     All information is grouped in the applications' authorisation cases and their scope, except:
     - the issue date of the application
     - the resulting authorisation
-    - 
     """@en ;
+
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:issued ;
@@ -119,51 +120,38 @@ era-sh:VVTAuthorisationApplication a
         sh:nodekind sh:Literal ;
         sh:description "The date of issue of the Application. Currently: submission date in OSS."
     ];
+
     sh:property [
         a sh:PropertyShape ;
         sh:path vpa:requestFor ;
-        sh:nodekind sh:IRI ;
-        sh:class era-sh:VVTAuthorisation ;
-        sh:description "(b) (ii) The application which was issued in order to request this authorisation."
-    ];
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisation ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:description "The authorisation that this application requests."
+    ] ;
+    
     sh:property [
         a sh:PropertyShape ;
-        sh:inversePath vpa:supports ;
-        sh:nodekind sh:IRI ;
-        sh:class era-sh:VVTAuthorisationCase ;
-        sh:description "The application's authorisation cases."
-    ];
-    sh:property [
-        a sh:PropertyShape ;
-        sh:inversePath vpa:submittedFor ;
-        sh:nodekind sh:IRI ;
-        sh:or (
-            [
-                 sh:nodekind sh:IRI ;
-                 sh:class era:ECCertificate
-            ]
-            [
-                 sh:nodekind sh:IRI ;
-                 sh:class era:DocumentCollection
-            ]
-            [
-                sh:nodekind sh:Literal ;
-                sh:datatype xsd:string # Only in the case of unfindable certificate references.
-            ]
-        );
-        sh:description "The certificates submitted in the context of the Application. Ideally grouped in era:DocumentCollection."
-    ].
+        sh:path [
+            sh:inversePath vpa:supports
+        ] ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisationCase ;
+        sh:minCount 1 ;
+        sh:description "The authorisation case(s) that support this application."
+    ] .
 
 
 # ------------------------------ PERMISSION
-era-sh:VVTAuthorisation a 
+era-sh:VVTAuthorisationShape a 
     owl:Class , sh:NodeShape ;
-    rdfs:subClassOf era-sh:TimeBoundDocument, vpa:Permission ;
     dcterms:created "2024-10-25"^^xsd:date ;
-    # dcterms:modified "_RESERVED_"^^xsd:date ;
+    dcterms:modified "2025-08-05"^^xsd:date ;
+    sh:targetClass era:VehicleTypeAuthorisation ;
 
     ## definitions ----------
-    rdfs:label "Vehicle (type) Authorisation"@en ;
+    rdfs:label "Vehicle Type Authorisation"@en ;
     rdfs:isDefinedBy <http://data.europa.eu/949/> ;
     dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/art_2/oj>, 
         <http://data.europa.eu/eli/dec/2008/768(1)/oj>, 
@@ -171,10 +159,10 @@ era-sh:VVTAuthorisation a
         <http://data.europa.eu/eli/reg_impl/2019/250/2020-06-16>,
         <http://data.europa.eu/eli/dec/2010/713/oj> ;    
     rdfs:seeAlso "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32018R0545#art_2" ;
-    rdfs:comment """Vehicle (Type) Authorisation:
+    rdfs:comment """Vehicle Type Authorisation: 
     
     A decision issued by the authorising entity based on reasonable assurance that the applicant and the entities involved in the design, manufacture, verification and validation of the authorisation scope have fulfilled their (respective) obligations and responsibilities in order to ensure conformity with the essential requirements of the applicable legislation.
-
+    
     Based on definition (15):
     Scope of ‘vehicle authorisation for placing on the market’ means an `individual vehicle` while 
     - ensuring conformity with the authorised type enabling that the vehicle may be placed on the market; and which
@@ -189,96 +177,226 @@ era-sh:VVTAuthorisation a
 
     sh:property [
         a sh:PropertyShape ;
-        sh:path dcterms:source ;
-        sh:nodekind sh:IRI ;
-        sh:class vpa:Requirement ;
-        sh:description "(a) the legal basis empowering the authorising entity to issue the vehicle authorisation for placing on the market OR the vehicle type authorisation;"
-    ];
-    sh:property [
-        a sh:PropertyShape ;
         sh:path dcterms:identifier ;
-        sh:nodekind sh:Literal ;
         sh:datatype xsd:string ;
-        era:eratvIndex "3.1.3.4.4" ;
-        sh:pattern "" ; # EU8020200006, in general CCNNYYYYMMMM, with CC the ISO country code
-        sh:description "As quoted in ERATV parameter 3.1.3.4.4 Authorisation document reference"
-    ];
+        sh:nodeKind sh:Literal ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:pattern "^[A-Z]{2}[0-9]{10}$" ;
+        sh:description "Authorisation document reference (e.g., EU8020240152, DE5920191006)"
+    ] ;
+
     sh:property [
         a sh:PropertyShape ;
-        sh:inversePath vpa:grants ;
-        sh:nodekind sh:IRI ;
-        sh:class era-sh:PermittingOrganisation ;
-        sh:description "(b) (i) The authorising entity, issuing authority which issued this authorisation. (Annex I, point 4)"
-    ];
+        sh:path dcterms:issued ;
+        sh:datatype xsd:date ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:description "The date when the authorisation was issued"
+    ] ;
+
     sh:property [
         a sh:PropertyShape ;
-        sh:inversePath vpa:requestFor ;
-        sh:nodekind sh:IRI ;
-        sh:class era-sh:VVTAuthorisationApplication ;
-        sh:description "(b) (ii) The application which was issued in order to request this authorisation."
-    ];
+        sh:path era:vehicleTypeAuthorisationHolder ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class era:OrganisationRole ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:node [
+            sh:property [
+                sh:path era:roleOf ;
+                sh:nodeKind sh:IRI ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+            ] ;
+            sh:property [
+                sh:path era:hasOrganisationRole ;
+                sh:nodeKind sh:IRI ;
+                sh:hasValue era-organisation-roles:Holder ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+            ]
+        ] ;
+        sh:description "The organisation holding this authorisation"
+    ] ;
+
     sh:property [
         a sh:PropertyShape ;
-        sh:path vpa:submittedIn ;
-        sh:nodekind sh:IRI ;
-        sh:class era-sh:VVTAuthorisationCase ;
-        sh:description "(b) (iii) The authorisation cases which supported the application, leading to this authorisation."
-    ];
+        sh:path dcterms:title ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Optional title or reference of the authorisation document"
+    ] ;
+
     sh:property [
         a sh:PropertyShape ;
-        sh:inversePath vpa:requests ;
-        sh:nodekind sh:IRI ;
-        sh:class era-sh:ApplyingOrganisation ;
-        dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/anx_I/oj> ;
-        sh:description "(b) (iv) The applicant which requested this authorisation. (Annex I, point 5)"
-    ].
+        sh:path rdfs:comment ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Optional additional information about the authorisation"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:isReplacedBy ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisation ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Link to a newer version that replaces this authorisation"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:valid ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class time:ProperInterval ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:node [
+            sh:property [
+                sh:path time:hasBeginning ;
+                sh:datatype xsd:date ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+            ] ;
+            sh:property [
+                sh:path time:hasDurationDescription ;
+                sh:nodeKind sh:BlankNode ;
+                sh:minCount 0 ; sh:maxCount 1 ;
+                sh:node [
+                    sh:property [
+                        sh:path time:years ;
+                        sh:datatype xsd:integer ;
+                        sh:minCount 1 ; sh:maxCount 1 ;
+                        sh:hasValue 10 ;
+                    ]
+                ]
+            ]
+        ] ;
+        sh:description "Validity period of the authorisation (typically 10 years)"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path [
+            sh:inversePath vpa:requestFor
+        ] ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisationApplication ;
+        sh:minCount 0 ;
+        sh:description "The application(s) that requested this authorisation"
+    ] .
+
 
 # ------------------------------ CASE
-era-sh:VVTAuthorisationCase a
+era-sh:VVTAuthorisationCaseShape a
     owl:Class , sh:NodeShape ;
     rdfs:subClassOf vpa:Case ;
     dcterms:created "2024-10-25"^^xsd:date ;
-    # dcterms:modified "_RESERVED_"^^xsd:date ;
+    dcterms:modified "2025-08-05"^^xsd:date ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
 
     ## definitions ----------
-    rdfs:label "Vehicle (type) Authorisation Case"@en;
+    rdfs:label "Vehicle Type Authorisation Case"@en;
     dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/art_14/oj>, <http://data.europa.eu/eli/dir/2016/797/2020-05-28> ;
     rdfs:seeAlso "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#art_14" ;
-    rdfs:comment """Vehicle (Type) Authorisation Case
+    rdfs:comment """Vehicle Type Authorisation Case
     
-    One of 5 ways of applying for a vehicle (type) authorisation as defined in Article 14 depending on the need of the Applicant. 
-    Note that it is allowed to combine SOME application cases in one application, so several authorisation cases are allowed to be combined, each with their own scope.
+    One of 5 ways of applying for a vehicle type authorisation as defined in Article 14 depending on the need of the Applicant. 
+    Note that it is allowed to combine SOME application cases in one application, so several authorisation cases are allowed to be combined, each with their own scope."""@en;
 
-    Groups at least the vehicle type identifier with the possible vehicle identifiers in the scope of each case. """@en;
     sh:property [
         a sh:PropertyShape ;
-        sh:path vpa:concerns ;
-        sh:nodekind sh:IRI ;
-        dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/anx_I/oj> ;
-        rdfs:seeAlso "https://eur-lex.europa.eu/eli/reg_impl/2018/545/anx_I/oj" ;
-        rdfs:comment """The VVT Authorisation Case's technical scope
+        sh:path vpa:permissionType ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:in ( era-va-authcase:New era-va-authcase:First era-va-authcase:Renew era-va-authcase:ExtAoU era-va-authcase:C2T era-va-authcase:PRE4RP era-va-authcase:EXT ) ;
+        sh:description "Indicates one of the allowed authorisation case types from 2018/545"@en
+    ] ;
 
-        The contents of the case to be supporting the application are grouped per vehicle type in a Scope:
-        - the SINGLE vehicle type in scope, or the version/variant in scope, to which the following vehicles should be linked;
-        - the (set of) vehicle(s) to be authorised, expressed preferably as an IRI to a vehicle collection resource;
-        - the intended Area of Use of that specific vehicle type.
-        - other information supporting this specific set."""@en ;      
-        sh:class era:VehicleType , era-sh:AreaOfUse , era:VehicleCollection, era:Vehicle ;
-        sh:description "The detailed technical scopes which are the intended vehicle types (and vehicles) to be authorised in the application case."
-    ];
     sh:property [
-        a sh:PropertyShape ; 
-        sh:path dcterms:type ;
-        dcterms:created "2024-06-26"^^xsd:date; # See 5.1.0, property had another name
-        era:inSkosConceptScheme <http://data.europa.eu/949/concepts/va-authcases/VehicleAuthorisationCase> ;
-        sh:description "Indicates one of 5 allowed authorisation cases from 2018/545"@en ;
-        sh:nodekind sh:IRI ;
-        sh:class <http://www.w3.org/2004/02/skos/core#Concept> ;
-    ].
+        a sh:PropertyShape ;
+        sh:path era:typeRegistrationMethod ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:description "The type registration method used for this case"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:areaOfUse ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:description "The area of use (typically a member state (sub)network)"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:authorisingMemberState ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "The member state that authorised this case"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:configDependentCondition ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class era:VehicleTypeAuthorisationCheck ;
+        sh:minCount 0 ;
+        sh:description "Configuration-dependent conditions for this case"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:configDependentCompliance ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class era:VehicleTypeAuthorisationCheck ;
+        sh:minCount 0 ;
+        sh:description "Configuration-dependent compliance checks for this case"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:safetyDeclaration ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Safety declaration reference"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:supports ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisationApplication ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "The application that this case supports"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:supportsRequest ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class vpa:Request ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "The request that this case supports (can be a blank node for pre-4RP cases)"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path [
+            sh:inversePath vpa:definesCase
+        ] ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleType ;
+        sh:minCount 0 ;
+        sh:description "Vehicle types that define this case (inverse relationship)"
+    ] .
+
 
 # ------------------------------ VALID SCOPES
 # Linked to the Case via vpa:concerns, see above.
-era-sh:VehicleCollection a
+era-sh:VehiclesSetShape a
     owl:Class , sh:NodeShape ;
     rdfs:subClassOf vpa:Scope ;
     dcterms:created "2024-10-25"^^xsd:date ;
@@ -293,17 +411,67 @@ era-sh:VehicleCollection a
 
 # VehicleType - OPERATIONAL MODE
 # Restricts the value of a property to an operation under ENE or [ENE, CCS, INF].
-era-sh:VehicleTypeConfiguration a
+era-sh:VehicleTypeConfigurationShape a
     sh:NodeShape , owl:Class ;
     dcterms:created "2024-10-25"^^xsd:date ;
-    # dcterms:modified "_RESERVED_"^^xsd:date ;
+    dcterms:modified "2025-08-05"^^xsd:date ;
+    sh:targetClass era:VehicleTypeConfiguration ;
 
     ## definitions ----------
     rdfs:label "Vehicle Type Configuration"@en ;
     rdfs:comment """Technical properties of a vehicle type, or even the applicable specific cases as certified, sometimes depend on specific values of:
-    - the provided power system (era:era:energySupplySystem)
-    - a combination of [era:energySupplySystem, the ATP system and the track gauge]"""@en
-.
+    - the provided power system (era:energySupplySystem)
+    - a combination of [era:energySupplySystem, the ATP system and the track gauge]"""@en ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:description "Human-readable label for the configuration"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:wheelSetGauge ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Wheel set gauge (e.g., 1435mm)"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:energySupplySystem ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Energy supply system (e.g., AC 15kV-16.7Hz, DC 3kV)"
+    ] ;
+
+    sh:xone (
+        [
+            sh:property [
+                a sh:PropertyShape ;
+                sh:path era:forOnBoardClassA ;
+                sh:nodeKind sh:IRI ;
+                sh:class skos:Concept ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+                sh:description "Train protection Class A system (e.g., ETCS)"
+            ]
+        ]
+        [
+            sh:property [
+                a sh:PropertyShape ;
+                sh:path era:forOnBoardClassB ;
+                sh:nodeKind sh:IRI ;
+                sh:class skos:Concept ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+                sh:description "Train protection Class B system (e.g., PZB, LZB, SCMT)"
+            ]
+        ]
+    ) .
 
 
 # AoU
@@ -372,7 +540,8 @@ era-sh:AreaOfUse a
 era-sh:VehicleType a 
     owl:Class , sh:NodeShape ; # vpa:Scope ;
     dcterms:created "2024-10-25"^^xsd:date ;
-    # dcterms:modified "_RESERVED_"^^xsd:date ;
+    dcterms:modified "2025-08-05"^^xsd:date ;
+    sh:targetClass era:VehicleType ;
 
     ## definitions ----------
     rdfs:label "Scope of a Vehicle (type) Authorisation Case: Vehicle Type"@en;
@@ -382,25 +551,66 @@ era-sh:VehicleType a
     # Properties
     sh:property [
         a sh:PropertyShape ;
-        sh:path dcterms:identifier ; # # See 5.1.0, property had another name era:typeVersionNumber (highly misleading)
+        sh:path dcterms:identifier ;
         sh:datatype xsd:string ;
-        sh:pattern ""; # From VAI-API: "^(\d\d-\d\d\d-\d\d\d\d-\d-\d\d\d)(-\d\d\d)?"
+        sh:pattern "^\\d{2}-\\d{3}-\\d{4}-\\d-\\d{3}(-\\d{3})?$" ;
         sh:nodeKind sh:Literal ;
-        era:eratvIndex "0.1", '0.2', "0.4" ;
         sh:description "Type number (in accordance with Annex III), variants and versions included";
-        skos:definition """For 0.1 Type number (in accordance with Annex III): [number] XX-XXX-XXXX-X-NNN
-        0.2 Variant included in this type (in accordance with Article 2(13) of Regulation (EU) 2018/545): XX-XXX-XXXX-X-NNN-TTT
-        0.4 Versions included in this type (in accordance with Article 2(14) of Regulation (EU) 2018/545): XX-XXX-XXXX-X-NNN-VVV"""@en ;
         sh:minCount 1;
         sh:maxCount 1
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:path era:vehicleTypeNumber ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:pattern "^\\d{2}-\\d{3}-\\d{4}-\\d$" ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:description "Vehicle Type Number (base part without variants/versions, e.g., '31-110-0008-3')"
+    ];
+    sh:xone (
+        [
+            sh:property [
+                a sh:PropertyShape ;
+                sh:path era:includedVersionsVariant ;
+                sh:datatype xsd:string ;
+                sh:nodeKind sh:Literal ;
+                sh:pattern "^\\d{3}-\\d{3}$" ;
+                sh:minCount 0 ; sh:maxCount 1 ;
+                sh:description "Included versions and variants (e.g., '001-001') for 4RP types"
+            ];
+        ]
+        [
+            sh:property [
+                a sh:PropertyShape ;
+                sh:path era:includedVersions ;
+                sh:datatype xsd:string ;
+                sh:nodeKind sh:Literal ;
+                sh:pattern "^\\d{3}$" ;
+                sh:minCount 0 ; sh:maxCount 1 ;
+                sh:description "Included versions (e.g., '001') for pre-4RP types"
+            ]
+        ]
+    );
+    sh:property [
+        a sh:PropertyShape ;
         sh:path dcterms:issued ;
+        sh:or (
+            [ sh:datatype xsd:date ]
+            [ sh:datatype xsd:dateTime ]
+        ) ;
+        sh:nodeKind sh:Literal ;
+        sh:description "Date of record in ERATV";
+        sh:minCount 1 ;
+        sh:maxCount 1 
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:created ;
         sh:datatype xsd:date ;
         sh:nodeKind sh:Literal ;
-        era:eratvIndex "0.3" ;
-        sh:description "Date of record in ERATV";
+        sh:description "Date when this resource was created in the knowledge graph";
+        sh:minCount 0 ;
         sh:maxCount 1 
     ];
     sh:property [
@@ -408,8 +618,8 @@ era-sh:VehicleType a
         sh:path rdfs:label ;
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
-        era:eratvIndex "1.1" ;
         sh:description "Type name [character string] (max 256 characters)";
+        sh:minCount 1 ;
         sh:maxCount 1 
     ];
     sh:property [
@@ -417,51 +627,235 @@ era-sh:VehicleType a
         sh:path era:alternativeTypeName ;
         sh:datatype xsd:string ;
         sh:nodeKind sh:Literal ;
-        era:eratvIndex "1.2" ;
         sh:description "Alternative type name [character string] (max 256 characters)";
+        sh:minCount 0 ;
         sh:maxCount 1 
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path era:vehicleTypeManufacturer ; # See 5.1.0
-        sh:description "Manufacturer's data"@en ;
-        era:eratvIndex "1.3" ;
-        sh:nodekind sh:BlankNodeOrIRI ;
-        sh:class era:OrganisationRole ; # see ERA Vocabulary SKOS
+        sh:path era:vehicleTypeManufacturer ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class era:OrganisationRole ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:node [
+            sh:property [
+                sh:path era:roleOf ;
+                sh:nodeKind sh:IRI ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+            ] ;
+            sh:property [
+                sh:path era:hasOrganisationRole ;
+                sh:nodeKind sh:IRI ;
+                sh:hasValue era-organisation-roles:Manufacturer ;
+                sh:minCount 0 ; sh:maxCount 1 ;
+            ]
+        ] ;
+        sh:description "Manufacturer's data as OrganisationRole"@en
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path era:vehicleTypeCategory ; # See 5.1.0, property had another name era:category
-        sh:description "Indicates the Category of the VehicleType as defined in (Annex II - table 2 - 1.4)"@en ;
-        era:eratvIndex "1.4" ;
-        sh:nodekind sh:IRI ;
-        era:inSkosConceptScheme <http://data.europa.eu/949/concepts/vehicle-types/Categories> ;
-        sh:class <http://www.w3.org/2004/02/skos/core#Concept> ; # see ERA Vocabulary SKOS
+        sh:path era:vehicleTypeCategory ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:description "Indicates the Category of the VehicleType"@en
     ];
     sh:property [
         a sh:PropertyShape ;
-        sh:path era:vehicleTypeSubCategory ; # See 5.1.0, property had another name era:category
-        sh:description "Indicates the Subcategory of the VehicleType as defined in (Annex II - table 2 - 1.3)"@en ;
-        era:eratvIndex "1.5" ;
-        sh:nodekind sh:IRI ;
-        era:inSkosConceptScheme <http://data.europa.eu/949/concepts/vehicle-types/SubCategories> ;
-        sh:class <http://www.w3.org/2004/02/skos/core#Concept> ; # see ERA Vocabulary SKOS
+        sh:path era:vehicleTypeSubCategory ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:description "Indicates the Subcategory of the VehicleType"@en
     ];
     sh:property [
-        # Section 2.1, 2.3, 2.4 of the VType, should be originating from the ECCertificate, which itself should be in line with the Authorisations
         a sh:PropertyShape ;
-        sh:path era:certificate ; 
-        sh:description "Conformity with TSIs - certificate"@en ;
-        era:eratvIndex "2.2" ;
-        sh:nodekind sh:IRI ;
-        sh:class era-sh:ECCertificate ; # See CLD
+        sh:path era:vehicleTypePlatform ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:description "Platform name or code (e.g., 'DB RIC', 'MIREO', 'X4')"
     ];
     sh:property [
-        # Sections `3.0 Area Of Use:` of the VType, MUST be originating from the Authorisation-chain
         a sh:PropertyShape ;
-        sh:path era:currentAuthorisation ; 
-        sh:description "Most recent authorisation of the type"@en ;
-        era:eratvIndex "3.1.2" ;
-        sh:nodekind sh:IRI ;
-        sh:class era-sh:VVTAuthorisation ; # See era:VTAAuthorisation
-    ].
+        sh:path vpa:definesCase ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisationCase ;
+        sh:minCount 1 ;
+        sh:description "Link to authorisation case(s) that this vehicle type defines"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:configDependentParameter ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class era:VehicleTypeConfigParameterSet ;
+        sh:minCount 0 ;
+        sh:node [
+            sh:property [
+                sh:path era:forConfiguration ;
+                sh:nodeKind sh:IRI ;
+                sh:class era:VehicleTypeConfiguration ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+            ]
+        ] ;
+        sh:description "Configuration-dependent parameters as blank nodes"
+    ];
+    # Technical parameters (non-configuration dependent)
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:drivingCabs ;
+        sh:datatype xsd:integer ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Number of driving cabs"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:magneticBrakingFitted ;
+        sh:datatype xsd:boolean ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Whether magnetic braking is fitted"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:minimumHorizontalRadius ;
+        sh:datatype xsd:integer ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Minimum horizontal radius in meters"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:maximumDesignSpeed ;
+        sh:datatype xsd:integer ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Maximum design speed in km/h"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:vehiclesComposingFixedFormation ;
+        sh:datatype xsd:integer ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Number of vehicles composing fixed formation"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:fireSafetyCategory ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Fire safety category classification"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:voiceRadioCompatible ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Voice radio compatibility system"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:voiceOperationalCommImpl ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Voice operational communication implementation details"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:voiceGSMRNetwork ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Voice GSM-R network compatibility"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:usesGroup555 ;
+        sh:datatype xsd:boolean ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Whether the vehicle uses Group 555"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:maximumLocomotivesCoupled ;
+        sh:datatype xsd:integer ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Maximum number of locomotives that can be coupled"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:snowIceHailConditions ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Snow, ice and hail conditions classification"
+    ];
+    # Configuration properties (can be multiple values)
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:wheelSetGauge ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ;
+        sh:description "Wheel set gauge(s) - typically 1435mm"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:energySupplySystem ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ;
+        sh:description "Energy supply system(s) - AC/DC variations"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:forOnBoardClassA ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ;
+        sh:description "Train protection Class A system (e.g., ETCS)"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:forOnBoardClassB ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ;
+        sh:description "Train protection Class B system(s) (e.g., PZB, LZB, SCMT)"
+    ];
+    # Additional technical parameters found in examples
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:gaugingProfile ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ;
+        sh:description "Gauging profile(s)"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:temperatureRange ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Temperature range classification"
+    ];
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:gsmRVersion ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "GSM-R version specification"
+    ] .

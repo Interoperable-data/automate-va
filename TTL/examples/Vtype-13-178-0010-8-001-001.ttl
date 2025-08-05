@@ -104,6 +104,8 @@ rorg:MF-DE-81739-1 a era:Body ;
 eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     ##### GENERAL INFO
     dcterms:identifier "13-178-0010-8-001-001" ;
+    era:vehicleTypeNumber "13-178-0010-8" ; # Vehicle Type Number
+    era:includedVersionsVariant "001-001" ;
     dcterms:issued "2024-06-14"^^xsd:date ;  # From XML: Date of record
     dcterms:created "2025-01-21"^^xsd:date ;
     rdfs:label "MIREO 4-Teiler 15kV PZB Midi"@de ;
@@ -121,7 +123,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
 
     ##### CONFIGURATION
     era:wheelSetGauge era-ntg-rinf:30 ;
-    era:protectionLegacySystem era-tpls-rinf:40 ;
+    era:forOnBoardClassB era-tpls-rinf:40 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
 
     # Non-configuration dependent parameters
@@ -166,7 +168,7 @@ eratv:ConfigA a era:VehicleTypeConfiguration ; # NOT a subClass of vpa:Requireme
     rdfs:label "1435mm / AC 15kV-16.7Hz / PZB 90" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
-    era:protectionLegacySystem era-tpls-rinf:40 .
+    era:forOnBoardClassB era-tpls-rinf:40 .
 
 eratv:ConfigB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm" ;

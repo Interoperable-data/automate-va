@@ -95,13 +95,15 @@
 # Uses: era:VehicleType subClassOf vpa:Scope
 eratv:vt-11-057-0018-9-001 a era:VehicleType ; 
     dcterms:identifier "11-057-0018-9-001";
+    era:vehicleTypeNumber "11-057-0018-9" ; # Vehicle Type Number
+    era:includedVersionsVariant "001" ;
     dcterms:issued "2020-02-07T10:30:00Z"^^xsd:dateTime ; # the entry of record in ERATV using Date time UTC
     dcterms:created "2024-12-17"^^xsd:date ; # this resource in the KG
     rdfs:label "X4-E-Lok-AB (MS-Lokomotiven) Korridor D-A-CH-I-NL_Rel. E1.11"@de ;
     era:alternativeTypeName "E193 DE-AT-CH-IT-NL_Rel. E1.11" ;
     era:vehicleTypeCategory era-vehicle-types-eratv:tractionVehicles ;
     era:vehicleTypeSubCategory  era-vehicle-types-eratv:locomotive ;
-    vpa:definesCase erava:vac-11-057-0018-9-001-1 , erava:vac-11-057-0018-9-001-2 , erava:vac-11-057-0018-9-001-3 ;
+    vpa:definesCase erava:vac-11-057-0018-9-001-DE-1 , erava:vac-11-057-0018-9-001-CH-1 , erava:vac-11-057-0018-9-001-AT-1 ;
     era:vehicleTypeManufacturer [
         a era:OrganisationRole ;
         era:roleOf rorg:MF-DE-12435-44 ; # as per current /ORG
@@ -117,14 +119,14 @@ eratv:Config1435IndusiPZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / Indusi/PZB" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
-    era:protectionLegacySystem era-tpls-eratv:INDUSI-PZB .
+    era:forOnBoardClassB era-tpls-eratv:INDUSI-PZB .
 
 # 1435mm / AC 15kV-16.7Hz / LZB
 eratv:Config1435LZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / LZB" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
-    era:protectionLegacySystem era-tpls-rinf:34 .
+    era:forOnBoardClassB era-tpls-rinf:34 .
 
 #### Restrictions
 eratv:NCCFU-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationRestriction ;
@@ -132,7 +134,7 @@ eratv:NCCFU-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationRestriction ;
     # ... both are identical and coded only.
 
 #### AuthorisationCase
-erava:vac-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationCase ;                 # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+erava:vac-11-057-0018-9-001-DE-1 a era:VehicleTypeAuthorisationCase ;                 # Uses: era:VAAuthorisationCase subClassOf vpa:Case
     vpa:permissionType era-va-authcase:PRE4RP ;                 # implies absence of a era:VehicleAuthorisation
     era:typeRegistrationMethod era-va-trm:NewTypeOfRegisteredPlatform ; # see https://github.com/Certiman/automate-va/issues/2
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ; # Whole memberstate
@@ -177,7 +179,7 @@ erava:auth-11-057-0018-9-001-DE-2 a era:VehicleTypeAuthorisation  ;
     ] .
 
 # SWITZERLAND - See all authorisation data under 3.2.X.X
-erava:vac-11-057-0018-9-001-2 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+erava:vac-11-057-0018-9-001-CH-1 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VAAuthorisationCase subClassOf vpa:Case
     vpa:permissionType era-va-authcase:PRE4RP ;  # implies absence of a era:VehicleAuthorisation
     era:typeRegistrationMethod era-va-trm:NewTypeOfRegisteredPlatform ; # does not yet exist, see issue on CS
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/CHE> ; # Whole memberstate
@@ -210,7 +212,7 @@ erava:auth-11-057-0018-9-001-CH-2 a era:VehicleTypeAuthorisation ;
     dcterms:issued "2020-08-28"^^xsd:date . # the issue date of the correction .
 
 # AUSTRIA - See all authorisation data under 3.3.X.X
-erava:vac-11-057-0018-9-001-3 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+erava:vac-11-057-0018-9-001-AT-1 a era:VehicleTypeAuthorisationCase ;  # Uses: era:VAAuthorisationCase subClassOf vpa:Case
     vpa:permissionType era-va-authcase:PRE4RP ;  # implies absence of a era:VehicleAuthorisation
     era:typeRegistrationMethod era-va-trm:NewTypeOfRegisteredPlatform ; # does not yet exist, see issue on CS
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/AUT> ; # Whole memberstate

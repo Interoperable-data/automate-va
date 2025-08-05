@@ -104,6 +104,8 @@ eratv:config1435Hauled a era:VehicleTypeConfiguration ;
 
 eratv:vt-31-110-0008-3-001-001 a era:VehicleType ;
     dcterms:identifier "31-110-0008-3-001-001";
+    era:vehicleTypeNumber "31-110-0008-3" ; # Vehicle Type Number
+    era:includedVersionsVariant "001-001" ;
     dcterms:issued "2023-06-12"^^xsd:date ; # the entry of record in ERATV
     dcterms:created "2024-12-17"^^xsd:date ; # this resource in the KG
     rdfs:label "Passenger coach IC 1 - R294 (80 Sitzplätze)"@en ;
@@ -131,7 +133,7 @@ eratv:vt-31-110-0008-3-001-001 a era:VehicleType ;
     ] ;
         
     # Link to its first authorisation case
-    vpa:definesCase erava:vac-31-110-0008-3-001-001-1 ;
+    vpa:definesCase erava:vac-31-110-0008-3-001-001-DK-1 ;
     
     era:vehicleTypePlatform "DB RIC" .
 
@@ -151,8 +153,8 @@ eratv:nccfu-31-110-0008-3-001-001-1 a era:VehicleTypeAuthorisationRestriction ;
 # The case {type}-1 must compile the data of authorisation 3.1
 
 # DANMARK - See all authorisation data under 3.1.X.X
-erava:vac-31-110-0008-3-001-001-1 a era:VehicleTypeAuthorisationCase ;             # Uses: era:VAAuthorisationCase subClassOf vpa:Case
-    vpa:permissionType era-va-authcase:EXT ;                            # implies presence of a era:VehicleAuthorisation in OSS
+erava:vac-31-110-0008-3-001-001-DK-1 a era:VehicleTypeAuthorisationCase ;    # Uses: era:VAAuthorisationCase subClassOf vpa:Case
+    vpa:permissionType era-va-authcase:EXT ;                                 # implies presence of a era:VehicleAuthorisation in OSS
     era:typeRegistrationMethod era-va-trm:NewType ;    # see: https://github.com/Certiman/automate-va/issues/2
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DNK> ; # Whole memberstate
     era:authorisingMemberState <http://publications.europa.eu/resource/authority/country/DNK> ; # Whole memberstate
@@ -171,7 +173,7 @@ erava:vac-31-110-0008-3-001-001-1 a era:VehicleTypeAuthorisationCase ;          
         # vpa:checkedSection <1 Documentation>, <3 Track interaction and gauging>, <4 Braking> , ... ;
         vpa:checkedRequirement <http://data.europa.eu/eli/dec_impl/2015/2299/oj> ;
         vpa:withRestriction [
-            a era:VehicleTypeAuthorisationCheck ;
+            a era:VehicleTypeAuthorisationRestriction ;
             era:forConfiguration eratv:config1435Hauled ;
         ]
     ];
