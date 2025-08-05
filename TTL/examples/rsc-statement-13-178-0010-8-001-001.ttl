@@ -42,7 +42,7 @@ era-org-role:0893_NoBo a era:OrganisationRole ;
     era:hasRole era-organisation-roles:NoBo .
 
 era-cert:rsc-13-178-0010-8-001-001 a era:Certificate ; # subClassOf EvidenceDocument, not Permission
-    dcterms:type era-evidende-types:RSCStatement ;
+    dcterms:type era-evidence-types:RSCStatement ;
     dcterms:issued "2024-01-16"^^<xsd:date> ;
     dcterms:identifier "PM2 A6Z000XXXXXXX 123" ;
     dcterms:creator era-org-role:P0EL_Applicant ;
