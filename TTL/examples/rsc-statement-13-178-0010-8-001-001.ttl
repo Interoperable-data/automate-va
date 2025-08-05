@@ -22,7 +22,7 @@
 @prefix era-rscv-rinf: <http://data.europa.eu/949/concepts/radio-system-compatibilities-voice/rinf/> .
 
 # Relevant SKOS Concept Schemes
-@prefix era-cert-types: <http://data.europa.eu/949/concepts/cert-types/> .
+@prefix era-evidence-types: <http://data.europa.eu/949/concepts/evidence-types/> .
 @prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
 @prefix era-states: <http://data.europa.eu/949/concepts/states/> .
 
@@ -41,8 +41,8 @@ era-org-role:0893_NoBo a era:OrganisationRole ;
     era:roleOf rorg:NoBo-0893 ;
     era:hasRole era-organisation-roles:NoBo .
 
-era-cert:rsc-13-178-0010-8-001-001 a era:Certificate ; # subClassOf EvidenceDocument
-    dcterms:type era-cert-types:RSCStatement ;
+era-cert:rsc-13-178-0010-8-001-001 a era:Certificate ; # subClassOf EvidenceDocument, not Permission
+    dcterms:type era-evidende-types:RSCStatement ;
     dcterms:issued "2024-01-16"^^<xsd:date> ;
     dcterms:identifier "PM2 A6Z000XXXXXXX 123" ;
     dcterms:creator era-org-role:P0EL_Applicant ;
