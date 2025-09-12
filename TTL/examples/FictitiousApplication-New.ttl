@@ -88,20 +88,31 @@
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
 
-# The VehicleType is in DRAFT and being created.
+
+## Organisations and Sites
 rorg:MF-US-GC001-224 a era:Body ; # Wayne Industries, Gotham City, USA (era:Body, see above)
-  rdfs:label "Wayne Industries" ;
+  foaf:name "Wayne Industries" ;
   org:hasSite lorg:MF-US-GC002-225 .
 
 lorg:MF-US-GC002-225 a org:Site ;
-  rdfs:label "Wayne Industries secret plant" .
+  foaf:name "Wayne Industries secret plant" .
 
 rorg:NoBo-US-0001 a era:Body ; # the NoBo and DeBo
-  rdfs:label "Robin Boy Wonder CA Body" .
+  foaf:name "Robin Boy Wonder CA Body" .
 
 rorg:EUAR a era:Body ;
-  rdfs:label "EU Agency for Railways" .
+  foaf:name "EU Agency for Railways" .
 
+
+## OrganisationRoles
+orgr:Wayne_Keeper a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasRole era-organisation-roles:Keeper .
+orgr:Wayne_Applicant a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasOrganisationRole era-organisation-roles:Applicant .
+orgr:Wayne_Manufacturer a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ;  era:hasOrganisationRole era-organisation-roles:Manufacturer . 
+orgr:EUAR_AuthorisingEntity a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasOrganisationRole era-organisation-roles:AuthorisingEntity .
+
+
+## ERATV
+# The VehicleType is in DRAFT and being created.
 eratv:vt-71-001-0001-1-001 a era:VehicleType ;
     # FIXME: MISSING UNDETECTED:
     dcterms:identifier "71-001-0001-1-001" ;
@@ -124,11 +135,7 @@ eratv:vt-71-001-0001-1-001 a era:VehicleType ;
     era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledSpecialVehicle ;
     
     # FIXME: MISSING UNDETECTED
-    era:vehicleTypeManufacturer [
-      a era:OrganisationRole ;
-      era:roleOf rorg:MF-US-GC001-224 ;  
-      era:hasOrganisationRole era-organisation-roles:Manufacturer
-    ] ;
+    era:vehicleTypeManufacturer ;
 
     # Configuration (rest of parameters not relevant for testcases)
     era:wheelSetGauge era-ntg-rinf:30 ;
@@ -142,24 +149,26 @@ eratv:BatmanSpecial a era:VehicleTypeConfiguration ;
 
 evr:bat-mobile-metro-001 a era:Vehicle ;
     dcterms:identifier "Wayne Railway Mobile 001-01" ;
-    era:vehicleKeeper [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasRole era-organisation-roles:Keeper ] ;
+    era:vehicleKeeper orgr:Wayne_Keeper ;
     era:vehicleType eratv:vt-71-001-0001-1-002 ; # this typo should be detected through its authorisation chain.
     era:compositeBrakeBlockRetrofitted true ;
     era:vehicleNumber "01234567890-9" ; # should raise several problems
     era:vehicleSeries "Wayne Railway Attack vehicles, series 001"@en ;
     era:operationalRestriction era-noic:2-7-7 . # it is too loud
 
+
+## VA-data
 erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
     rdfs:label "Authorisation project of the Batman spacial railway Vehicle"@de ;
     era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline false] ;
     # SHACL Valid: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ; era:preEngagementBaseline "https://example.com/pre-engagement-baseline" ] ;
     # SHACL Invalid, given baseline is missing: era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ];
-    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasOrganisationRole era-organisation-roles:Applicant ] ;
-    dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasOrganisationRole era-organisation-roles:AuthorisingEntity ] ;
+    dcterms:creator orgr:Wayne_Applicant ;
+    dcterms:audience orgr:EUAR_AuthorisingEntity ;
     dcterms:identifier "VA-20250715-001" ;
     # dcterms:issued "2025-01-01"^^xsd:date ; # UNTESTED
     vpa:constitutedBy erava:vac-71-001-0001-1-001-US-1 ;
-    vpa:requestFor erava:71-001-0001-1-001-US-1 ;
+    vpa:requestFor erava:71-001-0001-1-001-US-1 ; # Applicant can only add them when having received the Authorisation.
     rdfs:comment "To combat terror on the Gotham Railway system, we need the approval to place on the market."@en .
 
 erava:vac-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
@@ -179,6 +188,7 @@ erava:71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisation ;
     # Invalid for a NEW authcase: era:vehicleTypeAuthorisationHolder [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ];
     vpa:requestedIn erava:va-71-001-0001-1-001-US-1 .
 
+# VA-Library
 gotham:debo-71-001-0001-1-001-US a era:CABEvidence ;
     rdfs:label "DeBo checks on the Gotham City local rules";
     rdfs:member gotham:debo-123 , gotham:debo-456 ;
@@ -193,6 +203,22 @@ gotham:debo-71-001-0001-1-001-US a era:CABEvidence ;
     ] ;	
     vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 .
 
+gotham:nobo-71-001-0001-1-001-US a era:CABEvidence ;
+  rdfs:label "NoBo covered declarations";
+  rdfs:member era-ecd:ecd-123 ;
+  vpa:statesCompliance [ a vpa:Compliance ;
+    vpa:compliant "false"^^xsd:boolean ;
+    vpa:checkedRequirement eralex:reg-2013-1236 , eralex:reg-2014-1304 , eralex:reg-2015-924 , eralex:reg-2013-321  ;
+    vpa:withRestriction [
+      a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
+      era:forConfiguration eratv:BatmanSpecial  ;
+      era:nonCodedRestrictions "Not allowed on EU Railways, only to be used in Gotham metro."@en
+    ]
+  ] ;	
+  vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 .
+
+
+## ERADIS
 gotham:debo-123 a era:ECCertificate ;
     dcterms:identifier "US001/1/NNTR/2025/RST/EN/WAYNE-001/V01" ;
     dcterms:type era-cld-types:1 ;
@@ -222,20 +248,6 @@ gotham:debo-456 a era:ECCertificate ;
           time:years 5 ; # example of an expired one.
       ]
     ].
-
-gotham:nobo-71-001-0001-1-001-US a era:CABEvidence ;
-  rdfs:label "NoBo covered declarations";
-  rdfs:member era-ecd:ecd-123 ;
-  vpa:statesCompliance [ a vpa:Compliance ;
-    vpa:compliant "false"^^xsd:boolean ;
-    vpa:checkedRequirement eralex:reg-2013-1236 , eralex:reg-2014-1304 , eralex:reg-2015-924 , eralex:reg-2013-321  ;
-    vpa:withRestriction [
-      a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
-      era:forConfiguration eratv:BatmanSpecial  ;
-      era:nonCodedRestrictions "Not allowed on EU Railways, only to be used in Gotham metro."@en
-    ]
-  ] ;	
-  vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 .
 
 era-ecd:ecd-123 a era:ECDeclaration ;
     dcterms:type era-ecd-types:ECDoV ;
