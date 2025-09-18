@@ -136,7 +136,7 @@ eratv:vt-71-001-0001-1-001 a era:VehicleType ;
     era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledSpecialVehicle ;
     
     # FIXME: MISSING UNDETECTED
-    era:vehicleTypeManufacturer ;
+    era:vehicleTypeManufacturer orgr:Wayne_Manufacturer ;
 
     # Configuration (rest of parameters not relevant for testcases)
     era:wheelSetGauge era-ntg-rinf:30 ;
