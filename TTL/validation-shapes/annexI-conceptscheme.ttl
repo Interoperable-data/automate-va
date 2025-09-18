@@ -506,6 +506,7 @@ eralex-pava:AnnexI-9-2 a skos:Concept , sh:NodeShape ;
         sh:severity sh:Warning ;
         sh:select '''
             PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             SELECT $this ?preEngagement ?comment
             WHERE {
               $this era:preEngagementBaseline ?preEngagement .
