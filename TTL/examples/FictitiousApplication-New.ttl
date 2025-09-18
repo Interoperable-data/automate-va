@@ -110,6 +110,8 @@ orgr:Wayne_Keeper a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era
 orgr:Wayne_Applicant a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ; era:hasOrganisationRole era-organisation-roles:Applicant .
 orgr:Wayne_Manufacturer a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ;  era:hasOrganisationRole era-organisation-roles:Manufacturer . 
 orgr:EUAR_AuthorisingEntity a era:OrganisationRole ; era:roleOf rorg:EUAR ; era:hasOrganisationRole era-organisation-roles:AuthorisingEntity .
+orgr:0001_NotifiedBody a era:OrganisationRole ; era:organisationCode "0001" ; era:roleOf rorg:NoBo-US-0001 ; era:hasOrganisationRole era-organisation-roles:NotifiedBody .
+orgr:BOWO_DesignatedBody a era:OrganisationRole ; era:organisationCode "BOWO" ; era:roleOf rorg:NoBo-US-0001 ; era:hasOrganisationRole era-organisation-roles:DesignatedBody .
 
 
 ## ERATV
@@ -220,11 +222,15 @@ gotham:nobo-71-001-0001-1-001-US a era:CABEvidence ;
 
 
 ## ERADIS
+# always pre-insert prefixes.ttl
+## DEV: ERADIS-data graph MUST IN PRODUCTION be retrieved from ERADIS+
+
 gotham:debo-123 a era:ECCertificate ;
     dcterms:identifier "US001/1/NNTR/2025/RST/EN/WAYNE-001/V01" ;
     dcterms:type era-cld-types:1 ;
     # dcterms:issued "2025-01-01"^^xsd:date ; # UNDETECTED MISSING
     dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
+    dcterms:creator orgr:BOWO_DesignatedBody ;
     rdfs:label "NNTR verification certificate - underbody, wheelsets, axles, wheels" ;
     vpa:valid [
       a time:ProperInterval ;
@@ -240,6 +246,7 @@ gotham:debo-456 a era:ECCertificate ;
     dcterms:type era-cld-types:1 ;
     # dcterms:issued "2025-01-01"^^xsd:date ; # UNDETECTED MISSING
     dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
+    dcterms:creator orgr:BOWO_DesignatedBody ;
     rdfs:label "NNTR verification certificate - plating, weapons and structure" ;
     vpa:valid [
       a time:ProperInterval ;
@@ -254,7 +261,7 @@ era-ecd:ecd-123 a era:ECDeclaration ;
     dcterms:type era-ecd-types:ECDoV ;
     dcterms:identifier "US/000000GC93653a/2022/000014" ;
     dcterms:label "DoV for Wayne Industries special railway attack vehicle";
-    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
+    dcterms:creator orgr:Wayne_Applicant;
     dcterms:requires [ a era:CABEvidence ; rdfs:member era-cld:cld-NoBoCert-123000 , era-cld:cld-NoBoCert-456000 ];
     dcterms:issued "2022-04-03"^^xsd:date ;
     vpa:versionNumber 1 .
@@ -264,8 +271,8 @@ era-cld:cld-NoBoCert-123000 a era:CLD ;
     dcterms:type era-cld-types:1 ;
     dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
     rdfs:label "TSI RST TE verification certificate" ;
-    dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
-    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ] ;
+    dcterms:audience orgr:Wayne_Applicant;
+    dcterms:creator orgr:0001_NotifiedBody ;
     vpa:checkedCompliance [ a era:CABAssessmentCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-123 ] ;
     vpa:valid [
       a time:ProperInterval ;
@@ -284,21 +291,22 @@ era-cld:cld-NoBoCert-456000 a era:CLD ;
     dcterms:identifier "0001/4/SD/2022/RST/EN/WAYN0001/01" ;
     dcterms:type era-cld-types:4 ;
     dcterms:source eralex:dir-2016-797 ; # the EU Legislation, as applied in Gotham
-    dcterms:spatial lorg:MF-US-GC002-225 ; # restricted to the audit at production site.
+    dcterms:spatial lorg:MF-DE-GC002-225 ; # restricted to the audit at production site.
     rdfs:label "TSI RST QMSA verification certificate - secret site" ;
-    dcterms:audience [ a era:OrganisationRole ; era:roleOf rorg:MF-US-GC001-224 ] ;
-    dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-US-0001 ] ;
+    dcterms:audience orgr:Wayne_Applicant;
+    dcterms:creator orgr:0001_NotifiedBody ;
     vpa:checkedCompliance [ a era:CABAuditCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-456 ] ;
     vpa:valid [
-      a time:ProperInterval ;
-      time:hasBeginning "2022-04-01"^^xsd:date ; #start of validity
-      time:hasDurationDescription [
-          # https://www.w3.org/TR/owl-time/#time:DurationDescription
-          time:years 2 ; # example of an expired CLD, which should cause the ECD to be declared expired.
-      ]
+        a time:ProperInterval ;
+        time:hasBeginning "2022-04-01"^^xsd:date ; #start of validity
+        time:hasDurationDescription [
+            # https://www.w3.org/TR/owl-time/#time:DurationDescription
+            time:years 2 ; # example of an expired CLD, which should cause the ECD to be declared expired.
+        ]
     ].
 
 gotham:clui-456 a era:CABRestriction ; # subClassOf era:Restriction
-  vpa:regarding eralex:reg-2014-1304 ;
-  era:nonCodedRestrictions "The audit could not take place as access to the secret construction site was not allowed."@en .
+    vpa:regarding eralex:reg-2014-1304 ;
+    era:nonCodedRestrictions "The audit could not take place as access to the secret construction site was not allowed."@en .
+
 
