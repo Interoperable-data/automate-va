@@ -41,6 +41,7 @@
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
+@prefix orgr: <http://data.europa.eu/949/organisations/roles/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
 @prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
