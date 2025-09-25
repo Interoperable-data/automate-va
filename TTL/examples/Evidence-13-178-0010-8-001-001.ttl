@@ -105,7 +105,7 @@ erava:debo-13-178-0010-8-001-001-1 a era:CABEvidence ; # subClassOf vpa:Evidence
         vpa:checkedSection "2.1.1 Strength and integrity" , "3.1 Vehicle gauge" , "3.2.1 Running safety and dynamics", "3.3.5 Sanding system" , "3.3.7 Axle shaft", "4.1 Functional requirements for braking at train level" , "4.5 Brake performance" , "12.1.2.2 Other GSM-R requirements", "12.2.1 National on-board signalling systems" ;
     	vpa:withRestriction [
             a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
-            era:forConfiguration eratv:ConfigA  ;
+            era:forConfiguration era-vtc:ConfigA  ;
         ] ;
     ] ;	
     vpa:supportsCase erava:vac-13-178-0010-8-001-001-DE-1 .

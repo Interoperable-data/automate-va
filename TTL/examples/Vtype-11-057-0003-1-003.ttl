@@ -137,7 +137,7 @@ eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
     era:configDependentParameter [ 
         ## Joined AC-configurations 
         a era:VehicleTypeConfigParameterSet ;
-        era:forConfiguration eratv:Config15kV167Hz , eratv:Config25kV50Hz ;
+        era:forConfiguration era-vtc:Config15kV167Hz , era-vtc:Config25kV50Hz ;
         era:energySupplyMaxPower "6400"^^xsd:double ;
         era:maximumContactWireHeight 4.51, 6.51 ;
         era:vehiclePantographHead "1950 sc DE and AT mm" ;
@@ -151,29 +151,29 @@ eratv:vt-11-057-0003-1-003 a era:VehicleType ; # Itself subClass of vpa:Scope
 ### VehicleTypeConfigurations
 ### Note, some are IDENTICAL as those defined in the type 11-057-0018-9-001, and they are reused in the KG.
 # AC 15kV-16.7Hz only
-eratv:Config15kV167Hz a era:VehicleTypeConfiguration ;
+era-vtc:Config15kV167Hz a era:VehicleTypeConfiguration ;
     rdfs:label "AC 15kV-16.7Hz" ;
     era:energySupplySystem era-ess-rinf:AC20 .
 
 # AC 25kV-50Hz only
-eratv:Config25kV50Hz a era:VehicleTypeConfiguration ;
+era-vtc:Config25kV50Hz a era:VehicleTypeConfiguration ;
     rdfs:label "AC 25kV-50Hz" ;
     era:energySupplySystem era-ess-rinf:AC10 .
 
 # DC 3kV only
-eratv:Config3kV a era:VehicleTypeConfiguration ;
+era-vtc:Config3kV a era:VehicleTypeConfiguration ;
     rdfs:label "DC 3kV" ;
     era:energySupplySystem era-ess-rinf:DC30 .
 
 # 1435mm / AC 15kV-16.7Hz / Indusi/PZB
-eratv:Config1435IndusiPZB a era:VehicleTypeConfiguration ;
+era-vtc:Config1435IndusiPZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / Indusi/PZB" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
     era:forOnBoardClassB era-tpls-eratv:INDUSI-PZB .
 
 # 1435mm / AC 15kV-16.7Hz / LZB
-eratv:Config1435LZB a era:VehicleTypeConfiguration ;
+era-vtc:Config1435LZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / LZB" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
@@ -184,7 +184,7 @@ eratv:Config1435LZB a era:VehicleTypeConfiguration ;
 #### Restrictions
 eratv:nccfu-11-057-0003-1-003-1 a era:VehicleTypeAuthorisationRestriction ;
   # vpa:regarding must link to a vpa:Requirement.
-  era:forConfiguration eratv:Config1435LZB , eratv:Config1435IndusiPZB ;
+  era:forConfiguration era-vtc:Config1435LZB , era-vtc:Config1435IndusiPZB ;
   # ... both are MOSTLY identical and coded only.
   era:minimumHorizontalRadius 140 ;
   era:gaugingProfile era-gaugings-rinf:40 ;
@@ -195,12 +195,12 @@ eratv:nccfu-11-057-0003-1-003-1 a era:VehicleTypeAuthorisationRestriction ;
   # TSI CCS - Annex II.3.3.   List of Class B train protection systems
 
 eratv:nccfu-11-057-0003-1-003-1-2 a era:VehicleTypeAuthorisationRestriction ;
-  era:forConfiguration eratv:Config1435LZB ;
+  era:forConfiguration era-vtc:Config1435LZB ;
   # 3.1 Climatic zone:  3.1.1 T1
   era:temperatureRange era-tr:10 .
 
 eratv:nccfu-11-057-0003-1-003-1-3 a era:VehicleTypeAuthorisationRestriction ;
-  era:forConfiguration eratv:Config1435IndusiPZB ;
+  era:forConfiguration era-vtc:Config1435IndusiPZB ;
   # 3.1 Climatic zone:  3.1.1 T2
   era:temperatureRange era-tr:20 .
 
@@ -235,7 +235,7 @@ erava:vac-11-057-0003-1-003-DE-1 a era:VehicleAuthorisationCase  ;   # Uses: era
       vpa:isCompliant "false"^^xsd:boolean ;
       vpa:withRestriction [ 
           a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction
-          era:forConfiguration eratv:Config1435IndusiPZB ;
+          era:forConfiguration era-vtc:Config1435IndusiPZB ;
       ]
   ];
    # 2.3 specific cases conformity with which has been assessed
@@ -247,7 +247,7 @@ erava:vac-11-057-0003-1-003-DE-1 a era:VehicleAuthorisationCase  ;   # Uses: era
       vpa:isCompliant "true"^^xsd:boolean ;
       vpa:withRestriction [ 
           a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction
-          era:forConfiguration eratv:Config1435IndusiPZB ;
+          era:forConfiguration era-vtc:Config1435IndusiPZB ;
       ];
    ].
 
@@ -285,7 +285,7 @@ erava:vac-11-057-0003-1-003-AT-1 a era:VehicleAuthorisationCase  ;   # Uses: era
       vpa:checkedRequirement <http://data.europa.eu/eli/dec_impl/2015/2299/oj> ;
       vpa:withRestriction [ 
           a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction
-          era:forConfiguration eratv:Config1435IndusiPZB ;
+          era:forConfiguration era-vtc:Config1435IndusiPZB ;
       ];
   ];
   vpa:supportsRequest [

@@ -633,6 +633,230 @@ era-sh:VehicleType a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:path era:dataRadioCompatible ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Data radio compatibility system"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:designMassExceptionalPayload ;
+        sh:datatype xsd:integer ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Design mass for exceptional payload"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:designMassNormalPayload ;
+        sh:datatype xsd:integer ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Design mass for normal payload"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:designMassWorkingOrder ;
+        sh:datatype xsd:integer ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Design mass in working order"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:endCouplingType ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "End coupling type"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:etcsEquipmentOnBoardLevel ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "ETCS equipment on board level"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:etcsOnboardSystemVersions ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "ETCS onboard system versions"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:etcsSystemCompatibility ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "ETCS system compatibility"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:legacyRadioSystem ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Legacy radio system"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:lengthOfVehicle ;
+        sh:datatype xsd:double ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Length of vehicle in meters"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:lineCategory ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ;
+        sh:description "Line category (can be multiple values)"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:massPerWheel ;
+        sh:datatype xsd:double ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Mass per wheel in kg"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:maximumAverageDeceleration ;
+        sh:datatype xsd:double ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Maximum average deceleration"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:maximumBrakeThermalEnergyCapacity ;
+        sh:datatype xsd:double ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Maximum brake thermal energy capacity"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:minimumConcaveVerticalRadius ;
+        sh:datatype xsd:double ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Minimum concave vertical radius"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:minimumConvexVerticalRadius ;
+        sh:datatype xsd:double ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Minimum convex vertical radius"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:minimumWheelDiameter ;
+        sh:datatype xsd:integer ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Minimum wheel diameter"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:parkingBrakeMaximumGradient ;
+        sh:datatype xsd:double ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Parking brake maximum gradient"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:protectionLegacySystem ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Protection legacy system"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:railInclination ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Rail inclination"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:safeConsistLengthInformationNecessary ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Safe consist length information necessary"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:staticAxleLoadExceptionalPayload ;
+        sh:datatype xsd:double ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Static axle load for exceptional payload"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:staticAxleLoadNormalPayload ;
+        sh:datatype xsd:double ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Static axle load for normal payload"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:staticAxleLoadWorkingOrder ;
+        sh:datatype xsd:double ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Static axle load in working order"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:supportedPlatformHeight ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Supported platform height"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:thermalCapacityTSIReference ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Thermal capacity TSI reference"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:totalVehicleMass ;
+        sh:datatype xsd:integer ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Total vehicle mass"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:trainDetectionSystemType ;
+        sh:nodeKind sh:IRI ;
+        sh:class skos:Concept ;
+        sh:minCount 0 ;
+        sh:description "Train detection system type (can be multiple values)"
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
         sh:path era:vehicleTypeManufacturer ;
         sh:nodeKind sh:BlankNode ;
         sh:class era:OrganisationRole ;
@@ -691,7 +915,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:configDependentParameter ;
-        sh:nodeKind sh:BlankNode ;
+        sh:nodeKind sh:IRI ;
         sh:class era:VehicleTypeConfigParameterSet ;
         sh:minCount 0 ;
         sh:node [
@@ -702,7 +926,7 @@ era-sh:VehicleType a
                 sh:minCount 1 ; sh:maxCount 1 ;
             ]
         ] ;
-        sh:description "Configuration-dependent parameters as blank nodes"
+        sh:description "Configuration-dependent parameters as named nodes"
     ];
     # Technical parameters (non-configuration dependent)
     sh:property [

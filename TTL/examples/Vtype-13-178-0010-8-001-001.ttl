@@ -1,102 +1,99 @@
-@base <http://data.europa.eu/949/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix era-sh: <http://data.europa.eu/949/shapes/> .
-
-# From examples
-@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
-@prefix gotham: <https://batman.fandom.com/wiki/> .
-
-# General
-@prefix as:    <https://www.w3.org/ns/activitystreams#> .
-@prefix cc:    <http://creativecommons.org/ns#> .
-@prefix dash:  <http://datashapes.org/dash#> .
-@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix dct:  <http://purl.org/dc/terms/> .
-@prefix dul:  <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-bpt-eratv: <http://data.europa.eu/949/concepts/brake-parking-type/eratv/> .
+@prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
+@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
+@prefix era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/> .
+@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-csm: <http://data.europa.eu/949/concepts/contact-strip-materials/> .
+@prefix era-csm-eratv: <http://data.europa.eu/949/concepts/contact-strip-materials/eratv/> .
+@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
+@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
+@prefix era-ecm-attestations: <http://data.europa.eu/949/concepts/ecm-attestations/> .
+@prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
+@prefix era-ect-eratv: <http://data.europa.eu/949/concepts/end-coupling-type/eratv/> .
+@prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
+@prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
+@prefix era-gaugings-rinf: <http://data.europa.eu/949/concepts/gaugings/rinf/> .
+@prefix era-gsmr-rinf: <http://data.europa.eu/949/concepts/gsmr-networks/rinf/> .
+@prefix era-gsmrv-eratv: <http://data.europa.eu/949/concepts/gsmr-versions/eratv/> .
+@prefix era-gsmrv-rinf: <http://data.europa.eu/949/concepts/gsmr-versions/rinf/> .
+@prefix era-ic-eratv: <http://data.europa.eu/949/concepts/ice-conditions/eratv/> .
+@prefix era-lclc: <http://data.europa.eu/949/concepts/load-capability-line-categories/> .
+@prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
+@prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
+@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
+@prefix era-opcw-rinf: <http://data.europa.eu/949/concepts/other-protection-control-warning/rinf/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
+@prefix era-perm: <http://data.europa.eu/949/permissions/> .
+@prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
+@prefix era-pset: <http://data.europa.eu/949/vehicleTypes/parameterSets/> .
+@prefix era-ri-eratv: <http://data.europa.eu/949/concepts/rail-inclinations/eratv/> .
+@prefix era-rscv-rinf: <http://data.europa.eu/949/concepts/radio-system-compatibilities-voice/rinf/> .
+@prefix era-rsf-eratv: <http://data.europa.eu/949/concepts/rolling-stock-fire/eratv/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix era-skos: <http://data.europa.eu/949/concepts/> .
+@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
+@prefix era-tc-eratv: <http://data.europa.eu/949/concepts/thermal-capacity/eratv/> .
+@prefix era-tds-eratv: <http://data.europa.eu/949/concepts/train-detection/eratv/> .
+@prefix era-tds-rinf: <http://data.europa.eu/949/concepts/train-detection/rinf/> .
+@prefix era-tpls-eratv: <http://data.europa.eu/949/concepts/train-protection-legacy-systems/eratv/> .
+@prefix era-tpls-rinf: <http://data.europa.eu/949/concepts/train-protection-legacy-systems/rinf/> .
+@prefix era-tr: <http://data.europa.eu/949/concepts/temperature-ranges/> .
+@prefix era-tsi: <http://data.europa.eu/949/concepts/tsi-sections/> .
+@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
+@prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+@prefix era-vt: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix era-vtacs: <http://data.europa.eu/949/vehicleTypes/authorisations/cases/> .
+@prefix era-vtap: <http://data.europa.eu/949/vehicleTypes/authorisations/applications/> .
+@prefix era-vtc: <http://data.europa.eu/949/vehicleTypes/configurations/> .
+@prefix era-vtc1: <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
+@prefix era-vtck: <http://data.europa.eu/949/vehicleTypes/authorisations/checks/> .
+@prefix era-vtr: <http://data.europa.eu/949/vehicleTypes/authorisations/restrictions/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
+@prefix eralex-pava: <http://data.europa.eu/949/requirements/legislations/pava/> .
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix erava-tsi-conforms: <http://data.europa.eu/949/concepts/tsi-conformities/> .
+@prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
+@prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix geo:  <http://www.opengis.net/ont/geosparql#> .
-@prefix gr:   <http://purl.org/goodrelations/v1#> .
-@prefix org:  <http://www.w3.org/ns/org#> .
-@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix gotham: <https://batman.fandom.com/wiki/> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix iss: <http://data.europa.eu/949/iss/> .
+@prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
+@prefix iss-rs: <http://data.europa.eu/949/iss/concepts/record-statuses/> .
+@prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
+@prefix issform: <http://era.europa.eu/forms/iss/> .
+@prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix schema:  <http://schema.org/> .
-@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix time: <http://www.w3.org/2006/time#> .
 @prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix uorg: <http://data.europa.eu/949/organisations/units/> .
+@prefix update: <http://data.europa.eu/949/update/> .
+@prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 @prefix vpa: <http://w3id.org/vpa#> .
 @prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-# Domain-specific
-@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
-@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
-@prefix era-perm: <http://data.europa.eu/949/permissions/> .
-@prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
-@prefix eralex-pava: <http://data.europa.eu/949/requirements/legislations/pava/> .
-@prefix rorg: <http://data.europa.eu/949/organisations/> .
-@prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
-@prefix uorg: <http://data.europa.eu/949/organisations/units/> .
-@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
-@prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
-@prefix evr: <http://data.europa.eu/949/vehicles/> .
-@prefix iss: <http://data.europa.eu/949/iss/> . 
-
-
-# Relevant SKOS Concept Schemes
-@prefix era-skos:      <http://data.europa.eu/949/concepts/> .
-@prefix era-tsi:       <http://data.europa.eu/949/concepts/tsi-sections/> .
-@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
-@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
-@prefix era-cld-modules:        <http://data.europa.eu/949/concepts/cld-modules/> .
-@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
-
-@prefix era-states:      <http://data.europa.eu/949/concepts/states/> .
-@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
-@prefix era-vtc:         <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
-@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
-# unused @prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
-@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
-@prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
-@prefix era-tpls-eratv: <http://data.europa.eu/949/concepts/train-protection-legacy-systems/eratv/> .
-@prefix era-tpls-rinf: <http://data.europa.eu/949/concepts/train-protection-legacy-systems/rinf/> .
-@prefix era-gaugings-rinf: <http://data.europa.eu/949/concepts/gaugings/rinf/> .
-@prefix era-gsmrv-rinf: <http://data.europa.eu/949/concepts/gsmr-versions/rinf/> .
-@prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
-@prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
-@prefix era-csm: <http://data.europa.eu/949/concepts/contact-strip-materials/> .
-@prefix era-tr: <http://data.europa.eu/949/concepts/temperature-ranges/> .
-@prefix era-rscv-rinf: <http://data.europa.eu/949/concepts/radio-system-compatibilities-voice/rinf/> .
-@prefix era-gsmr-rinf: <http://data.europa.eu/949/concepts/gsmr-networks/rinf/> .
-@prefix era-ic-eratv: <http://data.europa.eu/949/concepts/ice-conditions/eratv/> .
-@prefix era-rsf-eratv: <http://data.europa.eu/949/concepts/rolling-stock-fire/eratv/> .
-
- # WARNING: DO NOT (YET) EXIST
-@prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
-@prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
-@prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
-@prefix era-ecm-attestations: <http://data.europa.eu/949/concepts/ecm-attestations/> .
-@prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
-@prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
-@prefix erava-tsi-conforms: <http://data.europa.eu/949/concepts/tsi-conformities/> .
-@prefix issform:  <http://era.europa.eu/forms/iss/> . 
-
-# From ISS
-@prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
-@prefix iss-rs:   <http://data.europa.eu/949/iss/concepts/record-statuses/> .
-@prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
-
-# EU Countries
-@prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
-
-# Properties to be post-processed, if shacl-form 
-@prefix update: <http://data.europa.eu/949/update/> .
 
 rorg:MF-DE-81739-1 a era:Body ;
     foaf:name "Siemens Mobility GmbH" .
@@ -105,7 +102,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     ##### GENERAL INFO
     dcterms:identifier "13-178-0010-8-001-001" ;
     era:vehicleTypeNumber "13-178-0010-8" ; # Vehicle Type Number
-    era:includedVersionsVariant "001-001" ;
+    era:includedVersionsVariant "001-001" ; # !Missing
     dcterms:issued "2024-06-14"^^xsd:date ;  # From XML: Date of record
     dcterms:created "2025-01-21"^^xsd:date ;
     rdfs:label "MIREO 4-Teiler 15kV PZB Midi"@de ;
@@ -127,54 +124,124 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     era:energySupplySystem era-ess-rinf:AC20 ;
 
     # Non-configuration dependent parameters
-    era:drivingCabs "2"^^xsd:integer;
-    era:vehiclesComposingFixedFormation "4"^^xsd:integer ;
-    era:gsmRVersion "Implementing Regulation (EU) 2023/1695, Appendix B transition regime Baseline 1" ;
-    era:voiceRadioCompatible era-rscv-rinf:140 ;
-    era:voiceOperationalCommImpl "TRS6000 i.V.m. der Software 4.2.0" ;
-    era:voiceGSMRNetwork era-gsmr-rinf:90 ;
-    era:usesGroup555 "true"^^xsd:boolean ;
-    era:maximumDesignSpeed "160"^^xsd:integer ;
-    era:maximumLocomotivesCoupled "3"^^xsd:integer ;
-    era:gaugingProfile era-gaugings-rinf:40 , era-gaugings-rinf:350 ;
-    era:temperatureRange era-tr:10 ;
-    era:snowIceHailConditions era-ic-eratv:nominal ;
+    era:drivingCabs "2"^^xsd:integer; # !missing
+    
+    era:dataRadioCompatible era-csm-eratv:not-applicable ;
+    era:designMassExceptionalPayload 181800 ;
+    era:designMassNormalPayload 176100 ;
+    era:designMassWorkingOrder 138000 ;
+    era:endCouplingType era-ect-eratv:Automatic_Type_10_Scharfenberg ;
+    era:energySupplySystem era-ess-rinf:AC20 ;
+    era:etcsEquipmentOnBoardLevel era-bpt-eratv:None ;
+    era:etcsOnboardSystemVersions era-bpt-eratv:None ;
+    era:etcsSystemCompatibility era-csm-eratv:not-applicable ;
+    era:fireSafetyCategory era-lclc:10 ;
     era:fireSafetyCategory era-rsf-eratv:10 ;
-    # many other non-config dependent parameters to be extracted from ERATV
 
+    era:gaugingProfile era-ect-eratv:Other_specify,
+        era-gaugings-rinf:40 ;
+    era:gaugingProfile era-gaugings-rinf:40 , era-gaugings-rinf:350 ;
+    
+    era:gsmRRadioDataCommunication era-bpt-eratv:None ;
+    era:gsmRVersion "http://data.europa.eu/949/concepts/gsmr-versions/eratv/Implementing Regulation (EU) 2023/1695, Appendix B transition regime Baseline 1" ;
+    # era:gsmRVersion "Implementing Regulation (EU) 2023/1695, Appendix B transition regime Baseline 1" ;
+
+    era:hasBrakingPerformance <http://data.europa.eu/949/brakingPerformance/13-178-0010-8-001-001> ;
+    era:hasEddyCurrentBrakingFitted false ;
+    era:hasFlangeLubricationFitted true ;
+    era:hasLubricationDevicePrevention true ;
+    era:hasMagneticBrakePrevention true ;
+    era:hasMagneticBrakingFitted true ;
+    era:hasOCLChargeableTractionStorage false ;
+    era:hasOnboardDerailmentFunction false ;
+    era:hasPreventRegenerativeBrakeUse true ;
+    era:hasRegenerativeBrake true ;
+    era:hasSignalProcessingDerailmentFunction false ;
+    era:hasUsesGroup555 true ;
+    era:hasWheelSlideProtectionSystem true ;
+    era:includedVersionsVariant "001-001" ;
+    era:legacyRadioSystem era-bpt-eratv:None ;
+    era:lengthOfVehicle 89.66 ;
+    era:lineCategory era-lclc:110,
+        era-lclc:120,
+        era-lclc:40,
+        era-lclc:50,
+        era-lclc:60,
+        era-lclc:70,
+        era-lclc:80,
+        era-lclc:90 ;
+    era:massPerWheel 9700.0 ;
+    era:maximumAverageDeceleration 1.5 ;
+    era:maximumBrakeThermalEnergyCapacity 83460.0 ;
+    era:maximumDesignSpeed 160 ;
+    era:maximumLocomotivesCoupled 3 ;
+    era:minimumConcaveVerticalRadius 500.0 ;
+    era:minimumConvexVerticalRadius 500.0 ;
+    era:minimumHorizontalRadius 125.0 ;
+    era:minimumWheelDiameter 810 ;
+    era:parkingBrakeMaximumGradient 40.0 ;
+    era:protectionLegacySystem era-opcw-rinf:40 ;
+    era:railInclination era-ri-eratv:1-40 ;
+    era:safeConsistLengthInformationNecessary era-bpt-eratv:None ;
+    era:snowIceHailConditions era-ic-eratv:nominal ;
+    era:staticAxleLoadExceptionalPayload 19300.0 ;
+    era:staticAxleLoadNormalPayload 15900.0 ;
+    era:staticAxleLoadWorkingOrder 15900.0 ;
+    era:supportedPlatformHeight era-ect-eratv:Other_specify ;
+    era:temperatureRange era-tr:10 ;
+    era:thermalCapacityTSIReference era-tc-eratv:Reference_case_of_80_km_h_21_mm_m_46_km ;
+    era:totalVehicleMass 138000 ;
+    era:trainDetectionSystemType era-tds-eratv:axle-counters,
+        era-tds-rinf:10,
+        era-tds-rinf:30 ;
+    era:usesGroup555 "true"^^xsd:boolean ; #!missing
+    era:vehicleCategory era-vehicle-types-eratv:11 ;
+    era:vehicleSubCategory era-vehicle-types-eratv:passengerTrainset ;
+    era:vehicleTypeManufacturer <http://data.europa.eu/949/organisationRoles/eratv/483_Manufacturer> ;
+    era:vehicleTypeNumber "13-178-0010-8" ;
+    era:vehicleTypePlatform "MIREO" ;
+    era:vehiclesComposingFixedFormation 4 ;
+    era:voiceOperationalCommImpl "TRS6000 i.V.m. der Software 4.2.0" ; # missing
+    era:voiceGSMRNetwork era-gsmrv-eratv:GSM-R_D_Germany ; # !incorrect
+    era:voiceGSMRNetwork era-gsmr-rinf:90 ; # correct
+    era:voiceRadioCompatible era-rscv-rinf:140 ;
+    
     # Parameters linked with a Configuration
-    era:configDependentParameter [ 
-        a era:VehicleTypeConfigParameterSet ;
-        era:forConfiguration eratv:ConfigC ; # ONLY SKOS CS era-ess-rinf:AC20 ;
+    era:configDependentParameter era-pset:C , era-pset:B ;
+    era:vehicleTypePlatform "MIREO" .
+
+
+# Config ParameterSet
+
+era-pset:C a era:VehicleTypeConfigParameterSet ;
+        era:forConfiguration era-vtc:ConfigC ; # ONLY SKOS CS era-ess-rinf:AC20 ;
         era:maximumContactWireHeight "4.70"^^xsd:double, "6.50"^^xsd:double ;
         era:vehiclePantographHead "1950 sc DE and AT mm" ;
-        era:numberOfPantographsInContactWithOCL "1" ;
+        era:numberOfPantographsInContactWithOCL "1" .
         # other parameters as in 4.10.X
-    ] , [
-        a era:VehicleTypeConfigParameterSet ;
-        era:forConfiguration eratv:ConfigB ; # ONLY SKOS CS era-ntg-rinf:30 ;
-        era:vehicleTypeMaximumSpeedAndCantDeficiency [
-            a era:MaximumSpeedAndCantDeficiency ;
-            era:vehicleTypeMaximumCantDeficiency "150"^^xsd:integer  ;
-            era:vehicleTypeMaximumSpeed "160"^^xsd:integer  ;  
-        ] ;
-    ];
-    era:vehicleTypePlatform "MIREO" .
+
+era-pset:B a era:VehicleTypeConfigParameterSet ;
+    era:forConfiguration era-vtc:ConfigB ; # ONLY SKOS CS era-ntg-rinf:30 ;
+    era:vehicleTypeMaximumSpeedAndCantDeficiency [
+        a era:MaximumSpeedAndCantDeficiency ;
+        era:vehicleTypeMaximumCantDeficiency "150"^^xsd:integer  ;
+        era:vehicleTypeMaximumSpeed "160"^^xsd:integer  ;  
+    ]. 
 
 ### CONFIGURATIONS AND RESTRICTIONS
 
 # Configuration only used in 3.1.2.4 (auth)
-eratv:ConfigA a era:VehicleTypeConfiguration ; # NOT a subClass of vpa:Requirement
+era-vtc:ConfigA a era:VehicleTypeConfiguration ; # NOT a subClass of vpa:Requirement
     rdfs:label "1435mm / AC 15kV-16.7Hz / PZB 90" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
     era:forOnBoardClassB era-tpls-rinf:40 .
 
-eratv:ConfigB a era:VehicleTypeConfiguration ;
+era-vtc:ConfigB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm" ;
     era:wheelSetGauge era-ntg-rinf:30 .
 
-eratv:ConfigC a era:VehicleTypeConfiguration ;
+era-vtc:ConfigC a era:VehicleTypeConfiguration ;
     rdfs:label "AC 15kV-16.7Hz" ;
     era:energySupplySystem era-ess-rinf:AC20 .
 
@@ -182,9 +249,9 @@ eratv:ConfigC a era:VehicleTypeConfiguration ;
 
 # Non-coded CfU & restrictions 
 # See definition in https://eur-lex.europa.eu/eli/dec_impl/2011/665/2023-09-08#anx_I part 6
-eratv:nccfu-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
-    # DO NOT USE vpa:regarding eratv:ConfigA as configs cannot be vpa:Requirement's ;
-    era:forConfiguration eratv:ConfigA ;
+era-vtr:nccfu-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
+    # DO NOT USE vpa:regarding era-vtc:ConfigA as configs cannot be vpa:Requirement's ;
+    era:forConfiguration era-vtc:ConfigA ;
     era:nonCodedRestrictions """Die für den MIREO 4-Teiler 15kV PZB Midi (Mireo Netz Regensburg Donautal) weiterhin gültigen Einsatzbedingungen/-beschränkungen des Referenztyps MIREO S-Bahn Rhein-Neckar:
 - Steilstreckenbetrieb mit Fahrzeugen dieses Typs ist nicht zulässig.
 - Der minimale befahrbare vertikale Ausrundungshalbmesser für das Fahrzeug beträgt 500m.
@@ -195,7 +262,7 @@ eratv:nccfu-13-178-0010-8-001-001-1 a era:VehicleTypeAuthorisationRestriction ; 
 ### AUTHORISATION (CASE)S
 
 # GERMANY - See all authorisation data under 3.1.X.X
-erava:vac-13-178-0010-8-001-001-DE-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
+era-vtacs:vac-13-178-0010-8-001-001-DE-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:NEW ;
     era:typeRegistrationMethod era-va-trm:NewType ;
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
@@ -217,7 +284,7 @@ erava:vac-13-178-0010-8-001-001-DE-1 a era:VehicleTypeAuthorisationCase ; # subC
         # vpa:checkedSection <SKOS Concept for 7.4. Specific environmental conditions Specific conditions Germany> ;
         vpa:withRestriction [
             a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
-            era:forConfiguration eratv:ConfigA  ;
+            era:forConfiguration era-vtc:ConfigA  ;
         ]
     ] ;
 
@@ -232,7 +299,7 @@ erava:vac-13-178-0010-8-001-001-DE-1 a era:VehicleTypeAuthorisationCase ; # subC
         # vpa:checkedSection <SKOS Concept for 7.3.2.1. Priority seats.... Specific cases Germany and Denmark 'P'> , <SKOS Concept for 7.3.2.6. Step position for vehicle access and egress...at platforms below 550 mm height> ;
         vpa:withRestriction [
             a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
-            era:forConfiguration eratv:ConfigA  ;
+            era:forConfiguration era-vtc:ConfigA  ;
         ]
     ] ;
 
@@ -272,31 +339,31 @@ Checks already carried out at the previous authorisation of reference type 13-17
     ].
 
 # For the first C2T application following 20240202-004: this was V-20240621-009
-erava:vac-13-178-0010-8-001-001-DE-2 a era:VehicleAuthorisationCase ;
+era-vtacs:vac-13-178-0010-8-001-001-DE-2 a era:VehicleAuthorisationCase ;
     vpa:permissionType era-va-authcase:C2T ;
     # Non-disclosed - OSS data on the auth case can be placed here
     vpa:supports erava:va-20240621-009 .
 
-erava:va-20240621-009 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request ;
+era-vtap:va-20240621-009 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request ;
     # Non-disclosed - OSS data can be placed here
     vpa:requestFor erava:20240621-009 .
 
-erava:20240621-009 a era:VehicleAuthorisation ; # subClassOf vpa:Permission ;
+era-vta:20240621-009 a era:VehicleAuthorisation ; # subClassOf vpa:Permission ;
     dcterms:identifier "EU8120241578" ;
     dcterms:isReplacedBy erava:20241219-012 ;
     dcterms:issued "2024-06-26"^^xsd:date .
 
 # For the C2T application following 20240621-009: this was V-20241219-012
-erava:vac-13-178-0010-8-001-001-DE-3 a era:VehicleAuthorisationCase ; # subClassOf vpa:Case
+era-vtacs:vac-13-178-0010-8-001-001-DE-3 a era:VehicleAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:C2T ;
     # Non-disclosed - OSS data on the auth case can be placed here
     vpa:supports erava:va-20241219-012 .
 
-erava:va-20241219-012 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request
+era-vtap:va-20241219-012 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request
     # Non-disclosed - OSS data can be placed here
     vpa:requestFor erava:20241219-012 .
 
-erava:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission
+era-vta:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission
     dcterms:identifier "EU8120250002" ;
     dcterms:issued "2025-01-03"^^xsd:date .
 

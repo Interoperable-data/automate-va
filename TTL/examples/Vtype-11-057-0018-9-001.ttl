@@ -115,14 +115,14 @@ eratv:vt-11-057-0018-9-001 a era:VehicleType ;
 
 #### Configurations
 # 1435mm / AC 15kV-16.7Hz / Indusi/PZB
-eratv:Config1435IndusiPZB a era:VehicleTypeConfiguration ;
+era-vtc:Config1435IndusiPZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / Indusi/PZB" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
     era:forOnBoardClassB era-tpls-eratv:INDUSI-PZB .
 
 # 1435mm / AC 15kV-16.7Hz / LZB
-eratv:Config1435LZB a era:VehicleTypeConfiguration ;
+era-vtc:Config1435LZB a era:VehicleTypeConfiguration ;
     rdfs:label "1435mm / AC 15kV-16.7Hz / LZB" ;
     era:wheelSetGauge era-ntg-rinf:30 ;
     era:energySupplySystem era-ess-rinf:AC20 ;
@@ -130,7 +130,7 @@ eratv:Config1435LZB a era:VehicleTypeConfiguration ;
 
 #### Restrictions
 eratv:NCCFU-11-057-0018-9-001-1 a era:VehicleTypeAuthorisationRestriction ;
-    era:forConfiguration eratv:Config1435LZB , eratv:Config1435IndusiPZB .
+    era:forConfiguration era-vtc:Config1435LZB , era-vtc:Config1435IndusiPZB .
     # ... both are identical and coded only.
 
 #### AuthorisationCase
