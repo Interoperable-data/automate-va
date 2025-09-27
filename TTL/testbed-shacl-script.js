@@ -1,25 +1,22 @@
 // SHACL validation client for EC endpoint.
-// Added --info to fetch domain info (GET /<domain>/api/info).
-//
-// Usage:
-//   node validate-shacl.js --data examples/Vtype-...ttl --shapes validation-shapes/va-scope-VehicleType-0.0.0.1.ttl
-//   node validate-shacl.js --mode url --rawBase https://github.com/Interoperable-data/automate-va/raw/refs/heads/dev-lws/TTL --data ... --shapes validation-shapes/va-scope-VehicleType-0.0.0.1.ttl
-//   node validate-shacl.js --info            (prints info JSON and exits)
-//   node validate-shacl.js --info --domain era-shacl-test --data ... (info first, then validation)
-// Options:
-//   --info                Fetch domain info (no validation unless data+shapes also supplied)
-//   --domain <d>          Defaults to era-shacl-test
-//   --endpoint <url>      Defaults to https://www.itb.ec.europa.eu/shacl
-//   --mode <inline|url>   Defaults inline
-//   --rawBase <url>       Required if mode=url
-//   --shapes file1.ttl[,file2.ttl]
-//   --data data.ttl
-//   --report text/turtle (or application/ld+json, etc.)
-//   --contentSyntax text/turtle
-//   --ruleSyntax text/turtle
-//   --timeout <ms>
-//   --dry-run
-//   --prefix file.ttl[,more.ttl]   One or more Turtle files whose contents will be prepended as prefix block to data & shapes (forces inline if originally url mode)
+// Use the following arguments:
+//   --remoteBase <url>              Base URL to resolve relative remote resources (optional if all remotes absolute)
+//   --localData <path>              Local data Turtle file (exactly one of localData / remoteData)
+//   --remoteData <rel|abs>          Remote data Turtle (exactly one of localData / remoteData)
+//   --localShape <path[,more]>      Local shape Turtle file(s) (at least one shape source required)
+//   --remoteShape <rel|abs[,more]>  Remote shape Turtle file(s)
+// Other options:
+//   --info --domain <d> --endpoint <url>
+//   --report <mime> --contentSyntax <mime> --ruleSyntax <mime>
+//   --timeout <ms> --dry-run --prefix file.ttl[,more] --out <file> --compact
+// Behaviour:
+//   * Exactly one of --localData / --remoteData must be supplied.
+//   * At least one of --localShape / --remoteShape must be supplied.
+//   * Relative remoteData / remoteShape require --remoteBase.
+//   * When --prefix is used every inlined resource (local always, remote when prefix present) is prefixed.
+//   * Without prefix: remote data is sent by URL (embeddingMethod='URL'), remote shapes likewise per-rule.
+//   * With prefix: remote resources are fetched and inlined (forces inline embedding) to allow prefix injection.
+// Exit codes: 1 argument error, 2 info error, 3 validation HTTP>=400, 4 runtime error, 5 prefix read error, 6 remote data fetch error, 7 remote shape fetch error.
 
 const fs = require('fs');
 const path = require('path');
@@ -46,25 +43,34 @@ const ENDPOINT_BASE = (opts.endpoint || 'https://www.itb.ec.europa.eu/shacl').re
 const INFO_PATH = `/${DOMAIN}/api/info`;
 const VALIDATE_PATH = `/${DOMAIN}/api/validate`;
 
-const MODE = (opts.mode || 'inline').toLowerCase();
-const RAW_BASE = opts.rawBase || '';
 const DRY_RUN = !!opts['dry-run'];
 const TIMEOUT = parseInt(opts.timeout || '30000', 10);
-const OUTPUT_FILE_RAW = opts.out || opts.output || null; // original user-specified value (may include wrong extension)
-let OUTPUT_FILE = OUTPUT_FILE_RAW; // will possibly be adjusted after content-type known
+const OUTPUT_FILE_RAW = opts.out || opts.output || null;
+let OUTPUT_FILE = OUTPUT_FILE_RAW;
 
 const CONTENT_SYNTAX = opts.contentSyntax || 'text/turtle';
 const RULE_SYNTAX = opts.ruleSyntax || 'text/turtle';
 const REPORT_SYNTAX = opts.report || 'text/turtle';
 
-// If user requested turtle (default) and provided an output file without .ttl, normalise now.
+// New model flags only
+const REMOTE_BASE = opts.remoteBase || null;
+const LOCAL_DATA = opts.localData || null;
+const REMOTE_DATA = opts.remoteData || null;
+const LOCAL_SHAPE = opts.localShape || null; // comma separated
+const REMOTE_SHAPE = opts.remoteShape || null; // comma separated
+
+function isAbsoluteUrl(u) {
+  return /^https?:\/\//i.test(u);
+}
+
+// Normalise output extension for turtle
 if (OUTPUT_FILE && /turtle/i.test(REPORT_SYNTAX) && !/\.ttl$/i.test(OUTPUT_FILE)) {
   const forced = OUTPUT_FILE.replace(/\.[^.]+$/, '') + '.ttl';
   console.error(`Normalising output file extension to .ttl: '${OUTPUT_FILE}' -> '${forced}'`);
   OUTPUT_FILE = forced;
 }
 
-// Collect prefix files (optional)
+// Prefix files
 const PREFIX_FILES = (opts.prefix || opts.prefixes || '')
   .split(',')
   .map((s) => s.trim())
@@ -85,8 +91,8 @@ if (PREFIX_FILES.length) {
 function readUtf8(p) {
   return fs.readFileSync(path.resolve(process.cwd(), p), 'utf8');
 }
-function toUrl(rawBase, localPath) {
-  return rawBase.replace(/\/+$/, '') + '/' + localPath.replace(/^[.\/]+/, '').replace(/\\/g, '/');
+function toUrl(base, rel) {
+  return base.replace(/\/+$/, '') + '/' + rel.replace(/^[.\/]+/, '').replace(/\\/g, '/');
 }
 
 function getJson(urlStr) {
@@ -164,26 +170,21 @@ function postJson(baseUrl, pathName, payload) {
 }
 
 function normalizeTurtle(str) {
-  // Remove BOM, normalise newlines to \n, trim trailing spaces on each line
   return str
     .replace(/^\uFEFF/, '')
     .replace(/\r\n?/g, '\n')
     .split('\n')
     .map((l) => l.replace(/\s+$/, ''))
     .join('\n')
-    .replace(/\n+$/, ''); // drop trailing blank lines
+    .replace(/\n+$/, '');
 }
-
 function compactTurtle(str) {
-  // Collapse multiple blank lines to a single blank line
   return normalizeTurtle(str).replace(/\n{2,}/g, '\n\n');
 }
-
 function prepareInlineContent(filePath, doCompact) {
-  const raw = fs.readFileSync(path.resolve(process.cwd(), filePath), 'utf8');
+  const raw = readUtf8(filePath);
   return doCompact ? compactTurtle(raw) : normalizeTurtle(raw);
 }
-
 function fetchText(urlStr, acceptHdr = 'text/turtle, text/plain;q=0.9, */*;q=0.1') {
   return new Promise((resolve, reject) => {
     const u = new URL(urlStr);
@@ -207,10 +208,10 @@ function fetchText(urlStr, acceptHdr = 'text/turtle, text/plain;q=0.9, */*;q=0.1
   });
 }
 
-const COMPACT = !!opts.compact; // --compact optional flag
+const COMPACT = !!opts.compact;
 
 (async () => {
-  // Handle --info
+  // Info request
   if (opts.info) {
     const infoUrl = ENDPOINT_BASE + INFO_PATH;
     try {
@@ -220,104 +221,91 @@ const COMPACT = !!opts.compact; // --compact optional flag
       console.error('Info request error:', e.message);
       process.exit(2);
     }
-    // If only info requested (no validation args), exit
-    if (!opts.data || !opts.shapes) return;
+    const hasDataArgs = (LOCAL_DATA || REMOTE_DATA) && (LOCAL_SHAPE || REMOTE_SHAPE);
+    if (!hasDataArgs) return; // only info
   }
 
-  if (!opts.data || !opts.shapes) {
-    console.error('Validation requires --data and --shapes.');
+  // Argument validation (new model only)
+  if ((LOCAL_DATA && REMOTE_DATA) || (!LOCAL_DATA && !REMOTE_DATA)) {
+    console.error('Exactly one of --localData or --remoteData must be provided.');
     process.exit(1);
   }
-  if (MODE === 'url' && !RAW_BASE) {
-    console.error('In --mode url you must pass --rawBase.');
+  if (!LOCAL_SHAPE && !REMOTE_SHAPE) {
+    console.error('At least one of --localShape or --remoteShape must be provided.');
     process.exit(1);
   }
 
-  const SHAPE_FILES = opts.shapes
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
-  let contentToValidate, embeddingMethod;
+  const localShapes = LOCAL_SHAPE
+    ? LOCAL_SHAPE.split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
+  const remoteShapes = REMOTE_SHAPE
+    ? REMOTE_SHAPE.split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
 
-  let effectiveMode = MODE;
-  if (PREFIX_BLOCK && MODE === 'url') {
-    console.error(
-      'Prefix block provided; switching from url mode to inline (embedding modified content).'
-    );
-    effectiveMode = 'inline';
-  }
-
-  if (effectiveMode === 'url') {
-    contentToValidate = toUrl(RAW_BASE, opts.data);
-    embeddingMethod = 'URL';
+  // Data resolution
+  let contentToValidate;
+  let embeddingMethod = null; // only set when using URL for main data
+  if (LOCAL_DATA) {
+    const base = prepareInlineContent(LOCAL_DATA, COMPACT);
+    contentToValidate = PREFIX_BLOCK ? PREFIX_BLOCK + base : base;
   } else {
-    // inline: either originally inline or forced inline due to prefix usage
-    if (MODE === 'url') {
-      // Need to fetch remote data when original mode was url
-      const remoteDataUrl = toUrl(RAW_BASE, opts.data);
+    // remote data
+    const dataUrl = isAbsoluteUrl(REMOTE_DATA)
+      ? REMOTE_DATA
+      : REMOTE_BASE
+        ? toUrl(REMOTE_BASE, REMOTE_DATA)
+        : null;
+    if (!dataUrl) {
+      console.error('--remoteBase is required when --remoteData is relative.');
+      process.exit(1);
+    }
+    if (PREFIX_BLOCK) {
       try {
-        const fetched = await fetchText(remoteDataUrl);
+        const fetched = await fetchText(dataUrl);
         const norm = COMPACT ? compactTurtle(fetched) : normalizeTurtle(fetched);
-        contentToValidate = PREFIX_BLOCK ? PREFIX_BLOCK + norm : norm;
+        contentToValidate = PREFIX_BLOCK + norm;
       } catch (e) {
         console.error('Failed fetching remote data for inline embedding:', e.message);
         process.exit(6);
       }
     } else {
-      const base = prepareInlineContent(opts.data, COMPACT);
-      contentToValidate = PREFIX_BLOCK ? PREFIX_BLOCK + base : base;
+      contentToValidate = dataUrl;
+      embeddingMethod = 'URL';
     }
-    embeddingMethod = null; // inline
   }
 
-  const externalRules = await (async () => {
-    const out = [];
-    for (const f of SHAPE_FILES) {
-      if (effectiveMode === 'url') {
-        // If shape file exists locally, embed inline even in url mode (mixed mode support)
-        if (fs.existsSync(f)) {
-          const baseShape = prepareInlineContent(f, COMPACT);
-          out.push({
-            ruleSet: PREFIX_BLOCK ? PREFIX_BLOCK + baseShape : baseShape,
-            ruleSyntax: RULE_SYNTAX,
-          });
-        } else {
-          out.push({
-            ruleSet: toUrl(RAW_BASE, f),
-            embeddingMethod: 'URL',
-            ruleSyntax: RULE_SYNTAX,
-          });
-        }
-      } else {
-        if (MODE === 'url') {
-          // fetch remote shape file
-          const remoteShapeUrl = toUrl(RAW_BASE, f);
-          try {
-            const fetchedShape = await fetchText(remoteShapeUrl);
-            const normShape = COMPACT ? compactTurtle(fetchedShape) : normalizeTurtle(fetchedShape);
-            out.push({
-              ruleSet: PREFIX_BLOCK ? PREFIX_BLOCK + normShape : normShape,
-              ruleSyntax: RULE_SYNTAX,
-            });
-          } catch (e) {
-            console.error(
-              'Failed fetching remote shape for inline embedding:',
-              remoteShapeUrl,
-              e.message
-            );
-            process.exit(7);
-          }
-        } else {
-          const baseShape = prepareInlineContent(f, COMPACT);
-          out.push({
-            ruleSet: PREFIX_BLOCK ? PREFIX_BLOCK + baseShape : baseShape,
-            ruleSyntax: RULE_SYNTAX,
-          });
-        }
-      }
+  // Shapes resolution
+  const externalRules = [];
+  for (const ls of localShapes) {
+    const baseShape = prepareInlineContent(ls, COMPACT);
+    externalRules.push({
+      ruleSet: PREFIX_BLOCK ? PREFIX_BLOCK + baseShape : baseShape,
+      ruleSyntax: RULE_SYNTAX,
+    });
+  }
+  for (const rs of remoteShapes) {
+    const fullUrl = isAbsoluteUrl(rs) ? rs : REMOTE_BASE ? toUrl(REMOTE_BASE, rs) : null;
+    if (!fullUrl) {
+      console.error('--remoteBase is required when --remoteShape is relative.');
+      process.exit(1);
     }
-    return out;
-  })();
+    if (PREFIX_BLOCK) {
+      try {
+        const fetchedShape = await fetchText(fullUrl);
+        const normShape = COMPACT ? compactTurtle(fetchedShape) : normalizeTurtle(fetchedShape);
+        externalRules.push({ ruleSet: PREFIX_BLOCK + normShape, ruleSyntax: RULE_SYNTAX });
+      } catch (e) {
+        console.error('Failed fetching remote shape for inline embedding:', fullUrl, e.message);
+        process.exit(7);
+      }
+    } else {
+      externalRules.push({ ruleSet: fullUrl, embeddingMethod: 'URL', ruleSyntax: RULE_SYNTAX });
+    }
+  }
 
   const payload = {
     contentToValidate,
@@ -359,10 +347,9 @@ const COMPACT = !!opts.compact; // --compact optional flag
     if (!OUTPUT_FILE) {
       console.log(JSON.stringify(result, null, 2));
     } else {
-      let outStr;
-      if (result.json) outStr = JSON.stringify(result.json, null, 2);
-      else if (result.raw) outStr = result.raw;
-      else outStr = JSON.stringify(result, null, 2);
+      const outStr = result.json
+        ? JSON.stringify(result.json, null, 2)
+        : result.raw || JSON.stringify(result, null, 2);
       try {
         fs.writeFileSync(OUTPUT_FILE, outStr, 'utf8');
         console.error('Result written to', OUTPUT_FILE);
