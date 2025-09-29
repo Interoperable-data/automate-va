@@ -321,10 +321,61 @@
         function pathRepr(node, bySubject) { if (node.termType === 'NamedNode') return compactIri(node.id); if (node.termType === 'BlankNode') { const qs = bySubject.get(node.id) || []; for (const q of qs) { if (q.predicate.id === SH + 'inversePath') return 'inverse ' + nodeRepr(q.object); if (q.predicate.id === SH + 'alternativePath') return 'alt(...)'; } return '_:' + node.id; } return nodeRepr(node); }
         function compactIri(iri) { if (!iri) return ''; const cut = Math.max(iri.lastIndexOf('#'), iri.lastIndexOf('/')); const local = cut >= 0 ? iri.slice(cut + 1) : iri; return local || iri; }
 
-        function buildSeverityFilters() { severityFiltersDiv.innerHTML = ''; const severities = [...new Set(allResults.map(r => r.severity || ''))].sort(); severities.forEach(s => { if (!s) return; if (!activeSeverities.size) activeSeverities.add(s); const id = 'sev-' + s; const label = document.createElement('label'); label.innerHTML = `<input type="checkbox" id="${id}" checked data-sev="${s}"> ${s}`; severityFiltersDiv.appendChild(label); }); if (!severityFiltersDiv.dataset.bound) { severityFiltersDiv.addEventListener('change', e => { if (e.target && e.target.dataset.sev) { e.target.checked ? activeSeverities.add(e.target.dataset.sev) : activeSeverities.delete(e.target.dataset.sev); renderTable(); } }); severityFiltersDiv.dataset.bound = '1'; } }
+        function buildSeverityFilters() {
+            severityFiltersDiv.innerHTML = '';
+            // Normalize severities: map missing/empty to 'Unknown'
+            const severities = [...new Set(allResults.map(r => (r.severity && r.severity.trim()) ? r.severity : 'Unknown'))].sort();
+            // On first build, activate ALL severities so nothing is accidentally filtered out
+            if (!activeSeverities.size) {
+                severities.forEach(s => activeSeverities.add(s));
+            }
+            severities.forEach(s => {
+                const id = 'sev-' + s;
+                const checked = activeSeverities.has(s) ? 'checked' : '';
+                const label = document.createElement('label');
+                label.innerHTML = `<input type="checkbox" id="${id}" ${checked} data-sev="${s}"> ${s}`;
+                severityFiltersDiv.appendChild(label);
+            });
+            if (!severityFiltersDiv.dataset.bound) {
+                severityFiltersDiv.addEventListener('change', e => {
+                    if (e.target && e.target.dataset.sev) {
+                        e.target.checked ? activeSeverities.add(e.target.dataset.sev) : activeSeverities.delete(e.target.dataset.sev);
+                        renderTable();
+                    }
+                });
+                severityFiltersDiv.dataset.bound = '1';
+            }
+        }
 
         function render() { if (!allResults.length) { summaryDiv.textContent = 'No validation results loaded.'; tableBody.innerHTML = ''; countsDiv.innerHTML = ''; return; } buildSeverityFilters(); renderTable(); }
-        function renderTable() { const filterText = (textFilter.value || '').toLowerCase(); const hidePass = hideNonViolations.checked; const rows = []; let stats = { total: 0 }; for (const r of allResults) { const sev = r.severity || 'Unknown'; stats[sev] = (stats[sev] || 0) + 1; stats.total++; if (hidePass && !/(Violation|Warning)/i.test(sev)) continue; if (activeSeverities.size && !activeSeverities.has(sev)) continue; const blob = (r.focusNode || '') + ' ' + (r.resultPath || '') + ' ' + (r.message || ''); if (filterText && !blob.toLowerCase().includes(filterText)) continue; rows.push(r); } tableBody.innerHTML = ''; rows.forEach((r, i) => { const tr = document.createElement('tr'); tr.classList.add('sev-' + (r.severity || 'Unknown')); tr.innerHTML = `<td>${i + 1}</td><td><span class="badge ${r.severity || ''}">${r.severity || ''}</span></td><td class="iri" title="${r.focusNode || ''}">${shorten(r.focusNode)}</td><td class="path" title="${r.resultPath || ''}">${shorten(r.resultPath)}</td><td>${escapeHtml(r.message || '')}</td><td class="small" title="${r.constraint || ''}">${r.constraint || ''}</td><td class="small" title="${r.value || ''}">${shorten(r.value)}</td><td class="small" title="${r.sourceShape || ''}">${shorten(r.sourceShape)}</td>`; tableBody.appendChild(tr); }); summaryDiv.textContent = `Showing ${rows.length} of ${allResults.length} validation results.`; countsDiv.innerHTML = Object.entries(stats).filter(([k]) => k !== 'total').map(([k, v]) => `<div>${k}: ${v}</div>`).join('') + `<div>Total: ${stats.total}</div>`; }
+        function renderTable() {
+            const filterText = (textFilter.value || '').toLowerCase();
+            const hidePass = hideNonViolations.checked;
+            const rows = [];
+            let stats = { total: 0 };
+            for (const r of allResults) {
+                // Ensure severity normalized
+                const sev = (r.severity && r.severity.trim()) ? r.severity : 'Unknown';
+                stats[sev] = (stats[sev] || 0) + 1; stats.total++;
+                if (hidePass && !/(Violation|Warning)/i.test(sev)) continue;
+                if (activeSeverities.size && !activeSeverities.has(sev)) continue;
+                const blob = (r.focusNode || '') + ' ' + (r.resultPath || '') + ' ' + (r.message || '');
+                if (filterText && !blob.toLowerCase().includes(filterText)) continue;
+                rows.push({ ...r, severity: sev });
+            }
+            tableBody.innerHTML = '';
+            rows.forEach((r, i) => {
+                const tr = document.createElement('tr');
+                tr.classList.add('sev-' + (r.severity || 'Unknown'));
+                tr.innerHTML = `<td>${i + 1}</td><td><span class="badge ${r.severity}">${r.severity}</span></td><td class="iri" title="${r.focusNode || ''}">${shorten(r.focusNode)}</td><td class="path" title="${r.resultPath || ''}">${shorten(r.resultPath)}</td><td>${escapeHtml(r.message || '')}</td><td class="small" title="${r.constraint || ''}">${r.constraint || ''}</td><td class="small" title="${r.value || ''}">${shorten(r.value)}</td><td class="small" title="${r.sourceShape || ''}">${shorten(r.sourceShape)}</td>`;
+                tableBody.appendChild(tr);
+            });
+            summaryDiv.textContent = `Showing ${rows.length} of ${allResults.length} validation results.`;
+            countsDiv.innerHTML = Object.entries(stats)
+                .filter(([k]) => k !== 'total')
+                .map(([k, v]) => `<div>${k}: ${v}</div>`)
+                .join('') + `<div>Total: ${stats.total}</div>`;
+        }
 
         function shorten(v) { if (!v) return ''; return v.length > 60 ? v.slice(0, 57) + '…' : v; }
         function escapeHtml(s) { return s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }

@@ -319,7 +319,7 @@ For general operation: Brake weight percentage (lambda) or Braked mass: “This 
 This is because all applicable values for a coded condition for use and other restrictions are the same as the respective values for the technical parameter in ERATV section 4, which means there is no actual condition for use or restriction as compared to the nominal design value. 
 − Disclaimer: “As this was an authorisation case “New Authorisation” was the scope of the assessment limited to the parts of the vehicle type that are changed and their impacts on the unchanged parts of the vehicle type in line with article 39(4) and 40(3) of (EU) 2018/545. 
 Checks already carried out at the previous authorisation of reference type 13-178-0002-5-001-001 were not repeated.”"""@en ;
-    dcterms:isReplacedBy erava:20240621-009 ;
+    dcterms:isReplacedBy era-vta:20240621-009 ;
     vpa:valid [
         a time:ProperInterval ;
         time:hasBeginning "2024-06-14"^^xsd:date ;
@@ -336,11 +336,11 @@ era-vtacs:vac-13-178-0010-8-001-001-DE-2 a era:VehicleAuthorisationCase ;
 
 era-vtap:va-20240621-009 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request ;
     # Non-disclosed - OSS data can be placed here
-    vpa:requestFor erava:20240621-009 .
+    vpa:requestFor era-vta:20240621-009 .
 
 era-vta:20240621-009 a era:VehicleAuthorisation ; # subClassOf vpa:Permission ;
     dcterms:identifier "EU8120241578" ;
-    dcterms:isReplacedBy erava:20241219-012 ;
+    dcterms:isReplacedBy era-vta:20241219-012 ;
     dcterms:issued "2024-06-26"^^xsd:date .
 
 # For the C2T application following 20240621-009: this was V-20241219-012
@@ -351,7 +351,7 @@ era-vtacs:vac-13-178-0010-8-001-001-DE-3 a era:VehicleAuthorisationCase ; # subC
 
 era-vtap:va-20241219-012 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request
     # Non-disclosed - OSS data can be placed here
-    vpa:requestFor erava:20241219-012 .
+    vpa:requestFor era-vta:20241219-012 .
 
 era-vta:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission
     dcterms:identifier "EU8120250002" ;
