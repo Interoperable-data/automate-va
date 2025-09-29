@@ -111,7 +111,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
 
     ##### LINKED AUTHORISATIONS
-    vpa:definesCase erava:vac-13-178-0010-8-001-001-DE-1 ; # Section 2 & 3 info there
+    vpa:definesCase era-vtacs:vac-13-178-0010-8-001-001-DE-1 ; # Section 2 & 3 info there
 
     ##### CONFIGURATION
     era:wheelSetGauge era-ntg-rinf:30 ;
@@ -304,12 +304,12 @@ era-vtacs:vac-13-178-0010-8-001-001-DE-1 a era:VehicleTypeAuthorisationCase ; # 
     era:safetyDeclaration "PM2/A6Z00057740131/000/B, freigegeben am 23.05.2024"@de ;
 
     # Links to the application, as it exists.
-    vpa:supports erava:va-20240202-004 .
+    vpa:supports era-vtap:va-20240202-004 .
 
-erava:va-20240202-004 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
-    vpa:requestFor erava:20240202-004 .
+era-vtap:va-20240202-004 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
+    vpa:requestFor era-vta:20240202-004 .
 
-erava:20240202-004 a era:VehicleTypeAuthorisation; # subClassOf vpa:Permission ;
+era-vta:20240202-004 a era:VehicleTypeAuthorisation; # subClassOf vpa:Permission ;
     dcterms:identifier "EU8020240152" ;
     dcterms:issued "2024-06-14"^^xsd:date ;
     era:vehicleTypeAuthorisationHolder [
