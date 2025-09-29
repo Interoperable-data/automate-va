@@ -109,11 +109,6 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     era:alternativeTypeName "MIREO Regensburg Donautal" ;
     era:vehicleTypeCategory era-vehicle-types-eratv:11 ; # traction vehicles
     era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledPassengerTrainset ;
-    era:vehicleTypeManufacturer [
-        a era:OrganisationRole ;
-        era:roleOf rorg:MF-DE-81739-1 ;  # Siemens Mobility GmbH (era:Body, see above)
-        era:hasOrganisationRole era-organisation-roles:Manufacturer
-    ] ;
 
     ##### LINKED AUTHORISATIONS
     vpa:definesCase erava:vac-13-178-0010-8-001-001-DE-1 ; # Section 2 & 3 info there
@@ -135,7 +130,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     era:etcsEquipmentOnBoardLevel era-bpt-eratv:None ;
     era:etcsOnboardSystemVersions era-bpt-eratv:None ;
     era:etcsSystemCompatibility era-csm-eratv:not-applicable ;
-    era:fireSafetyCategory era-lclc:10 ;
+    # era:fireSafetyCategory era-lclc:10 ; # ERROR
     era:fireSafetyCategory era-rsf-eratv:10 ;
 
     era:gaugingProfile era-ect-eratv:Other_specify,
@@ -202,8 +197,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
     era:vehicleTypePlatform "MIREO" ;
     era:vehiclesComposingFixedFormation 4 ;
     era:voiceOperationalCommImpl "TRS6000 i.V.m. der Software 4.2.0" ; # missing
-    era:voiceGSMRNetwork era-gsmrv-eratv:GSM-R_D_Germany ; # !incorrect
-    era:voiceGSMRNetwork era-gsmr-rinf:90 ; # correct
+    era:voiceGSMRNetwork era-gsmrv-eratv:GSM-R_D_Germany , era-gsmr-rinf:90 ; # both are identical
     era:voiceRadioCompatible era-rscv-rinf:140 ;
     
     # Parameters linked with a Configuration
@@ -366,6 +360,11 @@ era-vtap:va-20241219-012 a era:VehicleAuthorisationApplication ; # subClassOf vp
 era-vta:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission
     dcterms:identifier "EU8120250002" ;
     dcterms:issued "2025-01-03"^^xsd:date .
+
+<http://data.europa.eu/949/organisationRoles/eratv/483_Manufacturer> 
+    a era:OrganisationRole ;
+    era:roleOf rorg:MF-DE-81739-1 ;  # Siemens Mobility GmbH (era:Body, see above)
+    era:hasOrganisationRole era-organisation-roles:Manufacturer .
 
 ### Evidence(Document)(s)
 # See Evidence-13-178-0010-8-001-001.ttl

@@ -197,7 +197,7 @@ era-sh:VVTAuthorisationShape a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:vehicleTypeAuthorisationHolder ;
-        sh:nodeKind sh:BlankNode ;
+        sh:nodeKind sh:BlankNodeOrIRI;
         sh:class era:OrganisationRole ;
         sh:minCount 1 ; sh:maxCount 1 ;
         sh:node [
@@ -228,7 +228,7 @@ era-sh:VVTAuthorisationShape a
     sh:property [
         a sh:PropertyShape ;
         sh:path rdfs:comment ;
-        sh:datatype xsd:string ;
+        sh:datatype rdf:langString ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Optional additional information about the authorisation"
@@ -246,7 +246,7 @@ era-sh:VVTAuthorisationShape a
     sh:property [
         a sh:PropertyShape ;
         sh:path vpa:valid ;
-        sh:nodeKind sh:BlankNode ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class time:ProperInterval ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:node [
@@ -257,7 +257,7 @@ era-sh:VVTAuthorisationShape a
             ] ;
             sh:property [
                 sh:path time:hasDurationDescription ;
-                sh:nodeKind sh:BlankNode ;
+                sh:nodeKind sh:BlankNodeOrIRI;
                 sh:minCount 0 ; sh:maxCount 1 ;
                 sh:node [
                     sh:property [
@@ -305,28 +305,36 @@ era-sh:VVTAuthorisationCaseShape a
         a sh:PropertyShape ;
         sh:path vpa:permissionType ;
         sh:nodeKind sh:IRI ;
-        sh:class skos:Concept ;
+        sh:severity sh:Violation ;
         sh:minCount 1 ; sh:maxCount 1 ;
+        sh:description "The Authorisation case MUST refer to a type from 2018/545"@en
+    ] , [
+        a sh:PropertyShape ;
+        sh:path vpa:permissionType ;
+        sh:nodeKind sh:IRI ;
+        # sh:class skos:Concept ;
+        sh:severity sh:Warning ;
         sh:in ( era-va-authcase:New era-va-authcase:First era-va-authcase:Renew era-va-authcase:ExtAoU era-va-authcase:C2T era-va-authcase:PRE4RP era-va-authcase:EXT ) ;
-        sh:description "Indicates one of the allowed authorisation case types from 2018/545"@en
-    ] ;
+        sh:description "The Authorisation case MUST be one of the allowed authorisation case types from 2018/545"@en
+    ];
 
     sh:property [
         a sh:PropertyShape ;
         sh:path era:typeRegistrationMethod ;
         sh:nodeKind sh:IRI ;
-        sh:class skos:Concept ;
+        # sh:class skos:Concept ;
         sh:minCount 1 ; sh:maxCount 1 ;
-        sh:description "The type registration method used for this case"
+        sh:severity sh:Warning ;
+        sh:description "The Authorisation case MUST mention the type registration method used for this case"
     ] ;
 
     sh:property [
         a sh:PropertyShape ;
         sh:path era:areaOfUse ;
         sh:nodeKind sh:IRI ;
-        sh:class skos:Concept ;
+        # sh:class skos:Concept ;
         sh:minCount 1 ; sh:maxCount 1 ;
-        sh:description "The area of use (typically a member state (sub)network)"
+        sh:description "The Authorisation case MUST mention the area of use (typically a member state (sub)network)"
     ] ;
 
     sh:property [
@@ -335,13 +343,13 @@ era-sh:VVTAuthorisationCaseShape a
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
         sh:minCount 0 ; sh:maxCount 1 ;
-        sh:description "The member state that authorised this case"
+        sh:description "The Authorisation case MUST mention the member state that authorised this case"
     ] ;
 
     sh:property [
         a sh:PropertyShape ;
         sh:path era:configDependentCondition ;
-        sh:nodeKind sh:BlankNode ;
+        sh:nodeKind sh:BlankNodeOrIRI;
         sh:class era:VehicleTypeAuthorisationCheck ;
         sh:minCount 0 ;
         sh:description "Configuration-dependent conditions for this case"
@@ -350,7 +358,7 @@ era-sh:VVTAuthorisationCaseShape a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:configDependentCompliance ;
-        sh:nodeKind sh:BlankNode ;
+        sh:nodeKind sh:BlankNodeOrIRI;
         sh:class era:VehicleTypeAuthorisationCheck ;
         sh:minCount 0 ;
         sh:description "Configuration-dependent compliance checks for this case"
@@ -359,7 +367,7 @@ era-sh:VVTAuthorisationCaseShape a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:safetyDeclaration ;
-        sh:datatype xsd:string ;
+        sh:or ( [ sh:datatype rdf:langString ] [ sh:datatype xsd:string ] ) ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Safety declaration reference"
     ] ;
@@ -376,7 +384,7 @@ era-sh:VVTAuthorisationCaseShape a
     sh:property [
         a sh:PropertyShape ;
         sh:path vpa:supportsRequest ;
-        sh:nodeKind sh:BlankNode ;
+        sh:nodeKind sh:BlankNodeOrIRI;
         sh:class vpa:Request ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "The request that this case supports (can be a blank node for pre-4RP cases)"
@@ -616,7 +624,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path rdfs:label ;
-        sh:datatype xsd:string ;
+        sh:or ( [ sh:datatype rdf:langString ] [ sh:datatype xsd:string ] ) ;
         sh:nodeKind sh:Literal ;
         sh:description "Type name [character string] (max 256 characters)";
         sh:minCount 1 ;
@@ -858,7 +866,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:vehicleTypeManufacturer ;
-        sh:nodeKind sh:BlankNode ;
+        sh:nodeKind sh:IRI ;
         sh:class era:OrganisationRole ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
@@ -998,7 +1006,7 @@ era-sh:VehicleType a
         sh:path era:voiceGSMRNetwork ;
         sh:nodeKind sh:IRI ;
         sh:class skos:Concept ;
-        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:minCount 0 ; sh:maxCount 2 ; # RINF & ERATV values
         sh:description "Voice GSM-R network compatibility"
     ];
     sh:property [
