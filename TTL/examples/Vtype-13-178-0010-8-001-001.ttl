@@ -312,11 +312,7 @@ era-vtap:va-20240202-004 a era:VehicleTypeAuthorisationApplication ; # subClassO
 era-vta:20240202-004 a era:VehicleTypeAuthorisation; # subClassOf vpa:Permission ;
     dcterms:identifier "EU8020240152" ;
     dcterms:issued "2024-06-14"^^xsd:date ;
-    era:vehicleTypeAuthorisationHolder [
-        a era:OrganisationRole ;
-        era:roleOf rorg:MF-DE-81739-1 ;  # Siemens Mobility GmbH
-        era:hasOrganisationRole era-organisation-roles:Holder ;
-    ] ;
+    era:vehicleTypeAuthorisationHolder <http://data.europa.eu/949/organisationRoles/eratv/483_Holder> ;
     rdfs:comment """− A note concerning ERATV parameter 4.7.6 
 For general operation: Brake weight percentage (lambda) or Braked mass: “This type is not designed and assessed for general operation. In line with the provisions of clause 4.2.4.5.2 Emergency braking of the applicable TSI LOC&PAS (EU) 1302/2014 is it not required to determine a value for the brake weight percentage (lambda) or braked mass for such type. ERATV parameter 4.7.6 is marked with “0” in this case.” 
 - There are no coded restrictions. 
@@ -328,7 +324,7 @@ Checks already carried out at the previous authorisation of reference type 13-17
         a time:ProperInterval ;
         time:hasBeginning "2024-06-14"^^xsd:date ;
         time:hasDurationDescription [
-            time:years "10" ;  # Assuming standard duration if not specified in XML
+            time:years 10 ;  # Assuming standard duration if not specified in XML
         ]
     ].
 
@@ -365,6 +361,11 @@ era-vta:20241219-012 a era:VehicleAuthorisation ; # subClassOf vpa:Permission
     a era:OrganisationRole ;
     era:roleOf rorg:MF-DE-81739-1 ;  # Siemens Mobility GmbH (era:Body, see above)
     era:hasOrganisationRole era-organisation-roles:Manufacturer .
+
+<http://data.europa.eu/949/organisationRoles/eratv/483_Holder> 
+        a era:OrganisationRole ;
+        era:roleOf rorg:MF-DE-81739-1 ;  # Siemens Mobility GmbH
+        era:hasOrganisationRole era-organisation-roles:Holder .
 
 ### Evidence(Document)(s)
 # See Evidence-13-178-0010-8-001-001.ttl
