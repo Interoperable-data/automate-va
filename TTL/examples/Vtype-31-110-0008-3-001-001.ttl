@@ -127,7 +127,7 @@ eratv:vt-31-110-0008-3-001-001 a era:VehicleType ;
         era:forConfiguration eratv:config1435Hauled ;
         era:hasWheelSlideProtectionSystem "true"^^xsd:boolean ;
         era:maximumDesignSpeed "200"^^xsd:integer ;
-        era:massPerWheel "11125"^^xsd:integer ;
+        era:massPerWheel "11125"^^xsd:decimal ;
         era:totalVehicleMass "44500"^^xsd:integer ;
         era:axleSpacing "a: 0016,50 m b: 0002,45 m c: 0002,50 m" ;
     ] ;

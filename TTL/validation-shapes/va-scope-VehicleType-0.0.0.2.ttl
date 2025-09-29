@@ -714,7 +714,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:lengthOfVehicle ;
-        sh:datatype xsd:double ;
+        sh:datatype xsd:decimal ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Length of vehicle in meters"
@@ -730,7 +730,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:massPerWheel ;
-        sh:datatype xsd:double ;
+        sh:datatype xsd:decimal ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Mass per wheel in kg"
@@ -738,7 +738,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:maximumAverageDeceleration ;
-        sh:datatype xsd:double ;
+        sh:datatype xsd:decimal ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Maximum average deceleration"
@@ -746,7 +746,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:maximumBrakeThermalEnergyCapacity ;
-        sh:datatype xsd:double ;
+        sh:datatype xsd:decimal ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Maximum brake thermal energy capacity"
@@ -754,7 +754,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:minimumConcaveVerticalRadius ;
-        sh:datatype xsd:double ;
+        sh:datatype xsd:decimal ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Minimum concave vertical radius"
@@ -762,7 +762,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:minimumConvexVerticalRadius ;
-        sh:datatype xsd:double ;
+        sh:datatype xsd:decimal ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Minimum convex vertical radius"
@@ -778,7 +778,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:parkingBrakeMaximumGradient ;
-        sh:datatype xsd:double ;
+        sh:datatype xsd:decimal ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Parking brake maximum gradient"
@@ -810,7 +810,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:staticAxleLoadExceptionalPayload ;
-        sh:datatype xsd:double ;
+        sh:datatype xsd:decimal ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Static axle load for exceptional payload"
@@ -818,7 +818,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:staticAxleLoadNormalPayload ;
-        sh:datatype xsd:double ;
+        sh:datatype xsd:decimal ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Static axle load for normal payload"
@@ -826,7 +826,7 @@ era-sh:VehicleType a
     sh:property [
         a sh:PropertyShape ;
         sh:path era:staticAxleLoadWorkingOrder ;
-        sh:datatype xsd:double ;
+        sh:datatype xsd:decimal ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Static axle load in working order"

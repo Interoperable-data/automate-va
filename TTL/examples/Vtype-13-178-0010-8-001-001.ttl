@@ -209,7 +209,7 @@ eratv:vt-13-178-0010-8-001-001 a era:VehicleType ; # subClassOf vpa:Scope
 
 era-pset:C a era:VehicleTypeConfigParameterSet ;
         era:forConfiguration era-vtc:ConfigC ; # ONLY SKOS CS era-ess-rinf:AC20 ;
-        era:maximumContactWireHeight "4.70"^^xsd:double, "6.50"^^xsd:double ;
+        era:maximumContactWireHeight "4.70"^^xsd:decimal, "6.50"^^xsd:decimal ;
         era:vehiclePantographHead "1950 sc DE and AT mm" ;
         era:numberOfPantographsInContactWithOCL "1" .
         # other parameters as in 4.10.X
