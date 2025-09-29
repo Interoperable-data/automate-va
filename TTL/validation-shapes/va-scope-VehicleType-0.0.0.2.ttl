@@ -125,7 +125,10 @@ era-sh:VAApplicationShape a
         a sh:PropertyShape ;
         sh:path vpa:requestFor ;
         sh:nodeKind sh:IRI ;
-        sh:class era:VehicleTypeAuthorisation ;
+        sh:or ( 
+            [sh:class era:VehicleTypeAuthorisation] 
+            [sh:class era:VehicleAuthorisation] 
+        );
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:description "The authorisation that this application requests."
@@ -238,7 +241,10 @@ era-sh:VVTAuthorisationShape a
         a sh:PropertyShape ;
         sh:path dcterms:isReplacedBy ;
         sh:nodeKind sh:IRI ;
-        sh:class era:VehicleTypeAuthorisation ;
+        sh:or ( 
+            [sh:class era:VehicleTypeAuthorisation] 
+            [sh:class era:VehicleAuthorisation] 
+        );
         sh:minCount 0 ; sh:maxCount 1 ;
         sh:description "Link to a newer version that replaces this authorisation"
     ] ;
@@ -314,7 +320,7 @@ era-sh:VVTAuthorisationCaseShape a
         sh:nodeKind sh:IRI ;
         # sh:class skos:Concept ;
         sh:severity sh:Warning ;
-        sh:in ( era-va-authcase:New era-va-authcase:First era-va-authcase:Renew era-va-authcase:ExtAoU era-va-authcase:C2T era-va-authcase:PRE4RP era-va-authcase:EXT ) ;
+        sh:in ( era-va-authcase:NEW era-va-authcase:FIRST era-va-authcase:RENEW era-va-authcase:EXTAOU era-va-authcase:C2T era-va-authcase:PRE4RP era-va-authcase:EXT ) ;
         sh:description "The Authorisation case MUST be one of the allowed authorisation case types from 2018/545"@en
     ];
 
