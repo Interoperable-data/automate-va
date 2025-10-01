@@ -51,6 +51,7 @@
 @prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
 @prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
 @prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+@prefix era-vr-regcase: <http://data.europa.eu/949/concepts/vr-regcases/> .
 @prefix era-vt: <http://data.europa.eu/949/vehicleTypes/> .
 @prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix era-vtacs: <http://data.europa.eu/949/vehicleTypes/authorisations/cases/> .

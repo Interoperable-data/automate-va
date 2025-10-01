@@ -1,0 +1,39 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix eralex-sh: <http://data.europa.eu/949/shapes/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+eralex-sh:AnnexI-10-3 a sh:NodeShape ;
+   sh:targetClass era:VehicleTypeAuthorisationCase ;
+   # (I) 10.3 – simplified: only validate the optional includedVersionsVariant code
+   # If present (via a concerned VehicleType), it MUST be exactly three digits, eventually followed by another three. Absence is allowed.
+
+   sh:name "(I) 10.3. Vehicle type variants (when applicable)"@en ;
+   sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:concerns ;
+        sh:node [
+            a sh:NodeShape ;
+            sh:or (
+                [ 
+                  sh:targetClass era:VehicleType ;
+                  sh:property [
+                     sh:path era:includedVersionsVariant ;
+                     sh:datatype xsd:string ;
+                     sh:pattern "^\\d{3}(-\\d{3})?$" ;
+                     sh:maxCount 1 ;
+                     sh:message "(I) 10.3: includedVersionsVariant must be three digits, eventually followed by three other digits (4RP)"@en ;
+                     sh:severity sh:Violation
+                  ]
+                ] 
+                [ 
+                    sh:targetClass era:Vehicle ;
+                    sh:name "No requirements for Vehicle in Annex I-10-3"@en ;
+                ]
+            )
+        ] ;
+    ] .

@@ -1,0 +1,91 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+    
+era-sh:AnnexI-10-78 a sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+
+    sh:name "(I) 10.7. Category (as specified in Decision 2011/665/EU Annex II)"@en , "(I) 10.8. Subcategory (as specified in Decision 2011/665/EU Annex II)"@en ;
+    # Individual checks: 
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:concerns ;
+        sh:node [
+            a sh:NodeShape ;
+            sh:or (
+                [ 
+                    sh:targetClass era:VehicleType ;
+                    sh:property [
+                        sh:path era:vehicleTypeCategory ;
+                        sh:minCount 1 ; sh:maxCount 1 ;
+                        # sh:class skos:Concept ; # is not present in the data-graph
+                        # Requires additional triples in the dataset
+                        # sh:node [
+                        #     sh:property [
+                        #         sh:path skos:inScheme ;
+                        #         sh:hasValue era-vehicle-types-eratv: ;
+                        #         sh:name "VehicleTypeCategory Concept Scheme"@en ;
+                        #         sh:message "(I) 10.7. VehicleTypeCategory skos:Concept must be in era-vehicle-types-eratv."@en ;
+                        #         sh:severity sh:Warning
+                        #     ]
+                        # ] ;
+                        sh:name "VehicleTypeCategory (era:vehicleTypeCategory)"@en ;
+                        sh:message "(I) 10.7. VehicleType must have exactly one category (era:vehicleTypeCategory)."@en ;
+                        sh:severity sh:Violation
+                    ];
+                    sh:property [
+                        sh:path era:vehicleTypeSubCategory ;
+                        sh:minCount 1 ; sh:maxCount 1 ;
+                        # sh:class skos:Concept ; # Not present in the datagraph
+                        # sh:node [
+                        #     sh:property [
+                        #         sh:path skos:inScheme ;
+                        #         sh:hasValue era-vehicle-types-eratv: ;
+                        #         sh:name "VehicleTypeSubCategory inScheme"@en ;
+                        #         sh:message "VehicleTypeSubCategory skos:Concept must be in era-vehicle-types-eratv."@en ;
+                        #         sh:severity sh:Violation
+                        #     ]
+                        # ] ;
+                        sh:name "VehicleTypeSubCategory (era:vehicleTypeSubCategory)"@en ;
+                        sh:message "(I) 10.8. VehicleType must have exactly one subcategory (era:vehicleTypeSubCategory)"@en ;
+                        sh:severity sh:Violation
+                    ] ;
+                ] 
+                [ 
+                    sh:targetClass era:Vehicle ;
+                    sh:name "No requirements for Vehicle in Annex I-10-7 & 8"@en ;
+                ]
+            )
+        ] ;
+    ] ;
+    # the COMBINED shape checking 10.7 and 10.8
+        sh:sparql [
+                sh:name "VehicleType MUST have category AND sub-category"@en ;
+                sh:message "The VehicleType in scope is missing either category, sub-category, or both (identifier={$id}) : {$missing}"@en ;
+                sh:severity sh:Violation ;
+                sh:select '''
+                        PREFIX era: <http://data.europa.eu/949/>
+                        PREFIX vpa: <http://w3id.org/vpa#>
+                        PREFIX dcterms: <http://purl.org/dc/terms/>
+                        SELECT $this ?vehicletype ?id ?missing
+                        WHERE {
+                            $this vpa:concerns ?vehicletype .
+                            ?vehicletype a era:VehicleType ; dcterms:identifier ?id .
+                            {
+                                FILTER NOT EXISTS { ?vehicletype era:vehicleTypeCategory ?cat }
+                                BIND("Missing era:vehicleTypeCategory"@en AS ?missing)
+                            }
+                            UNION
+                            {
+                                FILTER NOT EXISTS { ?vehicletype era:vehicleTypeSubCategory ?scat }
+                                BIND("Missing era:vehicleTypeSubCategory"@en AS ?missing)
+                            }
+                        }
+                '''
+        ] .

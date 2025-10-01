@@ -1,0 +1,46 @@
+@base <http://data.europa.eu/949/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+era-sh:AnnexI-9 a sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+
+    # sh:declare is mostly not supported by engines
+    sh:declare [
+        sh:prefix "era" ;
+        sh:namespace "http://data.europa.eu/949/"^^xsd:anyURI ;
+    ] ;
+    sh:declare [
+        sh:prefix "vpa" ;
+        sh:namespace "http://w3id.org/vpa#"^^xsd:anyURI ;
+    ] ;
+
+    # See I-9.1 (direct check) 
+    sh:property [
+         sh:path ( vpa:constitutes era:preEngagementBaseline ) ;
+         sh:minCount 1 ;
+         sh:name "No pre-engagement baseline present"@en ;
+         sh:message "No pre-engagement baseline found in the linked Application; assuming no pre-engagement baseline exists (Annex I-9)."@en ;
+         sh:severity sh:Warning
+    ] ;
+    sh:sparql [
+        sh:name "Pre-engagement baseline structure and requirement"@en ;
+        sh:message "If the linked Application ({$app}) includes a PreEngagement with era:hasPreEngagementBaseline true, it MUST also have era:preEngagementBaseline (URL). If false, the URL may be absent."@en ;
+        sh:severity sh:Violation ;
+        sh:prefixes era:, vpa: ;
+        sh:select '''
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            SELECT $this ?app ?preEngagement ?url
+            WHERE {
+              $this vpa:constitutes ?app .
+              ?app era:preEngagementBaseline ?preEngagement .
+              ?preEngagement a era:PreEngagement ;
+                             era:hasPreEngagementBaseline true .
+              FILTER NOT EXISTS { ?preEngagement era:preEngagementBaseline ?url }
+            }
+        '''
+    ] .

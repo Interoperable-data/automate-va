@@ -1,0 +1,31 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+    
+era-sh:AnnexI-111 a sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+
+    sh:name "(I) 11. Information on the vehicles"@en ;
+    # Individual checks: 
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:concerns ;
+        sh:node [
+            a sh:NodeShape ;
+            sh:or (
+                [ 
+                    sh:targetClass era:VehicleType ;
+                    sh:name "No requirements for VehicleType in Annex I-11"@en ;
+                ] 
+                [ 
+                    sh:targetClass era:Vehicle ;
+                ]
+            )
+        ] ;
+    ] .

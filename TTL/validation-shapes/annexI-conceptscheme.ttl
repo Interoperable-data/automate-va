@@ -386,47 +386,6 @@ eralex-pava:AnnexI-8 a skos:Concept , sh:NodeShape ;
     skos:inScheme eralex:AnnexIConceptScheme ;
     skos:prefLabel "(I) 8. Assessment bodies information"@en ;
     skos:definition "Assessment bodies information (notified bodies, designated bodies, CSM RA assessment body)."@en ;
-    sh:targetClass era:VehicleTypeAuthorisationCase ;
-    sh:sparql [
-        sh:name "Assessment bodies information for CLD certificates"@en ;
-        sh:message "Assessment bodies information must be present for all CLD certificates supporting this case (Annex I-8)."@en ;
-        sh:severity sh:Violation ;
-        sh:select '''
-            PREFIX era: <http://data.europa.eu/949/>
-            PREFIX vpa: <http://w3id.org/vpa#>
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX dcterms: <http://purl.org/dc/terms/>
-            SELECT $this ?evidence ?cab
-            WHERE {
-              ?evidence vpa:supportsCase $this .
-              ?evidence rdfs:member ?doc .
-              ?doc a era:CLD .
-              ?doc dcterms:creator ?creator .
-              ?creator era:roleOf ?cab .
-            }
-        '''
-    ] ;
-    sh:sparql [
-        sh:name "Assessment bodies information for ECDeclaration certificates"@en ;
-        sh:message "Assessment bodies information must be present for all ECDeclaration certificates supporting this case, including underlying certificates (Annex I-8)."@en ;
-        sh:severity sh:Violation ;
-        sh:select '''
-            PREFIX era: <http://data.europa.eu/949/>
-            PREFIX vpa: <http://w3id.org/vpa#>
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX dcterms: <http://purl.org/dc/terms/>
-            SELECT $this ?evidence ?cab
-            WHERE {
-              ?evidence vpa:supportsCase $this .
-              ?evidence rdfs:member ?doc .
-              ?doc a era:ECDeclaration .
-              ?doc dcterms:requires ?req .
-              ?req rdfs:member ?subdoc .
-              ?subdoc dcterms:creator ?creator2 .
-              ?creator2 era:roleOf ?cab .
-            }
-        '''
-    ] ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 9. Pre-engagement
@@ -435,31 +394,6 @@ eralex-pava:AnnexI-9 a skos:Concept , sh:NodeShape ;
     skos:prefLabel "(I) 9. Pre-engagement"@en ;
     skos:definition "Pre-engagement (reference to pre-engagement baseline, other project info)."@en ;
     skos:narrower eralex-pava:AnnexI-9-1, eralex-pava:AnnexI-9-2 ;
-    sh:targetClass era:VehicleTypeAuthorisationCase ;
-    # See I-9.1 (direct check) sh:property [
-    #     sh:path ( vpa:constitutes era:preEngagementBaseline ) ;
-    #     sh:maxCount 0 ;
-    #     sh:name "No pre-engagement baseline present"@en ;
-    #     sh:message "No pre-engagement baseline found in the linked Application; assuming no pre-engagement baseline exists (Annex I-9)."@en ;
-    #     sh:severity sh:Warning
-    # ] ;
-    sh:sparql [
-        sh:name "Pre-engagement baseline structure and requirement"@en ;
-        sh:message "If the Application linked via vpa:constitutes has era:preEngagementBaseline pointing to a PreEngagement node with era:hasPreEngagementBaseline true, it MUST also have era:preEngagementBaseline (URL). If false, the URL may be absent."@en ;
-        sh:severity sh:Violation ;
-        sh:select '''
-            PREFIX era: <http://data.europa.eu/949/>
-            PREFIX vpa: <http://w3id.org/vpa#>
-            SELECT $this ?app ?preEngagement ?url
-            WHERE {
-              $this vpa:constitutes ?app .
-              ?app era:preEngagementBaseline ?preEngagement .
-              ?preEngagement a era:PreEngagement ;
-                era:hasPreEngagementBaseline true .
-              FILTER NOT EXISTS { ?preEngagement era:preEngagementBaseline ?url }
-            }
-        '''
-    ] ;
     dcterms:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#anx_I> .
 
 # 9.1. Reference to pre-engagement baseline

@@ -1,0 +1,54 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix eralex-sh: <http://data.europa.eu/949/shapes/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
+
+
+eralex-sh:AnnexI-10-4 a sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    # (I) 10.4 – validate the presence/absence of the date of record (dcterms:issued) depending on the permission type (vpa:permissionType)
+    # FIXME: also consider the state of the VehicleType (draft, valid, withdrawn) in future iterations
+    # FIXME: also when the AuthorisationCase is FA, the issued date will eventually be provided!
+    sh:xone (
+        [
+            a sh:NodeShape ;
+            sh:name "(I) 10.4. Date of record in ERATV (not applicable for first authorisation)"@en ;
+            sh:property [
+                sh:path vpa:permissionType ;
+                sh:hasValue era-va-authcase:FA ;
+                sh:name "When the PermissionType is FIRST"@en ;
+            ] ;
+            sh:property [
+                sh:path ( vpa:concerns dcterms:issued ) ;
+                sh:maxCount 0 ;
+                sh:name "No Date Of Record"@en ;
+                sh:message "(I) 10.4. If permissionType is 'FIRST', there MUST not be a date of record yet."@en ;
+                sh:severity sh:Violation
+            ]
+        ]
+        [
+            a sh:NodeShape ;
+            sh:name "Date of record for all but authorisation case First"@en ;
+            sh:property [
+                sh:path vpa:permissionType ;
+                sh:in ( era-va-authcase:NEW era-va-authcase:EXT era-va-authcase:RENEW era-va-authcase:C2T ) ;
+                sh:name "When Permission Type is not FIRST"@en ;
+            ] ;
+            sh:property [
+                sh:path ( vpa:concerns dcterms:issued ) ;
+                sh:minCount 1 ;
+                sh:name "Date Of Record must be present"@en ;
+                sh:message "(I) 10.4. If permissionType is not 'FIRST', VehicleTypeAuthorisationCase must link to a VehicleType with a Date of Record."@en ;
+                sh:severity sh:Violation
+            ]
+        ]
+    ) ;
+    sh:message "(I) 10.4. Only when the permission type is NOT First Authorisation, the date of record must be present."@en ;
+    sh:name "(I) 10.4. Date of record depending on permission type"@en .
+
+

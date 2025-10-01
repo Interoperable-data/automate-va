@@ -1,0 +1,109 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+    
+era-sh:AnnexI-10-156 a sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+
+    sh:name "(I) 10.1. Type identification"@en , "(I) 10.5. Type name (*)"@en , "(I) 10.6. Alternative type name (when applicable)"@en;
+    # Individual checks: 
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:concerns ;
+        sh:node [
+            a sh:NodeShape ;
+            sh:or (
+                [ 
+                    sh:targetClass era:VehicleType ;
+                    sh:property [
+                        sh:path dcterms:identifier ;
+                        sh:minCount 1 ;
+                        sh:minLength 17 ; sh:maxLength 21;
+                        sh:name "VehicleType identifier present and between 17 and 21 characters"@en ;
+                        sh:message "VehicleType in scope MUST have `dcterms:identifier` of 17-21 characters (Annex I-10.1)."@en ;
+                        sh:severity sh:Violation
+                    ] ;
+                    sh:property [
+                        sh:path era:vehicleTypeNumber ;
+                        sh:minCount 1 ; sh:maxCount 1 ;
+                        sh:minLength 13 ; sh:maxLength 13;
+                        sh:name "Vehicle Type number present and 13 characters"@en ;
+                        sh:message "VehicleType in scope MUST have Vehicle Type Number (era:vehicleTypeNumber) of 13 characters (Annex I-10.1)."@en ;
+                        sh:severity sh:Violation
+                    ] ;
+                    sh:sparql [
+                        sh:name "Identifier composition check"@en ;
+                        sh:message "dcterms:identifier ({$id}) differs from `{$expected}`, with the Type Number `{$base}` and Version/Variant identifiers `{$variant}`."@en ;
+                        sh:severity sh:Violation ;
+                        sh:select """
+                            PREFIX dcterms: <http://purl.org/dc/terms/>
+                            PREFIX era: <http://data.europa.eu/949/>
+
+                            SELECT $this ?id ?base ?variant ?expected 
+                            WHERE {
+                            $this dcterms:identifier ?id ;
+                                  era:vehicleTypeNumber ?base .
+                            # Support either era:includedVersionsVariant or (legacy) era:includedVersions
+                            OPTIONAL { $this era:includedVersionsVariant ?v1 . }
+                            OPTIONAL { $this era:includedVersions ?v2 . }
+                            BIND(COALESCE(?v1, ?v2) AS ?variant)
+
+                            FILTER( BOUND(?variant) )     # only test when a variant is present
+                            BIND(CONCAT(STR(?base), '-', STR(?variant)) AS ?expected)
+                            FILTER( STR(?id) != ?expected )
+                            }
+                        """
+                    ] ;
+                    sh:property [
+                        sh:path rdfs:label ;
+                        sh:minCount 1 ;
+                        sh:datatype xsd:string ;
+                        sh:minLength 10 ;
+                        sh:name "Vehicle Type in scope must have name (rdfs:label) with at least 10 characters"@en ;
+                        sh:message "(I) 10.5. VehicleType in scope MUST have a type name (rdfs:label) of at least 10 characters."@en ;
+                        sh:severity sh:Violation
+                    ];
+                    sh:property [
+                        sh:path era:alternativeTypeName ;
+                        sh:datatype xsd:string ;
+                        sh:minCount 1 ;
+                        sh:name "Alternative type name (era:alternativeTypeName)"@en ;
+                        sh:message "(I) 10.6. VehicleType SHOULD have an alternative type name (era:alternativeTypeName)."@en ;
+                        sh:severity sh:Info
+                    ] ;
+                    # sh:severity sh:Info ;
+                    # sh:name "Identifiers for VehicleType in scope of the Authorisation Case"@en ;
+                    # sh:message "VehicleType in scope of the Authorisation Case MUST have dcterms:identifier and era:vehicleTypeNumber (Annex I-10.1)."@en ;
+                ] 
+                [ 
+                    sh:targetClass era:Vehicle ;
+                    sh:name "No requirements for Vehicle in Annex I-10-1"@en ;
+                ]
+            )
+        ] ;
+    ] ;
+    # the COMBINED shape checking dcterms:identifier and other required properties is in 10.2 and 10.3
+    sh:sparql [
+        sh:name "VehicleType cannot have both includedVersions and includedVersionsVariant"@en ;
+        sh:message "(I) 10.1. VehicleType ({$id}) cannot have both era:includedVersions and era:includedVersionsVariant present at the same time."@en ;
+        sh:severity sh:Violation ;
+        sh:select '''
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+
+            SELECT $this ?vehicletype ?id
+            WHERE {
+              $this vpa:concerns ?vehicletype .
+              ?vehicletype era:includedVersions ?v1 ;
+                           era:includedVersionsVariant ?v2 ;
+                           dcterms:identifier ?id ;
+                           a era:VehicleType .
+            }
+        '''
+    ] .
