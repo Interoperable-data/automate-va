@@ -202,7 +202,12 @@ eravr:reg-71-001-0001-1-001-US-1 a era:VehicleRegistration ;
 eravr:vrc-71-001-0001-1-001-US-1 a era:VehicleRegistrationCase ;
     rdfs:label "Registration case for series 001 of Vehicle Type 71-001-0001-1-001 in the US"@en ;
     vpa:permissionType era-vr-regcase:NEW ;
-    vpa:scope evr:vs-batmobiles-001 .
+    vpa:concerns evr:vs-batmobiles-001 .
+
+eravr:vrc-71-001-0001-1-001-US-3 a era:VehicleRegistrationCase ;
+    rdfs:label "Registration case for new prototypes of Vehicle Type 71-001-0001-1-001 in the US"@en ;
+    vpa:permissionType era-vr-regcase:RESERVE ; # unstable
+    vpa:concerns evr:vs-batmobiles-002 .
 
 ## VA-data
 erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
