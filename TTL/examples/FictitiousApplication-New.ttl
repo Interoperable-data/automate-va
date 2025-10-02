@@ -136,7 +136,7 @@ eratv:vt-71-001-0001-1-001 a era:VehicleType ;
     rdfs:label "A non-existent self-propelled special vehicle";
     
     # FIXED 10-7-8:
-    era:vehicleTypeCategory era-vehicle-types-eratv:71 ; # special vehicles
+    era:vehicleTypeCategory era-vehicle-types-eratv:51 ; # special vehicles
     
     # FIXED 10-7-8:
     era:vehicleTypeSubCategory era-vehicle-types-eratv:selfPropelledSpecialVehicle ;
@@ -156,15 +156,16 @@ eratv:BatmanSpecial a era:VehicleTypeConfiguration ;
 
 # VR related data
 evr:bat-mobile-metro-001 a era:Vehicle ;
+    rdfs:label "Wayne Railway Mobile 001-01" ;
     dcterms:identifier "Wayne Railway Mobile 001-01" ;
     era:vehicleKeeper orgr:Wayne_Keeper ;
-    era:vehicleType eratv:vt-71-001-0001-1-002 ; # this typo should be detected through its authorisation chain.
-    era:hasCompositeBrakeBlockRetrofitted true ;
+    era:vehicleType eratv:vt-71-001-0001-1-001 ; # FIXME: this typo should be detected through its authorisation chain.
+    # era:hasCompositeBrakeBlockRetrofitted true ;
+    # era:operationalRestriction era-noic:2-7-7 ; # it is too loud
     era:manufacturingYear "2023"^^xsd:gYear ;
     era:manufacturingSerialNumber "MV-001-01" ;
     era:vehicleNumber "01234567890-9" ; # should raise several problems
-    era:inVehicleSeries evr:vs-batmobiles-001 ;
-    era:operationalRestriction era-noic:2-7-7 . # it is too loud
+    era:inVehicleSeries evr:vs-batmobiles-001 .
 
 evr:vs-batmobiles-001 a era:VehicleSeries ;
     rdfs:label "Wayne Railway Attack vehicles, series 001"@en ;
@@ -176,8 +177,9 @@ evr:vs-batmobiles-002 a era:VehicleSeries ;
 
 evr:bat-mobile-metro-002 a era:Vehicle ;
     dcterms:identifier "Wayne Railway Prototype" ;
+    rdfs:label "Wayne Railway Prototype" ;
     # era:vehicleKeeper orgr:Wayne_Keeper ; Keeper CAN pre-reserve the number also
-    era:vehicleType eratv:vt-71-001-0001-1-002 ; # this typo should be detected through its authorisation chain.
+    era:vehicleType eratv:vt-71-001-0001-1-001 ; # FIXME: this typo should be detected through its authorisation chain.
     era:vehicleNumber "09876543210-5" ; # should raise several problems
     era:manufacturingYear "2026"^^xsd:gYear ;
     era:manufacturingSerialNumber "PR-001" ;
@@ -204,16 +206,17 @@ eravr:vrc-71-001-0001-1-001-US-1 a era:VehicleRegistrationCase ;
     vpa:permissionType era-vr-regcase:NEW ;
     vpa:concerns evr:vs-batmobiles-001 .
 
+# Pre-reserved number = no application yet
 eravr:vrc-71-001-0001-1-001-US-3 a era:VehicleRegistrationCase ;
     rdfs:label "Registration case for new prototypes of Vehicle Type 71-001-0001-1-001 in the US"@en ;
-    vpa:permissionType era-vr-regcase:RESERVE ; # unstable
+    vpa:permissionType era-vr-regcase:RESERVE ; # not approved yet
     vpa:concerns evr:vs-batmobiles-002 .
 
 ## VA-data
 erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
     rdfs:label "Authorisation project of the Batman spacial railway Vehicle"@de ;
     
-    # era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ; era:preEngagementBaseline "https://example.com/pre-engagement-baseline" ] ; # TEST: I-9 SHACL OK
+    era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ; era:preEngagementBaseline "https://example.com/pre-engagement-baseline" ] ; # TEST: I-9 SHACL OK
     # era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ]; # TEST I-9 SHACL OK: invalid, missing era:preEngagementBaseline
     
     dcterms:creator orgr:Wayne_Applicant ;

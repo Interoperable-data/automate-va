@@ -28,4 +28,65 @@ era-sh:AnnexI-111 a sh:NodeShape ;
                 ]
             )
         ] ;
+    ] ;
+
+    # (A1) Simple linkage: detect Vehicles with a vehicleNumber that are not linked (directly nor via a VehicleSeries) to ANY VehicleRegistrationCase.
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Vehicle ({$num}) not linked to a VehicleRegistrationCase directly nor via VehicleSeries (Annex I-11 linkage)"@en ;
+        sh:select """
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            SELECT ?this ?vehicle ?num WHERE {
+              ?this vpa:concerns ?vehicle .
+              ?vehicle a era:Vehicle ; era:vehicleNumber ?num .
+              FILTER NOT EXISTS { ?regCase a era:VehicleRegistrationCase ; vpa:concerns ?vehicle . }
+              FILTER NOT EXISTS { ?series rdfs:member ?vehicle . ?regCase2 a era:VehicleRegistrationCase ; vpa:concerns ?series . }
+            }
+        """ ;
+    ] ;
+
+    # (A2) Application requirement for all but pre-reservation cases: if a non-RESERVE VehicleRegistrationCase exists (direct/series), it must have at least one VehicleRegistrationApplication via vpa:constitutedBy.
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Vehicle {$num} (no pre-reservation) has a VehicleRegistrationCase without VehicleRegistrationApplication (Annex I-11 application)"@en ;
+        sh:select """
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            SELECT ?this ?vehicle ?num WHERE {
+              ?this vpa:concerns ?vehicle .
+              ?vehicle a era:Vehicle ; era:vehicleNumber ?num .
+              {
+                { ?regCase a era:VehicleRegistrationCase ; vpa:concerns ?vehicle . }
+                UNION
+                { ?series rdfs:member ?vehicle . ?regCase a era:VehicleRegistrationCase ; vpa:concerns ?series . }
+              }
+              ?regCase vpa:permissionType ?ptype .
+              FILTER (?ptype != <http://data.europa.eu/949/concepts/vr-regcases/RESERVE>)
+              FILTER NOT EXISTS { ?app a era:VehicleRegistrationApplication ; vpa:constitutedBy ?regCase . }
+            }
+        """ ;
+    ] ;
+
+    # (B) Detect Vehicles under this case whose vehicleNumber is missing or does not match the required pattern.
+    # Pattern: 11 digits, a dash, then one digit -> ^[0-9]{11}-[0-9]$
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Vehicle missing a valid era:vehicleNumber (expected 11 digits, dash, digit) (Annex I-11)"@en ;
+        sh:select """
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            SELECT ?this ?vehicle WHERE {
+              ?this vpa:concerns ?vehicle .
+              ?vehicle a era:Vehicle .
+              FILTER NOT EXISTS {
+                 ?vehicle era:vehicleNumber ?num .
+                 FILTER( REGEX(STR(?num), '^[0-9]{11}-[0-9]$') )
+              }
+            }
+        """ ;
     ] .

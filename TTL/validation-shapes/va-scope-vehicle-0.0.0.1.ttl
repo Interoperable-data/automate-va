@@ -83,6 +83,13 @@
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
 
+era-sh:VehicleTypeShape
+      a sh:NodeShape ;
+      sh:class era:VehicleType ;
+      sh:name "Vehicle Type must be an IRI of class era:VehicleType."@en ;
+      sh:message "Vehicle type must be an IRI of class era:VehicleType."@en ;
+      sh:severity sh:Violation .
+
 # Vehicle validation shape for VA scope
 era-sh:VehicleShape a sh:NodeShape ;
   rdfs:label "Vehicle Validation Shape"@en ;
@@ -113,6 +120,7 @@ era-sh:VehicleShape a sh:NodeShape ;
     sh:name "Vehicle Type" ;
     sh:description "IRI to the vehicle type. Must be present and an IRI." ;
     sh:nodeKind sh:IRI ;
+    sh:node era-sh:VehicleTypeShape ;
     sh:minCount 1 ;
     sh:severity sh:Violation ;
   ] ;
@@ -133,66 +141,66 @@ era-sh:VehicleShape a sh:NodeShape ;
     sh:severity sh:Warning ;
   ] ;
   sh:property [
+    a sh:PropertyShape ;
     sh:path era:vehicleKeeper ;
-    sh:name "Vehicle Keeper (Required if Authorised)" ;
-    sh:description "Keeper is required if the linked vehicle type is fully authorised (has dcterms:issued). Violation if missing in that case." ;
-    sh:minCount 1 ;
+    sh:name "(registered types) exactly one Vehicle Keeper" ;
+    sh:description "Keeper must be provided as an IRI when the linked vehicle type has a dcterms:issued date." ;
+    sh:nodeKind sh:IRI ;
+    sh:maxCount 1 ;
     sh:severity sh:Violation ;
-    sh:condition [
-      sh:path era:vehicleType ;
-      sh:node [
-        sh:property [
-          sh:path dcterms:issued ;
-          sh:minCount 1 ;
-        ]
-      ]
-    ]
   ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "Vehicle keeper must be provided as an IRI when the related vehicle type ({$vt}) is formally issued."@en ;
+    sh:message "Vehicle with an issued vehicle type is missing a keeper IRI."@en ;
+    sh:select """
+      PREFIX era: <http://data.europa.eu/949/>
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      SELECT ?this ?vt WHERE {
+        ?this era:vehicleType ?vt .
+        ?vt dcterms:issued ?issued .
+        FILTER NOT EXISTS {
+          ?this era:vehicleKeeper ?keeper .
+          FILTER ( isIRI(?keeper) )
+        }
+      }
+    """ ;
+  ];
   sh:property [
-    sh:path era:vehicleKeeper ;
-    sh:name "Vehicle Keeper (Draft Type)" ;
-    sh:description "Keeper may be absent if the linked vehicle type is in draft (no dcterms:issued)." ;
-    sh:minCount 0 ;
-    sh:severity sh:Info ;
-    sh:condition [
-      sh:path era:vehicleType ;
-      sh:node [
-        sh:property [
-          sh:path dcterms:issued ;
-          sh:maxCount 0 ;
-        ]
-      ]
-    ]
-  ] ;
-  sh:property [
+    a sh:PropertyShape ;
     sh:path era:compositeBrakeBlockRetrofitted ;
-    sh:name "Composite Brake Block Retrofitted" ;
-    sh:description "Should be present for Freight wagons (hauled)." ;
-    sh:minCount 0 ;
-    sh:severity sh:Warning ;
-    sh:condition [
-      sh:path [ sh:inversePath era:vehicleType ] ;
-      sh:node [
-        sh:property [
-          sh:path era:vehicleTypeCategory ;
-          sh:hasValue era-vehicle-types-eratv:51 ;
-        ]
-      ]
-    ]
+    sh:description "Vehicles whose type is category 51 (Freight wagons – hauled) must state whether composite brake blocks are retrofitted." ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount 1 ;
+    sh:severity sh:Violation ;
+    sh:message "Vehicle of category 51 must provide ONE boolean compositeBrakeBlockRetrofitted flag."@en ;
   ] ;
-  sh:property [
-    sh:path era:operationalRestriction ;
-    sh:name "Operational Restriction" ;
-    sh:description "Should be present for Freight wagons (hauled)." ;
-    sh:minCount 0 ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:name "Composite Brake Block Retrofitted" ;
+    sh:message "Vehicle of category 51 is missing compositeBrakeBlockRetrofitted."@en ;
+    sh:select """
+      PREFIX era: <http://data.europa.eu/949/>
+      PREFIX era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/>
+      SELECT ?this ?vt WHERE {
+        ?this era:vehicleType ?vt .
+        ?vt era:vehicleTypeCategory era-vehicle-types-eratv:51 .
+        FILTER NOT EXISTS { ?this era:compositeBrakeBlockRetrofitted ?flag . }
+      }
+    """ ;
+  ];
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:name "Operational Restriction for category 51" ;
     sh:severity sh:Warning ;
-    sh:condition [
-      sh:path [ sh:inversePath era:vehicleType ] ;
-      sh:node [
-        sh:property [
-          sh:path era:vehicleTypeCategory ;
-          sh:hasValue era-vehicle-types-eratv:51 ;
-        ]
-      ]
-    ]
-  ] .
+    sh:message "Vehicle of category 51 is missing operationalRestriction."@en ;
+    sh:select """
+      PREFIX era: <http://data.europa.eu/949/>
+      PREFIX era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/>
+      SELECT ?this WHERE {
+        ?this era:vehicleType ?vt .
+        ?vt era:vehicleTypeCategory era-vehicle-types-eratv:51 .
+        FILTER NOT EXISTS { ?this era:operationalRestriction ?restriction . }
+      }
+    """ ;
+  ].
