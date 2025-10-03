@@ -267,7 +267,7 @@ gotham:nobo-71-001-0001-1-001-US a era:CABEvidence ;
   rdfs:member era-ecd:ecd-123 ;
   vpa:statesCompliance [ a vpa:Compliance ;
     vpa:compliant "false"^^xsd:boolean ;
-    vpa:checkedRequirement eralex:reg-2013-1236 , eralex:reg-2014-1304 , eralex:reg-2015-924 , eralex:reg-2013-321  ;
+    vpa:checkedRequirement eralex:reg-2013-1236 , eralex:reg-2014-1304 , eralex:reg-2015-924 , eralex:reg-2013-321  ; # I-16-1 detects missing TSI RST, TSI Noise, TSI LOC&PAS, TSI PRM
     vpa:withRestriction [
       a era:VehicleTypeAuthorisationRestriction ; # subClassOf vpa:Restriction ;
       era:forConfiguration eratv:BatmanSpecial  ;
@@ -329,7 +329,11 @@ era-cld:cld-NoBoCert-123000 a era:CLD ;
     rdfs:label "TSI RST TE verification certificate" ;
     dcterms:audience orgr:Wayne_Applicant;
     dcterms:creator orgr:0001_NotifiedBody ;
-    vpa:checkedCompliance [ a era:CABAssessmentCheck ; vpa:checkedRequirement eralex:reg-2014-1304 ; vpa:isCompliant false ; vpa:withRestriction gotham:clui-123 ] ;
+    vpa:checkedCompliance [ 
+        a era:CABAssessmentCheck ; 
+        vpa:checkedRequirement eralex:reg-2014-1304 ; # Checked missing in I-16-1
+        vpa:isCompliant false ; vpa:withRestriction gotham:clui-123 
+    ] ;
     vpa:valid [
       a time:ProperInterval ;
       time:hasBeginning "2022-04-02"^^xsd:date ; #start of validity

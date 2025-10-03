@@ -1,0 +1,137 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+
+# (I) 16.1. TSIs
+# Ensure that CAB evidence supporting this VehicleTypeAuthorisationCase brings CLD certificates
+# whose compliance checks reference a concrete requirement URI.
+era-sh:AnnexI-16-1
+    a sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:name "(I) 16.1. TSIs"@en ;
+    sh:description "Every CLD referenced by CAB Evidence supporting this VehicleTypeAuthorisationCase (directly or via EC Declarations) must provide vpa:checkedCompliance/vpa:checkedRequirement."@en ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:name "CLD certificates must declare checked requirement"@en ;
+        sh:message "CLD {$cld} referenced by CAB evidence supporting this case is missing a reference to the covered TSI's (Annex I-16-1)."@en ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT ?this ?cld WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this .
+
+              {
+                ?evidence rdfs:member ?cld .
+                ?cld a era:CLD .
+              }
+              UNION
+              {
+                ?evidence rdfs:member ?declaration .
+                ?declaration a era:ECDeclaration ;
+                             dcterms:requires ?required .
+                {
+                  ?required rdfs:member ?cld .
+                }
+                UNION
+                {
+                  ?required a era:CLD .
+                  BIND(?required AS ?cld)
+                }
+                ?cld a era:CLD .
+              }
+
+              FILTER NOT EXISTS {
+                ?cld vpa:checkedCompliance/vpa:checkedRequirement ?requirement .
+                FILTER ( isIRI(?requirement) )
+              }
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:name "CAB evidence with statesCompliance must list checked requirement"@en ;
+        sh:message "CAB evidence {$evidence} supporting this case lists statesCompliance but no vpa:checkedRequirement IRI (Annex I-16-1)."@en ;
+        sh:select """
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT ?this ?evidence WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this ;
+                        vpa:statesCompliance ?compliance .
+
+              FILTER EXISTS {
+                ?evidence rdfs:member ?member .
+                ?member a ?memberType .
+                FILTER (?memberType = era:CLD || ?memberType = era:ECDeclaration)
+              }
+
+              FILTER NOT EXISTS {
+                ?evidence vpa:statesCompliance/vpa:checkedRequirement ?requirement .
+                FILTER ( isIRI(?requirement) )
+              }
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:name "List TSI requirements referenced by CAB evidence"@en ;
+        sh:severity sh:Info ;
+        sh:message "TSI requirement {$requirement} referenced by CAB evidence supporting this case (Annex I-16-1)."@en ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT DISTINCT ?this ?requirement WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this .
+
+              {
+                ?evidence rdfs:member ?cld .
+                ?cld a era:CLD ;
+                     vpa:checkedCompliance/vpa:checkedRequirement ?requirement .
+              }
+              UNION
+              {
+                ?evidence rdfs:member ?declaration .
+                ?declaration a era:ECDeclaration ;
+                             dcterms:requires ?required .
+                {
+                  ?required rdfs:member ?cld .
+                }
+                UNION
+                {
+                  ?required a era:CLD .
+                  BIND(?required AS ?cld)
+                }
+                ?cld a era:CLD ;
+                     vpa:checkedCompliance/vpa:checkedRequirement ?requirement .
+              }
+              UNION
+              {
+                ?evidence vpa:statesCompliance ?compliance .
+
+                FILTER EXISTS {
+                  ?evidence rdfs:member ?member .
+                  ?member a ?memberType .
+                  FILTER (?memberType = era:CLD || ?memberType = era:ECDeclaration)
+                }
+
+                ?evidence vpa:statesCompliance/vpa:checkedRequirement ?requirement .
+              }
+
+              FILTER ( isIRI(?requirement) )
+            }
+        """ ;
+    ] .
