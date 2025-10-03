@@ -8,11 +8,11 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # (I) 12. Reference to existing vehicle type authorisation (not applicable in case of first authorisation)
-eralex-sh:AnnexI-12
-    a sh:NodeShape ;
+eralex-sh:AnnexI-12 a sh:NodeShape ;
     sh:targetClass era:VehicleTypeAuthorisationCase ;
+
     sh:name "(I) 12. Reference to existing vehicle type authorisation"@en ;
-  sh:description "For non-first authorisations, the current VehicleTypeAuthorisation must reference a predecessor (via dcterms:replaces or reciprocal dcterms:isReplacedBy) that concerns the same VehicleType."@en ;
+    sh:description "For non-first authorisations, the current VehicleTypeAuthorisation must reference a predecessor (via dcterms:replaces or reciprocal dcterms:isReplacedBy) that concerns the same VehicleType."@en ;
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:message "Missing predecessor VehicleTypeAuthorisation referencing the current authorisation via dcterms:isReplacedBy (Annex I-12)."@en ;

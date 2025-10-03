@@ -23,6 +23,16 @@ const path = require('path');
 const https = require('https');
 const { URL } = require('url');
 
+function readPackageVersion() {
+  try {
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    const pkg = require('../package.json');
+    return pkg && pkg.version ? String(pkg.version) : '0.0.0';
+  } catch {
+    return '0.0.0';
+  }
+}
+
 function parseArgs() {
   const args = process.argv.slice(2);
   const opts = {};
@@ -51,6 +61,20 @@ let OUTPUT_FILE = OUTPUT_FILE_RAW;
 const CONTENT_SYNTAX = opts.contentSyntax || 'text/turtle';
 const RULE_SYNTAX = opts.ruleSyntax || 'text/turtle';
 const REPORT_SYNTAX = opts.report || 'text/turtle';
+
+const PACKAGE_VERSION = readPackageVersion();
+const DEFAULT_CLIENT_ID = `automate-va-shacl-script/${PACKAGE_VERSION}`;
+const CLIENT_HEADER_NAME = opts.clientHeader || 'X-VA-Client';
+const CLIENT_TAG = opts.clientTag || opts.clientId || process.env.VA_CLIENT_TAG || '';
+const CLIENT_HEADER_VALUE = CLIENT_TAG ? `${DEFAULT_CLIENT_ID} (${CLIENT_TAG})` : DEFAULT_CLIENT_ID;
+
+function withClientHeaders(baseHeaders = {}) {
+  return {
+    ...baseHeaders,
+    [CLIENT_HEADER_NAME]: CLIENT_HEADER_VALUE,
+    'User-Agent': CLIENT_HEADER_VALUE,
+  };
+}
 
 // New model flags only
 const REMOTE_BASE = opts.remoteBase || null;
@@ -104,7 +128,7 @@ function getJson(urlStr) {
         hostname: u.hostname,
         port: u.port || 443,
         path: u.pathname + u.search,
-        headers: { Accept: 'application/json' },
+        headers: withClientHeaders({ Accept: 'application/json' }),
       },
       (res) => {
         let body = '';
@@ -135,11 +159,11 @@ function postJson(baseUrl, pathName, payload) {
         hostname: u.hostname,
         port: u.port || 443,
         path: u.pathname.replace(/\/$/, '') + pathName,
-        headers: {
+        headers: withClientHeaders({
           'Content-Type': 'application/json',
           Accept: 'application/json, text/turtle;q=0.9',
           'Content-Length': Buffer.byteLength(body),
-        },
+        }),
       },
       (res) => {
         let data = '';
@@ -194,7 +218,7 @@ function fetchText(urlStr, acceptHdr = 'text/turtle, text/plain;q=0.9, */*;q=0.1
         hostname: u.hostname,
         port: u.port || 443,
         path: u.pathname + u.search,
-        headers: { Accept: acceptHdr },
+        headers: withClientHeaders({ Accept: acceptHdr }),
       },
       (res) => {
         let body = '';
@@ -344,6 +368,7 @@ const COMPACT = !!opts.compact;
       );
       OUTPUT_FILE = adj;
     }
+    console.error(`Request with "User-Agent: ${CLIENT_HEADER_VALUE}"`);
     if (!OUTPUT_FILE) {
       console.log(JSON.stringify(result, null, 2));
     } else {
