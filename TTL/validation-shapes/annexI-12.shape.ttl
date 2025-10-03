@@ -1,0 +1,51 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix eralex-sh: <http://data.europa.eu/949/shapes/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# (I) 12. Reference to existing vehicle type authorisation (not applicable in case of first authorisation)
+eralex-sh:AnnexI-12
+    a sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:name "(I) 12. Reference to existing vehicle type authorisation"@en ;
+  sh:description "For non-first authorisations, the current VehicleTypeAuthorisation must reference a predecessor (via dcterms:replaces or reciprocal dcterms:isReplacedBy) that concerns the same VehicleType."@en ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "Missing predecessor VehicleTypeAuthorisation referencing the current authorisation via dcterms:isReplacedBy (Annex I-12)."@en ;
+        sh:select """
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/>
+
+            SELECT ?this ?type WHERE {
+              ?this vpa:permissionType ?permissionType .
+              FILTER (?permissionType != era-va-authcase:FA)
+
+              ?this vpa:concerns ?type .
+              ?type a era:VehicleType .
+
+              FILTER NOT EXISTS {
+                ?this vpa:constitutes ?application .
+                ?application vpa:requestFor ?currentAuth .
+
+                {
+                  ?currentAuth dcterms:replaces ?previousAuth .
+                }
+                UNION
+                {
+                  ?previousAuth dcterms:isReplacedBy ?currentAuth .
+                }
+
+                ?previousAuth a era:VehicleTypeAuthorisation ;
+                              vpa:requestedIn ?prevApplication .
+                ?prevApplication vpa:constitutedBy ?prevCase .
+                ?prevCase vpa:concerns ?type .
+              }
+            }
+        """ ;
+    ] .

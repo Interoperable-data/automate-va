@@ -8,7 +8,7 @@
 @prefix vpa: <http://w3id.org/vpa#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
     
-era-sh:AnnexI-111 a sh:NodeShape ;
+era-sh:AnnexI-11 a sh:NodeShape ;
     sh:targetClass era:VehicleTypeAuthorisationCase ;
 
     sh:name "(I) 11. Information on the vehicles"@en ;

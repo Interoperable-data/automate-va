@@ -1,95 +1,74 @@
-@base <http://data.europa.eu/949/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix era-sh: <http://data.europa.eu/949/shapes/> .
-
-# From examples
-@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
-@prefix gotham: <https://batman.fandom.com/wiki/> .
-
-# General
-@prefix as:    <https://www.w3.org/ns/activitystreams#> .
-@prefix cc:    <http://creativecommons.org/ns#> .
-@prefix dash:  <http://datashapes.org/dash#> .
-@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix dct:  <http://purl.org/dc/terms/> .
-@prefix dul:  <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
+@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
+@prefix era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/> .
+@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
+@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
+@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
+@prefix era-ecm-attestations: <http://data.europa.eu/949/concepts/ecm-attestations/> .
+@prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
+@prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
+@prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
+@prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
+@prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
+@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+@prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
+@prefix era-perm: <http://data.europa.eu/949/permissions/> .
+@prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix era-skos: <http://data.europa.eu/949/concepts/> .
+@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
+@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
+@prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+@prefix era-vr-regcase: <http://data.europa.eu/949/concepts/vr-regcases/> .
+@prefix era-vtc: <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
+@prefix eralex-pava: <http://data.europa.eu/949/requirements/legislations/pava/> .
+@prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
+@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
+@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
+@prefix erava-tsi-conforms: <http://data.europa.eu/949/concepts/tsi-conformities/> .
+@prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
+@prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix geo:  <http://www.opengis.net/ont/geosparql#> .
-@prefix gr:   <http://purl.org/goodrelations/v1#> .
-@prefix org:  <http://www.w3.org/ns/org#> .
-@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix gotham: <https://batman.fandom.com/wiki/> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix iss: <http://data.europa.eu/949/iss/> .
+@prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
+@prefix iss-rs: <http://data.europa.eu/949/iss/concepts/record-statuses/> .
+@prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
+@prefix issform: <http://era.europa.eu/forms/iss/> .
+@prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix orgr: <http://data.europa.eu/949/organisations/roles/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix schema:  <http://schema.org/> .
-@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix rorg: <http://data.europa.eu/949/organisations/> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix time: <http://www.w3.org/2006/time#> .
 @prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix uorg: <http://data.europa.eu/949/organisations/units/> .
+@prefix update: <http://data.europa.eu/949/update/> .
+@prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 @prefix vpa: <http://w3id.org/vpa#> .
 @prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-# Domain-specific
-@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
-@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
-@prefix era-perm: <http://data.europa.eu/949/permissions/> .
-@prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
-@prefix eralex-pava: <http://data.europa.eu/949/requirements/legislations/pava/> .
-@prefix rorg: <http://data.europa.eu/949/organisations/> .
-@prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
-@prefix uorg: <http://data.europa.eu/949/organisations/units/> .
-@prefix orgr: <http://data.europa.eu/949/organisations/roles/> .
-@prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
-@prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
-@prefix evr: <http://data.europa.eu/949/vehicles/> .
-@prefix iss: <http://data.europa.eu/949/iss/> . 
-
-
-# Relevant SKOS Concept Schemes
-@prefix era-skos: <http://data.europa.eu/949/concepts/> .
-@prefix era-cld-types: <http://data.europa.eu/949/concepts/cld-types/> .
-@prefix era-ecd-types: <http://data.europa.eu/949/concepts/ecd-types/> .
-@prefix era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/> .
-@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
-@prefix era-states: <http://data.europa.eu/949/concepts/states/> .
-@prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
-@prefix era-vr-regcase: <http://data.europa.eu/949/concepts/vr-regcases/> .
-@prefix era-vtc: <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
-@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
-# unused @prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
-@prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .
-@prefix era-ess-rinf: <http://data.europa.eu/949/concepts/energy-supply-systems/rinf/> .
-@prefix era-noic: <http://data.europa.eu/949/concepts/noise-categories/NoiseCategories/> .
-@prefix era-va-trm: <http://data.europa.eu/949/concepts/va-type-registration-methods/> .
-
-
- # WARNING: DO NOT (YET) EXIST
-@prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
-@prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
-@prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
-@prefix era-ecm-attestations: <http://data.europa.eu/949/concepts/ecm-attestations/> .
-@prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
-@prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
-@prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
-@prefix erava-tsi-conforms: <http://data.europa.eu/949/concepts/tsi-conformities/> .
-@prefix issform:  <http://era.europa.eu/forms/iss/> . 
-
-# From ISS
-@prefix iss-skos: <https://raw.githubusercontent.com/Interoperable-data/ISS_vocabulary/refs/heads/main/iss-skos/> .
-@prefix iss-rs:   <http://data.europa.eu/949/iss/concepts/record-statuses/> .
-@prefix iss-dcs: <http://data.europa.eu/949/iss/concepts/document-statuses/> .
-
-# EU Countries
-@prefix vac: <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/> .
-
-# Properties to be post-processed, if shacl-form 
-@prefix update: <http://data.europa.eu/949/update/> .
-
 
 ## Organisations and Sites
 rorg:MF-US-GC001-224 a era:Body ; # Wayne Industries, Gotham City, USA (era:Body, see above)
@@ -240,11 +219,33 @@ erava:vac-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationCase ; # subClass
 
 erava:71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisation ;
     dcterms:identifier "EU/81/2025/0001" ;
+    dcterms:replaces erava:V-20200101-001 ; # I-12: previous authorisation
     # NOT YET dcterms:issued
     # dcterms:issued "2025-01-01"^^xsd:date ; # TEST
     # NOT YET vpa:valid
     # I-7 TEST OK: era:vehicleTypeAuthorisationHolder orgr:Wayne_Manufacturer ;
     vpa:requestedIn erava:va-71-001-0001-1-001-US-1 .
+
+# I-12: previous authorisation
+# TODO: process in order to assure these triples exist at the time of issuing the new application?
+erava:V-20200101-001 a era:VehicleTypeAuthorisation ;
+    dcterms:identifier "EU/81/2020/0786" ;
+    dcterms:issued "2020-01-01"^^xsd:date ; # Previous authorisation
+    # dcterms:isReplacedBy erava:71-001-0001-1-001-US-1 ; # FIXME: how is this triple written?
+    vpa:valid [ a time:ProperInterval ;
+      time:hasBeginning "2020-01-01"^^xsd:date ;
+      time:hasEnd "2025-01-01"^^xsd:date ] ;
+    vpa:requestedIn erava:va-71-001-0001-1-001-US-previous ;
+    era:vehicleTypeAuthorisationHolder orgr:Wayne_Manufacturer .
+
+# Previous application/case (minimal sketch)
+erava:va-71-001-0001-1-001-US-previous a era:VehicleTypeAuthorisationApplication ;
+    vpa:requestFor erava:V-20200101-001 ;
+    vpa:constitutedBy erava:vac-71-001-0001-1-001-US-previous .
+
+erava:vac-71-001-0001-1-001-US-previous a era:VehicleTypeAuthorisationCase ;
+    vpa:permissionType era-va-authcase:FA ;           # or EXT, etc.
+    vpa:concerns eratv:vt-71-001-0001-1-001 .
 
 # VA-Library
 gotham:debo-71-001-0001-1-001-US a era:CABEvidence ;
