@@ -505,15 +505,44 @@ era-sh:CLD a
     sh:property [
         a sh:PropertyShape ;
         sh:path dcterms:spatial ;
-        # FIXME: if the module is 4 then this should be a Violation!
         sh:name "CLD: spatial validity to a Site"@en ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class org:Site ;
-        sh:description "Manufacturing or assessment site(s), if relevant."@en ;
-        sh:message "No Manufacturing or assessment site(s) mentioned in the CLD."@en ;
+        sh:description "Manufacturing or assessment site(s), if relevant (mandatory for certain CLD types and modules)."@en ;
+        sh:message "No manufacturing or assessment site(s) mentioned in the CLD."@en ;
         sh:severity sh:Warning ;
-        sh:minCount 1
-    ];
+        sh:maxCount 10
+        ];
+        sh:sparql [
+                a sh:SPARQLConstraint ;
+                sh:severity sh:Violation ;
+                sh:message "Provide manufacturing or assessment site(s) when CLD type is 4 or 8.4 and the module is one of CD, CH, CH1, D, SD, H1, H2, SH1, SH2."@en ;
+                sh:prefixes dcterms: , era-cld-types: , era-cld-modules: ;
+                sh:select """
+                        PREFIX dcterms: <http://purl.org/dc/terms/>
+                        PREFIX era-cld-types: <http://data.europa.eu/949/concepts/cld-types/>
+                        PREFIX era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/>
+                        SELECT $this WHERE {
+                            $this dcterms:type ?type .
+                            FILTER (?type IN (era-cld-types:4, era-cld-types:8.4))
+                            FILTER EXISTS {
+                                $this dcterms:conformsTo ?module .
+                                FILTER (?module IN (
+                                    era-cld-modules:CD,
+                                    era-cld-modules:CH,
+                                    era-cld-modules:CH1,
+                                    era-cld-modules:D,
+                                    era-cld-modules:SD,
+                                    era-cld-modules:H1,
+                                    era-cld-modules:H2,
+                                    era-cld-modules:SH1,
+                                    era-cld-modules:SH2
+                                ))
+                            }
+                            FILTER NOT EXISTS { $this dcterms:spatial ?site }
+                        }
+                """
+        ] ;
     sh:property [
         a sh:PropertyShape ;
         sh:path rdfs:comment ;
@@ -531,10 +560,53 @@ era-sh:CLD a
         sh:name "Replacing CLD"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "IRI of the newer CLD that replaces this one, if any."@en ;
-        sh:message "(Check) This CLD is not linking to a newer CLD."@en ;
+        sh:message "Provide the CLD that supersedes this one when applicable."@en ;
         sh:severity sh:Warning ;
-        sh:minCount 1 ; sh:maxCount 1
+        sh:maxCount 1
     ] ;
+        sh:sparql [
+                a sh:SPARQLConstraint ;
+                sh:severity sh:Violation ;
+                sh:message "Expired CLDs must reference the CLD that replaces them via dcterms:isReplacedBy."@en ;
+                sh:prefixes dcterms: , time: , vpa: , xsd: ;
+                sh:select """
+                        PREFIX dcterms: <http://purl.org/dc/terms/>
+                        PREFIX time: <http://www.w3.org/2006/time#>
+                        PREFIX vpa: <http://w3id.org/vpa#>
+                        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+                        SELECT $this WHERE {
+                            $this vpa:valid ?interval .
+                            {
+                                ?interval time:hasEnd ?endLiteral .
+                                FILTER ( isLiteral(?endLiteral) && datatype(?endLiteral) IN (xsd:date, xsd:dateTime) )
+                                BIND(
+                                    IF(
+                                        datatype(?endLiteral) = xsd:date,
+                                        xsd:dateTime(CONCAT(STR(?endLiteral), "T00:00:00")),
+                                        ?endLiteral
+                                    ) AS ?endDateTime
+                                )
+                            }
+                            UNION
+                            {
+                                ?interval time:hasEnd ?endNode .
+                                FILTER ( isBlank(?endNode) )
+                                OPTIONAL { ?endNode time:inXSDDateTime ?endDateTimeLiteral . }
+                                OPTIONAL { ?endNode time:inXSDDate ?endDateLiteral . }
+                                BIND(
+                                    COALESCE(
+                                        ?endDateTimeLiteral,
+                                        xsd:dateTime(CONCAT(STR(?endDateLiteral), "T00:00:00"))
+                                    ) AS ?endDateTime
+                                )
+                                FILTER(BOUND(?endDateTime))
+                            }
+                            FILTER(?endDateTime <= NOW())
+                            FILTER NOT EXISTS { $this dcterms:isReplacedBy ?replacement }
+                        }
+                """
+        ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:severity sh:Violation ;
@@ -606,6 +678,17 @@ era-sh:CLD a
     ] ;
     sh:property [
         a sh:PropertyShape ;
+        sh:path era:resultReport ;
+        sh:name "CLD Result Report Reference"@en ;
+        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype xsd:anyURI ] ) ;
+        sh:nodeKind sh:Literal ;
+        sh:description "Reference or URL of the detailed assessment report supporting the CLD."@en ;
+        sh:message "Provide a reference or URL to the detailed assessment report supporting the CLD."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1 ; sh:maxCount 1
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
         sh:path era:validityStatement ;
         sh:name "CLD Validity Statement"@en ;
         sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
@@ -621,10 +704,25 @@ era-sh:CLD a
         sh:name "CLD Sequence Statement"@en ;
         sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
         sh:nodeKind sh:Literal ;
-        sh:description "Sequence statement (free text, optional)."@en ;
+        sh:description "Sequence statement (free text, optional unless the CLD is a subsequent version)."@en ;
         sh:message "Sequence statement is not present."@en ;
         sh:severity sh:Warning ;
-        sh:minCount 1 ; sh:maxCount 1
+        sh:maxCount 1
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Violation ;
+        sh:message "Provide a sequence statement when the CLD version number is greater than 1."@en ;
+        sh:prefixes era: , vpa: ;
+        sh:select """
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            SELECT $this WHERE {
+              $this vpa:versionNumber ?version .
+              FILTER (?version > 1)
+              FILTER NOT EXISTS { $this era:sequenceStatement ?sequence }
+            }
+        """
     ] ;
 .
 
