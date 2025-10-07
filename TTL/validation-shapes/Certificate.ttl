@@ -126,6 +126,7 @@ era-sh:CLD a
     # --- CLD properties (updated for real data) ---
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:identifier ;
         sh:name "CLD identifier"@en ;
         sh:datatype xsd:string ;
@@ -138,6 +139,7 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path vpa:versionNumber ;
         sh:name "CLD Version Number"@en ;
         sh:datatype xsd:integer ;
@@ -150,6 +152,7 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:created ;
         sh:name "CLD entry created in KG"@en ;
         sh:datatype xsd:date ;
@@ -162,6 +165,7 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:issued ;
         sh:name "CLD Issue date"@en ;
         sh:datatype xsd:date ;
@@ -174,6 +178,7 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:replaces ;
         sh:name "Which CLD this CLD replaces"@en ;
         sh:nodeKind sh:IRI ;
@@ -184,6 +189,7 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:type ;
         sh:name "CLD type"@en ;
         sh:nodeKind sh:IRI ;
@@ -217,6 +223,7 @@ era-sh:CLD a
     # ];
     sh:sparql [
         a sh:SPARQLConstraint ;
+        sh:deactivated true ;
         sh:severity sh:Warning ;
         sh:message "No `era:Document` (representing ERA Technical Document 000MRA1044) is present in `dcterms:conformsTo`."@en ;
         sh:prefixes dcterms: , era: , vpa: ;
@@ -233,6 +240,7 @@ era-sh:CLD a
     ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
+        sh:deactivated true ;
         sh:severity sh:Violation ;
         sh:description "CLD Module (SKOS Concept) must be present."@en ;
         sh:message "Module MUST be included as exactly ONE SKOS Concept (module)."@en ;
@@ -249,6 +257,7 @@ era-sh:CLD a
     ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
+        sh:deactivated true ;
         sh:severity sh:Violation ;
         sh:message "The `era:Document` in `dcterms:conformsTo` MUST not have a version 1.1 or 2017 as it was issued on {?issued}, which is after Decision ERA-ED-DEC 2110-2022 of 13/12/2022."@en ;
         sh:prefixes dcterms: , era: , vpa: ;
@@ -272,6 +281,7 @@ era-sh:CLD a
     ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
+        sh:deactivated true ;
         sh:severity sh:Violation ;
         sh:message "No SKOS Concept (for the module) is present in dcterms:conformsTo."@en ;
         sh:prefixes dcterms: , era: , vpa: ;
@@ -291,47 +301,134 @@ era-sh:CLD a
         sh:path dcterms:subject ;
         sh:name "CLD Subject of Assessment"@en ;
         sh:nodeKind sh:IRI ;
-        sh:or (
-            [ sh:class era:IC ]
-            [ sh:class era:TSI ]
-        ) ;
-        sh:description "Object of assessment be an era:IC and/or era:TSI). If an IC, exactly one; if TSI, multiple allowed."@en ;
-        sh:message "Object of assessment MUST be an era:IC or era:TSI. If an IC, exactly one; if TSI, multiple allowed. If no TSI, warning. If no subject, violation."@en ;
+        sh:node [
+            sh:xone (
+                [ 
+                    sh:targetClass era:IC ;
+                    sh:sparql [
+                        a sh:SPARQLConstraint ;
+                        sh:severity sh:Violation ;
+                        sh:message "Each era:IC subject ({$subject}) must encode its TSI identifier as `ic-YYYY-NNN` within the IRI."@en ;
+                        sh:prefixes dcterms: , era: ;
+                        sh:select """
+                            PREFIX dcterms: <http://purl.org/dc/terms/>
+                            PREFIX era: <http://data.europa.eu/949/>
+
+                            SELECT $this ?subject WHERE {
+                                $this $PATH ?subject .
+                                ?subject a era:IC .
+                                BIND(STRAFTER(STR(?subject), "ic-") AS ?afterIc)
+                                BIND(STRBEFORE(?afterIc, "-") AS ?yearPart)
+                                BIND(STRAFTER(?afterIc, CONCAT(?yearPart, "-")) AS ?rest)
+                                BIND(STRBEFORE(?rest, "-") AS ?codePart)
+                                FILTER(!(BOUND(?yearPart) && BOUND(?codePart) &&
+                                        REGEX(?yearPart, "^[0-9]{4}$") &&
+                                        REGEX(?codePart, "^[0-9]+$")
+                                ))
+                            }
+                        """
+                    ] ;
+                    sh:sparql [
+                        a sh:SPARQLConstraint ;
+                        sh:severity sh:Violation ;
+                        sh:message "All era:IC subjects must reference the same TSI identifier (ic-YYYY-NNN)."@en ;
+                        sh:prefixes dcterms: , era: ;
+                        sh:select """
+                            PREFIX dcterms: <http://purl.org/dc/terms/>
+                            PREFIX era: <http://data.europa.eu/949/>
+
+                            SELECT $this WHERE {
+                                $this dcterms:subject ?subject .
+                                ?subject a era:IC .
+                                BIND(STRAFTER(STR(?subject), "ic-") AS ?afterIc)
+                                BIND(STRBEFORE(?afterIc, "-") AS ?yearPart)
+                                BIND(STRAFTER(?afterIc, CONCAT(?yearPart, "-")) AS ?rest)
+                                BIND(STRBEFORE(?rest, "-") AS ?codePart)
+                                FILTER(
+                                    REGEX(?yearPart, "^[0-9]{4}$") &&
+                                    REGEX(?codePart, "^[0-9]+$")
+                                )
+                                BIND(CONCAT(?yearPart, "-", ?codePart) AS ?tsiCode)
+                            }
+                            GROUP BY $this
+                            HAVING(COUNT(DISTINCT ?tsiCode) > 1)
+                        """
+                    ] ;
+                    sh:sparql [
+                        a sh:SPARQLConstraint ;
+                        sh:severity sh:Violation ;
+                        sh:message "At least one vpa:checkedRequirement must reference the same TSI identifier (e.g. eralex:cir-YYYY-NNN) as the IC subjects."@en ;
+                        sh:prefixes dcterms: , era: , vpa: ;
+                        sh:select """
+                            PREFIX dcterms: <http://purl.org/dc/terms/>
+                            PREFIX era: <http://data.europa.eu/949/>
+                            PREFIX vpa: <http://w3id.org/vpa#>
+
+                            SELECT $this WHERE {
+                                {
+                                    SELECT $this (MIN(?tsiCode) AS ?expectedCode) WHERE {
+                                        $this dcterms:subject ?subject .
+                                        ?subject a era:IC .
+                                        BIND(STRAFTER(STR(?subject), "ic-") AS ?afterIc)
+                                        BIND(STRBEFORE(?afterIc, "-") AS ?yearPart)
+                                        BIND(STRAFTER(?afterIc, CONCAT(?yearPart, "-")) AS ?rest)
+                                        BIND(STRBEFORE(?rest, "-") AS ?codePart)
+                                        FILTER(
+                                            REGEX(?yearPart, "^[0-9]{4}$") &&
+                                            REGEX(?codePart, "^[0-9]+$")
+                                        )
+                                        BIND(CONCAT(?yearPart, "-", ?codePart) AS ?tsiCode)
+                                    }
+                                    GROUP BY $this
+                                }
+                                FILTER(BOUND(?expectedCode))
+                                FILTER NOT EXISTS {
+                                    $this vpa:checkedCompliance ?check .
+                                    ?check vpa:checkedRequirement ?requirement .
+                                    ?requirement a era:TSI .
+                                    BIND(REPLACE(STR(?requirement), "^.*/", "") AS ?requirementLocal)
+                                    BIND(STRAFTER(?requirementLocal, "-") AS ?reqAfterPrefix)
+                                    BIND(STRBEFORE(?reqAfterPrefix, "-") AS ?reqYear)
+                                    BIND(STRAFTER(?reqAfterPrefix, CONCAT(?reqYear, "-")) AS ?reqRest)
+                                    BIND(STRBEFORE(CONCAT(?reqRest, "-"), "-") AS ?reqCode)
+                                    FILTER(
+                                        REGEX(?reqYear, "^[0-9]{4}$") &&
+                                        REGEX(?reqCode, "^[0-9]+$") &&
+                                        CONCAT(?reqYear, "-", ?reqCode) = ?expectedCode
+                                    )
+                                }
+                            }
+                        """
+                    ] ;
+                ]
+                [   
+                    sh:targetClass era:TSI ;
+                    sh:sparql [
+                        a sh:SPARQLConstraint ;
+                        sh:severity sh:Warning ;
+                        sh:message "No `era:TSI` ({$this}) is present as `dcterms:subject`."@en ;
+                        sh:prefixes dcterms: , era: , vpa: ;
+                        sh:select """
+                            PREFIX dcterms: <http://purl.org/dc/terms/>
+                            PREFIX era: <http://data.europa.eu/949/>
+                            PREFIX vpa: <http://w3id.org/vpa#>
+
+                            SELECT $this WHERE {
+                            FILTER NOT EXISTS { $this dcterms:subject ?tsi . ?tsi a era:TSI }
+                            }
+                        """
+                    ]
+                ]
+            ) ;
+        ];
+        sh:description "Object of assessment must be an era:IC and/or era:TSI. When ICs are listed, they must all belong to the same TSI and that TSI must also be referenced among the checked requirements."@en ;
+        sh:message "Object of assessment MUST be an era:IC or era:TSI. For IC entries, all IC IRIs must share the same TSI identifier (ic-YYYY-NNN) and that identifier MUST appear in at least one vpa:checkedRequirement (e.g. eralex:cir-YYYY-NNN)."@en ;
         sh:severity sh:Violation ;
         sh:minCount 1 ;
-        sh:sparql [
-            a sh:SPARQLConstraint ;
-            sh:message "There must be at most one era:IC as dcterms:subject."@en ;
-            sh:prefixes dcterms: , era: , vpa: ;
-            sh:select """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                PREFIX era: <http://data.europa.eu/949/>
-                PREFIX vpa: <http://w3id.org/vpa#>
-
-                SELECT $this (COUNT(?ic) AS ?icCount) WHERE {
-                  $this dcterms:subject ?ic .
-                  ?ic a era:IC .
-                } GROUP BY $this HAVING (?icCount > 1)
-            """
-        ] ;
-        sh:sparql [
-            a sh:SPARQLConstraint ;
-            sh:severity sh:Warning ;
-            sh:message "No `era:TSI` is present as `dcterms:subject`."@en ;
-            sh:prefixes dcterms: , era: , vpa: ;
-            sh:select """
-                PREFIX dcterms: <http://purl.org/dc/terms/>
-                PREFIX era: <http://data.europa.eu/949/>
-                PREFIX vpa: <http://w3id.org/vpa#>
-
-                SELECT $this WHERE {
-                  FILTER NOT EXISTS { $this dcterms:subject ?tsi . ?tsi a era:TSI }
-                }
-            """
-        ]
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path vpa:checkedCompliance ;
         sh:name "CLD Compliances Checked"@en ;
         sh:nodeKind sh:BlankNodeOrIRI ;
@@ -346,6 +443,7 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:description ;
         sh:name "CLD description"@en ;
         sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
@@ -357,6 +455,7 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path rdfs:seeAlso ;
         sh:name "CLD link to ERADIS URL"@en ;
         sh:datatype xsd:anyURI ;
@@ -378,6 +477,7 @@ era-sh:CLD a
     # ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:audience ;
         sh:name "Organisation receiving the CLD"@en ;
         sh:class era:OrganisationRole ;
@@ -411,6 +511,7 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:contributor ;
         sh:name "Involved organisations"@en ;
         sh:class era:OrganisationRole ;
@@ -447,6 +548,7 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:creator ;
         sh:name "The CAB producing the CLD"@en ;
         sh:class era:OrganisationRole ;
@@ -480,6 +582,7 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:source ;
         sh:name "CLD: Covered Directives"@en ;
         sh:nodeKind sh:IRI ;
@@ -504,18 +607,50 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:spatial ;
-        # FIXME: if the module is 4 then this should be a Violation!
         sh:name "CLD: spatial validity to a Site"@en ;
         sh:nodeKind sh:BlankNodeOrIRI ;
         sh:class org:Site ;
-        sh:description "Manufacturing or assessment site(s), if relevant."@en ;
-        sh:message "No Manufacturing or assessment site(s) mentioned in the CLD."@en ;
+        sh:description "Manufacturing or assessment site(s), if relevant (mandatory for certain CLD types and modules)."@en ;
+        sh:message "No manufacturing or assessment site(s) mentioned in the CLD."@en ;
         sh:severity sh:Warning ;
-        sh:minCount 1
-    ];
+        sh:maxCount 10
+        ];
+        sh:sparql [
+                a sh:SPARQLConstraint ;
+        sh:deactivated true ;
+                sh:severity sh:Violation ;
+                sh:message "Provide manufacturing or assessment site(s) when CLD type is 4 or 8.4 and the module is one of CD, CH, CH1, D, SD, H1, H2, SH1, SH2."@en ;
+                sh:prefixes dcterms: , era-cld-types: , era-cld-modules: ;
+                sh:select """
+                        PREFIX dcterms: <http://purl.org/dc/terms/>
+                        PREFIX era-cld-types: <http://data.europa.eu/949/concepts/cld-types/>
+                        PREFIX era-cld-modules: <http://data.europa.eu/949/concepts/cld-modules/>
+                        SELECT $this WHERE {
+                            $this dcterms:type ?type .
+                            FILTER (?type IN (era-cld-types:4, era-cld-types:8.4))
+                            FILTER EXISTS {
+                                $this dcterms:conformsTo ?module .
+                                FILTER (?module IN (
+                                    era-cld-modules:CD,
+                                    era-cld-modules:CH,
+                                    era-cld-modules:CH1,
+                                    era-cld-modules:D,
+                                    era-cld-modules:SD,
+                                    era-cld-modules:H1,
+                                    era-cld-modules:H2,
+                                    era-cld-modules:SH1,
+                                    era-cld-modules:SH2
+                                ))
+                            }
+                            FILTER NOT EXISTS { $this dcterms:spatial ?site }
+                        }
+                """
+        ] ;
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path rdfs:comment ;
         sh:name "CLD comment"@en ;
         sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
@@ -527,14 +662,59 @@ era-sh:CLD a
     ];
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path dcterms:isReplacedBy ;
         sh:name "Replacing CLD"@en ;
         sh:nodeKind sh:IRI ;
         sh:description "IRI of the newer CLD that replaces this one, if any."@en ;
-        sh:message "(Check) This CLD is not linking to a newer CLD."@en ;
+        sh:message "Provide the CLD that supersedes this one when applicable."@en ;
         sh:severity sh:Warning ;
-        sh:minCount 1 ; sh:maxCount 1
+        sh:maxCount 1
     ] ;
+        sh:sparql [
+                a sh:SPARQLConstraint ;
+    sh:deactivated true ;
+                sh:severity sh:Violation ;
+                sh:message "Expired CLDs must reference the CLD that replaces them via dcterms:isReplacedBy."@en ;
+                sh:prefixes dcterms: , time: , vpa: , xsd: ;
+                sh:select """
+                        PREFIX dcterms: <http://purl.org/dc/terms/>
+                        PREFIX time: <http://www.w3.org/2006/time#>
+                        PREFIX vpa: <http://w3id.org/vpa#>
+                        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+                        SELECT $this WHERE {
+                            $this vpa:valid ?interval .
+                            {
+                                ?interval time:hasEnd ?endLiteral .
+                                FILTER ( isLiteral(?endLiteral) && datatype(?endLiteral) IN (xsd:date, xsd:dateTime) )
+                                BIND(
+                                    IF(
+                                        datatype(?endLiteral) = xsd:date,
+                                        xsd:dateTime(CONCAT(STR(?endLiteral), "T00:00:00")),
+                                        ?endLiteral
+                                    ) AS ?endDateTime
+                                )
+                            }
+                            UNION
+                            {
+                                ?interval time:hasEnd ?endNode .
+                                FILTER ( isBlank(?endNode) )
+                                OPTIONAL { ?endNode time:inXSDDateTime ?endDateTimeLiteral . }
+                                OPTIONAL { ?endNode time:inXSDDate ?endDateLiteral . }
+                                BIND(
+                                    COALESCE(
+                                        ?endDateTimeLiteral,
+                                        xsd:dateTime(CONCAT(STR(?endDateLiteral), "T00:00:00"))
+                                    ) AS ?endDateTime
+                                )
+                                FILTER(BOUND(?endDateTime))
+                            }
+                            FILTER(?endDateTime <= NOW())
+                            FILTER NOT EXISTS { $this dcterms:isReplacedBy ?replacement }
+                        }
+                """
+        ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:severity sh:Violation ;
@@ -556,6 +736,7 @@ era-sh:CLD a
     ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
+    sh:deactivated true ;
         sh:message "If `dcterms:isReplacedBy` is present, the replacing CLD MUST have a later `dcterms:issued` date than this CLD."@en ;
         sh:severity sh:Violation ;
         sh:prefixes dcterms: , era: , vpa: ;
@@ -572,29 +753,117 @@ era-sh:CLD a
             }
         """
     ] ;
-    sh:sparql [
-        a sh:SPARQLConstraint ;
-        sh:message "Both `dcterms:subject` and `vpa:checkedCompliance/vpa:checkedRequirement` are used to express compliance to TSI/IC. Prefer only one method."@en ;
-        sh:prefixes dcterms: , era: , vpa: ;
-        sh:severity sh:Warning ;
-        sh:select """
-            PREFIX dcterms: <http://purl.org/dc/terms/>
-            PREFIX era: <http://data.europa.eu/949/>
-            PREFIX vpa: <http://w3id.org/vpa#>
+        sh:sparql [
+                a sh:SPARQLConstraint ;
+        sh:deactivated true ;
+                sh:severity sh:Info ;
+                sh:message "CLD treated as Subsystem CLD: module concept should begin with 'S'."@en ;
+                sh:prefixes dcterms: , era: , vpa: ;
+                sh:select """
+                        PREFIX dcterms: <http://purl.org/dc/terms/>
+                        PREFIX era: <http://data.europa.eu/949/>
+                        PREFIX vpa: <http://w3id.org/vpa#>
 
-            SELECT $this ?subj ?req ?check WHERE {
-            $this dcterms:subject ?subj .
-            FILTER EXISTS {
-                $this vpa:checkedCompliance ?check .
-                ?check vpa:checkedRequirement ?req .
-                FILTER EXISTS { ?subj a ?type . FILTER(?type IN (era:TSI, era:IC)) }
-                FILTER EXISTS { ?req a ?type2 . FILTER(?type2 IN (era:TSI, era:IC)) }
-            }
-            }
-        """
-    ] ;
+                        SELECT DISTINCT $this WHERE {
+                            $this dcterms:subject ?subject .
+                            ?subject a era:TSI .
+                            FILTER EXISTS {
+                                $this vpa:checkedCompliance ?check .
+                                ?check vpa:checkedRequirement ?subject .
+                            }
+                        }
+                """
+        ] ;
+        sh:sparql [
+                a sh:SPARQLConstraint ;
+        sh:deactivated true ;
+                sh:severity sh:Violation ;
+                sh:message "Subsystem CLDs must use an `era-cld-modules` concept starting with 'S'."@en ;
+                sh:prefixes dcterms: , era: , vpa: , skos: ;
+                sh:select """
+                        PREFIX dcterms: <http://purl.org/dc/terms/>
+                        PREFIX era: <http://data.europa.eu/949/>
+                        PREFIX vpa: <http://w3id.org/vpa#>
+                        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+                        SELECT $this ?moduleCode WHERE {
+                            $this dcterms:subject ?subject .
+                            ?subject a era:TSI .
+                            $this vpa:checkedCompliance ?check .
+                            ?check vpa:checkedRequirement ?subject .
+                            $this dcterms:conformsTo ?module .
+                            ?module a skos:Concept .
+                            BIND(STR(?module) AS ?moduleIRI)
+                            FILTER(STRSTARTS(?moduleIRI, "http://data.europa.eu/949/concepts/cld-modules/"))
+                            BIND(STRAFTER(?moduleIRI, "http://data.europa.eu/949/concepts/cld-modules/") AS ?moduleCode)
+                            FILTER(!STRSTARTS(?moduleCode, "S"))
+                        }
+                """
+        ] ;
+        sh:sparql [
+                a sh:SPARQLConstraint ;
+        sh:deactivated true ;
+                sh:severity sh:Info ;
+                sh:message "CLD treated as IC CLD: module concept should begin with 'C'."@en ;
+                sh:prefixes dcterms: , era: , vpa: ;
+                sh:select """
+                        PREFIX dcterms: <http://purl.org/dc/terms/>
+                        PREFIX era: <http://data.europa.eu/949/>
+                        PREFIX vpa: <http://w3id.org/vpa#>
+
+                        SELECT DISTINCT $this WHERE {
+                            $this dcterms:subject ?subject .
+                            ?subject a era:IC .
+                            FILTER NOT EXISTS {
+                                $this vpa:checkedCompliance ?check .
+                                ?check vpa:checkedRequirement ?subject .
+                            }
+                            FILTER NOT EXISTS {
+                                $this dcterms:subject ?tsiSubject .
+                                ?tsiSubject a era:TSI .
+                                $this vpa:checkedCompliance ?checkTSI .
+                                ?checkTSI vpa:checkedRequirement ?tsiSubject .
+                            }
+                        }
+                """
+        ] ;
+        sh:sparql [
+                a sh:SPARQLConstraint ;
+        sh:deactivated true ;
+                sh:severity sh:Violation ;
+                sh:message "IC CLDs must use an `era-cld-modules` concept starting with 'C'."@en ;
+                sh:prefixes dcterms: , era: , vpa: , skos: ;
+                sh:select """
+                        PREFIX dcterms: <http://purl.org/dc/terms/>
+                        PREFIX era: <http://data.europa.eu/949/>
+                        PREFIX vpa: <http://w3id.org/vpa#>
+                        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+                        SELECT $this ?moduleCode WHERE {
+                            $this dcterms:subject ?subject .
+                            ?subject a era:IC .
+                            FILTER NOT EXISTS {
+                                $this vpa:checkedCompliance ?check .
+                                ?check vpa:checkedRequirement ?subject .
+                            }
+                            FILTER NOT EXISTS {
+                                $this dcterms:subject ?tsiSubject .
+                                ?tsiSubject a era:TSI .
+                                $this vpa:checkedCompliance ?checkTSI .
+                                ?checkTSI vpa:checkedRequirement ?tsiSubject .
+                            }
+                            $this dcterms:conformsTo ?module .
+                            ?module a skos:Concept .
+                            BIND(STR(?module) AS ?moduleIRI)
+                            FILTER(STRSTARTS(?moduleIRI, "http://data.europa.eu/949/concepts/cld-modules/"))
+                            BIND(STRAFTER(?moduleIRI, "http://data.europa.eu/949/concepts/cld-modules/") AS ?moduleCode)
+                            FILTER(!STRSTARTS(?moduleCode, "C"))
+                        }
+                """
+        ] ;
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path era:resultStatement ;
         sh:name "CLD Assessment Result"@en ;
         sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
@@ -606,6 +875,19 @@ era-sh:CLD a
     ] ;
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
+        sh:path era:resultReport ;
+        sh:name "CLD Result Report Reference"@en ;
+        sh:or ( [ sh:datatype xsd:string ] [ sh:datatype xsd:anyURI ] ) ;
+        sh:nodeKind sh:Literal ;
+        sh:description "Reference or URL of the detailed assessment report supporting the CLD."@en ;
+        sh:message "Provide a reference or URL to the detailed assessment report supporting the CLD."@en ;
+        sh:severity sh:Warning ;
+        sh:minCount 1 ; sh:maxCount 1
+    ] ;
+    sh:property [
+        a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path era:validityStatement ;
         sh:name "CLD Validity Statement"@en ;
         sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
@@ -617,19 +899,37 @@ era-sh:CLD a
     ] ;
     sh:property [
         a sh:PropertyShape ;
+        sh:deactivated true ;
         sh:path era:sequenceStatement ;
         sh:name "CLD Sequence Statement"@en ;
         sh:or ( [sh:datatype xsd:string ] [sh:datatype rdf:langString ] ) ;
         sh:nodeKind sh:Literal ;
-        sh:description "Sequence statement (free text, optional)."@en ;
+        sh:description "Sequence statement (free text, optional unless the CLD is a subsequent version)."@en ;
         sh:message "Sequence statement is not present."@en ;
         sh:severity sh:Warning ;
-        sh:minCount 1 ; sh:maxCount 1
+        sh:maxCount 1
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:deactivated true ;
+        sh:severity sh:Violation ;
+        sh:message "Provide a sequence statement when the CLD version number is greater than 1."@en ;
+        sh:prefixes era: , vpa: ;
+        sh:select """
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            SELECT $this WHERE {
+              $this vpa:versionNumber ?version .
+              FILTER (?version > 1)
+              FILTER NOT EXISTS { $this era:sequenceStatement ?sequence }
+            }
+        """
     ] ;
 .
 
 # --- CABCheck shape (for vpa:checkedCompliance, covers both assessment and audit checks) ---
 era-sh:CABCheckShape a sh:NodeShape ;
+    sh:deactivated true ;
     sh:targetClass era:CABAssessmentCheck, era:CABAuditCheck ;
     sh:property [
         a sh:PropertyShape ;
@@ -714,6 +1014,7 @@ era-sh:CABCheckShape a sh:NodeShape ;
 # Conformity of a VehicleType to TSI's
 era-sh:TSIConformity a 
     owl:Class , sh:NodeShape , vpa:Restriction ;
+    sh:deactivated true ;
     dcterms:created "2024-10-25"^^xsd:date ;
     # dcterms:modified "_RESERVED_"^^xsd:date ;
 
@@ -737,6 +1038,7 @@ era-sh:TSIConformity a
 
 era-sh:TSIComplianceCheck  a 
     owl:Class , sh:NodeShape ;
+    sh:deactivated true ;
     rdfs:subClassOf vpa:Compliance ;
     rdfs:comment "This shape protects a type against abesence of 2.2 or 2.3" ;
     dcterms:created "2024-10-25"^^xsd:date ;
@@ -820,6 +1122,7 @@ era-sh:TSIComplianceCheck  a
 .
 
 era-sh:CLDandECCertificateValidityShape a sh:NodeShape ;
+    sh:deactivated true ;
   rdfs:label "CLD and ECCertificate Validity Shape"@en ;
   rdfs:comment "Validates that CLD and ECCertificate have a validity property with a valid time interval."@en ;
   sh:targetClass era:CLD ;

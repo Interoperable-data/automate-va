@@ -6,8 +6,8 @@
     "packages/*"
   ],
   "devDependencies": {
-    "lerna": "^8.1.9",
-    "vitepress": "^1.5.0"
+    "lerna": "^8.2.4",
+    "vitepress": "^1.6.4"
   },
   "scripts": {
     "dev": "lerna run dev",
