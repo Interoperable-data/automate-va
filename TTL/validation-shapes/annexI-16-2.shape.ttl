@@ -24,7 +24,6 @@ era-sh:AnnexI-16-2
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       PREFIX vpa: <http://w3id.org/vpa#>
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
             SELECT ?this ?cld ?check ?tsi WHERE {
               ?evidence a era:CABEvidence ;
@@ -70,6 +69,7 @@ era-sh:AnnexI-16-2
             PREFIX era: <http://data.europa.eu/949/>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
             SELECT ?this ?section ?check WHERE {
               ?evidence a era:CABEvidence ;

@@ -50,7 +50,7 @@
  # WARNING: DO NOT (YET) EXIST
 @prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
 @prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
-@prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
+@prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/sections/> .
 @prefix era-ecm-attestations: <http://data.europa.eu/949/concepts/ecm-attestations/> .
 @prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
 @prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .

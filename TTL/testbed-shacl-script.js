@@ -1,7 +1,7 @@
 // SHACL validation client for EC endpoint.
 // Use the following arguments:
 //   --remoteBase <url>              Base URL to resolve relative remote resources (optional if all remotes absolute)
-//   --localData <path>              Local data Turtle file (exactly one of localData / remoteData)
+//   --localData <path[,more]>       Local data Turtle file(s) (exactly one of localData / remoteData)
 //   --remoteData <rel|abs>          Remote data Turtle (exactly one of localData / remoteData)
 //   --localShape <path[,more]>      Local shape Turtle file(s) (at least one shape source required)
 //   --remoteShape <rel|abs[,more]>  Remote shape Turtle file(s)
@@ -22,9 +22,9 @@
 // Exit codes: 1 argument error, 2 info error, 3 validation HTTP>=400, 4 runtime error, 5 prefix read error, 6 remote data fetch error, 7 remote shape fetch error.
 
 const fs = require('fs');
-const path = require('path');
 const https = require('https');
 const { URL } = require('url');
+const { bundleTurtleFiles, normalizeTurtle, compactTurtle } = require('./utils/ttl-bundler');
 
 function readPackageVersion() {
   try {
@@ -50,6 +50,26 @@ function parseArgs() {
 }
 
 const opts = parseArgs();
+
+function parseList(value) {
+  if (!value || typeof value !== 'string') return [];
+  return value
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function buildPrefixSnippets() {
+  if (!PREFIX_SNIPPET) return [];
+  return [
+    {
+      content: PREFIX_SNIPPET,
+      includeBody: false,
+      source: 'prefix-files',
+      isPrefixSource: true,
+    },
+  ];
+}
 
 const DOMAIN = opts.domain || 'any';
 const ENDPOINT_BASE = (opts.endpoint || 'https://www.itb.ec.europa.eu/shacl').replace(/\/+$/, '');
@@ -90,33 +110,31 @@ function isAbsoluteUrl(u) {
   return /^https?:\/\//i.test(u);
 }
 
-// Normalise output extension for turtle
-if (OUTPUT_FILE && /turtle/i.test(REPORT_SYNTAX) && !/\.ttl$/i.test(OUTPUT_FILE)) {
+// Normalise output extension for turtle when not dry-running (dry-run always emits JSON)
+if (!DRY_RUN && OUTPUT_FILE && /turtle/i.test(REPORT_SYNTAX) && !/\.ttl$/i.test(OUTPUT_FILE)) {
   const forced = OUTPUT_FILE.replace(/\.[^.]+$/, '') + '.ttl';
   console.error(`Normalising output file extension to .ttl: '${OUTPUT_FILE}' -> '${forced}'`);
   OUTPUT_FILE = forced;
 }
 
 // Prefix files
-const PREFIX_FILES = (opts.prefix || opts.prefixes || '')
-  .split(',')
-  .map((s) => s.trim())
-  .filter(Boolean);
-let PREFIX_BLOCK = '';
-if (PREFIX_FILES.length) {
+const PREFIX_FILE_LIST = parseList(opts.prefix || opts.prefixes || '');
+let PREFIX_SNIPPET = null;
+if (PREFIX_FILE_LIST.length) {
   try {
-    PREFIX_BLOCK = PREFIX_FILES.map((f) => readUtf8(f).trim()).join('\n') + '\n\n';
+    const { content } = bundleTurtleFiles({
+      files: [],
+      prefixFiles: PREFIX_FILE_LIST,
+      compact: !!opts.compact,
+    });
+    PREFIX_SNIPPET = content;
     console.error(
-      `Loaded ${PREFIX_FILES.length} prefix file(s) totalling ${PREFIX_BLOCK.length} chars.`
+      `Loaded ${PREFIX_FILE_LIST.length} prefix file(s) totalling ${content.length} chars.`
     );
   } catch (e) {
     console.error('Error reading prefix file(s):', e.message);
     process.exit(5);
   }
-}
-
-function readUtf8(p) {
-  return fs.readFileSync(path.resolve(process.cwd(), p), 'utf8');
 }
 function toUrl(base, rel) {
   return base.replace(/\/+$/, '') + '/' + rel.replace(/^[.\/]+/, '').replace(/\\/g, '/');
@@ -196,22 +214,6 @@ function postJson(baseUrl, pathName, payload) {
   });
 }
 
-function normalizeTurtle(str) {
-  return str
-    .replace(/^\uFEFF/, '')
-    .replace(/\r\n?/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/\s+$/, ''))
-    .join('\n')
-    .replace(/\n+$/, '');
-}
-function compactTurtle(str) {
-  return normalizeTurtle(str).replace(/\n{2,}/g, '\n\n');
-}
-function prepareInlineContent(filePath, doCompact) {
-  const raw = readUtf8(filePath);
-  return doCompact ? compactTurtle(raw) : normalizeTurtle(raw);
-}
 function fetchText(urlStr, acceptHdr = 'text/turtle, text/plain;q=0.9, */*;q=0.1') {
   return new Promise((resolve, reject) => {
     const u = new URL(urlStr);
@@ -262,23 +264,35 @@ const COMPACT = !!opts.compact;
     process.exit(1);
   }
 
-  const localShapes = LOCAL_SHAPE
-    ? LOCAL_SHAPE.split(',')
-        .map((s) => s.trim())
-        .filter(Boolean)
-    : [];
-  const remoteShapes = REMOTE_SHAPE
-    ? REMOTE_SHAPE.split(',')
-        .map((s) => s.trim())
-        .filter(Boolean)
-    : [];
+  const localDataFiles = parseList(LOCAL_DATA);
+  const localShapes = parseList(LOCAL_SHAPE);
+  const remoteShapes = parseList(REMOTE_SHAPE);
+
+  if (LOCAL_DATA && !localDataFiles.length) {
+    console.error('--localData was provided but no valid file paths were detected.');
+    process.exit(1);
+  }
+  if (LOCAL_SHAPE && !localShapes.length) {
+    console.error('--localShape was provided but no valid file paths were detected.');
+    process.exit(1);
+  }
 
   // Data resolution
   let contentToValidate;
   let embeddingMethod = null; // only set when using URL for main data
-  if (LOCAL_DATA) {
-    const base = prepareInlineContent(LOCAL_DATA, COMPACT);
-    contentToValidate = PREFIX_BLOCK ? PREFIX_BLOCK + base : base;
+  if (localDataFiles.length) {
+    try {
+      const snippets = buildPrefixSnippets();
+      const { content } = bundleTurtleFiles({
+        files: localDataFiles,
+        snippets,
+        compact: COMPACT,
+      });
+      contentToValidate = content;
+    } catch (e) {
+      console.error('Failed bundling local data files:', e.message);
+      process.exit(4);
+    }
   } else {
     // remote data
     const dataUrl = isAbsoluteUrl(REMOTE_DATA)
@@ -290,11 +304,16 @@ const COMPACT = !!opts.compact;
       console.error('--remoteBase is required when --remoteData is relative.');
       process.exit(1);
     }
-    if (PREFIX_BLOCK) {
+    if (PREFIX_SNIPPET) {
       try {
         const fetched = await fetchText(dataUrl);
         const norm = COMPACT ? compactTurtle(fetched) : normalizeTurtle(fetched);
-        contentToValidate = PREFIX_BLOCK + norm;
+        const { content } = bundleTurtleFiles({
+          files: [],
+          snippets: [...buildPrefixSnippets(), { content: norm, source: dataUrl }],
+          compact: COMPACT,
+        });
+        contentToValidate = content;
       } catch (e) {
         console.error('Failed fetching remote data for inline embedding:', e.message);
         process.exit(6);
@@ -307,12 +326,20 @@ const COMPACT = !!opts.compact;
 
   // Shapes resolution
   const externalRules = [];
-  for (const ls of localShapes) {
-    const baseShape = prepareInlineContent(ls, COMPACT);
-    externalRules.push({
-      ruleSet: PREFIX_BLOCK ? PREFIX_BLOCK + baseShape : baseShape,
-      ruleSyntax: RULE_SYNTAX,
-    });
+  if (localShapes.length) {
+    for (const shapePath of localShapes) {
+      try {
+        const { content } = bundleTurtleFiles({
+          files: [shapePath],
+          snippets: buildPrefixSnippets(),
+          compact: COMPACT,
+        });
+        externalRules.push({ ruleSet: content, ruleSyntax: RULE_SYNTAX });
+      } catch (e) {
+        console.error('Failed bundling local shape file:', shapePath, e.message);
+        process.exit(4);
+      }
+    }
   }
   for (const rs of remoteShapes) {
     const fullUrl = isAbsoluteUrl(rs) ? rs : REMOTE_BASE ? toUrl(REMOTE_BASE, rs) : null;
@@ -320,11 +347,16 @@ const COMPACT = !!opts.compact;
       console.error('--remoteBase is required when --remoteShape is relative.');
       process.exit(1);
     }
-    if (PREFIX_BLOCK) {
+    if (PREFIX_SNIPPET) {
       try {
         const fetchedShape = await fetchText(fullUrl);
         const normShape = COMPACT ? compactTurtle(fetchedShape) : normalizeTurtle(fetchedShape);
-        externalRules.push({ ruleSet: PREFIX_BLOCK + normShape, ruleSyntax: RULE_SYNTAX });
+        const { content } = bundleTurtleFiles({
+          files: [],
+          snippets: [...buildPrefixSnippets(), { content: normShape, source: fullUrl }],
+          compact: COMPACT,
+        });
+        externalRules.push({ ruleSet: content, ruleSyntax: RULE_SYNTAX });
       } catch (e) {
         console.error('Failed fetching remote shape for inline embedding:', fullUrl, e.message);
         process.exit(7);

@@ -33,9 +33,9 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # Domain-specific
-@prefix era-cld: <http://data.europa.eu/949/eradis/clds/> .
+@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypeConfigurations/> .
-@prefix era-ecd: <http://data.europa.eu/949/eradis/declarations/> .
+@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
 @prefix eralex: <http://data.europa.eu/949/requirement/legislation/> .
 @prefix eralex-pava: <http://data.europa.eu/949/requirement/legislation/pava/> .
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
@@ -67,7 +67,7 @@
  # WARNING: DO NOT (YET) EXIST
 @prefix era-permission-types: <http://data.europa.eu/949/concepts/permission-types/> .
 @prefix era-ecm-maintenance-functions: <http://data.europa.eu/949/concepts/ecm-maintenance-functions/> .
-@prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/section/> .
+@prefix era-lex-sections: <http://data.europa.eu/949/concepts/requirements/sections/> .
 @prefix era-pava-at: <http://data.europa.eu/949/concepts/va-authassessment-types/> .
 @prefix era-etcsmanspecset: <http://data.europa.eu/949/concepts/etcs-mandatory-specifications-set/> .
 @prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
