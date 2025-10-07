@@ -98,6 +98,8 @@ eralex:reg-2015-924 a era:TSI .
 eralex:reg-2013-1236 a era:TSI .
 eralex:reg-2014-1304 a era:TSI .
 eralex:reg-2013-321 a era:TSI .
+eralex:reg-2019-776 a era:TSI .
+eralex:reg-2020-387 a era:TSI .
 era-cld-modules:SB a skos:Concept .
 rorg:MF-RO-310141-2931 a era:Body .
 rorg:NoBo-2826 a era:Body .
@@ -126,6 +128,8 @@ era-cld:cld-NoBoCert-15571
             eralex:reg-2013-1236 , 
             eralex:reg-2014-1304 ,
             eralex:reg-2015-924 ,
+            eralex:reg-2019-776 , # TEST with a newer TSI
+            eralex:reg-2020-387 , # IDEM
             eralex:reg-2013-321 
     ] ;
 

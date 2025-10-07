@@ -248,6 +248,11 @@ erava:vac-71-001-0001-1-001-US-previous a era:VehicleTypeAuthorisationCase ;
     vpa:concerns eratv:vt-71-001-0001-1-001 .
 
 # VA-Library
+gotham:someNoBoCertificates a era:CABEvidence ;
+    rdfs:member era-cld:cld-NoBoCert-15571 , era-cld:cld-NoBoCert-25403 , era-cld:cld-NoBoCert-32963    ;
+    vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 ;
+    rdfs:label "A set of real NoBo certificates for testing purposes"@en .
+
 gotham:debo-71-001-0001-1-001-US a era:CABEvidence ;
     rdfs:label "DeBo checks on the Gotham City local rules";
     rdfs:member gotham:debo-123 , gotham:debo-456 ;

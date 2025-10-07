@@ -1,0 +1,66 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Utility SPARQL functions shared across Annex I / Annex II shapes
+# ---------------------------------------------------------------
+# These functions extract comparable codes from TSI IRIs following the
+# eralex:reg-YYYY-NNN pattern. They are defined in a dedicated support
+# file so they can be reused without polluting the Annex-specific graphs.
+era-sh:tsiCodeKey
+    a sh:SPARQLFunction ;
+    rdfs:comment "Extracts an integer ordering key from eralex:reg-* TSI IRIs (e.g. reg-2015-924 → 2015924)."@en ;
+    sh:prefixes (
+        [ sh:prefix "xsd" ; sh:namespace "http://www.w3.org/2001/XMLSchema#"^^xsd:anyURI ]
+    ) ;
+    sh:select """
+        SELECT ?result WHERE {
+          BIND(IF(CONTAINS(STR(?this), "reg-"), STRAFTER(STR(?this), "reg-"), "") AS ?raw)
+          FILTER(?raw != "")
+          BIND(REPLACE(?raw, "[^0-9]", "") AS ?digits)
+          FILTER(?digits != "")
+          BIND(xsd:integer(?digits) AS ?result)
+        }
+    """ .
+
+era-sh:tsiCodeLabel
+    a sh:SPARQLFunction ;
+    rdfs:comment "Returns the human-readable TSI code (e.g. reg-2015-924 → 2015/924) from an eralex:reg-* TSI IRI."@en ;
+    sh:select """
+        SELECT ?result WHERE {
+          BIND(IF(CONTAINS(STR(?this), "reg-"), STRAFTER(STR(?this), "reg-"), "") AS ?raw)
+          FILTER(?raw != "")
+          BIND(REPLACE(?raw, "-", "/") AS ?result)
+        }
+    """ .
+
+# Compatibility smoke-test shape
+# -------------------------------
+# This shape is deactivated by default. Enable it (remove sh:deactivated or
+# set to false) and provide a probe triple using property era-sh:tsiFunctionProbe
+# to confirm the execution environment honours SHACL functions.
+era-sh:TSICodeFunctionTest
+    a sh:NodeShape ;
+    sh:deactivated true ;
+    sh:targetSubjectsOf era-sh:tsiFunctionProbe ;
+    sh:name "TSI code function support test"@en ;
+    sh:description "Activates a quick check ensuring tsiCodeKey/tsiCodeLabel bindings are supported by the SHACL engine."@en ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Violation ;
+        sh:name "TSI code functions must yield bindings"@en ;
+        sh:message "SHACL functions era-sh:tsiCodeKey / era-sh:tsiCodeLabel produced no binding for {$this}."@en ;
+        sh:select """
+            PREFIX era-sh: <http://data.europa.eu/949/shapes/>
+            SELECT ?this WHERE {
+              BIND(era-sh:tsiCodeKey(?this) AS ?key)
+              BIND(era-sh:tsiCodeLabel(?this) AS ?code)
+              FILTER(!BOUND(?key) || !BOUND(?code))
+            }
+        """ ;
+    ] .

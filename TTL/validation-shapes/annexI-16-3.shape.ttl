@@ -1,0 +1,102 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# (I) 16.3. Specification of the selection of requirements from a newer version of a TSI
+# as compared to the TSI applicable for the assessment (including withdrawn requirements) (when applicable)
+era-sh:AnnexI-16-3
+    a sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:name "(I) 16.3. Specification of the selection of requirements from a newer version of a TSI"@en ;
+    sh:description "Warns when CAB assessment checks cite newer TSIs than the ones declared as subjects of the supporting CLD."@en ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Warning ;
+        sh:name "Compliance checks reference newer TSIs than CLD subjects"@en ;
+        sh:message "CLD {$cld} supporting case ({$this}) cites newer TSI {$complianceCode} ({$complianceTsi}) in CAB assessment {$check}, but its dcterms:subject only lists TSIs {$subjects}. Record Annex I 16.3 details for this discrepancy."@en ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX sh: <http://www.w3.org/ns/shacl#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+            SELECT DISTINCT ?this ?cld ?check ?complianceTsi ?complianceCode ?subjects WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this .
+
+              {
+                ?evidence rdfs:member ?cld .
+                ?cld a era:CLD .
+              }
+              UNION
+              {
+                ?evidence rdfs:member ?declaration .
+                ?declaration a era:ECDeclaration ;
+                             dcterms:requires ?required .
+                {
+                  ?required rdfs:member ?cld .
+                }
+                UNION
+                {
+                  ?required a era:CLD .
+                  BIND(?required AS ?cld)
+                }
+                ?cld a era:CLD .
+              }
+
+              ?cld vpa:checkedCompliance ?check .
+              ?check a era:CABAssessmentCheck ;
+                     (vpa:checkedRequirement|vpa:withRestriction/vpa:regarding) ?complianceTsi .
+
+              ?complianceTsi a era:TSI .
+              BIND(STR(?complianceTsi) AS ?complianceStr)
+              BIND(IF(CONTAINS(?complianceStr, "reg-"), STRAFTER(?complianceStr, "reg-"), "") AS ?complianceRaw)
+              BIND(STRBEFORE(?complianceRaw, "-") AS ?complianceYearLex)
+              BIND(REPLACE(?complianceRaw, "^[0-9]+-", "") AS ?complianceSeqLex)
+              FILTER(?complianceYearLex != "" && ?complianceSeqLex != "")
+              BIND(xsd:integer(?complianceYearLex) AS ?complianceYear)
+              BIND(xsd:integer(?complianceSeqLex) AS ?complianceSeq)
+              BIND(CONCAT(?complianceYearLex, "/", ?complianceSeqLex) AS ?complianceCode)
+
+              {
+                SELECT ?cld (GROUP_CONCAT(DISTINCT ?subjectCode; SEPARATOR=", ") AS ?subjects)
+                WHERE {
+                  ?cld dcterms:subject ?subjectTsi .
+                  ?subjectTsi a era:TSI .
+                  BIND(STR(?subjectTsi) AS ?subjectStr)
+                  BIND(IF(CONTAINS(?subjectStr, "reg-"), STRAFTER(?subjectStr, "reg-"), "") AS ?subjectRaw)
+                  BIND(STRBEFORE(?subjectRaw, "-") AS ?subjectYearLex)
+                  BIND(REPLACE(?subjectRaw, "^[0-9]+-", "") AS ?subjectSeqLex)
+                  FILTER(?subjectYearLex != "" && ?subjectSeqLex != "")
+                  BIND(xsd:integer(?subjectYearLex) AS ?subjectYear)
+                  BIND(xsd:integer(?subjectSeqLex) AS ?subjectSeq)
+                  BIND(CONCAT(?subjectYearLex, "/", ?subjectSeqLex) AS ?subjectCode)
+                }
+                GROUP BY ?cld
+              }
+
+              FILTER NOT EXISTS {
+                ?cld dcterms:subject ?subjectTsiNew .
+                ?subjectTsiNew a era:TSI .
+                BIND(STR(?subjectTsiNew) AS ?subjectNewStr)
+                BIND(IF(CONTAINS(?subjectNewStr, "reg-"), STRAFTER(?subjectNewStr, "reg-"), "") AS ?subjectNewRaw)
+                BIND(STRBEFORE(?subjectNewRaw, "-") AS ?subjectNewYearLex)
+                BIND(REPLACE(?subjectNewRaw, "^[0-9]+-", "") AS ?subjectNewSeqLex)
+                FILTER(?subjectNewYearLex != "" && ?subjectNewSeqLex != "")
+                BIND(xsd:integer(?subjectNewYearLex) AS ?subjectNewYear)
+                BIND(xsd:integer(?subjectNewSeqLex) AS ?subjectNewSeq)
+                FILTER(
+                  ?subjectNewYear > ?complianceYear ||
+                  (?subjectNewYear = ?complianceYear && ?subjectNewSeq >= ?complianceSeq)
+                )
+              }
+            }
+        """ ;
+    ] .
