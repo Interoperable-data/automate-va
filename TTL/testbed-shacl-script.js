@@ -9,6 +9,8 @@
 //   --info --domain <d> --endpoint <url>
 //   --report <mime> --contentSyntax <mime> --ruleSyntax <mime>
 //   --timeout <ms> --dry-run --prefix file.ttl[,more] --out <file> --compact
+//   --clientHeader <name>           Custom identification header name (default X-VA-Client)
+//   --clientTag <tag>               Optional deployment tag appended to the User-Agent value
 // Behaviour:
 //   * Exactly one of --localData / --remoteData must be supplied.
 //   * At least one of --localShape / --remoteShape must be supplied.
@@ -16,6 +18,7 @@
 //   * When --prefix is used every inlined resource (local always, remote when prefix present) is prefixed.
 //   * Without prefix: remote data is sent by URL (embeddingMethod='URL'), remote shapes likewise per-rule.
 //   * With prefix: remote resources are fetched and inlined (forces inline embedding) to allow prefix injection.
+//   * Each request logs the resolved User-Agent header value before response handling.
 // Exit codes: 1 argument error, 2 info error, 3 validation HTTP>=400, 4 runtime error, 5 prefix read error, 6 remote data fetch error, 7 remote shape fetch error.
 
 const fs = require('fs');

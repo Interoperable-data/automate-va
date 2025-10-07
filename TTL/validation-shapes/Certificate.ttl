@@ -301,131 +301,134 @@ era-sh:CLD a
         sh:path dcterms:subject ;
         sh:name "CLD Subject of Assessment"@en ;
         sh:nodeKind sh:IRI ;
-        sh:node [
-            sh:xone (
-                [ 
-                    sh:targetClass era:IC ;
-                    sh:sparql [
-                        a sh:SPARQLConstraint ;
-                        sh:severity sh:Violation ;
-                        sh:message "Each era:IC subject ({$subject}) must encode its TSI identifier as `ic-YYYY-NNN` within the IRI."@en ;
-                        sh:prefixes dcterms: , era: ;
-                        sh:select """
-                            PREFIX dcterms: <http://purl.org/dc/terms/>
-                            PREFIX era: <http://data.europa.eu/949/>
-
-                            SELECT $this ?subject WHERE {
-                                $this $PATH ?subject .
-                                ?subject a era:IC .
-                                BIND(STRAFTER(STR(?subject), "ic-") AS ?afterIc)
-                                BIND(STRBEFORE(?afterIc, "-") AS ?yearPart)
-                                BIND(STRAFTER(?afterIc, CONCAT(?yearPart, "-")) AS ?rest)
-                                BIND(STRBEFORE(?rest, "-") AS ?codePart)
-                                FILTER(!(BOUND(?yearPart) && BOUND(?codePart) &&
-                                        REGEX(?yearPart, "^[0-9]{4}$") &&
-                                        REGEX(?codePart, "^[0-9]+$")
-                                ))
-                            }
-                        """
-                    ] ;
-                    sh:sparql [
-                        a sh:SPARQLConstraint ;
-                        sh:severity sh:Violation ;
-                        sh:message "All era:IC subjects must reference the same TSI identifier (ic-YYYY-NNN)."@en ;
-                        sh:prefixes dcterms: , era: ;
-                        sh:select """
-                            PREFIX dcterms: <http://purl.org/dc/terms/>
-                            PREFIX era: <http://data.europa.eu/949/>
-
-                            SELECT $this WHERE {
-                                $this dcterms:subject ?subject .
-                                ?subject a era:IC .
-                                BIND(STRAFTER(STR(?subject), "ic-") AS ?afterIc)
-                                BIND(STRBEFORE(?afterIc, "-") AS ?yearPart)
-                                BIND(STRAFTER(?afterIc, CONCAT(?yearPart, "-")) AS ?rest)
-                                BIND(STRBEFORE(?rest, "-") AS ?codePart)
-                                FILTER(
-                                    REGEX(?yearPart, "^[0-9]{4}$") &&
-                                    REGEX(?codePart, "^[0-9]+$")
-                                )
-                                BIND(CONCAT(?yearPart, "-", ?codePart) AS ?tsiCode)
-                            }
-                            GROUP BY $this
-                            HAVING(COUNT(DISTINCT ?tsiCode) > 1)
-                        """
-                    ] ;
-                    sh:sparql [
-                        a sh:SPARQLConstraint ;
-                        sh:severity sh:Violation ;
-                        sh:message "At least one vpa:checkedRequirement must reference the same TSI identifier (e.g. eralex:cir-YYYY-NNN) as the IC subjects."@en ;
-                        sh:prefixes dcterms: , era: , vpa: ;
-                        sh:select """
-                            PREFIX dcterms: <http://purl.org/dc/terms/>
-                            PREFIX era: <http://data.europa.eu/949/>
-                            PREFIX vpa: <http://w3id.org/vpa#>
-
-                            SELECT $this WHERE {
-                                {
-                                    SELECT $this (MIN(?tsiCode) AS ?expectedCode) WHERE {
-                                        $this dcterms:subject ?subject .
-                                        ?subject a era:IC .
-                                        BIND(STRAFTER(STR(?subject), "ic-") AS ?afterIc)
-                                        BIND(STRBEFORE(?afterIc, "-") AS ?yearPart)
-                                        BIND(STRAFTER(?afterIc, CONCAT(?yearPart, "-")) AS ?rest)
-                                        BIND(STRBEFORE(?rest, "-") AS ?codePart)
-                                        FILTER(
-                                            REGEX(?yearPart, "^[0-9]{4}$") &&
-                                            REGEX(?codePart, "^[0-9]+$")
-                                        )
-                                        BIND(CONCAT(?yearPart, "-", ?codePart) AS ?tsiCode)
-                                    }
-                                    GROUP BY $this
-                                }
-                                FILTER(BOUND(?expectedCode))
-                                FILTER NOT EXISTS {
-                                    $this vpa:checkedCompliance ?check .
-                                    ?check vpa:checkedRequirement ?requirement .
-                                    ?requirement a era:TSI .
-                                    BIND(REPLACE(STR(?requirement), "^.*/", "") AS ?requirementLocal)
-                                    BIND(STRAFTER(?requirementLocal, "-") AS ?reqAfterPrefix)
-                                    BIND(STRBEFORE(?reqAfterPrefix, "-") AS ?reqYear)
-                                    BIND(STRAFTER(?reqAfterPrefix, CONCAT(?reqYear, "-")) AS ?reqRest)
-                                    BIND(STRBEFORE(CONCAT(?reqRest, "-"), "-") AS ?reqCode)
-                                    FILTER(
-                                        REGEX(?reqYear, "^[0-9]{4}$") &&
-                                        REGEX(?reqCode, "^[0-9]+$") &&
-                                        CONCAT(?reqYear, "-", ?reqCode) = ?expectedCode
-                                    )
-                                }
-                            }
-                        """
-                    ] ;
-                ]
-                [   
-                    sh:targetClass era:TSI ;
-                    sh:sparql [
-                        a sh:SPARQLConstraint ;
-                        sh:severity sh:Warning ;
-                        sh:message "No `era:TSI` ({$this}) is present as `dcterms:subject`."@en ;
-                        sh:prefixes dcterms: , era: , vpa: ;
-                        sh:select """
-                            PREFIX dcterms: <http://purl.org/dc/terms/>
-                            PREFIX era: <http://data.europa.eu/949/>
-                            PREFIX vpa: <http://w3id.org/vpa#>
-
-                            SELECT $this WHERE {
-                            FILTER NOT EXISTS { $this dcterms:subject ?tsi . ?tsi a era:TSI }
-                            }
-                        """
-                    ]
-                ]
-            ) ;
-        ];
-        sh:description "Object of assessment must be an era:IC and/or era:TSI. When ICs are listed, they must all belong to the same TSI and that TSI must also be referenced among the checked requirements."@en ;
-        sh:message "Object of assessment MUST be an era:IC or era:TSI. For IC entries, all IC IRIs must share the same TSI identifier (ic-YYYY-NNN) and that identifier MUST appear in at least one vpa:checkedRequirement (e.g. eralex:cir-YYYY-NNN)."@en ;
+        sh:or (
+            [ sh:class era:IC ]
+            [ sh:class era:TSI ]
+        ) ;
+        sh:description "Object of assessment must be an era:IC and/or era:TSI. IC subjects must carry a TSI code and align with the checked requirements."@en ;
+        sh:message "Object of assessment MUST be an era:IC or era:TSI."@en ;
         sh:severity sh:Violation ;
         sh:minCount 1 ;
     ];
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Violation ;
+        sh:message "Each era:IC subject ({$subject}) must encode a TSI code as `ic-<NNNN>-<NN...>` (e.g. ic-1302-2014)."@en ;
+        sh:prefixes dcterms: , era: ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+
+            SELECT $this ?subject WHERE {
+                $this dcterms:subject ?subject .
+                ?subject a era:IC .
+                BIND(STRAFTER(STR(?subject), "ic-") AS ?afterIc)
+                BIND(STRBEFORE(?afterIc, "-") AS ?firstSegment)
+                BIND(STRAFTER(?afterIc, CONCAT(?firstSegment, "-")) AS ?remainder)
+                BIND(STRBEFORE(CONCAT(?remainder, "-"), "-") AS ?secondSegment)
+                FILTER (!(
+                    STRLEN(?firstSegment) > 0 &&
+                    STRLEN(?secondSegment) > 0 &&
+                    REGEX(?firstSegment, "^[0-9]{2,4}$") &&
+                    REGEX(?secondSegment, "^[0-9]{2,4}$")
+                ))
+            }
+        """
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Violation ;
+        sh:message "All era:IC subjects must reference the same TSI code (two numeric segments)."@en ;
+        sh:prefixes dcterms: , era: ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+
+            SELECT $this WHERE {
+                {
+                    SELECT $this (COUNT(DISTINCT CONCAT(?firstSegment, "-", ?secondSegment)) AS ?codeCount)
+                    WHERE {
+                        $this dcterms:subject ?subject .
+                        ?subject a era:IC .
+                        BIND(STRAFTER(STR(?subject), "ic-") AS ?afterIc)
+                        BIND(STRBEFORE(?afterIc, "-") AS ?firstSegment)
+                        BIND(STRAFTER(?afterIc, CONCAT(?firstSegment, "-")) AS ?remainder)
+                        BIND(STRBEFORE(CONCAT(?remainder, "-"), "-") AS ?secondSegment)
+                        FILTER(STRLEN(?firstSegment) > 0 && STRLEN(?secondSegment) > 0 &&
+                               REGEX(?firstSegment, "^[0-9]{2,4}$") &&
+                               REGEX(?secondSegment, "^[0-9]{2,4}$"))
+                    }
+                    GROUP BY $this
+                }
+                FILTER(?codeCount > 1)
+            }
+        """
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Violation ;
+        sh:message "At least one vpa:checkedRequirement must reference the same TSI code as the era:IC subject(s)."@en ;
+        sh:prefixes dcterms: , era: , vpa: ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT $this WHERE {
+                {
+                    SELECT $this (SAMPLE(?firstSegment) AS ?icFirst) (SAMPLE(?secondSegment) AS ?icSecond)
+                    WHERE {
+                        $this dcterms:subject ?subject .
+                        ?subject a era:IC .
+                        BIND(STRAFTER(STR(?subject), "ic-") AS ?afterIc)
+                        BIND(STRBEFORE(?afterIc, "-") AS ?firstSegment)
+                        BIND(STRAFTER(?afterIc, CONCAT(?firstSegment, "-")) AS ?remainder)
+                        BIND(STRBEFORE(CONCAT(?remainder, "-"), "-") AS ?secondSegment)
+                        FILTER(STRLEN(?firstSegment) > 0 && STRLEN(?secondSegment) > 0 &&
+                               REGEX(?firstSegment, "^[0-9]{2,4}$") &&
+                               REGEX(?secondSegment, "^[0-9]{2,4}$"))
+                    }
+                    GROUP BY $this
+                }
+                FILTER(BOUND(?icFirst) && BOUND(?icSecond))
+                FILTER NOT EXISTS {
+                    $this vpa:checkedCompliance ?check .
+                    ?check vpa:checkedRequirement ?requirement .
+                    ?requirement a era:TSI .
+                    BIND(REPLACE(STR(?requirement), "^.*/", "") AS ?requirementLocal)
+                    BIND(STRAFTER(?requirementLocal, "-") AS ?reqAfterType)
+                    BIND(STRBEFORE(?reqAfterType, "-") AS ?reqFirst)
+                    BIND(STRAFTER(?reqAfterType, CONCAT(?reqFirst, "-")) AS ?reqRemainder)
+                    BIND(STRBEFORE(CONCAT(?reqRemainder, "-"), "-") AS ?reqSecond)
+                    FILTER(STRLEN(?reqFirst) > 0 && STRLEN(?reqSecond) > 0 &&
+                           REGEX(?reqFirst, "^[0-9]{2,4}$") &&
+                           REGEX(?reqSecond, "^[0-9]{2,4}$") &&
+                           ((?reqFirst = ?icFirst && ?reqSecond = ?icSecond) ||
+                            (?reqFirst = ?icSecond && ?reqSecond = ?icFirst)))
+                }
+            }
+        """
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Warning ;
+        sh:message "era:TSI subject ({$tsi}) should also appear in vpa:checkedRequirement."@en ;
+        sh:prefixes dcterms: , era: , vpa: ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT $this ?tsi WHERE {
+                $this dcterms:subject ?tsi .
+                ?tsi a era:TSI .
+                FILTER NOT EXISTS {
+                    $this vpa:checkedCompliance ?check .
+                    ?check vpa:checkedRequirement ?tsi .
+                }
+            }
+        """
+    ] ;
     sh:property [
         a sh:PropertyShape ;
         sh:deactivated true ;
