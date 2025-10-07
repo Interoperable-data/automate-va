@@ -24,17 +24,9 @@
 const fs = require('fs');
 const https = require('https');
 const { URL } = require('url');
-const { bundleTurtleFiles, normalizeTurtle, compactTurtle } = require('./utils/ttl-bundler');
+const { bundleTurtleFiles, normalizeTurtle, compactTurtle } = require('./ttl-bundler');
 
-function readPackageVersion() {
-  try {
-    // eslint-disable-next-line global-require, import/no-dynamic-require
-    const pkg = require('../package.json');
-    return pkg && pkg.version ? String(pkg.version) : '0.0.0';
-  } catch {
-    return '0.0.0';
-  }
-}
+const TOOL_VERSION = '0.0.1.0';
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -85,8 +77,7 @@ const CONTENT_SYNTAX = opts.contentSyntax || 'text/turtle';
 const RULE_SYNTAX = opts.ruleSyntax || 'text/turtle';
 const REPORT_SYNTAX = opts.report || 'text/turtle';
 
-const PACKAGE_VERSION = readPackageVersion();
-const DEFAULT_CLIENT_ID = `automate-va-shacl-script/${PACKAGE_VERSION}`;
+const DEFAULT_CLIENT_ID = `automate-va-shacl-script/${TOOL_VERSION}`;
 const CLIENT_HEADER_NAME = opts.clientHeader || 'X-VA-Client';
 const CLIENT_TAG = opts.clientTag || opts.clientId || process.env.VA_CLIENT_TAG || '';
 const CLIENT_HEADER_VALUE = CLIENT_TAG ? `${DEFAULT_CLIENT_ID} (${CLIENT_TAG})` : DEFAULT_CLIENT_ID;
