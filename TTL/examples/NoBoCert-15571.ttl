@@ -90,6 +90,10 @@
 eralex:dir-2016-797 a vpa:Requirement .
 era-lex-sections:TSI-WAG-Section-6.2.2.1.StrengthOfUnit a skos:Concept .
 era-lex-sections:TSI-WAG-Section-6.2.2.3.RunningDynamicBehaviour a skos:Concept .
+era-lex-sections:TSI-WAG-Section-7.1.2.MutualRecognition
+    a skos:Concept ;
+    skos:prefLabel "7.1.2. Mutual recognition of the first authorisation of placing on the market"@en ;
+    dcterms:source eralex:reg-2015-924 .
 eralex:reg-2015-924 a era:TSI .
 eralex:reg-2013-1236 a era:TSI .
 eralex:reg-2014-1304 a era:TSI .
@@ -113,7 +117,9 @@ era-cld:cld-NoBoCert-15571
 		rdfs:comment "Version 1.1 of June 2017"@en ; # "Version 2.0 of December 2022"@en
 	]; # the module and the ERA doc
     dcterms:source eralex:dir-2016-797 ; # the EU Legislation
-    dcterms:subject eralex:reg-2015-924 ; # The RST subsystem as a whole
+    dcterms:subject eralex:reg-2015-924 ; # The exact RST subsystem as a whole
+
+    # All the TSI's in scope of the CLD, detailed checks on clauses are mentioned further.
     vpa:checkedCompliance [ 
         a era:CABAssessmentCheck ;
         vpa:checkedRequirement 
@@ -143,9 +149,12 @@ era-cld:cld-NoBoCert-15571
     dcterms:contributor [ a era:OrganisationRole ; era:roleOf rorg:MF-RO-310141-2931 ; era:hasOrganisationRole era-organisation-roles:Manufacturer ] ; # Manufacturer
     dcterms:creator [ a era:OrganisationRole ; era:roleOf rorg:NoBo-2826 ; era:hasOrganisationRole era-organisation-roles:NoBo ] ; # The NoBo itself /ORGS (<http://data.europa.eu/949/taxonomies/org#NoBo-2826>)
     # dcterms:spatial [ a org:Site ] ; # No manufacturing locations
+
+    # Specific checks performed, on specific sections of the legislation
     vpa:checkedCompliance
         erapod:check-NoBoCert-15571-1 ,
-        erapod:check-NoBoCert-15571-2 ;
+        erapod:check-NoBoCert-15571-2 ,
+        erapod:check-NoBoCert-15571-3 ;
     vpa:versionNumber 1 .
 
 # Stored in a confidential data pod and inaccessible
@@ -165,6 +174,14 @@ erapod:check-NoBoCert-15571-1
 erapod:check-NoBoCert-15571-2
     a era:CABAssessmentCheck ; # vpa:Compliance
     vpa:checkedSection era-lex-sections:TSI-WAG-Section-6.2.2.3.RunningDynamicBehaviour ;
-    dcterms:source eralex:reg-2013-1236 ;
+    vpa:checkedRequirement eralex:reg-2013-1236 ;
     rdfs:comment "The WAG is compliant in regard to 6.2.2.3 of TSI WAG." ;
     vpa:isCompliant "true"^^xsd:boolean  .
+
+# A check on special TSI-clauses (Annex I 16-2)
+erapod:check-NoBoCert-15571-3
+    a era:CABAssessmentCheck ;
+    vpa:checkedRequirement eralex:reg-2015-924 ;
+    vpa:checkedSection era-lex-sections:TSI-WAG-Section-7.1.2.MutualRecognition ;
+    rdfs:comment "Mutual recognition clause verified for the whole EU network scope."@en ;
+    vpa:isCompliant "true"^^xsd:boolean .

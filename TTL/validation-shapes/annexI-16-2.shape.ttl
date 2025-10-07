@@ -1,0 +1,324 @@
+@base <http://data.europa.eu/949/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vpa: <http://w3id.org/vpa#> .
+
+# (I) 16.2. Specific TSIs clauses for an area of use covering the whole EU network (when applicable)
+era-sh:AnnexI-16-2
+    a sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    sh:name "(I) 16.2. Specific TSIs clauses for an area of use covering the whole EU network (when applicable)"@en ;
+    sh:description "For TSIs covering the whole EU network, each relevant CAB assessment check must reference the inspected clause (vpa:checkedSection) and the clause concept must stay aligned with the referenced TSI."@en ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:severity sh:Warning ;
+        sh:name "TSI clauses should declare checked section"@en ;
+        sh:message "CLD {$cld} supporting this case ({$this}) references TSI {$tsi} via CAB assessment {$check} but omits vpa:checkedSection even though the clause concept is present in the data graph."@en ;
+    sh:select """
+      PREFIX dcterms: <http://purl.org/dc/terms/>
+      PREFIX era: <http://data.europa.eu/949/>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX vpa: <http://w3id.org/vpa#>
+      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+            SELECT ?this ?cld ?check ?tsi WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this .
+
+              {
+                ?evidence rdfs:member ?cld .
+                ?cld a era:CLD .
+              }
+              UNION
+              {
+                ?evidence rdfs:member ?declaration .
+                ?declaration a era:ECDeclaration ;
+                             dcterms:requires ?required .
+                {
+                  ?required rdfs:member ?cld .
+                }
+                UNION
+                {
+                  ?required a era:CLD .
+                  BIND(?required AS ?cld)
+                }
+                ?cld a era:CLD .
+              }
+              ?cld vpa:checkedCompliance ?check .
+              ?check a era:CABAssessmentCheck .
+              ?check (vpa:checkedRequirement|vpa:withRestriction/vpa:regarding) ?tsi .
+
+              FILTER EXISTS {
+                ?sectionCandidate a skos:Concept ;
+                                   dcterms:source ?tsi .
+              }
+              FILTER NOT EXISTS { ?check vpa:checkedSection ?section }
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:name "Checked clause must be a SKOS Concept"@en ;
+        sh:message "Clause {$section} reported by CAB assessment {$check} for case ({$this}) must be typed skos:Concept."@en ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT ?this ?section ?check WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this .
+
+              {
+                ?evidence rdfs:member ?cld .
+                ?cld a era:CLD .
+              }
+              UNION
+              {
+                ?evidence rdfs:member ?declaration .
+                ?declaration a era:ECDeclaration ;
+                             dcterms:requires ?required .
+                {
+                  ?required rdfs:member ?cld .
+                }
+                UNION
+                {
+                  ?required a era:CLD .
+                  BIND(?required AS ?cld)
+                }
+                ?cld a era:CLD .
+              }
+              ?cld vpa:checkedCompliance ?check .
+              ?check a era:CABAssessmentCheck ;
+                     vpa:checkedSection ?section .
+
+              FILTER NOT EXISTS { ?section a skos:Concept }
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:name "Clause concept must declare source TSI"@en ;
+        sh:message "Clause {$section} referenced by CAB assessment {$check} does not specify dcterms:source, so the related TSI is unknown."@en ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT ?this ?section ?check WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this .
+
+              {
+                ?evidence rdfs:member ?cld .
+                ?cld a era:CLD .
+              }
+              UNION
+              {
+                ?evidence rdfs:member ?declaration .
+                ?declaration a era:ECDeclaration ;
+                             dcterms:requires ?required .
+                {
+                  ?required rdfs:member ?cld .
+                }
+                UNION
+                {
+                  ?required a era:CLD .
+                  BIND(?required AS ?cld)
+                }
+                ?cld a era:CLD .
+              }
+
+              ?cld vpa:checkedCompliance ?check .
+              ?check a era:CABAssessmentCheck ;
+                     vpa:checkedSection ?section .
+
+              FILTER NOT EXISTS { ?section dcterms:source ?sectionTsi }
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:name "Clause concept must cite same TSI"@en ;
+        sh:message "Clause {$section} referenced by CAB assessment {$check} cites TSI {$sourceTsi} which differs from checked requirement {$tsi}."@en ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT ?this ?section ?check ?tsi ?sourceTsi WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this .
+
+              {
+                ?evidence rdfs:member ?cld .
+                ?cld a era:CLD .
+              }
+              UNION
+              {
+                ?evidence rdfs:member ?declaration .
+                ?declaration a era:ECDeclaration ;
+                             dcterms:requires ?required .
+                {
+                  ?required rdfs:member ?cld .
+                }
+                UNION
+                {
+                  ?required a era:CLD .
+                  BIND(?required AS ?cld)
+                }
+                ?cld a era:CLD .
+              }
+
+              ?cld vpa:checkedCompliance ?check .
+              ?check a era:CABAssessmentCheck ;
+                     vpa:checkedSection ?section .
+
+              OPTIONAL { ?check vpa:checkedRequirement ?tsi }
+              OPTIONAL { ?section dcterms:source ?sourceTsi }
+
+              FILTER( BOUND(?tsi) && (!BOUND(?sourceTsi) || ?sourceTsi != ?tsi) )
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:name "Clause TSI must be listed as CLD subject"@en ;
+        sh:message "CLD {$cld} supporting case ({$this}) references clause {$section} for TSI {$sectionTsi}, but the CLD subjects do not include this TSI."@en ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT ?this ?cld ?section ?sectionTsi WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this .
+
+              {
+                ?evidence rdfs:member ?cld .
+                ?cld a era:CLD .
+              }
+              UNION
+              {
+                ?evidence rdfs:member ?declaration .
+                ?declaration a era:ECDeclaration ;
+                             dcterms:requires ?required .
+                {
+                  ?required rdfs:member ?cld .
+                }
+                UNION
+                {
+                  ?required a era:CLD .
+                  BIND(?required AS ?cld)
+                }
+                ?cld a era:CLD .
+              }
+
+              ?cld vpa:checkedCompliance ?check .
+              ?check a era:CABAssessmentCheck ;
+                     vpa:checkedSection ?section .
+
+              ?section dcterms:source ?sectionTsi .
+
+              FILTER NOT EXISTS { ?cld dcterms:subject ?sectionTsi }
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:name "Clause TSI must be referenced in CAB check"@en ;
+        sh:message "CAB assessment {$check} cites clause {$section} for TSI {$sectionTsi}, but neither vpa:checkedRequirement nor vpa:withRestriction/vpa:regarding references that TSI."@en ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT ?this ?section ?check ?sectionTsi WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this .
+
+              {
+                ?evidence rdfs:member ?cld .
+                ?cld a era:CLD .
+              }
+              UNION
+              {
+                ?evidence rdfs:member ?declaration .
+                ?declaration a era:ECDeclaration ;
+                             dcterms:requires ?required .
+                {
+                  ?required rdfs:member ?cld .
+                }
+                UNION
+                {
+                  ?required a era:CLD .
+                  BIND(?required AS ?cld)
+                }
+                ?cld a era:CLD .
+              }
+
+              ?cld vpa:checkedCompliance ?check .
+              ?check a era:CABAssessmentCheck ;
+                     vpa:checkedSection ?section .
+              ?section dcterms:source ?sectionTsi .
+
+              FILTER NOT EXISTS { ?check vpa:checkedRequirement ?sectionTsi }
+              FILTER NOT EXISTS { ?check vpa:withRestriction/vpa:regarding ?sectionTsi }
+            }
+        """ ;
+    ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:name "List clause references"@en ;
+        sh:severity sh:Info ;
+        sh:message "INFO ONLY: Clause {$section} sourced from {$sourceTsi} referenced by CAB assessment {$check} supporting this case ({$this})."@en ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+
+            SELECT DISTINCT ?this ?section ?sourceTsi ?tsi ?restrictionTsi ?check WHERE {
+              ?evidence a era:CABEvidence ;
+                        vpa:supportsCase ?this .
+
+              {
+                ?evidence rdfs:member ?cld .
+                ?cld a era:CLD .
+              }
+              UNION
+              {
+                ?evidence rdfs:member ?declaration .
+                ?declaration a era:ECDeclaration ;
+                             dcterms:requires ?required .
+                {
+                  ?required rdfs:member ?cld .
+                }
+                UNION
+                {
+                  ?required a era:CLD .
+                  BIND(?required AS ?cld)
+                }
+                ?cld a era:CLD .
+              }
+
+              ?cld vpa:checkedCompliance ?check .
+              ?check a era:CABAssessmentCheck ;
+                     vpa:checkedSection ?section .
+
+              OPTIONAL { ?check vpa:checkedRequirement ?tsi }
+              OPTIONAL { ?check vpa:withRestriction/vpa:regarding ?restrictionTsi }
+              OPTIONAL { ?section dcterms:source ?sourceTsi }
+            }
+        """ ;
+    ] .

@@ -313,7 +313,7 @@ era-sh:CLD a
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:severity sh:Violation ;
-        sh:message "Each era:IC subject ({$subject}) must encode a TSI code as `ic-<NNNN>-<NN...>` (e.g. ic-1302-2014)."@en ;
+        sh:message "Each era:IC subject ({$subject}) in the CLD `{$this}` must encode a TSI code as `ic-<NNNN>-<NN...>` (e.g. ic-1302-2014)."@en ;
         sh:prefixes dcterms: , era: ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -338,7 +338,7 @@ era-sh:CLD a
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:severity sh:Violation ;
-        sh:message "All era:IC subjects must reference the same TSI code (two numeric segments)."@en ;
+        sh:message "All era:IC subjects in the CLD `{$this}` must reference the same TSI code (two numeric segments)."@en ;
         sh:prefixes dcterms: , era: ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -367,7 +367,7 @@ era-sh:CLD a
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:severity sh:Violation ;
-        sh:message "At least one vpa:checkedRequirement must reference the same TSI code as the era:IC subject(s)."@en ;
+        sh:message "At least one vpa:checkedRequirement in the CLD `{$this}` must reference the same TSI code as the era:IC subject(s)."@en ;
         sh:prefixes dcterms: , era: , vpa: ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -412,7 +412,7 @@ era-sh:CLD a
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:severity sh:Warning ;
-        sh:message "era:TSI subject ({$tsi}) should also appear in vpa:checkedRequirement."@en ;
+        sh:message "era:TSI subject ({$tsi}) in the CLD `{$this}` should also appear in vpa:checkedRequirement."@en ;
         sh:prefixes dcterms: , era: , vpa: ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
