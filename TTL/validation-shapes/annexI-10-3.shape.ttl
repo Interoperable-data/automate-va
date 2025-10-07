@@ -1,13 +1,12 @@
 @base <http://data.europa.eu/949/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix era: <http://data.europa.eu/949/> .
-@prefix eralex-sh: <http://data.europa.eu/949/shapes/> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+
+# General
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix vpa: <http://w3id.org/vpa#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-eralex-sh:AnnexI-10-3 a sh:NodeShape ;
+era-sh:AnnexI-10-3 a sh:NodeShape ;
    sh:targetClass era:VehicleTypeAuthorisationCase ;
    # (I) 10.3 – simplified: only validate the optional includedVersionsVariant code
    # If present (via a concerned VehicleType), it MUST be exactly three digits, eventually followed by another three. Absence is allowed.

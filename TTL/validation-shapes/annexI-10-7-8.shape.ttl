@@ -1,12 +1,21 @@
 @base <http://data.europa.eu/949/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix era: <http://data.europa.eu/949/> .
 @prefix era-sh: <http://data.europa.eu/949/shapes/> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# From examples
+
+# General
+@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix sh:   <http://www.w3.org/ns/shacl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix vpa: <http://w3id.org/vpa#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Domain-specific
+
+
+# Relevant SKOS Concept Schemes
+@prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
+
     
 era-sh:AnnexI-10-78 a sh:NodeShape ;
     sh:targetClass era:VehicleTypeAuthorisationCase ;

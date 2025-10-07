@@ -1,6 +1,8 @@
 param(
     [string]$PrefixFilePath = (Join-Path $PSScriptRoot 'prefixes.ttl'),
     [string]$TargetFile = '',
+    [string]$TargetDir = '',
+    [string[]]$TargetPattern = @('*.ttl', '*.shacl'),
     [switch]$DryRun,
     [switch]$SkipBackup
 )
@@ -36,11 +38,89 @@ if ($prefixMap.Count -eq 0) {
     throw "No @prefix definitions were found in $PrefixFilePath"
 }
 
-if ($TargetFile) {
-    $files = @(Get-Item -LiteralPath $TargetFile)
-} else {
-    $files = Get-ChildItem -Path $PSScriptRoot -Recurse -Include *.ttl,*.shacl | Where-Object { -not $_.PSIsContainer }
+function Resolve-Directory {
+    param([string]$Directory)
+
+    if ([string]::IsNullOrWhiteSpace($Directory)) {
+        return $null
+    }
+
+    if (Test-Path -LiteralPath $Directory) {
+        return (Resolve-Path -LiteralPath $Directory).Path
+    }
+
+    $candidate = Join-Path $PSScriptRoot $Directory
+    if (Test-Path -LiteralPath $candidate) {
+        return (Resolve-Path -LiteralPath $candidate).Path
+    }
+
+    throw "Target directory not found: $Directory"
 }
+
+$baseDirectories = @()
+if ($TargetDir) {
+    $resolvedDir = Resolve-Directory -Directory $TargetDir
+    $baseDirectories += $resolvedDir
+} else {
+    $baseDirectories += (Resolve-Path -LiteralPath $PSScriptRoot).Path
+}
+
+$files = @()
+
+function Expand-Patterns {
+    param(
+        [string[]]$Patterns,
+        [string[]]$Directories
+    )
+
+    $expanded = @()
+    foreach ($dir in $Directories) {
+        $searchPath = Join-Path $dir '*'
+        $expanded += Get-ChildItem -Path $searchPath -Recurse -File -Include $Patterns -ErrorAction SilentlyContinue
+    }
+    return $expanded
+}
+
+if ($TargetFile) {
+    $candidateFiles = @()
+
+    $rawCandidates = $TargetFile -split ';|,' | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+    if ($rawCandidates.Count -eq 0) { $rawCandidates = @($TargetFile) }
+
+    foreach ($candidate in $rawCandidates) {
+        $resolved = $null
+        $candidatePaths = @($candidate)
+
+        if (-not [System.IO.Path]::IsPathRooted($candidate)) {
+            foreach ($dir in $baseDirectories) {
+                $candidatePaths += (Join-Path $dir $candidate)
+            }
+            $candidatePaths += (Join-Path $PSScriptRoot $candidate)
+        }
+
+        foreach ($path in ($candidatePaths | Select-Object -Unique)) {
+            $item = Get-Item -LiteralPath $path -ErrorAction SilentlyContinue
+            if ($item) {
+                $resolved = $item
+                break
+            }
+        }
+
+        if ($resolved) {
+            $candidateFiles += $resolved
+        } else {
+            $files += Expand-Patterns -Patterns @($candidate) -Directories $baseDirectories
+        }
+    }
+
+    if ($candidateFiles.Count -gt 0) {
+        $files += $candidateFiles
+    }
+} else {
+    $files += Expand-Patterns -Patterns $TargetPattern -Directories $baseDirectories
+}
+
+$files = $files | Sort-Object -Property FullName -Unique
 
 if (-not $files -or $files.Count -eq 0) {
     Write-Host "No TTL/SHACL files found to process."

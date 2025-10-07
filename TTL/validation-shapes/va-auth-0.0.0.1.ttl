@@ -1,8 +1,2 @@
 @base <http://data.europa.eu/949/> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix era-sh: <http://data.europa.eu/949/shapes/> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix vpa: <http://w3id.org/vpa#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
