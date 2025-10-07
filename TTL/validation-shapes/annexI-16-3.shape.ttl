@@ -20,7 +20,7 @@ era-sh:AnnexI-16-3
         a sh:SPARQLConstraint ;
         sh:severity sh:Warning ;
         sh:name "Compliance checks reference newer TSIs than CLD subjects"@en ;
-        sh:message "CLD {$cld} supporting case ({$this}) cites newer TSI {$complianceCode} ({$complianceTsi}) in CAB assessment {$check}, but its dcterms:subject only lists TSIs {$subjects}. Record Annex I 16.3 details for this discrepancy."@en ;
+        sh:message "The CLD `{$cld}` supporting the authorisation case `{$this}` cites newer TSI {$complianceCode} ({$complianceTsi}) in CAB assessment `{$check}`, but its dcterms:subject only lists TSIs {$subjects}. Record Annex I 16.3 details for this discrepancy."@en ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX era: <http://data.europa.eu/949/>

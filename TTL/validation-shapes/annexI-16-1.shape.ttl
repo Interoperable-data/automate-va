@@ -19,7 +19,7 @@ era-sh:AnnexI-16-1
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:name "CLD certificates must declare checked requirement"@en ;
-        sh:message "CLD {$cld} referenced by CAB evidence supporting this case ({$this}) is missing a reference to the covered TSI's (Annex I-16-1)."@en ;
+        sh:message "The CLD `{$cld}` referenced by CAB evidence supporting the authorisation case `{$this}` is missing a reference to the covered TSI's (Annex I-16-1)."@en ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX era: <http://data.europa.eu/949/>
@@ -60,7 +60,7 @@ era-sh:AnnexI-16-1
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:name "CAB evidence with statesCompliance must list checked requirement"@en ;
-        sh:message "CAB evidence {$evidence} supporting this case ({$this}) lists statesCompliance but no vpa:checkedRequirement IRI (Annex I-16-1)."@en ;
+        sh:message "CAB evidence {$evidence} supporting the authorisation case `{$this}` lists statesCompliance but no vpa:checkedRequirement IRI (Annex I-16-1)."@en ;
         sh:select """
             PREFIX era: <http://data.europa.eu/949/>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -88,7 +88,7 @@ era-sh:AnnexI-16-1
         a sh:SPARQLConstraint ;
         sh:name "List TSI requirements referenced by CAB evidence"@en ;
         sh:severity sh:Info ;
-        sh:message "INFO ONLY: TSI requirement {$requirement} referenced by CAB evidence supporting this case ({$this}) (Annex I-16-1)."@en ;
+        sh:message "INFO ONLY: TSI requirement {$requirement} referenced by CAB evidence supporting the authorisation case `{$this}` (Annex I-16-1)."@en ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX era: <http://data.europa.eu/949/>

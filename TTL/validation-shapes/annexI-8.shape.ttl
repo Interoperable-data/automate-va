@@ -10,7 +10,7 @@ era-sh:AnnexI-8 a sh:NodeShape ;
     sh:name "(I) 8. Assessment bodies information"@en ;
     sh:sparql [
         sh:name "Missing assessment body for CLD certificate"@en ;
-        sh:message "CLD certificate (?doc) supporting this case lacks a creator role (era:roleOf)."@en ;
+        sh:message "The CLD certificate (?doc) supporting the authorisation case lacks a creator role (era:roleOf)."@en ;
         sh:severity sh:Violation ;
         sh:select """
             PREFIX era: <http://data.europa.eu/949/>
@@ -52,7 +52,7 @@ era-sh:AnnexI-8 a sh:NodeShape ;
     ] ;
     sh:sparql [
     sh:name "Missing assessment bodies summary (CLD)"@en ;
-    sh:message "There are {$missing} CLD certificate(s) supporting this case without assessment body info."@en ;
+    sh:message "There are {$missing} CLD certificate(s) supporting the authorisation case without assessment body info."@en ;
     sh:severity sh:Violation ;
     sh:select """
         PREFIX era: <http://data.europa.eu/949/>

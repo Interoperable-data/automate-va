@@ -440,7 +440,7 @@ era-sh:CLD a
             [ sh:class era:CABAuditCheck ]
         ) ;
         sh:description "Any compliance or audit checks (CABAssessmentCheck or CABAuditCheck) performed for this CLD."@en ;
-        sh:message "CLD contains no compliance or audit checks (CABAssessmentCheck or CABAuditCheck)."@en ;
+        sh:message "The CLD contains no compliance or audit checks (CABAssessmentCheck or CABAuditCheck)."@en ;
         sh:severity sh:Warning ;
         sh:minCount 1
     ];
@@ -760,7 +760,7 @@ era-sh:CLD a
                 a sh:SPARQLConstraint ;
         sh:deactivated true ;
                 sh:severity sh:Info ;
-                sh:message "CLD treated as Subsystem CLD: module concept should begin with 'S'."@en ;
+                sh:message "The CLD treated as Subsystem CLD: module concept should begin with 'S'."@en ;
                 sh:prefixes dcterms: , era: , vpa: ;
                 sh:select """
                         PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -807,7 +807,7 @@ era-sh:CLD a
                 a sh:SPARQLConstraint ;
         sh:deactivated true ;
                 sh:severity sh:Info ;
-                sh:message "CLD treated as IC CLD: module concept should begin with 'C'."@en ;
+                sh:message "The CLD treated as IC CLD: module concept should begin with 'C'."@en ;
                 sh:prefixes dcterms: , era: , vpa: ;
                 sh:select """
                         PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -1174,4 +1174,4 @@ era-sh:CLDandECCertificateValidityShape a sh:NodeShape ;
       ]
     ]
   ) ;
-  sh:message "CLD and ECCertificate must have a validity property with a valid time interval." .
+  sh:message "The CLD and ECCertificate must have a validity property with a valid time interval." .

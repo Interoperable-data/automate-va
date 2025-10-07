@@ -19,53 +19,53 @@ era-sh:AnnexI-16-2
         a sh:SPARQLConstraint ;
         sh:severity sh:Warning ;
         sh:name "TSI clauses should declare checked section"@en ;
-        sh:message "CLD {$cld} supporting this case ({$this}) references TSI {$tsi} via CAB assessment {$check} but omits vpa:checkedSection even though the clause concept is present in the data graph."@en ;
-    sh:select """
-      PREFIX dcterms: <http://purl.org/dc/terms/>
-      PREFIX era: <http://data.europa.eu/949/>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX vpa: <http://w3id.org/vpa#>
-      PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        sh:message "The CLD `{$cld}` supporting the authorisation case `{$this}` references TSI {$tsi} via CAB assessment `{$check}` but omits vpa:checkedSection even though the clause concept is present in the data graph."@en ;
+        sh:select """
+            PREFIX dcterms: <http://purl.org/dc/terms/>
+            PREFIX era: <http://data.europa.eu/949/>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX vpa: <http://w3id.org/vpa#>
+            PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
             SELECT ?this ?cld ?check ?tsi WHERE {
-              ?evidence a era:CABEvidence ;
-                        vpa:supportsCase ?this .
+                ?evidence a era:CABEvidence ;
+                            vpa:supportsCase ?this .
 
-              {
-                ?evidence rdfs:member ?cld .
-                ?cld a era:CLD .
-              }
-              UNION
-              {
-                ?evidence rdfs:member ?declaration .
-                ?declaration a era:ECDeclaration ;
-                             dcterms:requires ?required .
                 {
-                  ?required rdfs:member ?cld .
+                    ?evidence rdfs:member ?cld .
+                    ?cld a era:CLD .
                 }
                 UNION
                 {
-                  ?required a era:CLD .
-                  BIND(?required AS ?cld)
+                    ?evidence rdfs:member ?declaration .
+                    ?declaration a era:ECDeclaration ;
+                                dcterms:requires ?required .
+                    {
+                    ?required rdfs:member ?cld .
+                    }
+                    UNION
+                    {
+                    ?required a era:CLD .
+                    BIND(?required AS ?cld)
+                    }
+                    ?cld a era:CLD .
                 }
-                ?cld a era:CLD .
-              }
-              ?cld vpa:checkedCompliance ?check .
-              ?check a era:CABAssessmentCheck .
-              ?check (vpa:checkedRequirement|vpa:withRestriction/vpa:regarding) ?tsi .
+                ?cld vpa:checkedCompliance ?check .
+                ?check a era:CABAssessmentCheck .
+                ?check (vpa:checkedRequirement|vpa:withRestriction/vpa:regarding) ?tsi .
 
-              FILTER EXISTS {
-                ?sectionCandidate a skos:Concept ;
-                                   dcterms:source ?tsi .
-              }
-              FILTER NOT EXISTS { ?check vpa:checkedSection ?section }
+                FILTER EXISTS {
+                    ?sectionCandidate a skos:Concept ;
+                                    dcterms:source ?tsi .
+                }
+                FILTER NOT EXISTS { ?check vpa:checkedSection ?section }
             }
         """ ;
-    ] ;
+        ] ;
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:name "Checked clause must be a SKOS Concept"@en ;
-        sh:message "Clause {$section} reported by CAB assessment {$check} for case ({$this}) must be typed skos:Concept."@en ;
+        sh:message "The clause `{$section}` as reported by CAB assessment `{$check}` for case `{$this}` must be a skos:Concept."@en ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX era: <http://data.europa.eu/949/>
@@ -107,7 +107,7 @@ era-sh:AnnexI-16-2
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:name "Clause concept must declare source TSI"@en ;
-        sh:message "Clause {$section} referenced by CAB assessment {$check} does not specify dcterms:source, so the related TSI is unknown."@en ;
+        sh:message "The clause `{$section}` as referenced by CAB assessment `{$check}` does not specify dcterms:source, so the related TSI is unknown."@en ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX era: <http://data.europa.eu/949/>
@@ -149,7 +149,7 @@ era-sh:AnnexI-16-2
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:name "Clause concept must cite same TSI"@en ;
-        sh:message "Clause {$section} referenced by CAB assessment {$check} cites TSI {$sourceTsi} which differs from checked requirement {$tsi}."@en ;
+        sh:message "The clause `{$section}` as referenced by CAB assessment `{$check}` cites TSI {$sourceTsi} which differs from checked requirement {$tsi}."@en ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX era: <http://data.europa.eu/949/>
@@ -194,7 +194,7 @@ era-sh:AnnexI-16-2
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:name "Clause TSI must be listed as CLD subject"@en ;
-        sh:message "CLD {$cld} supporting case ({$this}) references clause {$section} for TSI {$sectionTsi}, but the CLD subjects do not include this TSI."@en ;
+        sh:message "The CLD `{$cld}` supporting the authorisation case `{$this}` references clause {$section} for TSI {$sectionTsi}, but the CLD subjects do not include this TSI."@en ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX era: <http://data.europa.eu/949/>
@@ -238,7 +238,7 @@ era-sh:AnnexI-16-2
     sh:sparql [
         a sh:SPARQLConstraint ;
         sh:name "Clause TSI must be referenced in CAB check"@en ;
-        sh:message "CAB assessment {$check} cites clause {$section} for TSI {$sectionTsi}, but neither vpa:checkedRequirement nor vpa:withRestriction/vpa:regarding references that TSI."@en ;
+        sh:message "CAB assessment `{$check}` cites clause {$section} for TSI {$sectionTsi}, but neither vpa:checkedRequirement nor vpa:withRestriction/vpa:regarding references that TSI."@en ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX era: <http://data.europa.eu/949/>
@@ -283,7 +283,7 @@ era-sh:AnnexI-16-2
         a sh:SPARQLConstraint ;
         sh:name "List clause references"@en ;
         sh:severity sh:Info ;
-        sh:message "INFO ONLY: Clause {$section} sourced from {$sourceTsi} referenced by CAB assessment {$check} supporting this case ({$this})."@en ;
+        sh:message "INFO ONLY: Clause {$section} sourced from {$sourceTsi} referenced by CAB assessment `{$check}` supporting the authorisation case ({$this})."@en ;
         sh:select """
             PREFIX dcterms: <http://purl.org/dc/terms/>
             PREFIX era: <http://data.europa.eu/949/>
