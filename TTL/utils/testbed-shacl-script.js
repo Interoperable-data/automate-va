@@ -1,4 +1,6 @@
 // SHACL validation client for EC endpoint.
+// v0.0.1.0 - EU Agency for Railways (MDH)
+//
 // Use the following arguments:
 //   --remoteBase <url>              Base URL to resolve relative remote resources (optional if all remotes absolute)
 //   --localData <path[,more]>       Local data Turtle file(s) (exactly one of localData / remoteData)
