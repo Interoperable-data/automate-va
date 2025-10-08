@@ -16,13 +16,18 @@
     "@rdfjs/dataset": "^2.0.2",
     "@rdfjs/serializer-ntriples": "^2.0.1",
     "@rdfjs/types": "^2.0.1",
+    "@rdfjs/data-model": "^2.0.1",
     "@ulb-darmstadt/shacl-form": "^1.6.6",
     "htmx.org": "^2.0.3",
+    "browser-level": "^1.0.1",
     "n3": "^1.24.2",
-    "petite-vue": "^0.4.1"
+    "petite-vue": "^0.4.1",
+    "quadstore": "^12.0.3"
   },
   "devDependencies": {
+    "@types/n3": "^1.21.1",
     "@types/node": "^22.10.1",
+    "memory-level": "^1.0.0",
     "happy-dom": "^19.0.2",
     "typescript": "~5.7.2",
     "vite": "^6.2.0",
