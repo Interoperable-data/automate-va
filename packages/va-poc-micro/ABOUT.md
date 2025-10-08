@@ -21,10 +21,18 @@ Transform the existing Vue-powered VA-POC micro front-end into a distributable H
 ### 1. Tooling & Build Pipeline
 
 - [ ] Remove Vue plugin and dependencies (`vue`, `@vitejs/plugin-vue`, `.vue` SFC usage).
+  - Drop related typings (`@vue/tsconfig`, `vue-tsc`) and delete `.vue` sources once their logic is ported to plain TS modules or web components.
 - [ ] Reconfigure `vite.config.ts` for a vanilla TypeScript entry point and static asset copy.
-- [ ] Ensure `pnpm build` outputs a self-contained `dist/` folder with hashed assets and HTML shell ready for publication on GitHub Pages.
+  - Keep the Vite toolchain but switch to the official library mode + multi-page config as needed for the micro app.
+  - Ensure static assets referenced by HTMX/Petite-Vue are copied via `public/` or the `vite.config.ts` `assetsInclude` option.
+- [ ] Update `package.json` tooling to rely solely on pnpm + Vite/Vitest.
+  - Replace the `vue-tsc -b && vite build` script with `vite build` (and optional `tsc --noEmit` if stricter type checking is required).
+  - Add `"test": "vitest run"` and `"test:watch": "vitest"` scripts so Lerna `pnpm run` calls stay consistent.
+- [ ] Excise the workspace dependency on `@va-automate/kg-session`; migrate required utilities into local modules or lightweight browser-ready packages.
+  - Remove the entry from `dependencies`, drop any tsconfig path references, and rewrite import sites during the migration tasks.
+- [ ] Ensure `pnpm build --filter va-poc-micro` emits a self-contained `dist/` folder with hashed assets ready for publication on GitHub Pages.
 - [ ] Add a smoke test that loads the built `index.html` in headless Chromium (e.g., via Playwright or Vitest + happy-dom) to confirm runtime availability of required globals.
-- [ ] Provide documentation for consuming the hosted build and the secure local fallback (see `TECHNICAL-SETUP.md`).
+- [X] Provide documentation for consuming the hosted build and the secure local fallback (see `TECHNICAL-SETUP.md`).
 
 ### 2. Application Shell & Navigation
 
