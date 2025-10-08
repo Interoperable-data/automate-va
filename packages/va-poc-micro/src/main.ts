@@ -1,36 +1,30 @@
-import { createApp, defineCustomElement } from 'vue';
 import './style.css';
-import App from './App.vue';
-import { ShaclForm } from '@ulb-darmstadt/shacl-form'; // Corrected import for ShaclForm
+import { initNavigation, type ViewId } from './modules/navigation';
+import { assert } from './modules/utils/assert';
 
-// Import custom elements
-import ShapeStepCE from './components/ShapeStep.ce.vue';
-import ProcessTaskCE from './components/ProcessTask.ce.vue';
-import TurtleViewerCE from './components/TurtleViewer.ce.vue';
-import ProcessTaskViewerCE from './components/ProcessTaskViewer.ce.vue';
-import ProcessFinderCE from './components/ProcessFinder.ce.vue'; // Import ProcessFinder
+const appRoot = assert(document.querySelector<HTMLElement>('[data-app]'), 'App shell not found');
 
-// Register the custom elements globally (only once)
-if (!customElements.get('shape-step')) {
-  customElements.define('shape-step', defineCustomElement(ShapeStepCE));
-}
-if (!customElements.get('process-task')) {
-  customElements.define('process-task', defineCustomElement(ProcessTaskCE));
-}
-if (!customElements.get('turtle-viewer')) {
-  customElements.define('turtle-viewer', defineCustomElement(TurtleViewerCE));
-}
-if (!customElements.get('process-task-viewer')) {
-  customElements.define('process-task-viewer', defineCustomElement(ProcessTaskViewerCE));
-}
-if (!customElements.get('process-finder')) {
-  customElements.define('process-finder', defineCustomElement(ProcessFinderCE)); // Register ProcessFinder
+const controller = initNavigation({
+  onViewChange(viewId) {
+    handleViewChange(viewId);
+  },
+});
+
+setupLoginButton();
+
+function handleViewChange(viewId: ViewId) {
+  console.debug(`[navigation] switched to view: ${viewId}`);
 }
 
-// Create and mount your main Vue app
-const app = createApp(App);
+function setupLoginButton() {
+  const loginButton = appRoot.querySelector<HTMLButtonElement>('[data-action="msal-login"]');
+  loginButton?.addEventListener('click', () => {
+    console.info('[auth] MSAL login clicked (handler pending integration)');
+  });
+}
 
-// Register ShaclForm globally
-app.component('ShaclForm', ShaclForm);
-
-app.mount('#app');
+// expose controller for debugging
+if (import.meta.env.DEV) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).__vaNavigation__ = controller;
+}

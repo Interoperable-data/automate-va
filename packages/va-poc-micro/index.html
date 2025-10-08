@@ -1,13 +1,94 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + Vue + TS</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VA-POC Micro</title>
+</head>
+
+<body>
+  <noscript>
+    <p>This application requires JavaScript to manage RDF data in your browser.</p>
+  </noscript>
+  <div class="app-shell" data-app>
+    <aside class="sidebar" data-collapsed="false">
+      <div class="sidebar__header">
+        <span class="sidebar__title">VA-POC Micro</span>
+        <button class="sidebar__toggle" data-action="toggle-sidebar" type="button" aria-label="Toggle navigation">
+          ☰
+        </button>
+      </div>
+      <nav class="sidebar__nav" aria-label="Application sections">
+        <ul>
+          <li><button data-view-target="organisation" class="sidebar__link is-active">Organisation data</button></li>
+          <li><button data-view-target="objects" class="sidebar__link">Objects of assessment</button></li>
+          <li><button data-view-target="eva" class="sidebar__link">EVA pre-assessment</button></li>
+          <li><button data-view-target="rawRdf" class="sidebar__link">Raw RDF</button></li>
+          <li><button data-view-target="endpoints" class="sidebar__link">Endpoints</button></li>
+        </ul>
+      </nav>
+      <footer class="sidebar__footer">
+        <span>Proof of Concept</span>
+      </footer>
+    </aside>
+    <div class="content">
+      <header class="content__header">
+        <div class="content__breadcrumbs" data-breadcrumb>Organisation data</div>
+        <button class="content__login" data-action="msal-login" type="button">Sign in</button>
+      </header>
+      <main class="content__main" id="view-container">
+        <section data-view="organisation" aria-labelledby="view-organisation-heading">
+          <header class="view__header">
+            <h1 id="view-organisation-heading">Organisation data &amp; roles</h1>
+            <p class="view__lead">
+              Manage organisations, units, sites, and associated role assignments. Data is stored locally in your
+              browser until you choose to export it.
+            </p>
+          </header>
+          <div data-view-slot="organisation"></div>
+        </section>
+        <section data-view="objects" hidden aria-labelledby="view-objects-heading">
+          <header class="view__header">
+            <h1 id="view-objects-heading">Objects of assessment</h1>
+            <p class="view__lead">
+              Curate subsystem declarations, CLDs, and related documentation for reuse across applications.
+            </p>
+          </header>
+          <div data-view-slot="objects"></div>
+        </section>
+        <section data-view="eva" hidden aria-labelledby="view-eva-heading">
+          <header class="view__header">
+            <h1 id="view-eva-heading">EVA pre-assessment</h1>
+            <p class="view__lead">
+              Draft vehicle authorisation cases, run SHACL validations, and review human-readable pre-assessment
+              reports.
+            </p>
+          </header>
+          <div data-view-slot="eva"></div>
+        </section>
+        <section data-view="rawRdf" hidden aria-labelledby="view-rawRdf-heading">
+          <header class="view__header">
+            <h1 id="view-rawRdf-heading">Raw RDF</h1>
+            <p class="view__lead">
+              Inspect the active data graph, export Turtle or N-Triples snapshots, and troubleshoot data issues.
+            </p>
+          </header>
+          <div data-view-slot="rawRdf"></div>
+        </section>
+        <section data-view="endpoints" hidden aria-labelledby="view-endpoints-heading">
+          <header class="view__header">
+            <h1 id="view-endpoints-heading">Endpoints</h1>
+            <p class="view__lead">
+              Configure SPARQL endpoints, authentication tokens, and connectivity policies for the Agency ecosystem.
+            </p>
+          </header>
+          <div data-view-slot="endpoints"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>
