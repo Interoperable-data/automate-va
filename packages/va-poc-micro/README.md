@@ -5,6 +5,12 @@ This package contains the W3C RDF-based Vehicle Authorisation toolbox for Applic
 > [!INFO]
 > This package is made available to all interested parties involved in vehicle authorisation and registration processes as a Proof of Concept. No rights can be deduced from its use and the EU Agency for Railways (ERA) is not responsible for any consequences of its use.
 
+## What's new in this iteration
+
+- **Organisation manager** – edit holdings, organisations, and units directly in the browser via SHACL-driven forms. Data is written to the local quadstore and grouped per named graph for easier reuse.
+- **Raw RDF snapshot** – inspect the active dataset in Turtle or N-Triples, copy it to the clipboard, or download it for offline analysis. The view refreshes automatically whenever the graph changes.
+- **Endpoint validation console** – post the current dataset to a remote SHACL validation service using a single click, with optional bearer token support and readable response previews.
+
 ## Manage your organisation data and roles
 
 For reuse in all of your applications, you will be able to store linked data per W3C `org:`-ontology of all your Organizations (`org:Organization`), Units (`org:organizationUnit`) and where they are located (`org:Site`). This information will be stored in a local JSON-LD file, for later reuse.
