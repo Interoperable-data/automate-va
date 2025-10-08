@@ -22,10 +22,10 @@ Transform the existing Vue-powered VA-POC micro front-end into a distributable H
 
 - [ ] Remove Vue plugin and dependencies (`vue`, `@vitejs/plugin-vue`, `.vue` SFC usage).
   - Drop related typings (`@vue/tsconfig`, `vue-tsc`) and delete `.vue` sources once their logic is ported to plain TS modules or web components.
-- [ ] Reconfigure `vite.config.ts` for a vanilla TypeScript entry point and static asset copy.
+- [x] Reconfigure `vite.config.ts` for a vanilla TypeScript entry point and static asset copy.
   - Keep the Vite toolchain but switch to the official library mode + multi-page config as needed for the micro app.
   - Ensure static assets referenced by HTMX/Petite-Vue are copied via `public/` or the `vite.config.ts` `assetsInclude` option.
-- [ ] Update `package.json` tooling to rely solely on pnpm + Vite/Vitest.
+- [x] Update `package.json` tooling to rely solely on pnpm + Vite/Vitest.
   - Replace the `vue-tsc -b && vite build` script with `vite build` (and optional `tsc --noEmit` if stricter type checking is required).
   - Add `"test": "vitest run"` and `"test:watch": "vitest"` scripts so Lerna `pnpm run` calls stay consistent.
 - [ ] Excise the workspace dependency on `@va-automate/kg-session`; migrate required utilities into local modules or lightweight browser-ready packages.
@@ -36,12 +36,12 @@ Transform the existing Vue-powered VA-POC micro front-end into a distributable H
 
 ### 2. Application Shell & Navigation
 
-- [ ] Replace the Vue root mount with a static `index.html` layout featuring:
+- [x] Replace the Vue root mount with a static `index.html` layout featuring:
   - Left navigation bar occupying 20% width, collapsible via CSS/JS toggle.
   - Main content area for page modules (Organisation data, Objects of Assessment, EVA, Raw RDF, Endpoints).
   - Top-right MSAL login status + action button.
-- [ ] Implement nav state using Petite-Vue stores or plain TS modules to keep bundle minimal.
-- [ ] Ensure responsive behaviour (collapse below tablet widths, keyboard accessible toggle button).
+- [x] Implement nav state using Petite-Vue stores or plain TS modules to keep bundle minimal.
+- [x] Ensure responsive behaviour (collapse below tablet widths, keyboard accessible toggle button).
 
 ### 3. RDF Data Layer
 
@@ -72,7 +72,7 @@ Transform the existing Vue-powered VA-POC micro front-end into a distributable H
 ### 6. Testing & Quality Gates
 
 - [ ] **Unit tests (Vitest)** for RDF utilities, QuadStore wrapper, endpoint configuration manager, and auth gating logic.
-- [ ] **Component behaviour tests** using `@testing-library/dom` or native DOM assertions to cover nav toggling, module switching, and HTMX flows.
+- [x] **Component behaviour tests** using `@testing-library/dom` or native DOM assertions to cover nav toggling, module switching, and HTMX flows.
 - [ ] **Integration tests** simulating data import-export cycles and endpoint sync in a mocked environment.
 - [ ] Maintain >85% statement coverage across modules.
 - [ ] Wire tests into CI and ensure `pnpm test` runs headless-only suites (no Mocha).
