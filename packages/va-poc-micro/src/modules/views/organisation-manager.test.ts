@@ -10,14 +10,14 @@ const SHAPE_TTL = `
   @prefix sh: <http://www.w3.org/ns/shacl#> .
   @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
   @prefix org: <http://www.w3.org/ns/org#> .
-  @prefix eraUi: <http://data.europa.eu/949/ui/> .
+  @prefix dash: <http://datashapes.org/dash#> .
 
   <http://example.org/OrganisationShape>
     a sh:NodeShape ;
     rdfs:label "Organisation" ;
     rdfs:comment "Test organisation shape" ;
     sh:targetClass org:Organization ;
-    eraUi:valuesNamespace "https://data.europa.eu/949/local"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
+    dash:stem <https://data.europa.eu/949/local/> .
 `;
 
 type SerializeProvider = (element: HTMLElement) => string;
@@ -170,8 +170,7 @@ describe('organisation-manager persistence', () => {
     const subject = form?.getAttribute('data-values-subject');
     const graph = form?.getAttribute('data-values-graph');
 
-    const expectedSubject =
-      'https://data.europa.eu/949/local/organisation/00000000-0000-0000-0000-000000000000';
+    const expectedSubject = 'https://data.europa.eu/949/local/00000000-0000-0000-0000-000000000000';
     const expectedGraph = `${expectedSubject}#graph`;
 
     expect(subject).toBe(expectedSubject);

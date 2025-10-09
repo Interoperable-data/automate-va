@@ -23,9 +23,8 @@ const SKOS_DEFINITION = rdfDataFactory.namedNode('http://www.w3.org/2004/02/skos
 const RDFS_COMMENT = rdfDataFactory.namedNode('http://www.w3.org/2000/01/rdf-schema#comment');
 const DCTERMS_DESCRIPTION = rdfDataFactory.namedNode('http://purl.org/dc/terms/description');
 const SCHEMA_DESCRIPTION = rdfDataFactory.namedNode('https://schema.org/description');
-const ERA_VALUES_NAMESPACE = rdfDataFactory.namedNode(
-  'http://data.europa.eu/949/ui/valuesNamespace'
-);
+const DASH_STEM = rdfDataFactory.namedNode('http://datashapes.org/dash#stem');
+const XSD_ANY_URI = 'http://www.w3.org/2001/XMLSchema#anyURI';
 
 const LABEL_PREDICATES = [RDFS_LABEL, SKOS_PREF_LABEL, SCHEMA_NAME] as const;
 const DESCRIPTION_PREDICATES = [
@@ -34,7 +33,7 @@ const DESCRIPTION_PREDICATES = [
   SKOS_DEFINITION,
   SCHEMA_DESCRIPTION,
 ] as const;
-const VALUES_NAMESPACE_PREDICATES = [ERA_VALUES_NAMESPACE] as const;
+const VALUES_NAMESPACE_PREDICATES = [DASH_STEM] as const;
 
 export function discoverShapeDescriptors(dataset: DatasetCore): ShapeDescriptor[] {
   const descriptors: ShapeDescriptor[] = [];
@@ -70,11 +69,9 @@ export function discoverShapeDescriptors(dataset: DatasetCore): ShapeDescriptor[
     const slug = toSlug(label);
     const createLabel = `Create ${slug}`;
     const submitLabel = `Save ${slug}`;
-    const namespace = findLiteral(dataset, shape, VALUES_NAMESPACE_PREDICATES);
+    const namespace = findUri(dataset, shape, VALUES_NAMESPACE_PREDICATES);
     if (!namespace) {
-      console.warn(
-        `[shape-descriptors] Skipping NodeShape ${shape.value}: missing eraUi:valuesNamespace.`
-      );
+      console.warn(`[shape-descriptors] Skipping NodeShape ${shape.value}: missing dash:stem.`);
       continue;
     }
 
@@ -113,6 +110,27 @@ function findLiteral(
     for (const quad of dataset.match(subject, predicate, undefined)) {
       if (quad.object.termType === 'Literal') {
         return (quad.object as Literal).value;
+      }
+    }
+  }
+  return null;
+}
+
+function findUri(
+  dataset: DatasetCore,
+  subject: NamedNode,
+  predicates: readonly NamedNode[]
+): string | null {
+  for (const predicate of predicates) {
+    for (const quad of dataset.match(subject, predicate, undefined)) {
+      if (quad.object.termType === 'NamedNode') {
+        return (quad.object as NamedNode).value;
+      }
+      if (quad.object.termType === 'Literal') {
+        const literal = quad.object as Literal;
+        if (!literal.datatype || literal.datatype.value === XSD_ANY_URI) {
+          return literal.value;
+        }
       }
     }
   }

@@ -53,6 +53,7 @@ export function attachClassInstanceProvider(form: ShaclFormElement, store: Graph
     }
 
     const serialized = await serializeQuads(output, 'text/turtle');
+    console.debug('[shacl-class-provider] instances for class', classIri, serialized.trim());
     return serialized.trim();
   };
 

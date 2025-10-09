@@ -253,7 +253,7 @@ export async function initOrganisationManagerView(
     const identifiers: ResourceIdentifiers = existing
       ? { subject: existing.subject, graph: existing.graph }
       : createIdentifiers(descriptor);
-    const namespace = `${ensureTrailingSlash(descriptor.valuesNamespace)}${descriptor.slug}/`;
+    const namespace = ensureTrailingSlash(descriptor.valuesNamespace);
 
     form.setAttribute('data-shapes', shapes.text);
     form.setAttribute('data-shape-subject', descriptor.shape.value);
@@ -576,7 +576,7 @@ async function matchLiteral(
 
 function createIdentifiers(descriptor: ShapeDescriptor): ResourceIdentifiers {
   const id = crypto.randomUUID();
-  const subject = `${ensureTrailingSlash(descriptor.valuesNamespace)}${descriptor.slug}/${id}`;
+  const subject = `${ensureTrailingSlash(descriptor.valuesNamespace)}${id}`;
   const graph = `${subject}#graph`;
   return { subject, graph };
 }

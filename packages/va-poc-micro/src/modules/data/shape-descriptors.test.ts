@@ -10,8 +10,8 @@ const ttl = `
   @prefix ex: <http://example.org/> .
   @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
   @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-  @prefix eraUi: <http://data.europa.eu/949/ui/> .
-  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+  @prefix dash: <http://datashapes.org/dash#> .
+  @prefix data: <https://example.org/data/> .
 
   ex:ExampleShape
     a sh:NodeShape ;
@@ -20,14 +20,14 @@ const ttl = `
     sh:targetClass ex:ExampleClass ;
     skos:prefLabel "Example" ;
     skos:definition "Example descriptor" ;
-    eraUi:valuesNamespace "https://example.org/data"^^xsd:anyURI .
+    dash:stem data: .
 
   ex:OtherShape
     a sh:NodeShape ;
     rdfs:label "Other Class" ;
     rdfs:comment "Manage other classes." ;
     sh:targetClass ex:OtherClass ;
-    eraUi:valuesNamespace "https://example.org/data"^^xsd:anyURI .
+    dash:stem data: .
 `;
 
 const dataset = datasetFactory.dataset(parser.parse(ttl));
@@ -48,7 +48,7 @@ describe('discoverShapeDescriptors', () => {
     expect(example?.createButtonLabel).toBe('Create example');
     expect(example?.submitButtonLabel).toBe('Save example');
     expect(example?.slug).toBe('example');
-    expect(example?.valuesNamespace).toBe('https://example.org/data');
+    expect(example?.valuesNamespace).toBe('https://example.org/data/');
 
     const other = descriptors.find(
       (descriptor) => descriptor.shape.value === 'http://example.org/OtherShape'
@@ -60,7 +60,7 @@ describe('discoverShapeDescriptors', () => {
     expect(other?.createButtonLabel).toBe('Create other-class');
     expect(other?.submitButtonLabel).toBe('Save other-class');
     expect(other?.slug).toBe('other-class');
-    expect(other?.valuesNamespace).toBe('https://example.org/data');
+    expect(other?.valuesNamespace).toBe('https://example.org/data/');
   });
 });
 
@@ -69,20 +69,20 @@ it('skips NodeShapes missing required label or comment', () => {
     @prefix sh: <http://www.w3.org/ns/shacl#> .
     @prefix ex: <http://example.org/> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    @prefix eraUi: <http://data.europa.eu/949/ui/> .
-    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+    @prefix dash: <http://datashapes.org/dash#> .
+    @prefix data: <https://example.org/data/> .
 
     ex:ShapeWithoutLabel
       a sh:NodeShape ;
       sh:targetClass ex:Entity ;
       rdfs:comment "Missing label" ;
-      eraUi:valuesNamespace "https://example.org/data"^^xsd:anyURI .
+      dash:stem data: .
 
     ex:ShapeWithoutComment
       a sh:NodeShape ;
       rdfs:label "No Comment" ;
       sh:targetClass ex:Entity ;
-      eraUi:valuesNamespace "https://example.org/data"^^xsd:anyURI .
+      dash:stem data: .
   `;
 
   const invalidDataset = datasetFactory.dataset(parser.parse(invalidTtl));
@@ -90,7 +90,7 @@ it('skips NodeShapes missing required label or comment', () => {
   expect(descriptors).toHaveLength(0);
 });
 
-it('skips NodeShapes missing eraUi:valuesNamespace', () => {
+it('skips NodeShapes missing dash:stem', () => {
   const invalidTtl = `
     @prefix sh: <http://www.w3.org/ns/shacl#> .
     @prefix ex: <http://example.org/> .

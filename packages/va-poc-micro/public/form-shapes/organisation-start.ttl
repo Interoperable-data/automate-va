@@ -3,8 +3,6 @@
 @prefix dbpedia: <http://dbpedia.org/ontology/> .
 @prefix dcat:    <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix era:     <http://data.europa.eu/949/> .
-@prefix era-sh:     <http://data.europa.eu/949/shapes/> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
 @prefix geo:     <http://www.opengis.net/ont/geosparql#> .
 @prefix org:     <https://www.w3.org/ns/org#> .
@@ -21,13 +19,22 @@
 @prefix eraUi:   <http://data.europa.eu/949/ui/> .
 @prefix locn:    <http://www.w3.org/ns/locn#> .
 
+
+@prefix era:      <http://data.europa.eu/949/> .
+@prefix era-sh:   <http://data.europa.eu/949/shapes/> .
+@prefix rorg:     <http://data.europa.eu/949/organisations/> .
+@prefix lorg:     <http://data.europa.eu/949/organisations/sites/> .
+@prefix locs:     <http://data.europa.eu/949/organisations/locations/> .
+@prefix uorg:     <http://data.europa.eu/949/organisations/units/> .
+
 org:FormalOrganization rdfs:subClassOf org:Organization .
 org:OrganizationalUnit rdfs:subClassOf org:Organization .
 
 era-sh:OrgOrFormalOrgShape a sh:NodeShape, rdfs:Class ;
   rdfs:label "Organisation entry"@en ;
   rdfs:comment "Start a new structure by choosing whether you manage a formal holding or an operational organisation."@en ;
-    # Start of entry must happen with FormalOrg OR Org. Some stakeholders have no holdings/groups/corporations.
+  # dash:stem rorg: ; DO NOT MINT RESOURCES OF THIS TYPE
+  # Start of entry must happen with FormalOrg OR Org. Some stakeholders have no holdings/groups/corporations.
   sh:property [
     sh:or (
       [
@@ -53,14 +60,21 @@ era-sh:OrgOrFormalOrgShape a sh:NodeShape, rdfs:Class ;
 era-sh:FormalOrganisationShape a sh:NodeShape, rdfs:Class ;
   rdfs:label "Formal organisation"@en ;
   rdfs:comment "Model a legally recognised holding or group that oversees subsidiary organisations."@en ;
-  eraUi:valuesNamespace "https://data.europa.eu/949/local"^^xsd:anyURI ;
+  dash:stem rorg: ;
   sh:targetClass org:FormalOrganization ;
   sh:property [
     sh:path skos:prefLabel ;
     sh:datatype xsd:string ;
     sh:name "Name of the Holding or Group"@en ;
     sh:description "The legally recognized name of the mother holding or group. Do NOT include locations in this name." ;
-    sh:maxCount 1
+    sh:minCount 0 ; sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path rdfs:comment ;
+    sh:datatype xsd:string ;
+    sh:name "Description of the Holding or Group"@en ;
+    sh:description "A description of the mother holding or group. Do NOT include locations in this name." ;
+    sh:minCount 0 ; sh:maxCount 1
   ] ;
   sh:property [
     sh:path org:hasSubOrganization;
@@ -89,7 +103,7 @@ era-sh:FormalOrganisationShape a sh:NodeShape, rdfs:Class ;
 era-sh:OrganisationShape a sh:NodeShape, rdfs:Class ;
   rdfs:label "Organisation"@en ;
   rdfs:comment "Capture an operational organisation with its identifier, registered sites, and units."@en ;
-  eraUi:valuesNamespace "https://data.europa.eu/949/local"^^xsd:anyURI ;
+  dash:stem rorg: ;
   sh:targetClass org:Organization ;
   # Organisations MUST have orgCode, and they have org:hasRegisteredSite and hasPrimarySite.
   # They can have other organisations as members.
@@ -156,7 +170,7 @@ era-sh:OrganisationShape a sh:NodeShape, rdfs:Class ;
 era-sh:UnitShape a sh:NodeShape, rdfs:Class ;
   rdfs:label "Organisational unit"@en ;
   rdfs:comment "Describe a department or unit that operates within a parent organisation."@en ;
-  eraUi:valuesNamespace "https://data.europa.eu/949/local"^^xsd:anyURI ;
+  dash:stem uorg: ;
   sh:targetClass org:OrganizationalUnit ;
   # An Organization such as a department or support unit which is part of some larger Organization and only has full recognition within the context of that Organization.
   # In particular the unit would not be regarded as a legal entity in its own right.
@@ -184,6 +198,14 @@ era-sh:UnitShape a sh:NodeShape, rdfs:Class ;
     sh:description "The Site where this Unit is located and its teams are working." ;
     sh:minCount 0 ; # a unit MUST have a site address, can be added later
     sh:maxCount 3 ; # a unit can be housed in 3 different sites.
+  ];
+  sh:property [
+    sh:path org:unitOf ;
+    sh:nodeKind sh:IRI ;
+    sh:class org:FormalOrganization ; # ontology limit/error!?
+    sh:name "To which Formal Organisation this Unit belongs" ;
+    sh:description "The Formal Organisation to which the Unit belongs";
+    sh:minCount 0
   ].
   # sh:property [
   #   sh:name "Unit - editorial data";
@@ -195,7 +217,7 @@ era-sh:UnitShape a sh:NodeShape, rdfs:Class ;
 era-sh:SiteShape a sh:NodeShape, rdfs:Class ;
   rdfs:label "Organisation site"@en ;
   rdfs:comment "Capture the name, address, and location of an organisation site."@en ;
-  eraUi:valuesNamespace "https://data.europa.eu/949/local"^^xsd:anyURI ;
+  dash:stem lorg: ;
   sh:targetClass org:Site ;
   sh:property [
     sh:path skos:prefLabel ;
@@ -236,7 +258,7 @@ era-sh:SiteShape a sh:NodeShape, rdfs:Class ;
 era-sh:LocationShape a sh:NodeShape, rdfs:Class ;
   rdfs:label "Location"@en ;
   rdfs:comment "Geospatial information attached to a site."@en ;
-  eraUi:valuesNamespace "https://data.europa.eu/949/local"^^xsd:anyURI ;
+  dash:stem locs: ;
   sh:targetClass dcterms:Location ;
   sh:property [
     sh:path skos:prefLabel ;
@@ -268,7 +290,7 @@ era-sh:LocationShape a sh:NodeShape, rdfs:Class ;
 era-sh:AddressNodeShape a sh:NodeShape, rdfs:Class ;
   rdfs:label "Postal address"@en ;
   rdfs:comment "Structured postal address details in LOCN format."@en ;
-  eraUi:valuesNamespace "https://data.europa.eu/949/local"^^xsd:anyURI ;
+  dash:stem locs: ;
   sh:targetClass locn:Address ;
   sh:property [
     sh:path locn:fullAddress ;

@@ -114,6 +114,38 @@ describe('shacl-class-provider', () => {
     ).toBeGreaterThan(0);
   });
 
+  it('serializes resources stored in named graphs', async () => {
+    const subject = 'http://example.org/resources/graph-segregated';
+    const graph = `${subject}#graph`;
+
+    await store.putQuads([
+      dataFactory.quad(
+        namedNode(subject),
+        namedNode(RDF_TYPE_IRI),
+        namedNode(CLASS_IRI),
+        namedNode(graph)
+      ),
+      dataFactory.quad(
+        namedNode(subject),
+        namedNode(SKOS_PREF_LABEL_IRI),
+        literal('Graph Subject'),
+        namedNode(graph)
+      ),
+    ]);
+
+    const ttl = await callProvider(CLASS_IRI);
+    expect(ttl).not.toBe('');
+
+    const dataset = datasetFactory.dataset(parser.parse(ttl));
+    expect(
+      dataset.match(namedNode(subject), namedNode(RDF_TYPE_IRI), namedNode(CLASS_IRI)).size
+    ).toBeGreaterThan(0);
+    expect(
+      dataset.match(namedNode(subject), namedNode(SKOS_PREF_LABEL_IRI), literal('Graph Subject'))
+        .size
+    ).toBeGreaterThan(0);
+  });
+
   it('clears cached results when the store is cleared', async () => {
     const resource = 'http://example.org/resources/1';
     await insertResource(resource);
