@@ -10,7 +10,7 @@ Transform the existing Vue-powered VA-POC micro front-end into a distributable H
 - **UI layer**: HTML templates enhanced with [HTMX](https://htmx.org/) for partial updates and [Petite-Vue](https://github.com/vuejs/petite-vue) for lightweight reactivity.
 - **Data handling**: RDF processing with [`n3`](https://github.com/rdfjs/N3.js) and graph persistence via [`quadstore`](https://github.com/beautifulinteractions/quadstore) + [`browser-level`](https://github.com/Level/browser-level) for IndexedDB storage.
 - **Interop**: Continue using existing RDF helpers (local/remote fetch, conversions) rewritten for framework-free usage.
-- **Form rendering**: All HTML5 forms that display or capture RDF **must** be generated via [`@ulb-darmstadt/shacl-form`](https://www.npmjs.com/package/@ulb-darmstadt/shacl-form), bound directly to the shared RDFJS Store implementation; plain HTML forms are permitted only for non-RDF interactions. SHACL shapes powering these forms will be supplied as JSON-LD documents bundled with the app or fetched on demand from remote endpoints.
+- **Form rendering**: All HTML5 forms that display or capture RDF **must** be generated via [`@ulb-darmstadt/shacl-form`](https://www.npmjs.com/package/@ulb-darmstadt/shacl-form), bound directly to the shared RDFJS Store implementation; plain HTML forms are permitted only for non-RDF interactions. SHACL shapes powering these forms will be supplied as JSON-LD documents bundled with the app or fetched on demand from remote endpoints. Instance IRIs are minted by honouring the shapes’ `dash:stem` declarations—no additional slug logic is permitted on the front end.
 - **Auth gating**: Defer persistence to ERA endpoints until MSAL login succeeds (via [`@azure/msal-browser`](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser)).
 - **Tooling**: Keep Vite + TypeScript + Vitest; remove Vue-specific plugins. Build output must emit a static `dist/` bundle ready for distribution.
 - **Hosting**: Primary delivery is through the ERA-managed GitHub Pages site, with a documented local HTTPS fallback (`TECHNICAL-SETUP.md`) for offline or restricted environments.
@@ -45,19 +45,19 @@ Transform the existing Vue-powered VA-POC micro front-end into a distributable H
 
 ### 3. RDF Data Layer
 
-- [ ] Port existing helper logic into framework-agnostic modules (`/src/data/`):
+- [X] Port existing helper logic into framework-agnostic modules (`/src/data/`):
   - Fetch/parsing of Turtle (local files, remote URLs, SPARQL queries).
   - Conversion utilities between RDFJS Dataset, SolidDataset, and serialized Turtle/N-Triples.
-- [ ] Wrap an IndexedDB-backed QuadStore instance for persistent graph storage (`browser-level` backend).
+- [X] Wrap an IndexedDB-backed QuadStore instance for persistent graph storage (`browser-level` backend).
 - [ ] Provide a `GraphSession` façade exposing CRUD, import/export, and query operations for UI modules.
 - [ ] Guarantee browser compatibility by running bundles in latest Chrome/Firefox/Safari during development.
 
 ### 4. Feature Modules
 
-- [ ] **Organisation Manager**: CRUD forms for organisations/units/sites, using Petite-Vue for local state, HTMX for partial table refresh, and `shacl-form` widgets bound to the QuadStore.
+- [X] **Organisation Manager**: CRUD forms for organisations/units/sites, using Petite-Vue for local state, HTMX for partial table refresh, and `shacl-form` widgets bound to the QuadStore. Forms must expose cross-links (e.g. `org:hasUnit`, `org:unitOf`) based on data fetched through the shared class-instance provider.
 - [ ] **Objects of Assessment**: Manage subsystem declarations, CLDs, and linked documents; support linking to reused resources.
 - [ ] **EVA Pre-Assessment**: Compose vehicle authorisation cases, integrate SHACL validation pipeline, render human-readable reports.
-- [ ] **Raw RDF**: Read-only view of the active dataset; allow Turtle/N-Triples export using `n3.Writer`.
+- [X] **Raw RDF**: Read-only view of the active dataset; allow Turtle/N-Triples export using `n3.Writer`.
 - [ ] **Endpoints Manager**: Maintain list of SPARQL endpoints + auth credentials, test connections, and bind to data sync routines.
 - [ ] Establish lazy-loading or route-like switching between modules without full page reloads.
 
@@ -71,7 +71,7 @@ Transform the existing Vue-powered VA-POC micro front-end into a distributable H
 
 ### 6. Testing & Quality Gates
 
-- [ ] **Unit tests (Vitest)** for RDF utilities, QuadStore wrapper, endpoint configuration manager, and auth gating logic.
+- [X] **Unit tests (Vitest)** for RDF utilities, QuadStore wrapper, endpoint configuration manager, and auth gating logic.
 - [x] **Component behaviour tests** using `@testing-library/dom` or native DOM assertions to cover nav toggling, module switching, and HTMX flows.
 - [ ] **Integration tests** simulating data import-export cycles and endpoint sync in a mocked environment.
 - [ ] Maintain >85% statement coverage across modules.

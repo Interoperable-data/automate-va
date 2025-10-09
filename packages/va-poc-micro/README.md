@@ -7,15 +7,15 @@ This package contains the W3C RDF-based Vehicle Authorisation toolbox for Applic
 
 ## What's new in this iteration
 
-- **Organisation manager** – auto-discovers SHACL NodeShapes, then renders create/edit flows for holdings, organisations, and units with zero hard-coded mappings. Data is written to the local quadstore and grouped per named graph for easier reuse.
+- **Organisation manager** – auto-discovers SHACL NodeShapes, then renders create/edit flows for holdings, organisations, sites, and units with zero hard-coded mappings. Instances now mint IRIs directly from the ontology stems advertised via `dash:stem`, ensuring predictable namespaces without legacy slugs. All data is written to the local quadstore and grouped per named graph for easier reuse.
 - **Raw RDF snapshot** – inspect the active dataset in Turtle or N-Triples, copy it to the clipboard, or download it for offline analysis. The view refreshes automatically whenever the graph changes.
 - **Endpoint validation console** – post the current dataset to a remote SHACL validation service using a single click, with optional bearer token support and readable response previews.
 
 ## Manage your organisation data and roles
 
-For reuse in all of your applications, you will be able to store linked data per W3C `org:`-ontology of all your Organizations (`org:Organization`), Units (`org:organizationUnit`) and where they are located (`org:Site`). This information will be stored in a local JSON-LD file, for later reuse.
+For reuse in all of your applications, you will be able to store linked data per W3C `org:`-ontology of all your Organizations (`org:Organization`), Units (`org:OrganizationalUnit`) and where they are located (`org:Site`). All resources are persisted in a browser-resident quadstore (IndexedDB) using one named graph per subject, so the dataset can be exported as Turtle/Trig at any time, rather than a single JSON-LD file.
 
-When needing to quote another stakeholder, a lookup function will provide for the URI of its data as well.
+When needing to quote another stakeholder, a lookup function will provide for the URI of its data as well. Bidirectional relations—such as linking units back to their formal organisations via `org:unitOf`—are available directly from the SHACL forms, relying on shared instance providers instead of manual URI entry.
 
 ## Manage your Objects of Assessments
 
