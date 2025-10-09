@@ -7,7 +7,7 @@ This package contains the W3C RDF-based Vehicle Authorisation toolbox for Applic
 
 ## What's new in this iteration
 
-- **Organisation manager** – edit holdings, organisations, and units directly in the browser via SHACL-driven forms. Data is written to the local quadstore and grouped per named graph for easier reuse.
+- **Organisation manager** – auto-discovers SHACL NodeShapes, then renders create/edit flows for holdings, organisations, and units with zero hard-coded mappings. Data is written to the local quadstore and grouped per named graph for easier reuse.
 - **Raw RDF snapshot** – inspect the active dataset in Turtle or N-Triples, copy it to the clipboard, or download it for offline analysis. The view refreshes automatically whenever the graph changes.
 - **Endpoint validation console** – post the current dataset to a remote SHACL validation service using a single click, with optional bearer token support and readable response previews.
 

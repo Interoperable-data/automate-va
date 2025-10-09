@@ -3,59 +3,16 @@ import rdfDataFactory from '@rdfjs/data-model';
 import type { Quad, Term, NamedNode } from '@rdfjs/types';
 import type { GraphStore } from '../data/graph-store';
 import type { LoadedShape } from '../data/organisation-shapes';
+import { discoverShapeDescriptors, type ShapeDescriptor } from '../data/shape-descriptors';
 import { assert } from '../utils/assert';
 import { quadsToTurtle } from './rdf-utils';
 
 const RDF_TYPE_IRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
 const SKOS_PREF_LABEL_IRI = 'http://www.w3.org/2004/02/skos/core#prefLabel';
 const RDFS_LABEL_IRI = 'http://www.w3.org/2000/01/rdf-schema#label';
-const DEFAULT_NAMESPACE = 'https://data.europa.eu/va/local';
-
 const RDF_TYPE = rdfDataFactory.namedNode(RDF_TYPE_IRI);
 const SKOS_PREF_LABEL = rdfDataFactory.namedNode(SKOS_PREF_LABEL_IRI);
 const RDFS_LABEL = rdfDataFactory.namedNode(RDFS_LABEL_IRI);
-
-export type ResourceTypeId = 'formalOrganisation' | 'organisation' | 'unit';
-
-interface ResourceTypeConfig {
-  id: ResourceTypeId;
-  label: string;
-  description: string;
-  shape: string;
-  targetClass: string;
-  buttonLabel: string;
-  submitLabel: string;
-}
-
-const RESOURCE_TYPES: ResourceTypeConfig[] = [
-  {
-    id: 'formalOrganisation',
-    label: 'Holding or group',
-    description: 'Mother holdings or owning groups that can control subsidiary organisations.',
-    shape: 'http://data.europa.eu/949/FormalOrganisationShape',
-    targetClass: 'https://www.w3.org/ns/org#FormalOrganisation',
-    buttonLabel: 'New holding/group',
-    submitLabel: 'Save holding',
-  },
-  {
-    id: 'organisation',
-    label: 'Operational organisation',
-    description: 'Legal entities with an organisation code and optional units and subsidiaries.',
-    shape: 'http://data.europa.eu/949/OrganisationShape',
-    targetClass: 'https://www.w3.org/ns/org#Organisation',
-    buttonLabel: 'New organisation',
-    submitLabel: 'Save organisation',
-  },
-  {
-    id: 'unit',
-    label: 'Organisational unit',
-    description: 'Departments or units that belong to an organisation and operate sites.',
-    shape: 'http://data.europa.eu/949/UnitShape',
-    targetClass: 'https://www.w3.org/ns/org#OrganizationalUnit',
-    buttonLabel: 'New unit / department',
-    submitLabel: 'Save unit',
-  },
-];
 
 interface OrganisationManagerOptions {
   container: HTMLElement;
@@ -68,11 +25,13 @@ interface OrganisationManagerController {
 }
 
 interface ResourceRecord {
-  type: ResourceTypeId;
+  descriptor: ShapeDescriptor;
   subject: string;
   graph: string;
   label: string;
 }
+
+type ResourceIdentifiers = Pick<ResourceRecord, 'subject' | 'graph'>;
 
 type ShaclFormElement = HTMLElement & {
   serialize: (format?: string) => string;
@@ -84,8 +43,25 @@ export async function initOrganisationManagerView(
 ): Promise<OrganisationManagerController> {
   const { container, store, shapes } = options;
 
+  const descriptors = discoverShapeDescriptors(shapes.dataset);
   const layout = buildLayout(container);
-  populateCreateButtons(layout.createButtons, (typeId) => openForm(typeId));
+
+  if (descriptors.length === 0) {
+    layout.createButtons.textContent =
+      'No sh:NodeShape entries with sh:targetClass were found in the loaded shapes.';
+    layout.emptyState.textContent =
+      'Add targetable NodeShapes to the shapes graph to start managing resources.';
+    layout.emptyState.hidden = false;
+    return {
+      activate() {
+        // Nothing to activate without shapes to drive the manager.
+      },
+    };
+  }
+
+  populateCreateButtons(layout.createButtons, descriptors, (descriptor) => {
+    void openForm(descriptor);
+  });
 
   let resources: ResourceRecord[] = [];
   let selectedSubject: string | null = null;
@@ -100,11 +76,11 @@ export async function initOrganisationManagerView(
     highlightSubject?: string,
     { keepSelection = false }: { keepSelection?: boolean } = {}
   ) {
-    resources = await fetchResources(store);
-    renderResourceList(layout.resourceList, resources, {
+    resources = await fetchResources(store, descriptors);
+    renderResourceList(layout.resourceList, descriptors, resources, {
       onSelect(resource) {
         selectedSubject = resource.subject;
-        openForm(resource.type, resource);
+        void openForm(resource.descriptor, resource);
       },
       highlightSubject:
         highlightSubject ?? (keepSelection ? selectedSubject ?? undefined : undefined),
@@ -112,11 +88,10 @@ export async function initOrganisationManagerView(
     layout.emptyState.hidden = resources.length > 0;
   }
 
-  async function openForm(typeId: ResourceTypeId, existing?: ResourceRecord) {
-    const typeConfig = getResourceType(typeId);
+  async function openForm(descriptor: ShapeDescriptor, existing?: ResourceRecord) {
     layout.editorTitle.textContent = existing
-      ? `Editing ${typeConfig.label}`
-      : `Create ${typeConfig.label}`;
+      ? `Editing ${descriptor.label}`
+      : `Create ${descriptor.label}`;
     layout.formHost.innerHTML = '';
 
     const status = document.createElement('p');
@@ -124,12 +99,14 @@ export async function initOrganisationManagerView(
     status.textContent = 'Values are validated against the SHACL shapes.';
 
     const form = document.createElement('shacl-form') as ShaclFormElement;
-    const identifiers = existing ?? createIdentifiers(typeConfig.id);
-    const namespace = `${DEFAULT_NAMESPACE}/${typeConfig.id}/`;
+    const identifiers: ResourceIdentifiers = existing
+      ? { subject: existing.subject, graph: existing.graph }
+      : createIdentifiers(descriptor);
+    const namespace = `${ensureTrailingSlash(descriptor.valuesNamespace)}${descriptor.slug}/`;
 
     form.setAttribute('data-shapes', shapes.text);
-    form.setAttribute('data-shape-subject', typeConfig.shape);
-    form.setAttribute('data-submit-button', existing ? 'Update entry' : typeConfig.submitLabel);
+    form.setAttribute('data-shape-subject', descriptor.shape.value);
+    form.setAttribute('data-submit-button', descriptor.submitButtonLabel);
     form.setAttribute('data-values-subject', identifiers.subject);
     form.setAttribute('data-values-graph', identifiers.graph);
     form.setAttribute('data-values-namespace', namespace);
@@ -141,6 +118,8 @@ export async function initOrganisationManagerView(
       if (turtle) {
         form.setAttribute('data-values', turtle);
       }
+    } else {
+      form.removeAttribute('data-values');
     }
 
     const actions = document.createElement('div');
@@ -148,7 +127,7 @@ export async function initOrganisationManagerView(
 
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
-    deleteButton.textContent = 'Delete entry';
+    deleteButton.textContent = `Delete ${descriptor.label}`;
     deleteButton.className = 'panel__button panel__button--secondary';
     deleteButton.disabled = !existing;
     deleteButton.addEventListener('click', async () => {
@@ -156,15 +135,15 @@ export async function initOrganisationManagerView(
         return;
       }
       deleteButton.disabled = true;
-      status.textContent = 'Removing entry…';
+      status.textContent = `Removing ${descriptor.label.toLowerCase()}…`;
       try {
         await removeResource(store, existing);
-        status.textContent = `${typeConfig.label} deleted.`;
+        status.textContent = `${descriptor.label} deleted.`;
         layout.formHost.innerHTML = '';
         selectedSubject = null;
         await refreshResourceList();
       } catch (error) {
-        console.error('[organisation-view] Failed to delete resource', error);
+        console.error('[organisation-manager] Failed to delete resource', error);
         status.textContent = `Failed to delete: ${extractMessage(error)}`;
         deleteButton.disabled = false;
       }
@@ -174,20 +153,20 @@ export async function initOrganisationManagerView(
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      status.textContent = 'Saving…';
+      status.textContent = `Saving ${descriptor.label.toLowerCase()}…`;
       try {
         const turtle = form.serialize('text/turtle');
         await persistForm(store, {
           turtle,
           graph: identifiers.graph,
           subject: identifiers.subject,
-          targetClass: typeConfig.targetClass,
+          targetClass: descriptor.targetClass,
         });
-        status.textContent = 'Saved.';
+        status.textContent = `${descriptor.label} saved.`;
         selectedSubject = identifiers.subject;
         await refreshResourceList(selectedSubject);
       } catch (error) {
-        console.error('[organisation-view] Failed to save form', error);
+        console.error('[organisation-manager] Failed to save form', error);
         status.textContent = `Failed to save: ${extractMessage(error)}`;
       }
     });
@@ -197,7 +176,6 @@ export async function initOrganisationManagerView(
 
   return {
     activate() {
-      // Ensure the latest list is rendered when the view becomes active.
       void refreshResourceList(selectedSubject ?? undefined, { keepSelection: true });
     },
   };
@@ -249,24 +227,28 @@ function buildLayout(container: HTMLElement) {
 
 function populateCreateButtons(
   container: HTMLElement,
-  onCreate: (type: ResourceTypeId) => void
+  descriptors: ShapeDescriptor[],
+  onCreate: (descriptor: ShapeDescriptor) => void
 ): void {
-  RESOURCE_TYPES.forEach((config) => {
+  container.replaceChildren();
+  descriptors.forEach((descriptor) => {
     const button = document.createElement('button');
     button.className = 'panel__button';
     button.type = 'button';
-    button.textContent = config.buttonLabel;
-    button.addEventListener('click', () => onCreate(config.id));
+    button.textContent = descriptor.createButtonLabel;
+    button.addEventListener('click', () => onCreate(descriptor));
     container.append(button);
   });
 }
 
-async function fetchResources(store: GraphStore): Promise<ResourceRecord[]> {
+async function fetchResources(
+  store: GraphStore,
+  descriptors: ShapeDescriptor[]
+): Promise<ResourceRecord[]> {
   const results: ResourceRecord[] = [];
 
-  for (const config of RESOURCE_TYPES) {
-    const typeNode = rdfDataFactory.namedNode(config.targetClass);
-    const quads = await store.getQuads({ predicate: RDF_TYPE, object: typeNode });
+  for (const descriptor of descriptors) {
+    const quads = await store.getQuads({ predicate: RDF_TYPE, object: descriptor.targetClass });
     for (const quad of quads) {
       if (quad.subject.termType !== 'NamedNode') {
         continue;
@@ -274,7 +256,7 @@ async function fetchResources(store: GraphStore): Promise<ResourceRecord[]> {
       const graph = getGraphId(quad.graph);
       const label = await resolveLabel(store, quad.subject, graph ?? undefined);
       results.push({
-        type: config.id,
+        descriptor,
         subject: quad.subject.value,
         graph: graph ?? `${quad.subject.value}#graph`,
         label,
@@ -293,53 +275,59 @@ interface RenderResourceListOptions {
 
 function renderResourceList(
   host: HTMLElement,
+  descriptors: ShapeDescriptor[],
   items: ResourceRecord[],
   options: RenderResourceListOptions
 ): void {
   host.replaceChildren();
 
-  RESOURCE_TYPES.forEach((config) => {
-    const subset = items.filter((item) => item.type === config.id);
-    if (subset.length === 0) {
-      return;
-    }
+  descriptors.forEach((descriptor) => {
+    const subset = items.filter((item) => item.descriptor.shape.equals(descriptor.shape));
 
     const section = document.createElement('section');
     section.className = 'resource-list__group';
 
     const heading = document.createElement('h3');
     heading.className = 'resource-list__heading';
-    heading.textContent = config.label;
+    heading.textContent = descriptor.pluralLabel;
     section.append(heading);
 
     const description = document.createElement('p');
     description.className = 'resource-list__description';
-    description.textContent = config.description;
+    description.textContent = descriptor.description;
     section.append(description);
 
-    const list = document.createElement('ul');
-    list.className = 'resource-list__items';
+    if (subset.length === 0) {
+      const empty = document.createElement('p');
+      empty.className = 'resource-list__empty';
+      empty.textContent = `No ${descriptor.pluralLabel.toLowerCase()} stored yet.`;
+      section.append(empty);
+    } else {
+      const list = document.createElement('ul');
+      list.className = 'resource-list__items';
 
-    subset.forEach((resource) => {
-      const listItem = document.createElement('li');
-      listItem.className = 'resource-list__item';
+      subset.forEach((resource) => {
+        const listItem = document.createElement('li');
+        listItem.className = 'resource-list__item';
 
-      const button = document.createElement('button');
-      button.className = 'resource-list__button';
-      button.type = 'button';
-      button.dataset.subject = resource.subject;
-      button.textContent = resource.label;
-      if (options.highlightSubject && options.highlightSubject === resource.subject) {
-        button.classList.add('is-active');
-      }
+        const button = document.createElement('button');
+        button.className = 'resource-list__button';
+        button.type = 'button';
+        button.dataset.subject = resource.subject;
+        button.textContent = resource.label;
+        if (options.highlightSubject && options.highlightSubject === resource.subject) {
+          button.classList.add('is-active');
+        }
 
-      button.addEventListener('click', () => options.onSelect(resource));
+        button.addEventListener('click', () => options.onSelect(resource));
 
-      listItem.append(button);
-      list.append(listItem);
-    });
+        listItem.append(button);
+        list.append(listItem);
+      });
 
-    section.append(list);
+      section.append(list);
+    }
+
     host.append(section);
   });
 }
@@ -355,15 +343,15 @@ async function readResourceAsTurtle(store: GraphStore, record: ResourceRecord): 
 
 async function persistForm(
   store: GraphStore,
-  options: { turtle: string; subject: string; graph: string; targetClass: string }
+  options: { turtle: string; subject: string; graph: string; targetClass: NamedNode }
 ): Promise<void> {
   const graphNode = rdfDataFactory.namedNode(options.graph);
   const subjectNode = rdfDataFactory.namedNode(options.subject);
 
-  const parser = new Parser({ format: 'text/turtle' });
+  const parser = new Parser({ format: 'application/trig' });
   const parsed = parser.parse(options.turtle) as Quad[];
   const normalized = parsed.map((quad) => ensureGraph(quad, graphNode));
-  ensureTypeQuad(normalized, subjectNode, rdfDataFactory.namedNode(options.targetClass), graphNode);
+  ensureTypeQuad(normalized, subjectNode, options.targetClass, graphNode);
 
   const existing = await store.getQuads({ graph: graphNode });
   if (existing.length > 0) {
@@ -444,25 +432,15 @@ async function matchLiteral(
   return literal ? literal.object.value : null;
 }
 
-function getResourceType(id: ResourceTypeId): ResourceTypeConfig {
-  const match = RESOURCE_TYPES.find((item) => item.id === id);
-  if (!match) {
-    throw new Error(`Unsupported resource type: ${id}`);
-  }
-  return match;
+function createIdentifiers(descriptor: ShapeDescriptor): ResourceIdentifiers {
+  const id = crypto.randomUUID();
+  const subject = `${ensureTrailingSlash(descriptor.valuesNamespace)}${descriptor.slug}/${id}`;
+  const graph = `${subject}#graph`;
+  return { subject, graph };
 }
 
-function createIdentifiers(type: ResourceTypeId): ResourceRecord {
-  const typeConfig = getResourceType(type);
-  const id = crypto.randomUUID();
-  const subject = `${DEFAULT_NAMESPACE}/${typeConfig.id}/${id}`;
-  const graph = `${subject}#graph`;
-  return {
-    type,
-    subject,
-    graph,
-    label: subject,
-  };
+function ensureTrailingSlash(input: string): string {
+  return input.endsWith('/') ? input : `${input}/`;
 }
 
 function quadsToGraphId(graph: Term): string | null {

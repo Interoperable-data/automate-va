@@ -217,6 +217,13 @@ a:focus-visible {
   color: #64748b;
 }
 
+.resource-list__empty {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
 .resource-list__items {
   list-style: none;
   margin: 0;

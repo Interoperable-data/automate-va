@@ -3,6 +3,7 @@
 @prefix dbpedia: <http://dbpedia.org/ontology/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix era:     <http://data.europa.eu/949/> .
+@prefix era-sh:     <http://data.europa.eu/949/shapes/> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
 @prefix geo:     <http://www.opengis.net/ont/geosparql#> .
 @prefix org:     <http://www.w3.org/ns/org#> .
@@ -15,7 +16,7 @@
 @prefix prov:    <http://www.w3.org/ns/prov#> .
 @prefix ex:      <http://example.org/> .
 
-era:OrgOrFormalOrgShape a sh:NodeShape, rdfs:Class ;
+era-sh:OrgOrFormalOrgShape a sh:NodeShape ;
     # Start of entry must happen with FormalOrg OR Org. Some stakeholders have no holdings/groups/corporations.
   sh:property [
     sh:or (
@@ -29,7 +30,7 @@ era:OrgOrFormalOrgShape a sh:NodeShape, rdfs:Class ;
     sh:maxCount 1 # the form intends to not allow multi-corporate orgs
   ].
 
-era:FormalOrganisationShape a sh:NodeShape, rdfs:Class ;
+era-sh:FormalOrganisationShape a sh:NodeShape ;
   sh:targetClass org:FormalOrganisation ;
   # Formal Organisations do not have orgCode, and they only have a org:hasRegisteredSite to locate them.
   #           can have subOrganisations but no units
@@ -46,15 +47,15 @@ era:FormalOrganisationShape a sh:NodeShape, rdfs:Class ;
     sh:node era:OrganisationShape;
     sh:description "An organization which is part of this mother holding or group" ;
     sh:minCount 1 # we do not allow only holdings?
+  ];
+  sh:property [
+    sh:path org:hasRegisteredSite ;
+    sh:name "Legal Address" ;
+    sh:description "The Site where this Holding or Group has its legal address." ;
+    sh:minCount 1 ; # a holding MUST have a legal address
+    sh:maxCount 1 ; # a holding can only have one legal address.
+    sh:node era:RegSiteShape ;
   ].
-#   sh:property [
-#     sh:path org:hasRegisteredSite ;
-#     sh:name "Legal Address" ;
-#     sh:description "The Site where this Holding or Group has its legal address." ;
-#     sh:minCount 1 ; # a holding MUST have a legal address
-#     sh:maxCount 1 ; # a holding can only have one legal address.
-#     sh:node era:RegSiteShape ;
-#   ].
   # sh:property [
   #   sh:name "Formal Organisation - editorial data";
   #   sh:path skos:changeNote ;
@@ -62,7 +63,7 @@ era:FormalOrganisationShape a sh:NodeShape, rdfs:Class ;
   #   sh:minCount 1 ; # mandatory date of record and change.
   # ].
 
-era:OrganisationShape a sh:NodeShape, rdfs:Class ;
+era-sh:OrganisationShape a sh:NodeShape ;
   sh:targetClass org:Organisation ;
   # Organisations MUST have orgCode, and they have org:hasRegisteredSite and hasPrimarySite.
   # They can have other organisations as members.
@@ -128,7 +129,7 @@ era:OrganisationShape a sh:NodeShape, rdfs:Class ;
   #   sh:minCount 1 ; # mandatory date of record and change.
   # ].
 
-era:UnitShape a sh:NodeShape, rdfs:Class ;
+era-sh:UnitShape a sh:NodeShape ;
   sh:targetClass org:OrganizationalUnit ;
   # An Organization such as a department or support unit which is part of some larger Organization and only has full recognition within the context of that Organization.
   # In particular the unit would not be regarded as a legal entity in its own right.
@@ -162,3 +163,4 @@ era:UnitShape a sh:NodeShape, rdfs:Class ;
   #   sh:node era:OrgRecordShape ;
   #   sh:minCount 1 ; # mandatory date of record and change.
   # ].
+

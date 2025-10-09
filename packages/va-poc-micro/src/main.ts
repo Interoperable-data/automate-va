@@ -1,5 +1,5 @@
 import './style.css';
-import '@ulb-darmstadt/shacl-form/form-default.js';
+import '@ulb-darmstadt/shacl-form';
 import { initNavigation, type ViewId } from './modules/navigation';
 import { assert } from './modules/utils/assert';
 import { GraphStore } from './modules/data/graph-store';
