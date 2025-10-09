@@ -20,8 +20,8 @@ era-sh:OrgOrFormalOrgShape a sh:NodeShape ;
     # Start of entry must happen with FormalOrg OR Org. Some stakeholders have no holdings/groups/corporations.
   sh:property [
     sh:or (
-      [sh:node era:FormalOrganisationShape ; rdfs:label "Mother Holding or Group, active worldwide" ]
-      [sh:node era:OrganisationShape ; rdfs:label "An operational organization, active in one country" ]
+      [sh:node era-sh:FormalOrganisationShape ; rdfs:label "Mother Holding or Group, active worldwide" ]
+      [sh:node era-sh:OrganisationShape ; rdfs:label "An operational organization, active in one country" ]
     );
     sh:path owl:sameAs;
     sh:name "Core level organisation";
@@ -44,7 +44,7 @@ era-sh:FormalOrganisationShape a sh:NodeShape ;
   sh:property [
     sh:path org:hasSubOrganization;
     sh:name "Subsidiary organisations";
-    sh:node era:OrganisationShape;
+    sh:node era-sh:OrganisationShape;
     sh:description "An organization which is part of this mother holding or group" ;
     sh:minCount 1 # we do not allow only holdings?
   ];
@@ -54,12 +54,12 @@ era-sh:FormalOrganisationShape a sh:NodeShape ;
     sh:description "The Site where this Holding or Group has its legal address." ;
     sh:minCount 1 ; # a holding MUST have a legal address
     sh:maxCount 1 ; # a holding can only have one legal address.
-    sh:node era:RegSiteShape ;
+    sh:node era-sh:RegSiteShape ;
   ].
   # sh:property [
   #   sh:name "Formal Organisation - editorial data";
   #   sh:path skos:changeNote ;
-  #   sh:node era:OrgRecordShape ;
+  #   sh:node era-sh:OrgRecordShape ;
   #   sh:minCount 1 ; # mandatory date of record and change.
   # ].
 
@@ -86,14 +86,14 @@ era-sh:OrganisationShape a sh:NodeShape ;
     sh:minLength 4;
     sh:maxLength 4;
     # sh:or (
-    #   [ sh:node era:CompanyCode ; rdfs:label "Company Code" ]    
-    #   [ sh:node era:OrganisationCode ; rdfs:label "Organisation Code" ]
+    #   [ sh:node era-sh:CompanyCode ; rdfs:label "Company Code" ]    
+    #   [ sh:node era-sh:OrganisationCode ; rdfs:label "Organisation Code" ]
     # )
   ];
   sh:property [
     sh:minCount 0 ; # Not mandatory
     sh:path org:hasSubOrganization;
-    sh:node era:OrganisationShape;
+    sh:node era-sh:OrganisationShape;
     sh:name "Subsidiary organisation";
     sh:description "An organization, as a separate legal entity, which is >50% part of this organization" ;
   ];
@@ -103,11 +103,11 @@ era-sh:OrganisationShape a sh:NodeShape ;
 #     sh:path org:hasRegisteredSite ;
 #     sh:name "Legal Address" ;
 #     sh:description "The Site where this organization has its legal address." ;
-#     sh:node era:RegSiteShape ;
+#     sh:node era-sh:RegSiteShape ;
 #   ] ;
 #   sh:property [
 #     sh:path org:hasPrimarySite ;
-#     sh:node era:PrimSiteShape ;
+#     sh:node era-sh:PrimSiteShape ;
 #     sh:name "Contact Address" ;
 #     sh:description "The Site where this organization can be contacted." ;
 #     sh:minCount 0 ; # a org CAN have a prim site address
@@ -116,7 +116,7 @@ era-sh:OrganisationShape a sh:NodeShape ;
   # Organizations do not directly use hasSite, as this must happen through their Units.
   sh:property [
     sh:path org:hasUnit ;
-    sh:node era:UnitShape ;
+    sh:node era-sh:UnitShape ;
     sh:name "Units or Departments within this organisation" ;
     sh:description "Units or departments which fall under the leadership of this organization." ;
     sh:minCount 0 ; # a org CAN have no Units, in that case, it is assumed all activities run in one location.
@@ -125,7 +125,7 @@ era-sh:OrganisationShape a sh:NodeShape ;
   # sh:property [
   #   sh:name "Organisation - editorial data";
   #   sh:path skos:changeNote ;
-  #   sh:node era:OrgRecordShape ;
+  #   sh:node era-sh:OrgRecordShape ;
   #   sh:minCount 1 ; # mandatory date of record and change.
   # ].
 
@@ -151,7 +151,7 @@ era-sh:UnitShape a sh:NodeShape ;
   ].
 #   sh:property [
 #     sh:path org:hasSite ;
-#     sh:node era:SiteShape ;
+#     sh:node era-sh:SiteShape ;
 #     sh:name "Legal Address of the Unit" ;
 #     sh:description "The Site where this Unit is located and its teams are working." ;
 #     sh:minCount 1 ; # a unit MUST have a site address
@@ -160,7 +160,7 @@ era-sh:UnitShape a sh:NodeShape ;
   # sh:property [
   #   sh:name "Unit - editorial data";
   #   sh:path skos:changeNote ;
-  #   sh:node era:OrgRecordShape ;
+  #   sh:node era-sh:OrgRecordShape ;
   #   sh:minCount 1 ; # mandatory date of record and change.
   # ].
 

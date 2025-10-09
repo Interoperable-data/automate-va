@@ -95,7 +95,7 @@
   ###################################### 
   ################## FORM-defining SHACL
   ######################################
-  era:ECMCertificateShape a sh:NodeShape ;
+  era-sh:ECMCertificateShape a sh:NodeShape ;
 
     sh:targetClass era:Certificate ;
     rdfs:label "ECM Certificate" ;
@@ -129,7 +129,7 @@
       sh:path dcterms:audience ;
       sh:minCount 1 ;
       sh:maxCount 1 ;
-      sh:node era:CBOrgRoleShape  ;
+      sh:node era-sh:CBOrgRoleShape  ;
       sh:group issform:CE
     ];
     sh:property [
@@ -146,7 +146,7 @@
       sh:path dcterms:creator ;
       sh:minCount 1 ;
       sh:maxCount 1 ;
-      sh:node era:CFBOrgRoleShape  ;
+      sh:node era-sh:CFBOrgRoleShape  ;
       sh:group issform:CB
     ]; 
 
@@ -172,7 +172,7 @@
       sh:name "Validity" ;
       sh:path dcterms:valid ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      # sh:node era:CertificateValidityShape ;
+      # sh:node era-sh:CertificateValidityShape ;
       sh:group issform:CI 
     ];
     sh:property [ 
@@ -276,7 +276,7 @@
   ######## Additional helper NODES
 
   # Validity is a time: instance
-  era:CertificateValidityShape  a sh:NodeShape ;
+  era-sh:CertificateValidityShape  a sh:NodeShape ;
     sh:targetClass time:Interval ;
     sh:property [
       sh:name "Starting date" ;
@@ -320,7 +320,7 @@
 
   # Name OR role (to convert into URI!)
   # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
-  era:CBOrgRoleShape a sh:NodeShape ;
+  era-sh:CBOrgRoleShape a sh:NodeShape ;
     sh:targetClass era:OrganisationRole ;
     sh:property [
       sh:name "Certified Body Role" ;
@@ -336,16 +336,16 @@
       sh:maxCount 1 ;
       sh:name "Confirm certified body" ;
       sh:or (
-        [ sh:node era:ByNameShape ; 
+        [ sh:node era-sh:ByNameShape ; 
           sh:name "Certified Body Name" ]
         [ 
-          sh:node era:ByCodeShape ; 
+          sh:node era-sh:ByCodeShape ; 
           sh:name "Certified Body Code" ]
       )
     ] .
 
   # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
-  era:CFBOrgRoleShape a sh:NodeShape ;
+  era-sh:CFBOrgRoleShape a sh:NodeShape ;
     sh:targetClass era:OrganisationRole ;
     sh:property [
       # For conversion to an org URI
@@ -354,10 +354,10 @@
       sh:minCount 1 ;
       sh:maxCount 1 ;
       sh:or (
-        [ sh:node era:ByNameShape ; 
+        [ sh:node era-sh:ByNameShape ; 
           sh:name "Certifying Body Name" ]
         [ 
-          sh:node era:ByCodeShape ; 
+          sh:node era-sh:ByCodeShape ; 
           sh:name "Certifying Body Code" ]
       )
     ];
@@ -371,7 +371,7 @@
     ].
 
   # Id By Name
-  era:ByNameShape a sh:NodeShape ;
+  era-sh:ByNameShape a sh:NodeShape ;
     sh:targetClass era:Body ;
     sh:property [
       sh:path era:roleOf ;
@@ -382,7 +382,7 @@
     ].
 
   # Id by orgCode
-  era:ByCodeShape a sh:NodeShape ;
+  era-sh:ByCodeShape a sh:NodeShape ;
     sh:targetClass era:Body;
     sh:property [
       sh:path era:orgCode ;

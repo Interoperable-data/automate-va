@@ -138,14 +138,14 @@ era-sh:VTAAShape a sh:NodeShape ;
     sh:name "PreEngagement Reference Document"@en ;
     sh:datatype xsd:anyURI;
     # TOO COMPLEX sh:or (
-    #   [ sh:node era:PreEngagementShape ; 
+    #   [ sh:node era-sh:PreEngagementShape ; 
     #     sh:name "Yes, pre-engagement baseline" ]
-    #   [ sh:node era:noPreEngagementShape  ; 
+    #   [ sh:node era-sh:noPreEngagementShape  ; 
     #     sh:name "No pre-engagement baseline" ]
     # )
   ];
   sh:property [
-    sh:node era:VTACShape ;
+    sh:node era-sh:VTACShape ;
     sh:name "Authorisation Case";
     sh:path vpa:constitutedBy ;
     sh:minCount 1 ;
@@ -227,10 +227,10 @@ era-sh:ApplicantOrgRoleShape a sh:NodeShape ;
     sh:maxCount 1 ;
     sh:name "Confirm applicant" ;
     sh:or (
-       [ sh:node era:ApplicantByNamShape ; 
+       [ sh:node era-sh:ApplicantByNamShape ; 
          sh:name "By Name" ]
        [ 
-         sh:node era:ApplicantByCodeShape ; 
+         sh:node era-sh:ApplicantByCodeShape ; 
          sh:name "By Code" ]
     )
   ];
@@ -265,7 +265,7 @@ era-sh:ApplicantByCodeShape a sh:NodeShape ;
   ].
 
 # If PreEngagement, a Reference to pre-engagement baseline is required
-# era:PreEngagementShape a sh:NodeShape ;
+# era-sh:PreEngagementShape a sh:NodeShape ;
 #   sh:targetClass era:PreEngagement ;
 #   # sh:property [
 #   #   # era:preEngagementBaseline era:Document
@@ -285,7 +285,7 @@ era-sh:ApplicantByCodeShape a sh:NodeShape ;
 #   ] .
 
 # # If NO PreEngagement, only boolean as already marked
-# era:noPreEngagementShape a sh:NodeShape ;
+# era-sh:noPreEngagementShape a sh:NodeShape ;
 #   sh:targetClass era:PreEngagement ;
 #   sh:property [
 #     # era:preEngagementBaseline era:Document

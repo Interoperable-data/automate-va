@@ -87,7 +87,7 @@
 ###################################### 
 ################## FORM-defining SHACL
 ######################################
-era:MaintFuncCertificateShape a sh:NodeShape ;
+era-sh:MaintFuncCertificateShape a sh:NodeShape ;
 
   sh:targetClass era:Certificate ; # subClassOf vpa:Permission !
   rdfs:label "CERTIFICATE OF CONFORMITY FOR MAINTENANCE FUNCTIONS" ;
@@ -131,7 +131,7 @@ era:MaintFuncCertificateShape a sh:NodeShape ;
     sh:path dcterms:audience ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:node era:MWSOrganisationRoleShape  ;
+    sh:node era-sh:MWSOrganisationRoleShape  ;
     sh:group issform:CE
   ];
   sh:property [
@@ -147,7 +147,7 @@ era:MaintFuncCertificateShape a sh:NodeShape ;
     sh:name "3. Certification Body" ;
     sh:path dcterms:creator ;
     sh:minCount 1 ; sh:maxCount 1 ;
-    sh:node era:CBOrganisationRoleShape  ;
+    sh:node era-sh:CBOrganisationRoleShape  ;
     sh:group issform:CB
   ]; 
 
@@ -173,7 +173,7 @@ era:MaintFuncCertificateShape a sh:NodeShape ;
     sh:name "Validity" ;
     sh:path dcterms:valid ;
     sh:minCount 1 ; sh:maxCount 1 ;
-    sh:node era:CertificateValidityShape ;
+    sh:node era-sh:CertificateValidityShape ;
     sh:group issform:CI 
   ]; 
   sh:property [ 
@@ -301,7 +301,7 @@ era:MaintFuncCertificateShape a sh:NodeShape ;
 ######## Additional helper NODES
 
 # Validity is a time: instance
-era:CertificateValidityShape  a sh:NodeShape ;
+era-sh:CertificateValidityShape  a sh:NodeShape ;
   sh:targetClass time:Interval ;
   sh:property [
     sh:name "Starting date" ;

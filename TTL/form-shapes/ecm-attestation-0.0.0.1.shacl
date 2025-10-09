@@ -200,7 +200,7 @@ issform:RecordFormShape a sh:NodeShape ;
  sh:property [ 
   sh:description "New ECM Attestation" ; 
   sh:name "New ECM Attestation" ; 
-  sh:node era:ECMAttestationShape  ;
+  sh:node era-sh:ECMAttestationShape  ;
   sh:path iss:hasInfoInRecord ;
   sh:minCount 1 ;
   sh:maxCount 1 ;
@@ -210,7 +210,7 @@ sh:targetClass iss:Record .
 ###################################### 
 ################## FORM-defining SHACL
 ######################################
-era:ECMAttestationShape a sh:NodeShape ;
+era-h:ECMAttestationShape a sh:NodeShape ;
 
   sh:targetClass era:ECMAttestation ; # subClassOf vpa:Permission !
   rdfs:label "ECM Attestation" ;
@@ -233,7 +233,7 @@ era:ECMAttestationShape a sh:NodeShape ;
     sh:path dcterms:creator ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:node era:OrganisationRoleShape  ;
+    sh:node era-sh:OrganisationRoleShape  ;
     sh:group issform:CB
   ]; 
 
@@ -243,7 +243,7 @@ era:ECMAttestationShape a sh:NodeShape ;
     sh:path dcterms:audience ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:node era:OrganisationRoleShape  ;
+    sh:node era-sh:OrganisationRoleShape  ;
     sh:group issform:CE
   ] ; 
 
@@ -267,7 +267,7 @@ era:ECMAttestationShape a sh:NodeShape ;
     sh:name "Validity" ;
     sh:path dcterms:valid ;
     sh:minCount 1 ; sh:maxCount 1 ;
-    sh:node era:CertificateValidityShape ;
+    sh:node era-sh:CertificateValidityShape ;
     sh:group issform:CI 
   ];
  
@@ -283,7 +283,7 @@ era:ECMAttestationShape a sh:NodeShape ;
 ######## Additional helper NODES
 
 # Validity is a time: instance
-era:CertificateValidityShape  a sh:NodeShape ;
+era-sh:CertificateValidityShape  a sh:NodeShape ;
   sh:targetClass time:Interval ;
   sh:property [
     sh:name "Starting date" ;

@@ -131,13 +131,13 @@ era-sh:SafetyCertificateAShape a sh:NodeShape ;
       sh:path dcterms:audience ;
       sh:minCount 1 ; sh:maxCount 1 ;
       sh:nodeKind sh:IRI ;
-      sh:qualifiedValueShape [ sh:node era:RUOrgRoleShape ] ;
+      sh:qualifiedValueShape [ sh:node era-sh:RUOrgRoleShape ] ;
       sh:group issform:RU
     ] , [
       sh:name "3 Validity" ;
       sh:path dcterms:valid ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      sh:node era:CertificateValidityShape ;
+      sh:node era-sh:CertificateValidityShape ;
       sh:group issform:CI 
     ];
 
@@ -210,7 +210,7 @@ era-sh:SafetyCertificateAShape a sh:NodeShape ;
       sh:path dcterms:creator ;
       sh:minCount 1 ;
       sh:maxCount 1 ;
-      sh:qualifiedValueShape[sh:node era:NSAOrgRoleShape]  ;
+      sh:qualifiedValueShape[sh:node era-sh:NSAOrgRoleShape]  ;
       sh:group issform:CB
     ].
 
@@ -233,10 +233,10 @@ era-sh:RUOrgRoleShape a sh:NodeShape ;
     sh:maxCount 1 ;
     sh:name "Confirm Railway Undertaking" ;
     sh:or (
-      [ sh:node era:ByNameShape ; 
+      [ sh:node era-sh:ByNameShape ; 
         sh:name "Railway Undertaking Name" ]
       [ 
-        sh:node era:ByCodeShape ; 
+        sh:node era-sh:ByCodeShape ; 
         sh:name "Railway Undertaking Code" ]
     )
   ] .
@@ -253,10 +253,10 @@ era-sh:RUOrgRoleShape a sh:NodeShape ;
       sh:minCount 1 ;
       sh:maxCount 1 ;
       sh:or (
-        [ sh:node era:ByNameShape ; 
+        [ sh:node era-sh:ByNameShape ; 
           sh:name "Issuing Organisation Name" ]
         [ 
-          sh:node era:ByCodeShape ; 
+          sh:node era-sh:ByCodeShape ; 
           sh:name "Issuing Organisation Code" ]
       )
     ];

@@ -82,7 +82,7 @@
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
 # In version 0.0.0.x, the shacl-form requires first node to be issform:RecordFormShape
-issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
+issform:RecordFormShape a sh:NodeShape ;
   sh:property [ 
     sh:description "Record ID" ; 
     sh:name "Record ID" ; 
@@ -92,7 +92,8 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     dash:readonly true;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "Record Type" ; 
     sh:name "Record Type" ; 
     sh:group issform:RecordGroup ; 
@@ -101,7 +102,8 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     dash:readonly true;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "Record Definition Version" ; 
     sh:name "Record Definition Version" ; 
     sh:group issform:RecordGroup ; 
@@ -110,7 +112,8 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     sh:hasValue '0.0.0.1' ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "Record Version" ; 
     sh:name "Record Version" ; 
     sh:group issform:RecordGroup ; 
@@ -119,7 +122,8 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     sh:hasValue '0.0.0.1' ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "Record Date & Time" ; 
     sh:name "Record Date & Time" ; 
     sh:group issform:RecordGroup ; 
@@ -128,7 +132,8 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
     sh:path iss:recordDateTime
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "Record Title" ; 
     sh:name "Record Title" ; 
     sh:group issform:ReportingDetailsGroup ; 
@@ -136,7 +141,8 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     sh:path iss:recordTitle ;
     sh:minCount 0 ;
     sh:maxCount 1 ;
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "Report Status" ; 
     sh:name "Report Status" ; 
     sh:group issform:ReportingDetailsGroup ; 
@@ -146,7 +152,8 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     sh:in (iss-rs:New iss-rs:Updated iss-rs:Submitted iss-rs:Validated iss-rs:Published iss-rs:Corrected iss-rs:Archived) ;
     owl:imports iss-skos:era-skos-recordStatuses.ttl ;
     sh:class  skos:Concept
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "Reporting entity name" ; 
     sh:name "Reporting entity name" ; 
     sh:group issform:ReportingDetailsGroup ; 
@@ -154,7 +161,8 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     sh:maxCount 1 ;
     sh:minCount 1 ;
     sh:path iss:reportingEntityName
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "Reporting entity category" ; 
     sh:name "Reporting entity category" ; 
     sh:group issform:ReportingDetailsGroup ; 
@@ -164,7 +172,8 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     owl:imports iss-skos:era-skos-orgRoles.ttl ;
     sh:class  skos:Concept ;
     sh:path iss:reportingEntityCategory
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "Reporter Name" ; 
     sh:name "Reporter Name" ; 
     sh:group issform:ReportingDetailsGroup ; 
@@ -173,7 +182,8 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     dash:readonly true;
     sh:maxCount 1 ;
     sh:minCount 1 ;
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "Reporter e-mail" ; 
     sh:name "Reporter e-mail" ; 
     sh:group issform:ReportingDetailsGroup ; 
@@ -182,17 +192,18 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
     dash:readonly true;
     sh:maxCount 1 ;
     sh:minCount 1 ;
-  ] , [ 
+  ];
+  sh:property [ 
     sh:description "VA Application (C2T)" ; 
     sh:name "VA Application (C2T)" ; 
-    sh:node era:C2TApplicationShape  ;
+    sh:node era-sh:C2TApplicationShape  ;
     sh:path iss:hasInfoInRecord ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
   ] .
 
 ################# A Conformity to Type Application, with Evidence added as ERADIS identifiers
-era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
+era-sh:C2TApplicationShape a sh:NodeShape ;
   sh:targetClass era:VehicleTypeAuthorisationApplication ; # vpa:Request
 
   sh:property [
@@ -204,7 +215,8 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
     sh:languageIn ( "en" "fr" "de" "es" ) ;
     sh:maxCount 1 ;
     sh:minCount 1
-  ], [
+  ];
+  sh:property [
     # Always a set of C2T auth cases, no option there
     sh:path vpa:constitutedBy ;
     sh:node era-sh:C2TAuthCaseShape ;
@@ -212,17 +224,19 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
     sh:description "The Authorisation Cases within this pplication, all of C2T permission type."@en ;
     sh:minCount 1 ;
     sh:maxCount 6 ; # Current VAI limit, can be extended.
-  ] , [
+  ];
+  sh:property [
     # PreEngagement is a choice
     sh:name "Pre-Engagement" ;
     sh:path era:isPreEngagementApplication ;
     sh:datatype xsd:boolean ;
     sh:maxCount 1 ;
     sh:or (
-      [ sh:node era:PreEngagementShape ; sh:name "Yes" ]
-      [ sh:node era:noPreEngagementShape ; sh:name "No" ]
+      [ sh:node era-sh:PreEngagementShape ; sh:name "Yes" ]
+      [ sh:node era-sh:noPreEngagementShape ; sh:name "No" ]
     )
-  ] , [
+  ];
+  sh:property [
     # rdfs:comment “{{Other relevant Information}}”@en ;
     sh:path rdfs:comment ;
     sh:name "Other relevant Information"@en ;
@@ -232,16 +246,18 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
     sh:languageIn ( "en" "fr" "de" "es" ) ;
     sh:maxCount 1 ;
     sh:minCount 1
-  ] , [
+  ];
+  sh:property [
     sh:path dcterms:identifier ;
-    sh:order 0 ;
     sh:name "Application ID" ;
     sh:description "The identifier of the VA application (automatically filled in)" ;
     sh:hasValue "V-20231001-001" ;
     sh:datatype xsd:string ;
     sh:pattern "^V-20\\d{2}[01-12][0-3][1-9]-\\d{3}$" ;
+    sh:order 0 ;
     sh:maxCount 1
-  ] , [
+  ];
+  sh:property [
     # dcterms:creator [ a era:OrganisationRole ; era:roleOf <URI of Applicant> ] ;
     sh:node era-sh:ApplicantOrgRoleShape ;
     sh:path dcterms:creator ;
@@ -274,7 +290,9 @@ era-sh:C2TAuthCaseShape a sh:NodeShape ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
     sh:node era-sh:VehicleTypeScopeShape 
-  ], [
+  ];
+
+  sh:property [
     sh:name "Authorisation Case Scope (Vehicles)"@en ;
     sh:description "Add at least one set of vehicles to this scope"@en ;
     sh:path vpa:concerns ;
@@ -284,7 +302,7 @@ era-sh:C2TAuthCaseShape a sh:NodeShape ;
   ].
 
 # The Scope can be one VehicleTypeScopeShape per case
-era-sh:VehicleTypeScopeShape a era:NodeShape ;
+era-sh:VehicleTypeScopeShape a sh:NodeShape ;
   sh:targetClass era:VehicleType ;
   sh:property [
     sh:path dcterms:identifier ;
@@ -296,7 +314,7 @@ era-sh:VehicleTypeScopeShape a era:NodeShape ;
   ].
 
 # The Scope can be one or more Vehicle Numbers per case
-era-sh:VehicleNumberScopeShape a era:NodeShape ;
+era-sh:VehicleNumberScopeShape a sh:NodeShape ;
   sh:targetClass era:VehicleSet ;
   sh:property [
     sh:name "Vehicle Identifier (EVN or pre-reserved number)"@en ;
@@ -317,10 +335,11 @@ era-sh:ApplicantOrgRoleShape a sh:NodeShape ;
     sh:name "Applicant Information" ;
     sh:datatype xsd:string ;
     sh:or (
-      [sh:node era:ApplicantByNamShape ; sh:name "By Name" ]
-      [sh:node era:ApplicantByCodeShape ; sh:name "By Code" ]
+      [sh:node era-sh:ApplicantByNamShape ; sh:name "By Name" ]
+      [sh:node era-sh:ApplicantByCodeShape ; sh:name "By Code" ]
     )
-  ] , [
+  ];
+  sh:property [
     sh:path era:hasRole ;
     sh:hasValue era-organisation-roles:Applicant ;
     sh:nodeKind sh:IRI ;
