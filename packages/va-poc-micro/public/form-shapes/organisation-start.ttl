@@ -21,6 +21,9 @@
 @prefix eraUi:   <http://data.europa.eu/949/ui/> .
 @prefix locn:    <http://www.w3.org/ns/locn#> .
 
+org:FormalOrganization rdfs:subClassOf org:Organization .
+org:OrganizationalUnit rdfs:subClassOf org:Organization .
+
 era-sh:OrgOrFormalOrgShape a sh:NodeShape, rdfs:Class ;
   rdfs:label "Organisation entry"@en ;
   rdfs:comment "Start a new structure by choosing whether you manage a formal holding or an operational organisation."@en ;
@@ -302,7 +305,7 @@ era-sh:AddressNodeShape a sh:NodeShape, rdfs:Class ;
   sh:property [
     sh:path locn:adminUnitL1 ;
     sh:nodeKind sh:IRI ;
-#    owl:imports <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/countries.ttl> ;
+    owl:imports <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/countries.ttl> ;
     sh:class skos:Concept ;
     sh:name "Country"@en ;
     sh:description "Reference to a country concept."@en ;

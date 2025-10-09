@@ -157,11 +157,11 @@ function buildLayout(container: HTMLElement): LayoutRefs {
           <button type="button" data-role="download" class="panel__button panel__button--secondary">Download</button>
         </div>
       </div>
+      <pre class="rdf-preview" data-role="output"># Dataset is empty. Create an organisation to get started.</pre>
       <aside class="rdf-warning">
         <p class="rdf-warning__message">Clearing the browser storage deletes every saved graph and cannot be undone.</p>
         <button type="button" data-role="clear" class="panel__button panel__button--danger">Clear browser storage</button>
       </aside>
-      <pre class="rdf-preview" data-role="output"># Dataset is empty. Create an organisation to get started.</pre>
       <footer class="rdf-status" data-role="status">Waiting for data…</footer>
     </section>
   `;
