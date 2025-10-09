@@ -6,6 +6,7 @@ import type { LoadedShape } from '../data/organisation-shapes';
 import { discoverShapeDescriptors, type ShapeDescriptor } from '../data/shape-descriptors';
 import { assert } from '../utils/assert';
 import { quadsToTurtle } from './rdf-utils';
+import { attachClassInstanceProvider } from './shacl-class-provider';
 
 const RDF_TYPE_IRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
 const SKOS_PREF_LABEL_IRI = 'http://www.w3.org/2004/02/skos/core#prefLabel';
@@ -36,6 +37,7 @@ type ResourceIdentifiers = Pick<ResourceRecord, 'subject' | 'graph'>;
 type ShaclFormElement = HTMLElement & {
   serialize: (format?: string) => string;
   validate: (ignoreEmptyValues?: boolean) => Promise<boolean>;
+  setClassInstanceProvider?: (provider: (className: string) => Promise<string>) => void;
 };
 
 export async function initOrganisationManagerView(
@@ -48,6 +50,7 @@ export async function initOrganisationManagerView(
 
   interface ModalHandle {
     close: () => void;
+    addCleanup: (callback: () => void) => void;
   }
 
   let activeModal: ModalHandle | null = null;
@@ -89,6 +92,7 @@ export async function initOrganisationManagerView(
     body: HTMLElement;
     footer: HTMLElement;
     close: () => void;
+    addCleanup: (callback: () => void) => void;
   } {
     closeActiveModal();
 
@@ -127,6 +131,22 @@ export async function initOrganisationManagerView(
     overlay.append(dialog);
     layout.modalHost.append(overlay);
 
+    const cleanupCallbacks = new Set<() => void>();
+
+    const runCleanup = () => {
+      if (cleanupCallbacks.size === 0) {
+        return;
+      }
+      for (const callback of cleanupCallbacks) {
+        try {
+          callback();
+        } catch (error) {
+          console.warn('[organisation-manager] Modal cleanup failed', error);
+        }
+      }
+      cleanupCallbacks.clear();
+    };
+
     const handleKeydown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
@@ -136,6 +156,7 @@ export async function initOrganisationManagerView(
 
     const close = () => {
       document.removeEventListener('keydown', handleKeydown);
+      runCleanup();
       overlay.remove();
       if (activeModal?.close === close) {
         activeModal = null;
@@ -155,9 +176,13 @@ export async function initOrganisationManagerView(
       overlay.classList.add('is-open');
     });
 
-    activeModal = { close };
+    const addCleanup = (callback: () => void) => {
+      cleanupCallbacks.add(callback);
+    };
 
-    return { body, footer, close };
+    activeModal = { close, addCleanup };
+
+    return { body, footer, close, addCleanup };
   }
 
   async function refreshResourceList(
@@ -183,6 +208,10 @@ export async function initOrganisationManagerView(
     );
 
     const form = document.createElement('shacl-form') as ShaclFormElement;
+
+    modal.addCleanup(() => {
+      form.replaceWith();
+    });
 
     const inspector = document.createElement('pre');
     inspector.className = 'modal__inspector';
@@ -235,6 +264,11 @@ export async function initOrganisationManagerView(
     form.setAttribute('data-values-namespace', namespace);
     form.setAttribute('data-collapse', 'open');
     form.setAttribute('data-loading', 'Preparing SHACL form…');
+
+    const detachClassProvider = attachClassInstanceProvider(form, store);
+    modal.addCleanup(() => {
+      detachClassProvider();
+    });
 
     modal.body.append(form, status, inspector);
 
