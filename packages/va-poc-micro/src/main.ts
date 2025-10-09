@@ -46,6 +46,7 @@ async function bootstrap(): Promise<void> {
   });
 
   setupLoginButton();
+  setupThemeToggle();
 
   if (import.meta.env.DEV) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,4 +66,66 @@ function setupLoginButton() {
   loginButton?.addEventListener('click', () => {
     console.info('[auth] MSAL login clicked (handler pending integration)');
   });
+}
+
+function setupThemeToggle() {
+  const toggleButton = appRoot.querySelector<HTMLButtonElement>('[data-action="toggle-theme"]');
+  if (!toggleButton) {
+    return;
+  }
+  const button = toggleButton;
+
+  const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)');
+  const storedPreference = readStoredTheme();
+  let currentTheme: 'light' | 'dark' =
+    storedPreference ?? (prefersDark?.matches ? 'dark' : 'light');
+
+  applyTheme(currentTheme);
+  updateToggleUi(currentTheme);
+
+  button.addEventListener('click', () => {
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(currentTheme);
+    persistTheme(currentTheme);
+    updateToggleUi(currentTheme);
+  });
+
+  prefersDark?.addEventListener('change', (event) => {
+    if (readStoredTheme() !== null) {
+      return;
+    }
+    currentTheme = event.matches ? 'dark' : 'light';
+    applyTheme(currentTheme);
+    updateToggleUi(currentTheme);
+  });
+
+  function updateToggleUi(theme: 'light' | 'dark') {
+    const isDark = theme === 'dark';
+    button.textContent = isDark ? 'Light mode' : 'Dark mode';
+    button.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+  }
+}
+
+function applyTheme(theme: 'light' | 'dark') {
+  document.documentElement.dataset.theme = theme;
+}
+
+function persistTheme(theme: 'light' | 'dark') {
+  try {
+    window.localStorage.setItem('va.theme-preference', theme);
+  } catch (error) {
+    console.warn('[theme] Unable to persist theme preference', error);
+  }
+}
+
+function readStoredTheme(): 'light' | 'dark' | null {
+  try {
+    const value = window.localStorage.getItem('va.theme-preference');
+    if (value === 'light' || value === 'dark') {
+      return value;
+    }
+  } catch (error) {
+    console.warn('[theme] Unable to read theme preference', error);
+  }
+  return null;
 }

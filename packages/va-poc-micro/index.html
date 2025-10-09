@@ -35,7 +35,11 @@
     <div class="content">
       <header class="content__header">
         <div class="content__breadcrumbs" data-breadcrumb>Organisation data</div>
-        <button class="content__login" data-action="msal-login" type="button">Sign in</button>
+        <div class="content__actions">
+          <button class="content__theme-toggle" data-action="toggle-theme" type="button" aria-pressed="false">Dark
+            mode</button>
+          <button class="content__login" data-action="msal-login" type="button">Sign in</button>
+        </div>
       </header>
       <main class="content__main" id="view-container">
         <section data-view="organisation" aria-labelledby="view-organisation-heading">
