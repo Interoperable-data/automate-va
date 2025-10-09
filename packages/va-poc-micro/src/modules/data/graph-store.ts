@@ -23,6 +23,9 @@ export type GraphStoreListener = (change: GraphStoreChange) => void;
 
 type QuadstoreBackend = StoreOpts['backend'];
 
+const DEFAULT_BACKEND_NAME = 'va-graph-store-v2';
+const DEFAULT_BACKEND_PREFIX = 'va-lws-v2-';
+
 const DEFAULT_INDEXES: TermName[][] = [
   ['subject', 'predicate', 'object', 'graph'],
   ['object', 'graph', 'subject', 'predicate'],
@@ -66,8 +69,9 @@ export class GraphStore {
   static async create(options: GraphStoreOptions = {}): Promise<GraphStore> {
     const datasetFactoryImpl = options.datasetFactory ?? datasetFactory;
     const dataFactoryImpl = options.dataFactory ?? rdfDataFactory;
+    const storageName = options.name ?? DEFAULT_BACKEND_NAME;
     const backend: QuadstoreBackend =
-      options.backend ?? GraphStore.createBrowserBackend(options.name ?? 'va-graph-store');
+      options.backend ?? GraphStore.createBrowserBackend(storageName);
     const store = new Quadstore({
       backend,
       dataFactory: dataFactoryImpl,
@@ -86,7 +90,7 @@ export class GraphStore {
       );
     }
 
-    return new BrowserLevel<string, string>(name, { prefix: 'va-lws-' });
+    return new BrowserLevel<string, string>(name, { prefix: DEFAULT_BACKEND_PREFIX });
   }
 
   async open(): Promise<void> {
@@ -156,8 +160,16 @@ export class GraphStore {
 
   async getQuads(pattern: GraphQueryPattern = {}): Promise<Quad[]> {
     await this.ensureReady();
-    const { items } = await this.store.get(pattern);
-    return items;
+    try {
+      const { items } = await this.store.get(pattern);
+      return items;
+    } catch (error) {
+      const recovered = await this.tryRecoverFromCorruptedEntry(error);
+      if (recovered) {
+        return [];
+      }
+      throw error;
+    }
   }
 
   async getDataset(pattern: GraphQueryPattern = {}): Promise<DatasetCore> {
@@ -184,6 +196,31 @@ export class GraphStore {
   private async ensureReady(): Promise<void> {
     if (!this.opened) {
       await this.open();
+    }
+  }
+
+  private async tryRecoverFromCorruptedEntry(error: unknown): Promise<boolean> {
+    if (!(error instanceof Error)) {
+      return false;
+    }
+    if (!error.message.includes('Unexpected encoded term type')) {
+      return false;
+    }
+
+    console.warn(
+      '[graph-store] Detected unexpected encoded term type while reading from quadstore. Clearing local data to recover.',
+      error
+    );
+
+    try {
+      await this.clear();
+      return true;
+    } catch (clearError) {
+      console.error(
+        '[graph-store] Failed to clear quadstore after corruption detection.',
+        clearError
+      );
+      return false;
     }
   }
 }

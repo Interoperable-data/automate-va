@@ -18,6 +18,7 @@ interface LayoutRefs {
   refreshButton: HTMLButtonElement;
   copyButton: HTMLButtonElement;
   downloadButton: HTMLButtonElement;
+  clearButton: HTMLButtonElement;
 }
 
 const FORMAT_LABELS: Record<RdfSerializationFormat, string> = {
@@ -105,6 +106,25 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
     layout.status.textContent = `${formatStatus(lastTripleCount, currentFormat)} • Downloaded.`;
   });
 
+  layout.clearButton.addEventListener('click', async () => {
+    const confirmed = window.confirm(
+      'This will permanently remove every quad stored locally. This action cannot be undone. Do you want to continue?'
+    );
+    if (!confirmed) {
+      layout.status.textContent = 'Storage purge cancelled.';
+      return;
+    }
+
+    layout.status.textContent = 'Clearing browser storage…';
+    try {
+      await store.clear();
+      layout.status.textContent = 'Browser storage cleared.';
+    } catch (error) {
+      console.error('[raw-rdf] Failed to clear data store', error);
+      layout.status.textContent = `Failed to clear storage: ${extractMessage(error)}`;
+    }
+  });
+
   store.subscribe(() => {
     void refreshDataset();
   });
@@ -137,6 +157,10 @@ function buildLayout(container: HTMLElement): LayoutRefs {
           <button type="button" data-role="download" class="panel__button panel__button--secondary">Download</button>
         </div>
       </div>
+      <aside class="rdf-warning">
+        <p class="rdf-warning__message">Clearing the browser storage deletes every saved graph and cannot be undone.</p>
+        <button type="button" data-role="clear" class="panel__button panel__button--danger">Clear browser storage</button>
+      </aside>
       <pre class="rdf-preview" data-role="output"># Dataset is empty. Create an organisation to get started.</pre>
       <footer class="rdf-status" data-role="status">Waiting for data…</footer>
     </section>
@@ -166,6 +190,10 @@ function buildLayout(container: HTMLElement): LayoutRefs {
     downloadButton: assert(
       container.querySelector<HTMLButtonElement>('[data-role="download"]'),
       'Raw RDF download button missing'
+    ),
+    clearButton: assert(
+      container.querySelector<HTMLButtonElement>('[data-role="clear"]'),
+      'Raw RDF clear button missing'
     ),
   };
 }

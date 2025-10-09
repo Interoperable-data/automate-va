@@ -182,11 +182,46 @@ export async function initOrganisationManagerView(
       existing ? `Editing ${descriptor.label}` : `Create ${descriptor.label}`
     );
 
-    const status = document.createElement('p');
-    status.className = 'modal__status';
-    status.textContent = 'Values are validated against the SHACL shapes.';
-
     const form = document.createElement('shacl-form') as ShaclFormElement;
+
+    const inspector = document.createElement('pre');
+    inspector.className = 'modal__inspector';
+    inspector.hidden = true;
+
+    const status = document.createElement('button');
+    status.type = 'button';
+    status.className = 'modal__status modal__status--toggle';
+    status.setAttribute('aria-expanded', 'false');
+
+    const setStatusMessage = (message?: string) => {
+      if (message) {
+        status.textContent = `${message} • Click to inspect form payload.`;
+      } else {
+        status.textContent =
+          'Values are validated against the SHACL shapes. Click to inspect form payload.';
+      }
+    };
+
+    const refreshInspector = () => {
+      const values = form.getAttribute('data-values');
+      if (values && values.trim().length > 0) {
+        inspector.textContent = values;
+      } else {
+        inspector.textContent = '# Form did not receive data-values. New resources start empty.';
+      }
+    };
+
+    setStatusMessage();
+    refreshInspector();
+
+    status.addEventListener('click', () => {
+      const willShow = inspector.hidden;
+      if (willShow) {
+        refreshInspector();
+      }
+      inspector.hidden = !willShow;
+      status.setAttribute('aria-expanded', String(willShow));
+    });
     const identifiers: ResourceIdentifiers = existing
       ? { subject: existing.subject, graph: existing.graph }
       : createIdentifiers(descriptor);
@@ -201,13 +236,19 @@ export async function initOrganisationManagerView(
     form.setAttribute('data-collapse', 'open');
     form.setAttribute('data-loading', 'Preparing SHACL form…');
 
+    modal.body.append(form, status, inspector);
+
     if (existing) {
       const turtle = await readResourceAsTurtle(store, existing);
       if (turtle) {
         form.setAttribute('data-values', turtle);
+      } else {
+        form.removeAttribute('data-values');
       }
+      refreshInspector();
     } else {
       form.removeAttribute('data-values');
+      refreshInspector();
     }
 
     const cancelButton = document.createElement('button');
@@ -228,26 +269,24 @@ export async function initOrganisationManagerView(
         return;
       }
       deleteButton.disabled = true;
-      status.textContent = `Removing ${descriptor.label.toLowerCase()}…`;
+      setStatusMessage(`Removing ${descriptor.label.toLowerCase()}…`);
       try {
         await removeResource(store, existing);
-        status.textContent = `${descriptor.label} deleted.`;
+        setStatusMessage(`${descriptor.label} deleted.`);
         selectedSubject = null;
         await refreshResourceList();
         modal.close();
       } catch (error) {
         console.error('[organisation-manager] Failed to delete resource', error);
-        status.textContent = `Failed to delete: ${extractMessage(error)}`;
+        setStatusMessage(`Failed to delete: ${extractMessage(error)}`);
         deleteButton.disabled = false;
       }
     });
-
-    modal.body.append(form, status);
     modal.footer.append(cancelButton, deleteButton);
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      status.textContent = `Saving ${descriptor.label.toLowerCase()}…`;
+      setStatusMessage(`Saving ${descriptor.label.toLowerCase()}…`);
       try {
         const turtle = form.serialize('text/turtle');
         await persistForm(store, {
@@ -256,13 +295,13 @@ export async function initOrganisationManagerView(
           subject: identifiers.subject,
           targetClass: descriptor.targetClass,
         });
-        status.textContent = `${descriptor.label} saved.`;
+        setStatusMessage(`${descriptor.label} saved.`);
         selectedSubject = identifiers.subject;
         await refreshResourceList(selectedSubject);
         modal.close();
       } catch (error) {
         console.error('[organisation-manager] Failed to save form', error);
-        status.textContent = `Failed to save: ${extractMessage(error)}`;
+        setStatusMessage(`Failed to save: ${extractMessage(error)}`);
       }
     });
   }

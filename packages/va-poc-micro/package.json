@@ -13,24 +13,29 @@
   "dependencies": {
     "@inrupt/solid-client": "^2.1.2",
     "@inrupt/vocab-common-rdf": "^1.0.5",
+    "@rdfjs/data-model": "^2.1.1",
     "@rdfjs/dataset": "^2.0.2",
     "@rdfjs/serializer-ntriples": "^2.0.1",
     "@rdfjs/types": "^2.0.1",
-    "@rdfjs/data-model": "^2.0.1",
-    "@ulb-darmstadt/shacl-form": "^1.6.6",
-    "htmx.org": "^2.0.3",
-    "browser-level": "^1.0.1",
-    "n3": "^1.24.2",
+    "@ulb-darmstadt/shacl-form": "2.0.0-rc10",
+    "browser-level": "^3.0.0",
+    "htmx.org": "^2.0.7",
+    "leaflet-editable": "^1.3.2",
+    "leaflet.fullscreen": "^4.0.0",
+    "lit": "^3.3.1",
+    "n3": "^1.26.0",
     "petite-vue": "^0.4.1",
-    "quadstore": "^12.0.3"
+    "quadstore": "^15.4.0",
+    "rdfxml-streaming-parser": "^3.1.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@types/n3": "^1.21.1",
-    "@types/node": "^22.10.1",
-    "memory-level": "^1.0.0",
+    "@types/n3": "^1.26.0",
+    "@types/node": "^24.7.0",
     "happy-dom": "^19.0.2",
-    "typescript": "~5.7.2",
-    "vite": "^6.2.0",
-    "vitest": "^2.1.4"
+    "memory-level": "^3.1.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.9",
+    "vitest": "^3.2.4"
   }
 }

@@ -214,6 +214,18 @@ a:focus-visible {
   border: 1px solid #bfdbfe;
 }
 
+.panel__button--danger {
+  background-color: #dc2626;
+  color: #fef2f2;
+  border: 1px solid rgba(220, 38, 38, 0.6);
+}
+
+.panel__button--danger:hover,
+.panel__button--danger:focus-visible {
+  background-color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.8);
+}
+
 .resource-list {
   display: flex;
   flex-direction: column;
@@ -365,6 +377,28 @@ a:focus-visible {
   color: #475569;
 }
 
+.modal__status--toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.modal__status--toggle::after {
+  content: '\25BE';
+  font-size: 0.75rem;
+  transition: transform 150ms ease;
+}
+
+.modal__status--toggle[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
 .modal__button {
   padding: 0.45rem 1rem;
   border-radius: 0.75rem;
@@ -382,6 +416,38 @@ a:focus-visible {
   background-color: transparent;
   color: #dc2626;
   border: 1px solid rgba(220, 38, 38, 0.35);
+}
+
+.modal__inspector {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-family: 'Fira Code', 'Source Code Pro', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border: 1px solid rgba(15, 23, 42, 0.35);
+}
+
+.rdf-warning {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid #fecaca;
+  border-radius: 0.75rem;
+  background-color: #fef2f2;
+}
+
+.rdf-warning__message {
+  margin: 0;
+  color: #991b1b;
+  font-size: 0.9rem;
+  flex: 1;
 }
 
 .rdf-toolbar {

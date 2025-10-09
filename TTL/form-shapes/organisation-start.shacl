@@ -64,7 +64,7 @@ era-sh:FormalOrganisationShape a sh:NodeShape ;
   # ].
 
 era-sh:OrganisationShape a sh:NodeShape ;
-  sh:targetClass org:Organisation ;
+  sh:targetClass org:Organization ;
   # Organisations MUST have orgCode, and they have org:hasRegisteredSite and hasPrimarySite.
   # They can have other organisations as members.
   # They must define their operational sites through the sites of their UNITS.

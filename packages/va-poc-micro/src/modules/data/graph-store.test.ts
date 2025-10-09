@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryLevel } from 'memory-level';
 import { namedNode, literal, quad } from '@rdfjs/data-model';
 import { GraphStore, type GraphStoreChange } from './graph-store.ts';
@@ -73,5 +73,22 @@ describe('GraphStore', () => {
     unsubscribe();
 
     expect(changes).toEqual(['put:object-a', 'delete:object-a', 'clear']);
+  });
+
+  it('recovers from corrupted quad entries by clearing the store', async () => {
+    const innerStore = (store as unknown as { store: { get: () => Promise<unknown> } }).store;
+    const getSpy = vi
+      .spyOn(innerStore, 'get')
+      .mockRejectedValueOnce(new Error('Unexpected encoded term type ""'));
+    const clearSpy = vi.spyOn(store, 'clear');
+
+    const quads = await store.getQuads();
+
+    expect(quads).toEqual([]);
+    expect(getSpy).toHaveBeenCalledTimes(1);
+    expect(clearSpy).toHaveBeenCalledTimes(1);
+
+    getSpy.mockRestore();
+    clearSpy.mockRestore();
   });
 });

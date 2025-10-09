@@ -1,7 +1,7 @@
 import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { Parser } from 'n3';
 import datasetFactory from '@rdfjs/dataset';
-import { namedNode } from '@rdfjs/data-model';
+import { literal, namedNode, quad } from '@rdfjs/data-model';
 import { MemoryLevel } from 'memory-level';
 import { GraphStore } from '../data/graph-store.js';
 import { initOrganisationManagerView } from './organisation-manager.js';
@@ -16,8 +16,8 @@ const SHAPE_TTL = `
     a sh:NodeShape ;
     rdfs:label "Organisation" ;
     rdfs:comment "Test organisation shape" ;
-    sh:targetClass org:Organisation ;
-    eraUi:valuesNamespace "https://data.europa.eu/va/local"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
+    sh:targetClass org:Organization ;
+    eraUi:valuesNamespace "https://data.europa.eu/949/local"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
 `;
 
 type SerializeProvider = (element: HTMLElement) => string;
@@ -77,6 +77,76 @@ describe('organisation-manager persistence', () => {
     serializeProvider = null;
   });
 
+  it('reveals existing data-values payload when toggled', async () => {
+    const quads = parser.parse(SHAPE_TTL);
+    const dataset = datasetFactory.dataset(quads);
+    const shapes = { text: SHAPE_TTL, quads, dataset };
+
+    const subjectIri = 'https://data.europa.eu/949/local/organization/42';
+    const graphIri = `${subjectIri}#graph`;
+    await store.putQuads([
+      quad(
+        namedNode(subjectIri),
+        namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+        namedNode('http://www.w3.org/ns/org#Organization'),
+        namedNode(graphIri)
+      ),
+      quad(
+        namedNode(subjectIri),
+        namedNode('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        literal('Existing Org'),
+        namedNode(graphIri)
+      ),
+    ]);
+
+    await initOrganisationManagerView({ container, store, shapes });
+
+    const resourceButton = container.querySelector<HTMLButtonElement>('.resource-list__button');
+    expect(resourceButton, 'resource list should surface existing entry').not.toBeNull();
+    resourceButton?.dispatchEvent(new Event('click'));
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const statusButton = container.querySelector<HTMLButtonElement>('.modal__status--toggle');
+    const inspector = container.querySelector<HTMLPreElement>('.modal__inspector');
+    expect(statusButton, 'status toggle button rendered').not.toBeNull();
+    expect(inspector, 'inspector code block rendered').not.toBeNull();
+    expect(inspector?.hidden).toBe(true);
+
+    statusButton?.click();
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(statusButton?.getAttribute('aria-expanded')).toBe('true');
+    expect(inspector?.hidden).toBe(false);
+    expect(inspector?.textContent ?? '').toContain('Existing Org');
+    expect(inspector?.textContent ?? '').toContain('http://www.w3.org/ns/org#Organization');
+  });
+
+  it('shows a helpful message when no data-values were supplied', async () => {
+    const quads = parser.parse(SHAPE_TTL);
+    const dataset = datasetFactory.dataset(quads);
+    const shapes = { text: SHAPE_TTL, quads, dataset };
+
+    await initOrganisationManagerView({ container, store, shapes });
+
+    const createButton = container.querySelector<HTMLButtonElement>('button.panel__button');
+    expect(createButton).not.toBeNull();
+    createButton?.dispatchEvent(new Event('click'));
+
+    await Promise.resolve();
+
+    const statusButton = container.querySelector<HTMLButtonElement>('.modal__status--toggle');
+    const inspector = container.querySelector<HTMLPreElement>('.modal__inspector');
+    expect(statusButton).not.toBeNull();
+    expect(inspector).not.toBeNull();
+
+    statusButton?.click();
+
+    expect(inspector?.textContent).toContain('Form did not receive data-values');
+  });
+
   it('persists submitted resources into the quadstore using the descriptor namespace graph', async () => {
     const quads = parser.parse(SHAPE_TTL);
     const dataset = datasetFactory.dataset(quads);
@@ -101,7 +171,7 @@ describe('organisation-manager persistence', () => {
     const graph = form?.getAttribute('data-values-graph');
 
     const expectedSubject =
-      'https://data.europa.eu/va/local/organisation/00000000-0000-0000-0000-000000000000';
+      'https://data.europa.eu/949/local/organisation/00000000-0000-0000-0000-000000000000';
     const expectedGraph = `${expectedSubject}#graph`;
 
     expect(subject).toBe(expectedSubject);
@@ -124,12 +194,18 @@ describe('organisation-manager persistence', () => {
 
     expect(typedQuads.length).toBeGreaterThanOrEqual(2);
     expect(
-      typedQuads.some(
-        (quad) =>
-          quad.subject.value === subjectValue &&
-          quad.predicate.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-          quad.object.value === 'http://www.w3.org/ns/org#Organisation'
-      )
+      typedQuads.some((quad) => {
+        if (quad.subject.value !== subjectValue) {
+          return false;
+        }
+        if (quad.predicate.value !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+          return false;
+        }
+        return (
+          quad.object.value === 'http://www.w3.org/ns/org#Organisation' ||
+          quad.object.value === 'http://www.w3.org/ns/org#Organization'
+        );
+      })
     ).toBe(true);
     expect(
       typedQuads.some(
