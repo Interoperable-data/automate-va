@@ -56,21 +56,16 @@ export async function initOrganisationManagerView(
   let activeModal: ModalHandle | null = null;
 
   if (descriptors.length === 0) {
-    layout.createButtons.textContent =
-      'No sh:NodeShape entries with sh:targetClass were found in the loaded shapes.';
     layout.emptyState.textContent =
       'Add targetable NodeShapes to the shapes graph to start managing resources.';
     layout.emptyState.hidden = false;
+    layout.resourceList.hidden = true;
     return {
       activate() {
         // Nothing to activate without shapes to drive the manager.
       },
     };
   }
-
-  populateCreateButtons(layout.createButtons, descriptors, (descriptor) => {
-    void openForm(descriptor);
-  });
 
   let resources: ResourceRecord[] = [];
   let selectedSubject: string | null = null;
@@ -195,11 +190,15 @@ export async function initOrganisationManagerView(
         selectedSubject = resource.subject;
         void openForm(resource.descriptor, resource);
       },
+      onCreate(descriptor) {
+        selectedSubject = null;
+        void openForm(descriptor);
+      },
       highlightSubject:
         highlightSubject ?? (keepSelection ? selectedSubject ?? undefined : undefined),
     });
-    layout.emptyState.hidden = resources.length > 0;
-    layout.resourceList.hidden = resources.length === 0;
+    layout.emptyState.hidden = resources.length > 0 || descriptors.length > 0;
+    layout.resourceList.hidden = descriptors.length === 0;
   }
 
   async function openForm(descriptor: ShapeDescriptor, existing?: ResourceRecord) {
@@ -354,7 +353,6 @@ function buildLayout(container: HTMLElement) {
         <h2 class="panel__title">Manage organisation data</h2>
         <p class="panel__body">Create holdings, organisations, and units. Saved entries appear below and remain grouped by their SHACL class.</p>
       </header>
-      <div class="panel__actions panel__actions--wrap" data-role="create-buttons"></div>
       <p class="panel__body panel__body--muted" data-role="empty-state" hidden>No organisation data stored locally yet.</p>
       <div class="resource-list" data-role="resource-list"></div>
     </section>
@@ -362,10 +360,6 @@ function buildLayout(container: HTMLElement) {
   `;
 
   return {
-    createButtons: assert(
-      container.querySelector<HTMLElement>('[data-role="create-buttons"]'),
-      'Create buttons host missing'
-    ),
     resourceList: assert(
       container.querySelector<HTMLElement>('[data-role="resource-list"]'),
       'Resource list host missing'
@@ -379,22 +373,6 @@ function buildLayout(container: HTMLElement) {
       'Modal host missing'
     ),
   } as const;
-}
-
-function populateCreateButtons(
-  container: HTMLElement,
-  descriptors: ShapeDescriptor[],
-  onCreate: (descriptor: ShapeDescriptor) => void
-): void {
-  container.replaceChildren();
-  descriptors.forEach((descriptor) => {
-    const button = document.createElement('button');
-    button.className = 'panel__button';
-    button.type = 'button';
-    button.textContent = descriptor.createButtonLabel;
-    button.addEventListener('click', () => onCreate(descriptor));
-    container.append(button);
-  });
 }
 
 async function fetchResources(
@@ -426,6 +404,7 @@ async function fetchResources(
 
 interface RenderResourceListOptions {
   onSelect: (resource: ResourceRecord) => void;
+  onCreate: (descriptor: ShapeDescriptor) => void;
   highlightSubject?: string;
 }
 
@@ -436,10 +415,6 @@ function renderResourceList(
   options: RenderResourceListOptions
 ): void {
   host.replaceChildren();
-
-  if (items.length === 0) {
-    return;
-  }
 
   descriptors.forEach((descriptor) => {
     const subset = items.filter((item) => item.descriptor.shape.equals(descriptor.shape));
@@ -487,6 +462,13 @@ function renderResourceList(
 
       section.append(list);
     }
+
+    const createButton = document.createElement('button');
+    createButton.type = 'button';
+    createButton.className = 'panel__button resource-list__create';
+    createButton.textContent = descriptor.createButtonLabel;
+    createButton.addEventListener('click', () => options.onCreate(descriptor));
+    section.append(createButton);
 
     host.append(section);
   });

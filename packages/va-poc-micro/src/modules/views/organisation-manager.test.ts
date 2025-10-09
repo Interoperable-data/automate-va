@@ -131,7 +131,7 @@ describe('organisation-manager persistence', () => {
 
     await initOrganisationManagerView({ container, store, shapes });
 
-    const createButton = container.querySelector<HTMLButtonElement>('button.panel__button');
+    const createButton = container.querySelector<HTMLButtonElement>('.resource-list__create');
     expect(createButton).not.toBeNull();
     createButton?.dispatchEvent(new Event('click'));
 
@@ -158,7 +158,7 @@ describe('organisation-manager persistence', () => {
 
     await initOrganisationManagerView({ container, store, shapes });
 
-    const createButton = container.querySelector('button.panel__button');
+    const createButton = container.querySelector('.resource-list__create');
     expect(createButton).not.toBeNull();
     createButton?.dispatchEvent(new Event('click'));
 
@@ -236,7 +236,7 @@ describe('organisation-manager persistence', () => {
 
     await initOrganisationManagerView({ container, store, shapes });
 
-    const createButton = container.querySelector('button.panel__button');
+    const createButton = container.querySelector('.resource-list__create');
     expect(createButton).not.toBeNull();
     createButton?.dispatchEvent(new Event('click'));
 
@@ -266,7 +266,7 @@ describe('organisation-manager persistence', () => {
 
     await initOrganisationManagerView({ container, store, shapes });
 
-    const createButton = container.querySelector('button.panel__button');
+    const createButton = container.querySelector('.resource-list__create');
     expect(createButton).not.toBeNull();
     createButton?.dispatchEvent(new Event('click'));
 
