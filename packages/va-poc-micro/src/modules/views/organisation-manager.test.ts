@@ -44,6 +44,16 @@ describe('organisation-manager persistence', () => {
   let container: HTMLElement;
   const parser = new Parser({ format: 'text/turtle' });
 
+  async function waitForModalToDisappear(root: HTMLElement): Promise<void> {
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      if (!root.querySelector('.modal')) {
+        return;
+      }
+    }
+    throw new Error('Modal did not close in time');
+  }
+
   beforeAll(() => {
     if (!customElements.get('shacl-form')) {
       customElements.define('shacl-form', ShaclFormStub);
@@ -99,7 +109,7 @@ describe('organisation-manager persistence', () => {
 
     form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitForModalToDisappear(container);
 
     const subjectValue = subject!;
     const graphValue = graph!;
@@ -131,6 +141,7 @@ describe('organisation-manager persistence', () => {
     ).toBe(true);
 
     expect(uuidSpy).toHaveBeenCalled();
+    expect(container.querySelector('.modal')).toBeNull();
   });
 
   it('persists form output when the shacl-form emits TriG content', async () => {
@@ -160,7 +171,7 @@ describe('organisation-manager persistence', () => {
 
     form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitForModalToDisappear(container);
 
     const graph = form?.getAttribute('data-values-graph');
     expect(graph).not.toBeNull();
@@ -169,5 +180,30 @@ describe('organisation-manager persistence', () => {
     expect(quadsInStore.length).toBeGreaterThan(0);
 
     expect(uuidSpy).toHaveBeenCalled();
+    expect(container.querySelector('.modal')).toBeNull();
+  });
+
+  it('closes the modal without persisting data when cancelled', async () => {
+    const quads = parser.parse(SHAPE_TTL);
+    const dataset = datasetFactory.dataset(quads);
+    const shapes = { text: SHAPE_TTL, quads, dataset };
+
+    await initOrganisationManagerView({ container, store, shapes });
+
+    const createButton = container.querySelector('button.panel__button');
+    expect(createButton).not.toBeNull();
+    createButton?.dispatchEvent(new Event('click'));
+
+    await Promise.resolve();
+
+    const cancelButton = container.querySelector('.modal__button--secondary');
+    expect(cancelButton).not.toBeNull();
+    cancelButton?.dispatchEvent(new Event('click'));
+
+    await waitForModalToDisappear(container);
+
+    expect(container.querySelector('.modal')).toBeNull();
+    const allQuads = await store.getQuads({});
+    expect(allQuads.length).toBe(0);
   });
 });

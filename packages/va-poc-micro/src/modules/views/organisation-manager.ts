@@ -46,6 +46,12 @@ export async function initOrganisationManagerView(
   const descriptors = discoverShapeDescriptors(shapes.dataset);
   const layout = buildLayout(container);
 
+  interface ModalHandle {
+    close: () => void;
+  }
+
+  let activeModal: ModalHandle | null = null;
+
   if (descriptors.length === 0) {
     layout.createButtons.textContent =
       'No sh:NodeShape entries with sh:targetClass were found in the loaded shapes.';
@@ -72,6 +78,88 @@ export async function initOrganisationManagerView(
     void refreshResourceList(selectedSubject ?? undefined, { keepSelection: true });
   });
 
+  function closeActiveModal(): void {
+    if (activeModal) {
+      activeModal.close();
+      activeModal = null;
+    }
+  }
+
+  function openModal(title: string): {
+    body: HTMLElement;
+    footer: HTMLElement;
+    close: () => void;
+  } {
+    closeActiveModal();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal';
+
+    const dialog = document.createElement('div');
+    dialog.className = 'modal__dialog';
+    dialog.setAttribute('role', 'dialog');
+    dialog.setAttribute('aria-modal', 'true');
+    dialog.setAttribute('aria-label', title);
+    dialog.tabIndex = -1;
+
+    const header = document.createElement('header');
+    header.className = 'modal__header';
+
+    const heading = document.createElement('h2');
+    heading.className = 'modal__title';
+    heading.textContent = title;
+
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'modal__close';
+    closeButton.setAttribute('aria-label', 'Close editor');
+    closeButton.textContent = '×';
+
+    header.append(heading, closeButton);
+
+    const body = document.createElement('div');
+    body.className = 'modal__body';
+
+    const footer = document.createElement('footer');
+    footer.className = 'modal__footer';
+
+    dialog.append(header, body, footer);
+    overlay.append(dialog);
+    layout.modalHost.append(overlay);
+
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close();
+      }
+    };
+
+    const close = () => {
+      document.removeEventListener('keydown', handleKeydown);
+      overlay.remove();
+      if (activeModal?.close === close) {
+        activeModal = null;
+      }
+    };
+
+    closeButton.addEventListener('click', () => close());
+    overlay.addEventListener('click', (event) => {
+      if (event.target === overlay) {
+        close();
+      }
+    });
+    document.addEventListener('keydown', handleKeydown);
+
+    requestAnimationFrame(() => {
+      dialog.focus();
+      overlay.classList.add('is-open');
+    });
+
+    activeModal = { close };
+
+    return { body, footer, close };
+  }
+
   async function refreshResourceList(
     highlightSubject?: string,
     { keepSelection = false }: { keepSelection?: boolean } = {}
@@ -86,16 +174,16 @@ export async function initOrganisationManagerView(
         highlightSubject ?? (keepSelection ? selectedSubject ?? undefined : undefined),
     });
     layout.emptyState.hidden = resources.length > 0;
+    layout.resourceList.hidden = resources.length === 0;
   }
 
   async function openForm(descriptor: ShapeDescriptor, existing?: ResourceRecord) {
-    layout.editorTitle.textContent = existing
-      ? `Editing ${descriptor.label}`
-      : `Create ${descriptor.label}`;
-    layout.formHost.innerHTML = '';
+    const modal = openModal(
+      existing ? `Editing ${descriptor.label}` : `Create ${descriptor.label}`
+    );
 
     const status = document.createElement('p');
-    status.className = 'resource-editor__status';
+    status.className = 'modal__status';
     status.textContent = 'Values are validated against the SHACL shapes.';
 
     const form = document.createElement('shacl-form') as ShaclFormElement;
@@ -122,13 +210,18 @@ export async function initOrganisationManagerView(
       form.removeAttribute('data-values');
     }
 
-    const actions = document.createElement('div');
-    actions.className = 'resource-editor__actions';
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.textContent = 'Cancel';
+    cancelButton.className = 'modal__button modal__button--secondary';
+    cancelButton.addEventListener('click', () => {
+      modal.close();
+    });
 
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
     deleteButton.textContent = `Delete ${descriptor.label}`;
-    deleteButton.className = 'panel__button panel__button--secondary';
+    deleteButton.className = 'modal__button modal__button--danger';
     deleteButton.disabled = !existing;
     deleteButton.addEventListener('click', async () => {
       if (!existing) {
@@ -139,9 +232,9 @@ export async function initOrganisationManagerView(
       try {
         await removeResource(store, existing);
         status.textContent = `${descriptor.label} deleted.`;
-        layout.formHost.innerHTML = '';
         selectedSubject = null;
         await refreshResourceList();
+        modal.close();
       } catch (error) {
         console.error('[organisation-manager] Failed to delete resource', error);
         status.textContent = `Failed to delete: ${extractMessage(error)}`;
@@ -149,7 +242,8 @@ export async function initOrganisationManagerView(
       }
     });
 
-    actions.append(deleteButton);
+    modal.body.append(form, status);
+    modal.footer.append(cancelButton, deleteButton);
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -165,13 +259,12 @@ export async function initOrganisationManagerView(
         status.textContent = `${descriptor.label} saved.`;
         selectedSubject = identifiers.subject;
         await refreshResourceList(selectedSubject);
+        modal.close();
       } catch (error) {
         console.error('[organisation-manager] Failed to save form', error);
         status.textContent = `Failed to save: ${extractMessage(error)}`;
       }
     });
-
-    layout.formHost.append(form, status, actions);
   }
 
   return {
@@ -183,22 +276,16 @@ export async function initOrganisationManagerView(
 
 function buildLayout(container: HTMLElement) {
   container.innerHTML = `
-    <section class="panel">
-      <h2 class="panel__title">Create a new entry</h2>
-      <p class="panel__body">Start with a holding, organisation, or unit. SHACL forms guide you through required fields.</p>
-      <div class="panel__actions" data-role="create-buttons"></div>
-    </section>
-    <section class="panel">
-      <h2 class="panel__title">Existing entries</h2>
-      <p class="panel__body" data-role="empty-state">No organisation data stored locally yet.</p>
+    <section class="panel panel--stacked">
+      <header class="panel__header">
+        <h2 class="panel__title">Manage organisation data</h2>
+        <p class="panel__body">Create holdings, organisations, and units. Saved entries appear below and remain grouped by their SHACL class.</p>
+      </header>
+      <div class="panel__actions panel__actions--wrap" data-role="create-buttons"></div>
+      <p class="panel__body panel__body--muted" data-role="empty-state" hidden>No organisation data stored locally yet.</p>
       <div class="resource-list" data-role="resource-list"></div>
     </section>
-    <section class="panel">
-      <h2 class="panel__title" data-role="editor-title">SHACL editor</h2>
-      <div class="resource-form-host" data-role="form-host">
-        <p class="panel__body">Select an entry or start a new one to load the form.</p>
-      </div>
-    </section>
+    <div data-role="modal-host"></div>
   `;
 
   return {
@@ -214,13 +301,9 @@ function buildLayout(container: HTMLElement) {
       container.querySelector<HTMLElement>('[data-role="empty-state"]'),
       'Empty state paragraph missing'
     ),
-    editorTitle: assert(
-      container.querySelector<HTMLElement>('[data-role="editor-title"]'),
-      'Editor title element missing'
-    ),
-    formHost: assert(
-      container.querySelector<HTMLElement>('[data-role="form-host"]'),
-      'Form host missing'
+    modalHost: assert(
+      container.querySelector<HTMLElement>('[data-role="modal-host"]'),
+      'Modal host missing'
     ),
   } as const;
 }
@@ -280,6 +363,10 @@ function renderResourceList(
   options: RenderResourceListOptions
 ): void {
   host.replaceChildren();
+
+  if (items.length === 0) {
+    return;
+  }
 
   descriptors.forEach((descriptor) => {
     const subset = items.filter((item) => item.descriptor.shape.equals(descriptor.shape));
