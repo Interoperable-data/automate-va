@@ -152,15 +152,27 @@ function buildLayout(container: HTMLElement): LayoutRefs {
           </select>
         </label>
         <div class="rdf-toolbar__actions">
-          <button type="button" data-role="refresh" class="panel__button">Refresh</button>
-          <button type="button" data-role="copy" class="panel__button panel__button--secondary">Copy</button>
-          <button type="button" data-role="download" class="panel__button panel__button--secondary">Download</button>
+          <button type="button" data-role="refresh" class="panel__button">
+            <i aria-hidden="true" class="panel__button-icon bi bi-arrow-clockwise"></i>
+            <span>Refresh</span>
+          </button>
+          <button type="button" data-role="copy" class="panel__button panel__button--secondary">
+            <i aria-hidden="true" class="panel__button-icon bi bi-clipboard"></i>
+            <span>Copy</span>
+          </button>
+          <button type="button" data-role="download" class="panel__button panel__button--secondary">
+            <i aria-hidden="true" class="panel__button-icon bi bi-download"></i>
+            <span>Download</span>
+          </button>
         </div>
       </div>
       <pre class="rdf-preview" data-role="output"># Dataset is empty. Create an organisation to get started.</pre>
       <aside class="rdf-warning">
         <p class="rdf-warning__message">Clearing the browser storage deletes every saved graph and cannot be undone.</p>
-        <button type="button" data-role="clear" class="panel__button panel__button--danger">Clear browser storage</button>
+        <button type="button" data-role="clear" class="panel__button panel__button--danger">
+          <i aria-hidden="true" class="panel__button-icon bi bi-trash"></i>
+          <span>Clear browser storage</span>
+        </button>
       </aside>
       <footer class="rdf-status" data-role="status">Waiting for data…</footer>
     </section>

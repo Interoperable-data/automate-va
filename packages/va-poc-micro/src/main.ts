@@ -74,6 +74,14 @@ function setupThemeToggle() {
     return;
   }
   const button = toggleButton;
+  const icon = assert(
+    button.querySelector<HTMLElement>('.content__theme-toggle-icon'),
+    'Theme toggle icon missing'
+  );
+  const label = assert(
+    button.querySelector<HTMLElement>('.content__theme-toggle-label'),
+    'Theme toggle label missing'
+  );
 
   const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)');
   const storedPreference = readStoredTheme();
@@ -101,7 +109,9 @@ function setupThemeToggle() {
 
   function updateToggleUi(theme: 'light' | 'dark') {
     const isDark = theme === 'dark';
-    button.textContent = isDark ? 'Light mode' : 'Dark mode';
+    icon.classList.remove('bi-sun', 'bi-moon-stars');
+    icon.classList.add(isDark ? 'bi-sun' : 'bi-moon-stars');
+    label.textContent = isDark ? 'Light mode' : 'Dark mode';
     button.setAttribute('aria-pressed', isDark ? 'true' : 'false');
   }
 }

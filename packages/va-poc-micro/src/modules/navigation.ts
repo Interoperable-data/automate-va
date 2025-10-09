@@ -64,7 +64,8 @@ export function initNavigation({ onViewChange }: NavigationOptions): NavigationC
 
     const activeButton = viewButtons.find((button) => button.dataset.viewTarget === viewId);
     if (activeButton && breadcrumb) {
-      breadcrumb.textContent = activeButton.textContent ?? viewId;
+      const label = activeButton.dataset.label ?? activeButton.textContent ?? viewId;
+      breadcrumb.textContent = label.trim();
     }
 
     if (notify) {

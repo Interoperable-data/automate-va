@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VA-POC Micro</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 </head>
 
 <body>
@@ -21,11 +22,39 @@
       </div>
       <nav class="sidebar__nav" aria-label="Application sections">
         <ul>
-          <li><button data-view-target="organisation" class="sidebar__link is-active">Organisation data</button></li>
-          <li><button data-view-target="objects" class="sidebar__link">Objects of assessment</button></li>
-          <li><button data-view-target="eva" class="sidebar__link">VA pre-assessment</button></li>
-          <li><button data-view-target="rawRdf" class="sidebar__link">Raw RDF</button></li>
-          <li><button data-view-target="endpoints" class="sidebar__link">Endpoints</button></li>
+          <li>
+            <button data-view-target="organisation" data-label="Organisation data" class="sidebar__link is-active"
+              aria-label="Organisation data">
+              <i aria-hidden="true" class="sidebar__link-icon bi bi-buildings"></i>
+              <span class="sidebar__link-label">Organisation data</span>
+            </button>
+          </li>
+          <li>
+            <button data-view-target="objects" data-label="Objects of assessment" class="sidebar__link"
+              aria-label="Objects of assessment">
+              <i aria-hidden="true" class="sidebar__link-icon bi bi-box-seam"></i>
+              <span class="sidebar__link-label">Objects of assessment</span>
+            </button>
+          </li>
+          <li>
+            <button data-view-target="eva" data-label="VA pre-assessment" class="sidebar__link"
+              aria-label="VA pre-assessment">
+              <i aria-hidden="true" class="sidebar__link-icon bi bi-clipboard-data"></i>
+              <span class="sidebar__link-label">VA pre-assessment</span>
+            </button>
+          </li>
+          <li>
+            <button data-view-target="rawRdf" data-label="Raw RDF" class="sidebar__link" aria-label="Raw RDF">
+              <i aria-hidden="true" class="sidebar__link-icon bi bi-code-slash"></i>
+              <span class="sidebar__link-label">Raw RDF</span>
+            </button>
+          </li>
+          <li>
+            <button data-view-target="endpoints" data-label="Endpoints" class="sidebar__link" aria-label="Endpoints">
+              <i aria-hidden="true" class="sidebar__link-icon bi bi-diagram-3"></i>
+              <span class="sidebar__link-label">Endpoints</span>
+            </button>
+          </li>
         </ul>
       </nav>
       <footer class="sidebar__footer">
@@ -36,15 +65,23 @@
       <header class="content__header">
         <div class="content__breadcrumbs" data-breadcrumb>Organisation data</div>
         <div class="content__actions">
-          <button class="content__theme-toggle" data-action="toggle-theme" type="button" aria-pressed="false">Dark
-            mode</button>
-          <button class="content__login" data-action="msal-login" type="button">Sign in</button>
+          <button class="content__theme-toggle" data-action="toggle-theme" type="button" aria-pressed="false">
+            <i aria-hidden="true" class="content__theme-toggle-icon bi"></i>
+            <span class="content__theme-toggle-label">Dark mode</span>
+          </button>
+          <button class="content__login" data-action="msal-login" type="button">
+            <i aria-hidden="true" class="content__login-icon bi bi-box-arrow-in-right"></i>
+            <span>Sign in</span>
+          </button>
         </div>
       </header>
       <main class="content__main" id="view-container">
         <section data-view="organisation" aria-labelledby="view-organisation-heading">
           <header class="view__header">
-            <h1 id="view-organisation-heading">Organisation data &amp; roles</h1>
+            <h1 id="view-organisation-heading">
+              <i aria-hidden="true" class="view__title-icon bi bi-buildings"></i>
+              <span>Organisation data &amp; roles</span>
+            </h1>
             <p class="view__lead">
               Manage organisations, units, sites, and associated role assignments. Data is stored locally in your
               browser until you choose to export it.
@@ -54,7 +91,10 @@
         </section>
         <section data-view="objects" hidden aria-labelledby="view-objects-heading">
           <header class="view__header">
-            <h1 id="view-objects-heading">Objects of assessment</h1>
+            <h1 id="view-objects-heading">
+              <i aria-hidden="true" class="view__title-icon bi bi-box-seam"></i>
+              <span>Objects of assessment</span>
+            </h1>
             <p class="view__lead">
               Curate subsystem declarations, CLDs, and related documentation for reuse across applications.
             </p>
@@ -63,7 +103,10 @@
         </section>
         <section data-view="eva" hidden aria-labelledby="view-eva-heading">
           <header class="view__header">
-            <h1 id="view-eva-heading">Efficient Vehicle(type) authorisations - pre-assessment</h1>
+            <h1 id="view-eva-heading">
+              <i aria-hidden="true" class="view__title-icon bi bi-clipboard-data"></i>
+              <span>Efficient Vehicle(type) authorisations - pre-assessment</span>
+            </h1>
             <p class="view__lead">
               Draft vehicle authorisation cases, run SHACL validations, and review human-readable pre-assessment
               reports.
@@ -73,7 +116,10 @@
         </section>
         <section data-view="rawRdf" hidden aria-labelledby="view-rawRdf-heading">
           <header class="view__header">
-            <h1 id="view-rawRdf-heading">Raw RDF</h1>
+            <h1 id="view-rawRdf-heading">
+              <i aria-hidden="true" class="view__title-icon bi bi-code-slash"></i>
+              <span>Raw RDF</span>
+            </h1>
             <p class="view__lead">
               Inspect the active data graph, export Turtle or N-Triples snapshots, and troubleshoot data issues.
             </p>
@@ -82,7 +128,10 @@
         </section>
         <section data-view="endpoints" hidden aria-labelledby="view-endpoints-heading">
           <header class="view__header">
-            <h1 id="view-endpoints-heading">Endpoints</h1>
+            <h1 id="view-endpoints-heading">
+              <i aria-hidden="true" class="view__title-icon bi bi-diagram-3"></i>
+              <span>Endpoints</span>
+            </h1>
             <p class="view__lead">
               Configure SPARQL endpoints, authentication tokens, and connectivity policies for the Agency ecosystem.
             </p>

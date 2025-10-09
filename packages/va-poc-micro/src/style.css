@@ -38,6 +38,21 @@
   --color-danger-text: #fef2f2;
   --color-rdf-preview-bg: #0f172a;
   --color-rdf-preview-border: #1e293b;
+  --color-icon-primary: #334155;
+  --color-modal-backdrop: rgba(15, 23, 42, 0.45);
+  --color-modal-bg: #ffffff;
+  --color-modal-border: #e2e8f0;
+  --color-modal-shadow: 0 32px 60px -30px rgba(15, 23, 42, 0.45);
+  --color-modal-footer-bg: #f8fafc;
+  --color-modal-title: #0f172a;
+  --color-modal-body-text: #475569;
+  --color-modal-status: #475569;
+  --color-modal-close-bg: rgba(148, 163, 184, 0.2);
+  --color-modal-close-hover-bg: rgba(99, 102, 241, 0.2);
+  --color-modal-close-color: #0f172a;
+  --color-modal-inspector-bg: #0f172a;
+  --color-modal-inspector-border: rgba(15, 23, 42, 0.35);
+  --color-modal-inspector-text: #f8fafc;
 }
 
 *,
@@ -125,6 +140,20 @@ a:focus-visible {
   background-color: transparent;
   color: inherit;
   transition: background-color 120ms ease, color 120ms ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sidebar__link-icon {
+  font-size: 1.05rem;
+  flex-shrink: 0;
+  color: var(--color-icon-primary);
+}
+
+.sidebar__link-label {
+  flex: 1;
+  text-align: left;
 }
 
 .sidebar__link:hover,
@@ -142,6 +171,27 @@ a:focus-visible {
   margin-top: auto;
   font-size: 0.75rem;
   opacity: 0.7;
+}
+
+.sidebar[data-collapsed="true"] .sidebar__header {
+  justify-content: center;
+}
+
+.sidebar[data-collapsed="true"] .sidebar__title {
+  display: none;
+}
+
+.sidebar[data-collapsed="true"] .sidebar__link {
+  justify-content: center;
+  padding: 0.75rem;
+}
+
+.sidebar[data-collapsed="true"] .sidebar__link-label {
+  display: none;
+}
+
+.sidebar[data-collapsed="true"] .sidebar__footer {
+  text-align: center;
 }
 
 .content {
@@ -177,6 +227,9 @@ a:focus-visible {
   padding: 0.5rem 1.25rem;
   border-radius: 999px;
   box-shadow: 0 10px 24px -16px rgba(99, 102, 241, 0.8);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .content__theme-toggle {
@@ -186,12 +239,22 @@ a:focus-visible {
   background-color: transparent;
   color: var(--color-button-secondary-text);
   transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .content__theme-toggle:hover,
 .content__theme-toggle:focus-visible {
   background-color: rgba(99, 102, 241, 0.12);
   border-color: rgba(99, 102, 241, 0.35);
+}
+
+.content__theme-toggle-icon,
+.content__login-icon {
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
 }
 
 .content__main {
@@ -258,6 +321,15 @@ a:focus-visible {
   border-radius: 0.75rem;
   background-color: var(--color-button-primary-bg);
   color: var(--color-button-primary-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.panel__button-icon {
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
 }
 
 .panel__button--secondary {
@@ -366,7 +438,7 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background-color: rgba(15, 23, 42, 0.45);
+  background-color: var(--color-modal-backdrop);
   z-index: 1000;
   opacity: 0;
   pointer-events: none;
@@ -379,14 +451,14 @@ a:focus-visible {
 }
 
 .modal__dialog {
-  background-color: #ffffff;
+  background-color: var(--color-modal-bg);
   border-radius: 1rem;
   width: min(720px, 100%);
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 32px 60px -30px rgba(15, 23, 42, 0.45);
-  border: 1px solid #e2e8f0;
+  box-shadow: var(--color-modal-shadow);
+  border: 1px solid var(--color-modal-border);
   overflow: hidden;
   outline: none;
 }
@@ -402,15 +474,15 @@ a:focus-visible {
 .modal__title {
   margin: 0;
   font-size: 1.125rem;
-  color: #0f172a;
+  color: var(--color-modal-title);
 }
 
 .modal__close {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: rgba(148, 163, 184, 0.2);
-  color: #0f172a;
+  background-color: var(--color-modal-close-bg);
+  color: var(--color-modal-close-color);
   display: grid;
   place-items: center;
   font-size: 1.25rem;
@@ -418,7 +490,7 @@ a:focus-visible {
 
 .modal__close:hover,
 .modal__close:focus-visible {
-  background-color: rgba(99, 102, 241, 0.2);
+  background-color: var(--color-modal-close-hover-bg);
 }
 
 .modal__body {
@@ -427,6 +499,7 @@ a:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  color: var(--color-modal-body-text);
 }
 
 .modal__footer {
@@ -434,14 +507,14 @@ a:focus-visible {
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 0.75rem 1.5rem 1.25rem;
-  border-top: 1px solid #e2e8f0;
-  background-color: #f8fafc;
+  border-top: 1px solid var(--color-modal-border);
+  background-color: var(--color-modal-footer-bg);
 }
 
 .modal__status {
   margin: 0;
   font-size: 0.9rem;
-  color: #475569;
+  color: var(--color-modal-status);
 }
 
 .modal__status--toggle {
@@ -469,33 +542,36 @@ a:focus-visible {
 .modal__button {
   padding: 0.45rem 1rem;
   border-radius: 0.75rem;
-  background-color: #0f172a;
-  color: #f8fafc;
+  background-color: var(--color-button-primary-bg);
+  color: var(--color-button-primary-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .modal__button--secondary {
   background-color: transparent;
-  color: #1d4ed8;
-  border: 1px solid rgba(29, 78, 216, 0.35);
+  color: var(--color-button-secondary-text);
+  border: 1px solid var(--color-button-secondary-border);
 }
 
 .modal__button--danger {
   background-color: transparent;
-  color: #dc2626;
-  border: 1px solid rgba(220, 38, 38, 0.35);
+  color: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
 }
 
 .modal__inspector {
   margin: 0;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
-  background-color: #0f172a;
-  color: #f8fafc;
+  background-color: var(--color-modal-inspector-bg);
+  color: var(--color-modal-inspector-text);
   font-family: 'Fira Code', 'Source Code Pro', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.85rem;
   white-space: pre-wrap;
   word-break: break-word;
-  border: 1px solid rgba(15, 23, 42, 0.35);
+  border: 1px solid var(--color-modal-inspector-border);
 }
 
 .rdf-warning {
@@ -629,7 +705,18 @@ a:focus-visible {
 .view__header h1 {
   margin: 0;
   font-size: 1.75rem;
-  color: #111827;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.view__title-icon {
+  font-size: 1.5rem;
+  color: var(--color-icon-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .view__lead {
@@ -674,6 +761,21 @@ a:focus-visible {
   --color-rdf-preview-bg: #0b1324;
   --color-rdf-preview-border: rgba(148, 163, 184, 0.3);
   --color-divider: rgba(148, 163, 184, 0.2);
+  --color-icon-primary: #8bb9ff;
+  --color-modal-backdrop: rgba(2, 6, 23, 0.68);
+  --color-modal-bg: #111d30;
+  --color-modal-border: rgba(148, 163, 184, 0.32);
+  --color-modal-shadow: 0 38px 72px -32px rgba(4, 10, 22, 0.85);
+  --color-modal-footer-bg: rgba(12, 22, 38, 0.92);
+  --color-modal-title: #e8f1ff;
+  --color-modal-body-text: #cbd5f5;
+  --color-modal-status: #9fb5ff;
+  --color-modal-close-bg: rgba(59, 130, 246, 0.18);
+  --color-modal-close-hover-bg: rgba(59, 130, 246, 0.32);
+  --color-modal-close-color: #f8fafc;
+  --color-modal-inspector-bg: #0b1629;
+  --color-modal-inspector-border: rgba(148, 163, 184, 0.4);
+  --color-modal-inspector-text: #dbeafe;
 }
 
 [data-theme="dark"] .sidebar__link:hover,
