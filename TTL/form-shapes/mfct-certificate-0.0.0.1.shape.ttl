@@ -88,6 +88,7 @@
 ################## FORM-defining SHACL
 ######################################
 era-sh:MaintFuncCertificateShape a sh:NodeShape ;
+era-sh:MaintFuncCertificateShape a sh:NodeShape ;
 
   sh:targetClass era:Certificate ; # subClassOf vpa:Permission !
   rdfs:label "CERTIFICATE OF CONFORMITY FOR MAINTENANCE FUNCTIONS" ;

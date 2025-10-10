@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "node16",
+    "types": [],
+    "noEmit": true
+  },
+  "include": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/types/**/*.d.ts"],
+  "exclude": []
+}

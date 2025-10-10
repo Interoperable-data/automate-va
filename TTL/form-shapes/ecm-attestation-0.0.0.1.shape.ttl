@@ -201,6 +201,7 @@ issform:RecordFormShape a sh:NodeShape ;
   sh:description "New ECM Attestation" ; 
   sh:name "New ECM Attestation" ; 
   sh:node era-sh:ECMAttestationShape  ;
+  sh:node era-sh:ECMAttestationShape  ;
   sh:path iss:hasInfoInRecord ;
   sh:minCount 1 ;
   sh:maxCount 1 ;

@@ -94,15 +94,15 @@ era-sh:SafetyCertificateAShape a sh:NodeShape ;
     #   Is not needed: languages are determined by langString usage.
     # ],
     [
-    sh:description "This is a Safety Certificate - Part A" ;
-    sh:name "This is a" ;
-    sh:path dcterms:type ;
-    sh:hasValue era-permission-types:SafetyCertificateA ; # OK
-    sh:nodeKind sh:IRI ;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:group issform:CT
-    ], 
+      sh:description "This is a Safety Certificate - Part A" ;
+      sh:name "This is a" ;
+      sh:path dcterms:type ;
+      sh:hasValue era-permission-types:SafetyCertificateA ; # OK
+      sh:nodeKind sh:IRI ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:group issform:CT
+    ];
     # [ sh:name "Certificate type" ;
     #   sh:path dcterms:type ;
     #   Is not needed: RENEW|REVOKE|AMEND is another form, and leads to dcterms:isReplacedBy
@@ -113,7 +113,7 @@ era-sh:SafetyCertificateAShape a sh:NodeShape ;
       sh:datatype xsd:string ;
       sh:pattern "^[A-Z]{2}(10|11)[2-9][0-9]{3}[0-9]{4}$" ;
       sh:group issform:CT
-    ],
+    ];
     # [ sh:name "Country Issuing The Safety Certificate" ;
     #   Is not needed as it is deduced from the Site of the Issuing Organisation
     # ],
@@ -126,7 +126,7 @@ era-sh:SafetyCertificateAShape a sh:NodeShape ;
       sh:minCount 0 ; sh:maxCount 1 ;
       sh:datatype xsd:string ;
       sh:group issform:CT
-    ],
+    ];
     [ sh:name "2 Railway Undertaking (Lookup by OrgCode or name)" ;
       sh:path dcterms:audience ;
       sh:minCount 1 ; sh:maxCount 1 ;

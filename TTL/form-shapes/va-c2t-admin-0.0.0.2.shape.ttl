@@ -139,6 +139,7 @@ era-sh:VTAAShape a sh:NodeShape ;
     sh:datatype xsd:anyURI;
     # TOO COMPLEX sh:or (
     #   [ sh:node era-sh:PreEngagementShape ; 
+    #   [ sh:node era-sh:PreEngagementShape ; 
     #     sh:name "Yes, pre-engagement baseline" ]
     #   [ sh:node era-sh:noPreEngagementShape  ; 
     #     sh:name "No pre-engagement baseline" ]

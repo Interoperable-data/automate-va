@@ -1,0 +1,38 @@
+@prefix adms:  <http://www.w3.org/ns/adms#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix era:   <http://data.europa.eu/949/> .
+@prefix eraUi: <http://data.europa.eu/949/ui/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+# Catalogue describing the organisation manager experience so the UI can
+# dereference titles, descriptions, and related metadata from the RDF graph.
+eraUi:catalogue a dcat:Catalog ;
+  dcterms:title "VA Local Workspace shape catalogue"@en ;
+  dcterms:description "Catalogue of SHACL-driven forms exposed in the VA Local Workspace proof of concept."@en ;
+  dcat:dataset eraUi:organisationManagerDataset .
+
+eraUi:organisationManagerDataset a dcat:Dataset ;
+  dcterms:identifier "organisation-manager" ;
+  dcterms:title "Manage organisation data"@en ;
+  dcterms:description "Create holdings, organisations, and units. Saved entries appear below and remain grouped by their SHACL class."@en ;
+  dcat:keyword "organisation"@en, "holding"@en, "unit"@en ;
+  dcat:theme skos:ConceptScheme ;
+  dcat:contactPoint eraUi:organisationManagerContact ;
+  adms:representationTechnique eraUi:shaclForm ;
+  eraUi:usesShape era-sh:OrgOrFormalOrgShape,
+                  era-sh:OrganisationShape,
+                  era-sh:UnitShape,
+                  era-sh:SiteShape,
+                  era-sh:LocationShape .
+
+eraUi:shaclForm a skos:Concept ;
+  skos:prefLabel "SHACL form"@en .
+
+eraUi:organisationManagerContact a vcard:Individual ;
+  vcard:fn "VA Local Workspace team"@en ;
+  vcard:hasEmail <mailto:linked-data@example.org> .

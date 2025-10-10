@@ -3,8 +3,6 @@
 @prefix dbpedia: <http://dbpedia.org/ontology/> .
 @prefix dcat:    <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix era:     <http://data.europa.eu/949/> .
-@prefix era-sh:  <http://data.europa.eu/949/shapes/> .
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
 @prefix geo:     <http://www.opengis.net/ont/geosparql#> .
 @prefix org:     <https://www.w3.org/ns/org#> .
@@ -18,13 +16,37 @@
 @prefix prov:    <http://www.w3.org/ns/prov#> .
 @prefix ex:      <http://example.org/> .
 @prefix as:      <https://www.w3.org/ns/activitystreams#> .
+@prefix eraUi:   <http://data.europa.eu/949/ui/> .
+@prefix locn:    <http://www.w3.org/ns/locn#> .
+
+
+@prefix era:      <http://data.europa.eu/949/> .
+@prefix era-sh:   <http://data.europa.eu/949/shapes/> .
+@prefix rorg:     <http://data.europa.eu/949/organisations/> .
+@prefix lorg:     <http://data.europa.eu/949/organisations/sites/> .
+@prefix locs:     <http://data.europa.eu/949/organisations/locations/> .
+@prefix uorg:     <http://data.europa.eu/949/organisations/units/> .
+
+org:FormalOrganization rdfs:subClassOf org:Organization .
+org:OrganizationalUnit rdfs:subClassOf org:Organization .
 
 era-sh:OrgOrFormalOrgShape a sh:NodeShape, rdfs:Class ;
-    # Start of entry must happen with FormalOrg OR Org. Some stakeholders have no holdings/groups/corporations.
+  rdfs:label "Organisation entry"@en ;
+  rdfs:comment "Start a new structure by choosing whether you manage a formal holding or an operational organisation."@en ;
+  # dash:stem rorg: ; DO NOT MINT RESOURCES OF THIS TYPE
+  # Start of entry must happen with FormalOrg OR Org. Some stakeholders have no holdings/groups/corporations.
   sh:property [
     sh:or (
-      [sh:node era-sh:FormalOrganisationShape ; rdfs:label "Mother Holding or Group, active worldwide" ]
-      [sh:node era-sh:OrganisationShape ; rdfs:label "An operational organization, active in one country" ]
+      [
+        sh:class org:FormalOrganisation ;
+        sh:nodeKind sh:IRI ;
+        rdfs:label "Mother Holding or Group, active worldwide"
+      ]
+      [
+        sh:class org:Organization ;
+        sh:nodeKind sh:IRI ;
+        rdfs:label "An operational organization, active in one country"
+      ]
     );
     sh:path owl:sameAs;
     sh:name "Core level organisation";
@@ -33,32 +55,44 @@ era-sh:OrgOrFormalOrgShape a sh:NodeShape, rdfs:Class ;
     sh:maxCount 1 # the form intends to not allow multi-corporate orgs
   ].
 
+# Formal Organisations do not have orgCode, and they only have a org:hasRegisteredSite to locate them.
+#           can have subOrganisations but no units
 era-sh:FormalOrganisationShape a sh:NodeShape, rdfs:Class ;
-  sh:targetClass org:FormalOrganisation ;
-  # Formal Organisations do not have orgCode, and they only have a org:hasRegisteredSite to locate them.
-  #           can have subOrganisations but no units
+  rdfs:label "Formal organisation"@en ;
+  rdfs:comment "Model a legally recognised holding or group that oversees subsidiary organisations."@en ;
+  dash:stem rorg: ;
+  sh:targetClass org:FormalOrganization ;
   sh:property [
     sh:path skos:prefLabel ;
     sh:datatype xsd:string ;
     sh:name "Name of the Holding or Group"@en ;
     sh:description "The legally recognized name of the mother holding or group. Do NOT include locations in this name." ;
-    sh:maxCount 1
+    sh:minCount 0 ; sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path rdfs:comment ;
+    sh:datatype xsd:string ;
+    sh:name "Description of the Holding or Group"@en ;
+    sh:description "A description of the mother holding or group. Do NOT include locations in this name." ;
+    sh:minCount 0 ; sh:maxCount 1
   ] ;
   sh:property [
     sh:path org:hasSubOrganization;
     sh:name "Subsidiary organisations";
-    sh:node era-sh:OrganisationShape;
+    sh:nodeKind sh:IRI ;
+    sh:class org:Organization ;
     sh:description "An organization which is part of this mother holding or group" ;
-    sh:minCount 1 # we do not allow only holdings?
+    sh:minCount 0 # Orgs can be added later
+  ];
+  sh:property [
+    sh:path org:hasRegisteredSite ;
+    sh:name "Legal Address" ;
+    sh:description "The Site where this Holding or Group has its legal address." ;
+    sh:minCount 0 ; # a holding MUST have a legal address, can be added later
+    sh:maxCount 1 ; # a holding can only have one legal address.
+    sh:nodeKind sh:IRI ;
+    sh:class org:Site ;
   ].
-#   sh:property [
-#     sh:path org:hasRegisteredSite ;
-#     sh:name "Legal Address" ;
-#     sh:description "The Site where this Holding or Group has its legal address." ;
-#     sh:minCount 1 ; # a holding MUST have a legal address
-#     sh:maxCount 1 ; # a holding can only have one legal address.
-#     sh:node era-sh:RegSiteShape ;
-#   ].
   # sh:property [
   #   sh:name "Formal Organisation - editorial data";
   #   sh:path skos:changeNote ;
@@ -67,7 +101,10 @@ era-sh:FormalOrganisationShape a sh:NodeShape, rdfs:Class ;
   # ].
 
 era-sh:OrganisationShape a sh:NodeShape, rdfs:Class ;
-  sh:targetClass org:Organisation ;
+  rdfs:label "Organisation"@en ;
+  rdfs:comment "Capture an operational organisation with its identifier, registered sites, and units."@en ;
+  dash:stem rorg: ;
+  sh:targetClass org:Organization ;
   # Organisations MUST have orgCode, and they have org:hasRegisteredSite and hasPrimarySite.
   # They can have other organisations as members.
   # They must define their operational sites through the sites of their UNITS.
@@ -96,43 +133,44 @@ era-sh:OrganisationShape a sh:NodeShape, rdfs:Class ;
   sh:property [
     sh:minCount 0 ; # Not mandatory
     sh:path org:hasSubOrganization;
-    sh:node era-sh:OrganisationShape;
+    sh:nodeKind sh:IRI ;
+    sh:class org:Organization ;
     sh:name "Subsidiary organisation";
     sh:description "An organization, as a separate legal entity, which is >50% part of this organization" ;
   ];
-#   sh:property [
-#     sh:maxCount 1 ;
-#     sh:minCount 1 ; # a org MUST have one and only one legal site address
-#     sh:path org:hasRegisteredSite ;
-#     sh:name "Legal Address" ;
-#     sh:description "The Site where this organization has its legal address." ;
-#     sh:node era-sh:RegSiteShape ;
-#   ] ;
-#   sh:property [
-#     sh:path org:hasPrimarySite ;
-#     sh:node era-sh:PrimSiteShape ;
-#     sh:name "Contact Address" ;
-#     sh:description "The Site where this organization can be contacted." ;
-#     sh:minCount 0 ; # a org CAN have a prim site address
-#     sh:maxCount 1 ;
-#   ];
+  sh:property [
+    # sh:maxCount 1 ;
+    sh:minCount 0 ; # Site CAN be added later as well
+    sh:path org:hasRegisteredSite ;
+    sh:nodeKind sh:IRI ;
+    sh:class org:Site ;
+    sh:name "Legal Address" ;
+    sh:description "The Site where this organization has its legal address." ;
+  ] ;
+  sh:property [
+    sh:path org:hasPrimarySite ;
+    sh:nodeKind sh:IRI ;
+    sh:class org:Site ;
+    sh:name "Contact Address" ;
+    sh:description "The Site where this organization can be contacted." ;
+    sh:minCount 0 ; # a org CAN have a prim site address
+    # sh:maxCount 1 ;
+  ];
   # Organizations do not directly use hasSite, as this must happen through their Units.
   sh:property [
     sh:path org:hasUnit ;
-    sh:node era-sh:UnitShape ;
+    sh:nodeKind sh:IRI ;
+    sh:class org:OrganizationalUnit ;
     sh:name "Units or Departments within this organisation" ;
     sh:description "Units or departments which fall under the leadership of this organization." ;
     sh:minCount 0 ; # a org CAN have no Units, in that case, it is assumed all activities run in one location.
     # sh:maxCount 10 ; in fact no limits exist
   ].
-  # sh:property [
-  #   sh:name "Organisation - editorial data";
-  #   sh:path skos:changeNote ;
-  #   sh:node era-sh:OrgRecordShape ;
-  #   sh:minCount 1 ; # mandatory date of record and change.
-  # ].
 
 era-sh:UnitShape a sh:NodeShape, rdfs:Class ;
+  rdfs:label "Organisational unit"@en ;
+  rdfs:comment "Describe a department or unit that operates within a parent organisation."@en ;
+  dash:stem uorg: ;
   sh:targetClass org:OrganizationalUnit ;
   # An Organization such as a department or support unit which is part of some larger Organization and only has full recognition within the context of that Organization.
   # In particular the unit would not be regarded as a legal entity in its own right.
@@ -151,18 +189,148 @@ era-sh:UnitShape a sh:NodeShape, rdfs:Class ;
     sh:description "The abbreviation as it is known in the organisation structure.";
     sh:minCount 1;
     sh:maxLength 10;
+  ];
+  sh:property [
+    sh:path org:hasSite ;
+    sh:nodeKind sh:IRI ;
+    sh:class org:Site ;
+    sh:name "Legal Address of the Unit" ;
+    sh:description "The Site where this Unit is located and its teams are working." ;
+    sh:minCount 0 ; # a unit MUST have a site address, can be added later
+    sh:maxCount 3 ; # a unit can be housed in 3 different sites.
+  ];
+  sh:property [
+    sh:path org:unitOf ;
+    sh:nodeKind sh:IRI ;
+    sh:class org:FormalOrganization ; # ontology limit/error!?
+    sh:name "To which Formal Organisation this Unit belongs" ;
+    sh:description "The Formal Organisation to which the Unit belongs";
+    sh:minCount 0
   ].
-#   sh:property [
-#     sh:path org:hasSite ;
-#     sh:node era-sh:SiteShape ;
-#     sh:name "Legal Address of the Unit" ;
-#     sh:description "The Site where this Unit is located and its teams are working." ;
-#     sh:minCount 1 ; # a unit MUST have a site address
-#     sh:maxCount 3 ; # a unit can be housed in 3 different sites.
-#   ].
   # sh:property [
   #   sh:name "Unit - editorial data";
   #   sh:path skos:changeNote ;
   #   sh:node era-sh:OrgRecordShape ;
   #   sh:minCount 1 ; # mandatory date of record and change.
   # ].
+
+era-sh:SiteShape a sh:NodeShape, rdfs:Class ;
+  rdfs:label "Organisation site"@en ;
+  rdfs:comment "Capture the name, address, and location of an organisation site."@en ;
+  dash:stem lorg: ;
+  sh:targetClass org:Site ;
+  sh:property [
+    sh:path skos:prefLabel ;
+    sh:datatype xsd:string ;
+    sh:name "Site name"@en ;
+    sh:description "The human-readable name of the site."@en ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path org:siteAddress ;
+    sh:name "Site address"@en ;
+    sh:nodeKind sh:IRI ;
+    sh:class locn:Address ;
+    sh:description "The postal address associated with this site."@en ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path org:siteOf ;
+    sh:name "Site belongs to"@en ;
+    sh:nodeKind sh:IRI ;
+    sh:class org:Organization ;
+    sh:description "Link back to the organisation that owns this site."@en ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path org:location ;
+    sh:name "Geolocation"@en ;
+    sh:nodeKind sh:IRI ;
+    sh:class dcterms:Location ;
+    sh:description "Spatial location represented as geometry and optional description."@en ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ].
+
+era-sh:LocationShape a sh:NodeShape, rdfs:Class ;
+  rdfs:label "Location"@en ;
+  rdfs:comment "Geospatial information attached to a site."@en ;
+  dash:stem locs: ;
+  sh:targetClass dcterms:Location ;
+  sh:property [
+    sh:path skos:prefLabel ;
+    sh:name "Location label"@en ;
+    sh:order 0 ;
+    sh:description "Label for the site location."@en ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ];
+  sh:property [
+    sh:path dcterms:description ;
+    sh:name "Location description"@en ;
+    sh:order 1 ;
+    sh:description "Narrative description of the site location."@en ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ];
+  sh:property [
+    sh:path geo:asWKT ;
+    sh:datatype geo:wktLiteral ;
+    sh:name "Coordinates"@en ;
+    sh:order 2 ;
+    sh:description "Well-known text (WKT) geometry, e.g. POINT(8.65 49.87)."@en ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:pattern "^POINT\\([+\\-]?(?:[0-9]*[.])?[0-9]+ [+\\-]?(?:[0-9]*[.])?[0-9]+\\)$|^POLYGON\\(\\((?:[+\\-]?(?:[0-9]*[.])?[0-9]+[ ,]?){3,}\\)\\)$"
+  ] .
+
+era-sh:AddressNodeShape a sh:NodeShape, rdfs:Class ;
+  rdfs:label "Postal address"@en ;
+  rdfs:comment "Structured postal address details in LOCN format."@en ;
+  dash:stem locs: ;
+  sh:targetClass locn:Address ;
+  sh:property [
+    sh:path locn:fullAddress ;
+    sh:datatype xsd:string ;
+    sh:name "Full address"@en ;
+    sh:description "Complete address as a single string."@en ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path locn:postName ;
+    sh:datatype xsd:string ;
+    sh:name "City or town"@en ;
+    sh:description "City or town component."@en ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path locn:postCode ;
+    sh:datatype xsd:string ;
+    sh:name "Postal code"@en ;
+    sh:description "Postal or ZIP code."@en ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path locn:thoroughfare ;
+    sh:datatype xsd:string ;
+    sh:name "Street"@en ;
+    sh:description "Street name and number."@en ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path locn:adminUnitL1 ;
+    sh:nodeKind sh:IRI ;
+    owl:imports <https://raw.githubusercontent.com/Interoperable-data/automate-va/refs/heads/dev-lws/TTL/countries.ttl> ;
+    sh:class skos:Concept ;
+    sh:name "Country"@en ;
+    sh:description "Reference to a country concept."@en ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ].

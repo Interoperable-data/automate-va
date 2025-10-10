@@ -1,36 +1,141 @@
-import { createApp, defineCustomElement } from 'vue';
 import './style.css';
-import App from './App.vue';
-import { ShaclForm } from '@ulb-darmstadt/shacl-form'; // Corrected import for ShaclForm
+import '@ulb-darmstadt/shacl-form';
+import { initNavigation, type ViewId } from './modules/navigation';
+import { assert } from './modules/utils/assert';
+import { GraphStore } from './modules/data/graph-store';
+import { loadOrganisationShapes } from './modules/data/organisation-shapes';
+import { initOrganisationManagerView } from './modules/views/organisation-manager';
+import { initRawRdfView } from './modules/views/raw-rdf';
+import { initEndpointsView } from './modules/views/endpoints';
 
-// Import custom elements
-import ShapeStepCE from './components/ShapeStep.ce.vue';
-import ProcessTaskCE from './components/ProcessTask.ce.vue';
-import TurtleViewerCE from './components/TurtleViewer.ce.vue';
-import ProcessTaskViewerCE from './components/ProcessTaskViewer.ce.vue';
-import ProcessFinderCE from './components/ProcessFinder.ce.vue'; // Import ProcessFinder
+const appRoot = assert(document.querySelector<HTMLElement>('[data-app]'), 'App shell not found');
 
-// Register the custom elements globally (only once)
-if (!customElements.get('shape-step')) {
-  customElements.define('shape-step', defineCustomElement(ShapeStepCE));
-}
-if (!customElements.get('process-task')) {
-  customElements.define('process-task', defineCustomElement(ProcessTaskCE));
-}
-if (!customElements.get('turtle-viewer')) {
-  customElements.define('turtle-viewer', defineCustomElement(TurtleViewerCE));
-}
-if (!customElements.get('process-task-viewer')) {
-  customElements.define('process-task-viewer', defineCustomElement(ProcessTaskViewerCE));
-}
-if (!customElements.get('process-finder')) {
-  customElements.define('process-finder', defineCustomElement(ProcessFinderCE)); // Register ProcessFinder
+void bootstrap();
+
+interface ViewController {
+  activate: () => void;
 }
 
-// Create and mount your main Vue app
-const app = createApp(App);
+async function bootstrap(): Promise<void> {
+  const [store, shapes] = await Promise.all([GraphStore.create(), loadOrganisationShapes()]);
 
-// Register ShaclForm globally
-app.component('ShaclForm', ShaclForm);
+  const viewControllers: Partial<Record<ViewId, ViewController>> = {};
 
-app.mount('#app');
+  viewControllers.organisation = await initOrganisationManagerView({
+    container: getViewSlot('organisation'),
+    store,
+    shapes,
+  });
+
+  viewControllers.rawRdf = initRawRdfView({
+    container: getViewSlot('rawRdf'),
+    store,
+  });
+
+  viewControllers.endpoints = initEndpointsView({
+    container: getViewSlot('endpoints'),
+    store,
+  });
+
+  const navigation = initNavigation({
+    onViewChange(viewId) {
+      console.debug(`[navigation] switched to view: ${viewId}`);
+      const controller = viewControllers[viewId];
+      controller?.activate();
+    },
+  });
+
+  setupLoginButton();
+  setupThemeToggle();
+
+  if (import.meta.env.DEV) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).__vaNavigation__ = navigation;
+  }
+}
+
+function getViewSlot(viewId: ViewId): HTMLElement {
+  return assert(
+    document.querySelector<HTMLElement>(`[data-view-slot="${viewId}"]`),
+    `View slot for ${viewId} not found`
+  );
+}
+
+function setupLoginButton() {
+  const loginButton = appRoot.querySelector<HTMLButtonElement>('[data-action="msal-login"]');
+  loginButton?.addEventListener('click', () => {
+    console.info('[auth] MSAL login clicked (handler pending integration)');
+  });
+}
+
+function setupThemeToggle() {
+  const toggleButton = appRoot.querySelector<HTMLButtonElement>('[data-action="toggle-theme"]');
+  if (!toggleButton) {
+    return;
+  }
+  const button = toggleButton;
+  const icon = assert(
+    button.querySelector<HTMLElement>('.content__theme-toggle-icon'),
+    'Theme toggle icon missing'
+  );
+  const label = assert(
+    button.querySelector<HTMLElement>('.content__theme-toggle-label'),
+    'Theme toggle label missing'
+  );
+
+  const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)');
+  const storedPreference = readStoredTheme();
+  let currentTheme: 'light' | 'dark' =
+    storedPreference ?? (prefersDark?.matches ? 'dark' : 'light');
+
+  applyTheme(currentTheme);
+  updateToggleUi(currentTheme);
+
+  button.addEventListener('click', () => {
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(currentTheme);
+    persistTheme(currentTheme);
+    updateToggleUi(currentTheme);
+  });
+
+  prefersDark?.addEventListener('change', (event) => {
+    if (readStoredTheme() !== null) {
+      return;
+    }
+    currentTheme = event.matches ? 'dark' : 'light';
+    applyTheme(currentTheme);
+    updateToggleUi(currentTheme);
+  });
+
+  function updateToggleUi(theme: 'light' | 'dark') {
+    const isDark = theme === 'dark';
+    icon.classList.remove('bi-sun', 'bi-moon-stars');
+    icon.classList.add(isDark ? 'bi-sun' : 'bi-moon-stars');
+    label.textContent = isDark ? 'Light mode' : 'Dark mode';
+    button.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+  }
+}
+
+function applyTheme(theme: 'light' | 'dark') {
+  document.documentElement.dataset.theme = theme;
+}
+
+function persistTheme(theme: 'light' | 'dark') {
+  try {
+    window.localStorage.setItem('va.theme-preference', theme);
+  } catch (error) {
+    console.warn('[theme] Unable to persist theme preference', error);
+  }
+}
+
+function readStoredTheme(): 'light' | 'dark' | null {
+  try {
+    const value = window.localStorage.getItem('va.theme-preference');
+    if (value === 'light' || value === 'dark') {
+      return value;
+    }
+  } catch (error) {
+    console.warn('[theme] Unable to read theme preference', error);
+  }
+  return null;
+}
