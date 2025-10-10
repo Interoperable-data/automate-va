@@ -14,7 +14,7 @@ The EU Agency for Railways has introduced the [ontology for Verified Permissions
 Stakeholders wanting to represent this `vpa:EvidenceDocument` as linked data, in order to achieve the objectives as described elsewhere, are invited to examine and return comments on the following proposal.
 
 > [!NOTE]
-> The class `vpa:EvidenceDocument` can be linked to verified `vpa:Requirement`s (using `vpa:closes`), which are further not specified, but can be, for instance to eli:LegalResource and other classes. The EU Agency for Railways uses the `vpa:EvidenceDocument` class to model [ERADIS Interoperability documents](https://eradis.era.europa.eu/default.aspx). The process is described [here](./RESTRICTION.md). A stronger and more detailed approach is to use the `vpa:Compliance` class (using `vpa:checkedCompliance`), which allows to link not only the legal Requirements, but also the sections therein, and the resulting compliance check results.
+> The class `vpa:EvidenceDocument` can be linked to verified `vpa:Requirement`s (using `vpa:closes`), which are further not specified, but can be, for instance to eli:LegalResource and other classes. The EU Agency for Railways uses the `vpa:EvidenceDocument` class to model [ERADIS Interoperability documents](https://eradis.era.europa.eu/default.aspx). The process is described [in the restrictions guide](./RESTRICTION.md). A stronger and more detailed approach is to use the `vpa:Compliance` class (using `vpa:checkedCompliance`), which allows to link not only the legal Requirements, but also the sections therein, and the resulting compliance check results.
 
 ## Data model
 
@@ -55,7 +55,7 @@ We reuse the following ontologies and namespaces:
 - `PREFIX vpa: <https://w3id.org/vpa#>`
 - `PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>`
 - `PREFIX era: <http://data.europa.eu/949/>`
-- `PREFIX dc: <http://purl.org/dc/elements/1.1/>` (explanation [here](https://www.dublincore.org/specifications/dublin-core/dcmi-terms/elements11/date/))
+- `PREFIX dc: <http://purl.org/dc/elements/1.1/>` (explanation [DCMI](https://www.dublincore.org/specifications/dublin-core/dcmi-terms/elements11/date/))
 - `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>`.
 - `PREFIX common: <http://www.w3.org/2007/uwa/context/common.owl#>`.
 
@@ -99,7 +99,7 @@ era:doc-uuid_of_document a era:CLD ;
 
 #### The (public) Object of Assessment
 
-The legal subject of the certificates can be documented using links to instances of ERALEX/ELI. Details are [here](../ERALEX/LEGISLATION.md).
+The legal subject of the certificates can be documented using links to instances of ERALEX/ELI. Details are [in the legislations document](../ERALEX/LEGISLATION.md).
 
 | Property      |                          Data | Datatype/ObjectProperty                                   | dataset @ ERA |
 | :------------ | ----------------------------: | :-------------------------------------------------------- | :-----------: |
@@ -157,7 +157,7 @@ The following mandatory properties are the basis for the data model allowing ext
 | `dct:requires`                                 | Documentation accompanying this CLD       |          The `xsd:anyURI` where the Documentation can be found.           |      n/a      |
 
 > [!NOTE]
-> [Modules are foreseen to have the IRI](../ERALEX/LEGISLATION.md): `eralex:dec-2010-713-SB` whereby the last characters express the module. They are - like IC's - instances of `eli:LegalResourceSubdivision`, which as a subClassOf `eli:LegalResource` must still be considered `dct:Jurisdiction` (hence `dct:coverage`). 
+> [Modules are foreseen to have the IRI](../ERALEX/LEGISLATION.md): `eralex:dec-2010-713-SB` whereby the last characters express the module. They are - like IC's - instances of `eli:LegalResourceSubdivision`, which as a subClassOf `eli:LegalResource` must still be considered `dct:Jurisdiction` (hence `dct:coverage`).
 > The full statement on module conformity is `{module.label} of the relevant decision adopted pursuant to the Directive`.
 
 The following properties are not mandatory but allow detailing the verification activities:
@@ -218,17 +218,18 @@ See also [Restrictions](./RESTRICTION.md) for the non-disclosed data regarding t
 
 The available class is `era:CABRestriction`, subClassOf `era:Restriction`, subClassOf `vpa:Restriction`. An example is shown below, and as a Restriction it can always be linked to a specific Vehicle Type Configuration (or later infrastructure type).
 
-### ASSESSMENT REQUIREMENTS 
+### ASSESSMENT REQUIREMENTS
 
-In combination with those Harmonised Standards, the noBo is allowed to quote
-  - Voluntary Standards (or parts thereof),
-  - other European or national rules authorized by the TSI and
-  - Alternative Solutions as identified in the EC NoBo [File/Documentation]
+In combination with those Harmonised Standards, the noBo is allowed to quote:
+
+- Voluntary Standards (or parts thereof),
+- other European or national rules authorized by the TSI and
+- Alternative Solutions as identified in the EC NoBo [File/Documentation]
 - STANDARD USED [optional]
 
 To express these references, use link under `vpa:checkedCompliance` and privately stored instances of `vpa:Compliance`:
 
-```
+```ttl
 <eradis:cld-123> a era:CLD ; # a vpa:EvidenceDocument
   # other properties
    vpa:checkedCompliance <nobo:Assessment-123> , <nobo:Compliance-123-45> ; # a private URI
@@ -253,9 +254,10 @@ To express these references, use link under `vpa:checkedCompliance` and privatel
   
 ```
 
-### ANNEXES 
+### ANNEXES
 
 Each with [identifier, revision-if used, date]:
-  - [optional]
-  - [optional - NOBO ASSESSMENT REPORT]
-  - [optional - NOBO FILE/TECHNICAL DOCUMENTATION]
+
+- [optional]
+- [optional - NOBO ASSESSMENT REPORT]
+- [optional - NOBO FILE/TECHNICAL DOCUMENTATION]
