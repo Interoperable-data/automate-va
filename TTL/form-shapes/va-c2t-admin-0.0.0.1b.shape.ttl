@@ -41,7 +41,7 @@
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypeAuthorisations/> .
+@prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix iss: <http://data.europa.eu/949/iss/> . 
@@ -185,14 +185,14 @@ issform:RecordFormShape a sh:NodeShape, rdfs:Class ;
   ] , [ 
     sh:description "VA Application (C2T)" ; 
     sh:name "VA Application (C2T)" ; 
-    sh:node era:C2TApplicationShape  ;
+    sh:node era-sh:C2TApplicationShape  ;
     sh:path iss:hasInfoInRecord ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
   ] .
 
 ################# A Conformity to Type Application, with Evidence added as ERADIS identifiers
-era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
+era-sh:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
   sh:targetClass era:VehicleTypeAuthorisationApplication ; # vpa:Request
 
   sh:property [
@@ -219,8 +219,8 @@ era:C2TApplicationShape a sh:NodeShape, rdfs:Class ;
     sh:datatype xsd:boolean ;
     sh:maxCount 1 ;
     sh:or (
-      [ sh:node era:PreEngagementShape ; sh:name "Yes" ]
-      [ sh:node era:noPreEngagementShape ; sh:name "No" ]
+      [ sh:node era-sh:PreEngagementShape ; sh:name "Yes" ]
+      [ sh:node era-sh:noPreEngagementShape ; sh:name "No" ]
     )
   ] , [
     # rdfs:comment “{{Other relevant Information}}”@en ;
@@ -284,7 +284,7 @@ era-sh:C2TAuthCaseShape a sh:NodeShape ;
   ].
 
 # The Scope can be one VehicleTypeScopeShape per case
-era-sh:VehicleTypeScopeShape a era:NodeShape ;
+era-sh:VehicleTypeScopeShape a sh:NodeShape ;
   sh:targetClass era:VehicleType ;
   sh:property [
     sh:path dcterms:identifier ;
@@ -296,7 +296,7 @@ era-sh:VehicleTypeScopeShape a era:NodeShape ;
   ].
 
 # The Scope can be one or more Vehicle Numbers per case
-era-sh:VehicleNumberScopeShape a era:NodeShape ;
+era-sh:VehicleNumberScopeShape a sh:NodeShape ;
   sh:targetClass era:VehicleSet ;
   sh:property [
     sh:name "Vehicle Identifier (EVN or pre-reserved number)"@en ;
@@ -317,8 +317,8 @@ era-sh:ApplicantOrgRoleShape a sh:NodeShape ;
     sh:name "Applicant Information" ;
     sh:datatype xsd:string ;
     sh:or (
-      [sh:node era:ApplicantByNamShape ; sh:name "By Name" ]
-      [sh:node era:ApplicantByCodeShape ; sh:name "By Code" ]
+      [sh:node era-sh:ApplicantByNamShape ; sh:name "By Name" ]
+      [sh:node era-sh:ApplicantByCodeShape ; sh:name "By Code" ]
     )
   ] , [
     sh:path era:hasRole ;

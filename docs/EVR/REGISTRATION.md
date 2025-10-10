@@ -70,7 +70,7 @@ Much of the data coming from the Vehicle's Authorisation, if available as linked
 
 ```csharp
 # The preceding Authorisation Case can support the Registration request!
-erava:vac-V-YYYYMMDD-NNN-0 vpa:supports eravr:vr-NNN-n ; # allows to reuse the linked data of the auth case regarding vehicles, aou, and underlying evidence.
+era-vta:vac-V-YYYYMMDD-NNN-0 vpa:supports eravr:vr-NNN-n ; # allows to reuse the linked data of the auth case regarding vehicles, aou, and underlying evidence.
                            vpa:requestFor eravr:NNN-n .
 ```
 

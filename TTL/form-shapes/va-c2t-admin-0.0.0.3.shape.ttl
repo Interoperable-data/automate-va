@@ -41,7 +41,7 @@
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypeAuthorisations/> .
+@prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix iss: <http://data.europa.eu/949/iss/> . 
@@ -449,10 +449,10 @@ era-sh:ApplicantByNameShape a sh:NodeShape ;
   ].
 
 # If PreEngagement, a Reference to pre-engagement baseline is required
-# era:PreEngagementShape a sh:NodeShape ; integrated above.
+# era-sh:PreEngagementShape a sh:NodeShape ; integrated above.
 
 # If NO PreEngagement, only boolean as already marked
-# era:noPreEngagementShape a sh:NodeShape ; integrated above
+# era-sh:noPreEngagementShape a sh:NodeShape ; integrated above
 
 dash:CAB a sh:PropertyGroup ; sh:order 2 ; rdfs:label "CONFORMITY ASSESSMENT BODIES" .
 dash:APPD a sh:PropertyGroup ; sh:order 0 ; rdfs:label "APPLICATION DESCRIPTION" .

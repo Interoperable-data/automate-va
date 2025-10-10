@@ -48,21 +48,21 @@ Each type which was authorised under the 4th Railway Package ((EU) 2016/797, det
 ```js
 eratv:{vehicle type identifier} a era:VehicleType ;
     ...
-    vpa:definesCase erava:{authorisation case identified by type id + Authorising MS + index} , ... ;
+    vpa:definesCase era-vta:{authorisation case identified by type id + Authorising MS + index} , ... ;
 
-erava:{authorisation case identified by type id + Authorising MS + index} a era:VehicleTypeAuthorisationCase ;
+era-vta:{authorisation case identified by type id + Authorising MS + index} a era:VehicleTypeAuthorisationCase ;
     vpa:permissionType era{SKOS-CS} ;
     ...
     # 4RP means the application exists
-    vpa:constitutes erava:va-{OSSID} | erava:va-{NATIONAL AUTH ID} ;
+    vpa:constitutes era-vta:va-{OSSID} | era-vta:va-{NATIONAL AUTH ID} ;
     vpa:concerns eratv:{vehicle type identifier} ; # and relevant vehicle sets
     ...
 
-erava:va-{OSS_ID} | erava:va-{NATIONAL AUTH ID} a era:VehicleTypeAuthorisationApplication ; 
+era-vta:va-{OSS_ID} | era-vta:va-{NATIONAL AUTH ID} a era:VehicleTypeAuthorisationApplication ; 
     # if possible add more properties when known, using dcterms.
-    vpa:requestFor erava:{OSSID} | erava:{NATIONAL AUTH} .
+    vpa:requestFor era-vta:{OSSID} | era-vta:{NATIONAL AUTH} .
 
-erava:{OSSID} a era:VehicleTypeAuthorisation ;
+era-vta:{OSSID} a era:VehicleTypeAuthorisation ;
     # other properties as collected from the Authorisation-section in ERATV
 ```
 
@@ -91,24 +91,24 @@ eratv:vt-11-057-0018-9-001 a era:VehicleType ; # Uses: era:VehicleType subClassO
    ];
     ...
     # ARTIFICIALLY CREATED authorisation cases per member state
-    vpa:definesCase erava:vac-11-057-0018-9-001-1 ,
-          erava:vac-11-057-0018-9-001-2 ,
-          erava:vac-11-057-0018-9-001-3 ;
+    vpa:definesCase era-vta:vac-11-057-0018-9-001-1 ,
+          era-vta:vac-11-057-0018-9-001-2 ,
+          era-vta:vac-11-057-0018-9-001-3 ;
 
 # MS 1
 # Uses: era:VehicleTypeAuthorisationCase subClassOf vpa:Case
-erava:vac-11-057-0018-9-001-MS1-1 a era:VehicleTypeAuthorisationCase ;                 
+era-vta:vac-11-057-0018-9-001-MS1-1 a era:VehicleTypeAuthorisationCase ;                 
     vpa:permissionType era-va-authcase:PRE4RP ;  
     era:authorisingMemberState <MemberState-1> ; # Always the whole memberstate, AoU not used
     ...
     vpa:supportsRequest [
         # blankNode as it was never physically submitted
         a era:VehicleTypeAuthorisationApplication ; 
-        vpa:requestFor erava:auth-11-057-0018-9-001-MS1-1 ; 
+        vpa:requestFor era-vta:auth-11-057-0018-9-001-MS1-1 ; 
         # Only the first is needed as we can find corrections by following dcterms:isReplacedBy*
     ]. 
     
-erava:auth-11-057-0018-9-001-MS1-1 a era:VehicleTypeAuthorisation ;
+era-vta:auth-11-057-0018-9-001-MS1-1 a era:VehicleTypeAuthorisation ;
     # as retrieved from ERATV for older type authorisations
     dcterms:identifier "DE5920201005" ; 
     ...

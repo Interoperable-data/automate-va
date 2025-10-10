@@ -62,7 +62,7 @@
 @prefix eralex: <http://data.europa.eu/949/requirements/legislations/> .
 @prefix eralex-pava: <http://data.europa.eu/949/requirements/legislations/pava/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix erava-tsi-conforms: <http://data.europa.eu/949/concepts/tsi-conformities/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
@@ -332,7 +332,7 @@ Checks already carried out at the previous authorisation of reference type 13-17
 era-vtacs:vac-13-178-0010-8-001-001-DE-2 a era:VehicleAuthorisationCase ;
     vpa:permissionType era-va-authcase:C2T ;
     # Non-disclosed - OSS data on the auth case can be placed here
-    vpa:supports erava:va-20240621-009 .
+    vpa:supports era-vta:va-20240621-009 .
 
 era-vtap:va-20240621-009 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request ;
     # Non-disclosed - OSS data can be placed here
@@ -347,7 +347,7 @@ era-vta:20240621-009 a era:VehicleAuthorisation ; # subClassOf vpa:Permission ;
 era-vtacs:vac-13-178-0010-8-001-001-DE-3 a era:VehicleAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:C2T ;
     # Non-disclosed - OSS data on the auth case can be placed here
-    vpa:supports erava:va-20241219-012 .
+    vpa:supports era-vta:va-20241219-012 .
 
 era-vtap:va-20241219-012 a era:VehicleAuthorisationApplication ; # subClassOf vpa:Request
     # Non-disclosed - OSS data can be placed here

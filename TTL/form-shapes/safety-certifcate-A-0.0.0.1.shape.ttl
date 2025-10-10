@@ -43,7 +43,7 @@
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix iss: <http://data.europa.eu/949/iss/> . 
@@ -87,7 +87,7 @@
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
 # NodeShape for Safety Certificate - Part A
-era:SafetyCertificateAShape a sh:NodeShape ;
+era-sh:SafetyCertificateAShape a sh:NodeShape ;
   sh:targetClass era:Certificate ;
   sh:property 
     # [ sh:name "Certificate language" ;
@@ -131,13 +131,13 @@ era:SafetyCertificateAShape a sh:NodeShape ;
       sh:path dcterms:audience ;
       sh:minCount 1 ; sh:maxCount 1 ;
       sh:nodeKind sh:IRI ;
-      sh:qualifiedValueShape [ sh:node era:RUOrgRoleShape ] ;
+      sh:qualifiedValueShape [ sh:node era-sh:RUOrgRoleShape ] ;
       sh:group issform:RU
     ] , [
       sh:name "3 Validity" ;
       sh:path dcterms:valid ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      sh:node era:CertificateValidityShape ;
+      sh:node era-sh:CertificateValidityShape ;
       sh:group issform:CI 
     ];
 
@@ -210,7 +210,7 @@ era:SafetyCertificateAShape a sh:NodeShape ;
       sh:path dcterms:creator ;
       sh:minCount 1 ;
       sh:maxCount 1 ;
-      sh:qualifiedValueShape[sh:node era:NSAOrgRoleShape]  ;
+      sh:qualifiedValueShape[sh:node era-sh:NSAOrgRoleShape]  ;
       sh:group issform:CB
     ].
 
@@ -218,7 +218,7 @@ era:SafetyCertificateAShape a sh:NodeShape ;
 ####### Additional helper NODES
 # Name OR role (to convert into URI!)
 # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
-era:RUOrgRoleShape a sh:NodeShape ;
+era-sh:RUOrgRoleShape a sh:NodeShape ;
   sh:targetClass era:OrganisationRole ;
   sh:property [
     sh:name "Railway Undertaking Role" ;
@@ -233,10 +233,10 @@ era:RUOrgRoleShape a sh:NodeShape ;
     sh:maxCount 1 ;
     sh:name "Confirm Railway Undertaking" ;
     sh:or (
-      [ sh:node era:ByNameShape ; 
+      [ sh:node era-sh:ByNameShape ; 
         sh:name "Railway Undertaking Name" ]
       [ 
-        sh:node era:ByCodeShape ; 
+        sh:node era-sh:ByCodeShape ; 
         sh:name "Railway Undertaking Code" ]
     )
   ] .
@@ -244,7 +244,7 @@ era:RUOrgRoleShape a sh:NodeShape ;
 
 
 # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
-  era:NSAOrgRoleShape a sh:NodeShape ;
+  era-sh:NSAOrgRoleShape a sh:NodeShape ;
     sh:targetClass era:OrganisationRole ;
     sh:property [
       # For conversion to an org URI
@@ -253,10 +253,10 @@ era:RUOrgRoleShape a sh:NodeShape ;
       sh:minCount 1 ;
       sh:maxCount 1 ;
       sh:or (
-        [ sh:node era:ByNameShape ; 
+        [ sh:node era-sh:ByNameShape ; 
           sh:name "Issuing Organisation Name" ]
         [ 
-          sh:node era:ByCodeShape ; 
+          sh:node era-sh:ByCodeShape ; 
           sh:name "Issuing Organisation Code" ]
       )
     ];
@@ -270,7 +270,7 @@ era:RUOrgRoleShape a sh:NodeShape ;
     ].
 
   # Id By Name
-  era:ByNameShape a sh:NodeShape ;
+  era-sh:ByNameShape a sh:NodeShape ;
     sh:targetClass era:Body ;
     sh:property [
       sh:path era:roleOf ;
@@ -281,7 +281,7 @@ era:RUOrgRoleShape a sh:NodeShape ;
     ].
 
   # Id by orgCode
-  era:ByCodeShape a sh:NodeShape ;
+  era-sh:ByCodeShape a sh:NodeShape ;
     sh:targetClass era:Body;
     sh:property [
       sh:path era:orgCode ;
@@ -293,7 +293,7 @@ era:RUOrgRoleShape a sh:NodeShape ;
 
 
   # Validity is a time: instance
-  era:CertificateValidityShape  a sh:NodeShape ;
+  era-sh:CertificateValidityShape  a sh:NodeShape ;
     sh:targetClass time:Interval ;
     sh:property [
       sh:name "Starting date" ;

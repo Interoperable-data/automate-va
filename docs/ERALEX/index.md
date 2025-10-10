@@ -33,7 +33,7 @@ And discuss the data model for Interoperability Constituents:
 
 ```js
 eralex:ic-2020-387-TS-3
-        rdf:type          erava:IC ;
+        rdf:type          era:IC ;
         rdfs:comment      "This IC (#TS-3 of its defining TSI 2020/387) handles about Eurobalise. It concerns the subsystem function CCS trackside." ;
         rdfs:label        "Eurobalise" ;
         eli:is_part_of  eralex:cir-2020-387 ;
@@ -63,9 +63,9 @@ Regulations which are TSI's, can be used to identify a (verified) subsystem.
 > [!WARNING]
 > The modelling of IC's is to be considered `unstable`.
 
-For the instances of `erava:IC`:
+For the instances of `era:IC`:
 
-- the defined IC's are linked as `eli:has_part`, given they are "A component of a legal act, at an arbitrary level of precision". This means the `erava:IC` and `erava:SS` class are subClassOf `eli:LegalResourceSubDivision`.
+- the defined IC's are linked as `eli:has_part`, given they are "A component of a legal act, at an arbitrary level of precision". This means the `era:IC` and `era:TSISubSystem` class are subClassOf `eli:LegalResourceSubDivision`.
 - The `rdfs:comment` details the IC, and `rdfs:label` is the IC name.
 - A reverse link to the defining TSI is under `eli:is_part_of`.
 - The ERADIS name of the IC is under `<http://purl.org/dc/elements/1.1/subject>`.

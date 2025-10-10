@@ -41,7 +41,7 @@
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypeAuthorisations/> .
+@prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix iss: <http://data.europa.eu/949/iss/> . 
@@ -106,7 +106,7 @@ era-sh:EvidenceShape a sh:NodeShape ;
     sh:path vpa:submittedFor ;
     sh:name "VA C2T application URI('s)";
     sh:description "The Application(s) for which this Evidence can serve" ;
-    # sh:hasValue <erava:va-s-001> ;
+    # sh:hasValue <era-vta:va-s-001> ;
     sh:nodeKind sh:IRI ;
     sh:minCount 1 ;    
   ] , [
@@ -139,21 +139,21 @@ era-sh:EvidenceShape a sh:NodeShape ;
     sh:name "Subsystem EC Declarations" ;
     sh:description "The EC Declarations as submitted for each subsystem" ;
     sh:group dash:ECDSS ;
-    sh:node era:ECDSSShape ;
+    sh:node era-sh:ECDSSShape ;
     sh:minCount 1 ; sh:maxCount 1 ;
   ] , [
     sh:path rdfs:member ;
     sh:name "Other certificates" ;
     sh:description "Certificates (not in ERADIS+) supporting this vehicle type" ;
     sh:group dash:OTH ;
-    sh:node era:OtherCertsShape ;
+    sh:node era-sh:OtherCertsShape ;
     sh:minCount 0
   ] , [
     sh:path rdfs:member ;
     sh:name "Other Statements" ;
     sh:description "Other relevant statements and authorisations";
     sh:group dash:OTHSA ;
-    sh:node era:OtherStatementsShape ;
+    sh:node era-sh:OtherStatementsShape ;
     sh:minCount 0
   ] .
 
@@ -184,7 +184,7 @@ era-sh:ECDSSShape a sh:NodeShape ;
     sh:path dcterms:requires ;
     sh:name "Supporting Subsystem CLDs" ;
     sh:description "The collections of relevant CLD's supporting this Declaration" ;
-    sh:node era:CLDSSCollectionShape;
+    sh:node era-sh:CLDSSCollectionShape;
     sh:minCount 1 ; sh:maxCount 1
   ].
 
@@ -194,7 +194,7 @@ era-sh:CLDSSCollectionShape a sh:NodeShape ;
     sh:path rdfs:member ;
     sh:name "Supporting SS CLDs name" ;
     sh:description "Supporting SS CLDs desc" ;
-    sh:node era:CLDSSShape ;
+    sh:node era-sh:CLDSSShape ;
     sh:minCount 1 ;
     sh:maxCount 3
   ].
@@ -212,7 +212,7 @@ era-sh:CLDSSShape a sh:NodeShape ;
     sh:path dcterms:requires ;
     sh:name "Supporting IC DOC's" ;
     sh:description "The collections of relevant IC DOC's supporting this subsystem CLD" ;
-    sh:node era:ICDOCCollectionShape;
+    sh:node era-sh:ICDOCCollectionShape;
     sh:minCount 1 ;
     sh:maxCount 2
   ].
@@ -223,7 +223,7 @@ era-sh:ICDOCCollectionShape a sh:NodeShape ;
     sh:path rdfs:member ;
     sh:name "Supporting IC DOCs name" ;
     sh:description "Supporting IC DOCs desc" ;
-    sh:node era:DOCICShape ;
+    sh:node era-sh:DOCICShape ;
     sh:minCount 1 ;
     sh:maxCount 3
   ].
@@ -255,7 +255,7 @@ era-sh:DOCICShape a sh:NodeShape ;
     sh:path dcterms:requires ;
     sh:name "Supporting Interoperability Constituent CLDs" ;
     sh:description "The collections of relevant CLD's supporting this Declaration of Conformity" ;
-    sh:node era:CLDICCollectionShape;
+    sh:node era-sh:CLDICCollectionShape;
     sh:minCount 1 ;
     sh:maxCount 2
   ].
@@ -266,7 +266,7 @@ era-sh:CLDICCollectionShape a sh:NodeShape ;
     sh:path rdfs:member ;
     sh:name "Supporting IC CLDs name" ;
     sh:description "Supporting IC CLDs desc" ;
-    sh:node era:CLDICShape ;
+    sh:node era-sh:CLDICShape ;
     sh:minCount 1 ; sh:maxCount 1
   ].
 

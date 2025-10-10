@@ -39,7 +39,7 @@ Compile reusable collections of evidence documents, and link them to an applicat
 Data available through links is not repeated in the VTA Application. Example: all the VehicleType related info, including the Holder must be retrieved through that `Source`.
 
 ```js
-erava:myDEBOEvidenceForPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
+era-vta:myDEBOEvidenceForPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
   dcterms:description "These are all the DeBo documents we can reuse in the platform A approvals" ;
   vpa:checked [ a vpa:Compliance ; ] # SHOULD contains all details of what was checked exactly, as it is not in the members (of which we only know the identifier strings)
   vpa:supportsScope eratv:vt-myVehicleType ; # These typically are in section 2.1 of the type.
@@ -57,16 +57,16 @@ erava:myDEBOEvidenceForPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
     rdfs:label ”004/1/NNTR/2023/CCO/DE EN/3708.2/V01”
   ] .
 
-erava:myECDeclarationsforPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
+era-vta:myECDeclarationsforPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
   rdfs:label "ECDs for Platform A"@en ;
   dct:description "These are all the EC Declarations we can reuse in the platform A approvals"@en ;
   # vpa:checked [ a vpa:Compliance ; vpa:checkedRequirement <TSI> ; ] is NOT needed, given dcterms:coverage <> of the ECDs.
-  vpa:submittedFor erava:my_app ;  # the link between an application and the evidence submitted
+  vpa:submittedFor era-vta:my_app ;  # the link between an application and the evidence submitted
   rdfs:member eradis:ecd-ecDecl-29745 , eradis:ecd-ecDecl-27125 , eradis:ecd-ecDecl-18025 .
 
-erava:mySpecificCertificatesForPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
+era-vta:mySpecificCertificatesForPlatformA a era:DocumentSet ; # subClassOf vpa:Evidence
   rdfs:label "Specific Pantograph CLD for Platform A"@en ;
-  vpa:submittedFor erava:my_app ;  # the link between an application and the evidence submitted
+  vpa:submittedFor era-vta:my_app ;  # the link between an application and the evidence submitted
   rdfs:member eradis:cld-NoBoCert-12325 .
 ```
 
@@ -89,8 +89,8 @@ See [Presentations](#presentation).
 These presentations SHOULD be signed using a [`Verifiable Credential`](https://www.w3.org/TR/vc-data-model-2.0/#securing-mechanisms) on the data which uniquely defines it (given the presentation itself is not linked data). Both the integrity as the authority to sign should be embedded in the digital signature. A final authorisation could therefore look as follows, but we repeat the need to provide digital signatures for all other reports where legally required:
 
 ```js
-erava:EU812025{nnnn} a era:VehicleTypeAuthorisation ;
-  vpa:requestedIn erava:my_app ; # links to the application
+era-vta:EU812025{nnnn} a era:VehicleTypeAuthorisation ;
+  vpa:requestedIn era-vta:my_app ; # links to the application
   dcterms:identifier "EU812025{nnnn}" ;
   dcterms:created "2025-06-07"^^xsd:date ;
   dcterms:author [ a era:OrganisationRole ; era:hasOrganisationRole era-organisation-roles:AuthorisingEntity ;
@@ -102,7 +102,7 @@ erasign:1234 a vc:VerifiableCredential, era:VehicleTypeAuthorisationCredential ;
   vc:issuer <https://www.era.europa.eu/person/maarten-duhoux> ; # I wish :)
   vc:validFrom "2025-06-10T19:23:24Z" ;
   vc:validUntil "2027-06-09T12:00:00Z" ;
-  vc:credentialSubject erava:EU812025{nnnn} ;
+  vc:credentialSubject era-vta:EU812025{nnnn} ;
   vc:proof [
     vc:type vc:DataIntegrityProof;
     vc:cryptosuite "eddsa-rdfc-2022";

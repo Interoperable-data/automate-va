@@ -41,13 +41,13 @@
 @prefix rorg: <http://data.europa.eu/949/organisations/> .
 @prefix lorg: <http://data.europa.eu/949/organisations/sites/> .
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
+@prefix orgr: <http://data.europa.eu/949/organisations/roles/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix era-vtc: <http://data.europa.eu/949/vehicleTypes/configurations/> .
+@prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix iss: <http://data.europa.eu/949/iss/> . 
-
 
 # Relevant SKOS Concept Schemes
 @prefix era-skos:      <http://data.europa.eu/949/concepts/> .
@@ -59,7 +59,7 @@
 @prefix era-states:      <http://data.europa.eu/949/concepts/states/> .
 @prefix era-va-authcase: <http://data.europa.eu/949/concepts/va-authcases/> .
 @prefix era-vr-regcase: <http://data.europa.eu/949/concepts/vr-regcases/> .
-@prefix era-vtc:         <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
+# unused and double @prefix era-vtc:         <http://data.europa.eu/949/concepts/vehicle-type-configurations/> .
 @prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
 # unused @prefix era-vehicle-types: <http://data.europa.eu/949/concepts/vehicle-types/> .
 @prefix era-ntg-rinf: <http://data.europa.eu/949/concepts/nominal-track-gauges/rinf/> .

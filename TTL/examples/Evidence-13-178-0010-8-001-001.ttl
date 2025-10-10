@@ -43,7 +43,7 @@
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix iss: <http://data.europa.eu/949/iss/> . 
@@ -93,7 +93,7 @@
 
 # 3.1.3.2.5 Certificate of verification and 
 # 3.1.3.2.6 Parameters for which conformity to applicable national rules has been assessed:
-erava:debo-13-178-0010-8-001-001-1 a era:CABEvidence ; # subClassOf vpa:Evidence ;
+era-vta:debo-13-178-0010-8-001-001-1 a era:CABEvidence ; # subClassOf vpa:Evidence ;
     rdfs:label "MIREO DeBo evidence" ;
     rdfs:member "DE008/1/SB/2024/RST/DE/RST-20056/V01", 
         "004/1/NNTR/2023/CCO/DE EN/3708.1U/V01", 
@@ -108,14 +108,14 @@ erava:debo-13-178-0010-8-001-001-1 a era:CABEvidence ; # subClassOf vpa:Evidence
             era:forConfiguration era-vtc:ConfigA  ;
         ] ;
     ] ;	
-    vpa:supportsCase erava:vac-13-178-0010-8-001-001-DE-1 .
+    vpa:supportsCase era-vta:vac-13-178-0010-8-001-001-DE-1 .
 
 # Section 2.2 (subsystem evidence) via vpa:Evidence. 
-erava:nobo-ss-13-178-0010-8-001-001-1 a era:CABEvidence ;
+era-vta:nobo-ss-13-178-0010-8-001-001-1 a era:CABEvidence ;
     rdfs:label "MIREO Subsystem Certificates" ;
     rdfs:member era-cld:cls-NoBoCert-30999 , # 1991/1/SB/2024/RST/DEEN/CRF-10410/V01
         era-cld:cld-NoBoCert-34042 , # 1991/1/SB/2024/RST/DEEN/PRM-10411/V02
         era-cld:cld-NoBoCert-31004 , # 1991/1/SB/2024/RST/DEEN/NOI-10412/V01
         era-cld:cld-NoBoCert-15199 , # 1991/1/SB/2020/RST/DEEN/CRF-10027/V02
         era-cld:cld-NoBoCert-29770 ; # 0893/1/SB/2023/CCO/DEEN/3708/V02
-    vpa:supportsCase erava:vac-13-178-0010-8-001-001-DE-1 .
+    vpa:supportsCase era-vta:vac-13-178-0010-8-001-001-DE-1 .

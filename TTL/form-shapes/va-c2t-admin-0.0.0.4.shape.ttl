@@ -1,0 +1,275 @@
+# ------------------------------ REQUEST (VehicleTypeAuthorisationApplication)
+era-sh:VAApplicationShape a  owl:Class , sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationApplication ;
+    
+    dcterms:created "2024-10-25"^^xsd:date ;
+    dcterms:modified "2025-08-05"^^xsd:date , "2025-09-25"^^xsd:date;
+    dcterms:creator [ 
+        foaf:name "Maarten Duhoux" ;
+        dcterms:source <https://orcid.org/0009-0003-6653-6123> ;
+        org:memberOf <http://publications.europa.eu/resource/authority/corporate-body/ERA>
+    ] ;
+
+    ## definitions ----------
+    rdfs:label "Application for Vehicle (type) Authorisation"@en;
+    rdfs:isDefinedBy <http://data.europa.eu/949/> ;
+    dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/cpt_5/oj> , <http://data.europa.eu/eli/reg_impl/2018/545/anx_I/oj> ;
+    rdfs:seeAlso "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#cpt_5";
+    rdfs:comment """Application for Vehicle(type) authorisation
+    
+    Set of resources together containing the information of Annex I of the (EU)2018/545, in order to receive the Authorisation.
+
+    All information is grouped in the applications' authorisation cases and their scope, except:
+    - the issue date of the application
+    - the resulting authorisation
+    """@en ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:issued ;
+        sh:datatype xsd:date ;
+        sh:nodekind sh:Literal ;
+        sh:description "The date of issue of the Application. Currently: submission date in OSS."
+    ];
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:requestFor ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisation ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:description "The authorisation that this application requests."
+    ] ;
+    
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path [
+            sh:inversePath vpa:supports
+        ] ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisationCase ;
+        sh:minCount 1 ;
+        sh:description "The authorisation case(s) that support this application."
+    ] .
+
+
+# ------------------------------ PERMISSION (era:VehicleTypeAuthorisation)
+era-sh:VVTAuthorisationShape a owl:Class , sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisation ;
+
+    dcterms:created "2024-10-25"^^xsd:date ;
+    dcterms:modified "2025-08-05"^^xsd:date , "2025-09-25"^^xsd:date;
+    dcterms:creator [ 
+        foaf:name "Maarten Duhoux" ;
+        dcterms:source <https://orcid.org/0009-0003-6653-6123> ;
+        org:memberOf <http://publications.europa.eu/resource/authority/corporate-body/ERA>
+    ] ;
+
+    ## definitions ----------
+    rdfs:label "Vehicle Type Authorisation"@en ;
+    rdfs:isDefinedBy <http://data.europa.eu/949/> ;
+    dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/art_2/oj>, 
+        <http://data.europa.eu/eli/dec/2008/768(1)/oj>, 
+        <http://data.europa.eu/eli/dir/2016/797/2020-05-28>,
+        <http://data.europa.eu/eli/reg_impl/2019/250/2020-06-16>,
+        <http://data.europa.eu/eli/dec/2010/713/oj> ;    
+    rdfs:seeAlso "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32018R0545#art_2" ;
+    rdfs:comment """Vehicle Type Authorisation: 
+    
+    A decision issued by the authorising entity based on reasonable assurance that the applicant and the entities involved in the design, manufacture, verification and validation of the authorisation scope have fulfilled their (respective) obligations and responsibilities in order to ensure conformity with the essential requirements of the applicable legislation.
+    
+    Based on definition (15):
+    Scope of ‘vehicle authorisation for placing on the market’ means an `individual vehicle` while 
+    - ensuring conformity with the authorised type enabling that the vehicle may be placed on the market; and which
+    - may be used safely in the area of use according to the conditions for use and other restrictions, when applicable, specified in the vehicle authorisation and in the vehicle type authorisation;
+    Data model: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#art_49
+
+    Based on definition (16):
+    Scope of ‘vehicle type authorisation’ means the `vehicle type` while 
+    - enabling that a vehicle manufactured according to this design may be placed on the market; and which
+    - may be used safely in the area of use of the vehicle type according to the conditions for use of the vehicle and other restrictions, when applicable, specified in the vehicle type authorisation and to be applied to all vehicle authorised in conformity to this type;
+    Data model: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#art_48"""@en ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:identifier ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:pattern "^[A-Z]{2}[0-9]{10}$" ;
+        sh:description "Authorisation document reference (e.g., EU8020240152, DE5920191006)"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:issued ;
+        sh:datatype xsd:date ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:description "The date when the authorisation was issued"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:vehicleTypeAuthorisationHolder ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class era:OrganisationRole ;
+        sh:minCount 1 ; sh:maxCount 1 ;
+        sh:node [
+            sh:property [
+                sh:path era:roleOf ;
+                sh:nodeKind sh:IRI ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+            ] ;
+            sh:property [
+                sh:path era:hasOrganisationRole ;
+                sh:nodeKind sh:IRI ;
+                sh:hasValue era-organisation-roles:Holder ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+            ]
+        ] ;
+        sh:description "The organisation holding this authorisation"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:title ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Optional title or reference of the authorisation document"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path rdfs:comment ;
+        sh:datatype xsd:string ;
+        sh:nodeKind sh:Literal ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Optional additional information about the authorisation"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path dcterms:isReplacedBy ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisation ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Link to a newer version that replaces this authorisation"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:valid ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class time:ProperInterval ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:node [
+            sh:property [
+                sh:path time:hasBeginning ;
+                sh:datatype xsd:date ;
+                sh:minCount 1 ; sh:maxCount 1 ;
+            ] ;
+            sh:property [
+                sh:path time:hasDurationDescription ;
+                sh:nodeKind sh:BlankNode ;
+                sh:minCount 0 ; sh:maxCount 1 ;
+                sh:node [
+                    sh:property [
+                        sh:path time:years ;
+                        sh:datatype xsd:integer ;
+                        sh:minCount 1 ; sh:maxCount 1 ;
+                        sh:hasValue 10 ;
+                    ]
+                ]
+            ]
+        ] ;
+        sh:description "Validity period of the authorisation (typically 10 years)"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path [
+            sh:inversePath vpa:requestFor
+        ] ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisationApplication ;
+        sh:minCount 0 ;
+        sh:description "The application(s) that requested this authorisation"
+    ] .
+
+era-sh:VehicleTypeAuthorisationCaseShape a owl:Class , sh:NodeShape ;
+    sh:targetClass era:VehicleTypeAuthorisationCase ;
+    
+    dcterms:created "2024-10-25"^^xsd:date ;
+    dcterms:modified "2025-08-05"^^xsd:date , "2025-09-25"^^xsd:date;
+    dcterms:creator [ 
+        foaf:name "Maarten Duhoux" ;
+        dcterms:source <https://orcid.org/0009-0003-6653-6123> ;
+        org:memberOf <http://publications.europa.eu/resource/authority/corporate-body/ERA>
+    ] ;
+
+    ## definitions ----------
+    rdfs:label "Vehicle Type Authorisation Case"@en;
+    dcterms:source <http://data.europa.eu/eli/reg_impl/2018/545/art_14/oj>, <http://data.europa.eu/eli/dir/2016/797/2020-05-28> ;
+    rdfs:seeAlso "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02018R0545-20200616#art_14" ;
+    rdfs:comment """Vehicle Type Authorisation Case
+    
+    One of 5 ways of applying for a vehicle type authorisation as defined in Article 14 depending on the need of the Applicant. 
+    Note that it is allowed to combine SOME application cases in one application, so several authorisation cases are allowed to be combined, each with their own scope."""@en;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:configDependentCondition ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
+        sh:class era:VehicleTypeAuthorisationCheck ;
+        sh:minCount 0 ;
+        sh:description "Configuration-dependent conditions for this case"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:configDependentCompliance ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class era:VehicleTypeAuthorisationCheck ;
+        sh:minCount 0 ;
+        sh:description "Configuration-dependent compliance checks for this case"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path era:safetyDeclaration ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "Safety declaration reference"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:supports ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleTypeAuthorisationApplication ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "The application that this case supports"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path vpa:supportsRequest ;
+        sh:nodeKind sh:BlankNode ;
+        sh:class vpa:Request ;
+        sh:minCount 0 ; sh:maxCount 1 ;
+        sh:description "The request that this case supports (can be a blank node for pre-4RP cases)"
+    ] ;
+
+    sh:property [
+        a sh:PropertyShape ;
+        sh:path [
+            sh:inversePath vpa:definesCase
+        ] ;
+        sh:nodeKind sh:IRI ;
+        sh:class era:VehicleType ;
+        sh:minCount 0 ;
+        sh:description "Vehicle types that define this case (inverse relationship)"
+    ] .

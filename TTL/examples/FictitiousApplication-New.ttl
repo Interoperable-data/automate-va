@@ -35,7 +35,7 @@
 @prefix eralex-pava: <http://data.europa.eu/949/requirements/legislations/pava/> .
 @prefix erapod: <https://storage.inrupt.com/ea779a2c-b43d-4723-8b1a-aaa8990dd576/data/eradis/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix erava-orgroletasks: <http://data.europa.eu/949/concepts/org-role-tasks/> .
 @prefix erava-tsi-conforms: <http://data.europa.eu/949/concepts/tsi-conformities/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
@@ -192,7 +192,7 @@ eravr:vrc-71-001-0001-1-001-US-3 a era:VehicleRegistrationCase ;
     vpa:concerns evr:vs-batmobiles-002 .
 
 ## VA-data
-erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
+era-vta:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # subClassOf vpa:Request ;
     rdfs:label "Authorisation project of the Batman spacial railway Vehicle"@de ;
     
     era:preEngagementBaseline [ a era:PreEngagement ; era:hasPreEngagementBaseline true ; era:preEngagementBaseline "https://example.com/pre-engagement-baseline" ] ; # TEST: I-9 SHACL OK
@@ -203,11 +203,11 @@ erava:va-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationApplication ; # su
     dcterms:identifier "VA-20250715-001" ;
     # dcterms:issued "2025-01-01"^^xsd:date ; # UNTESTED
     
-    vpa:constitutedBy erava:vac-71-001-0001-1-001-US-1 ;
-    vpa:requestFor erava:71-001-0001-1-001-US-1 ; # Applicant can only add them when having received the Authorisation.
+    vpa:constitutedBy era-vta:vac-71-001-0001-1-001-US-1 ;
+    vpa:requestFor era-vta:71-001-0001-1-001-US-1 ; # Applicant can only add them when having received the Authorisation.
     rdfs:comment "To combat terror on the Gotham Railway system, we need the approval to place on the market."@en .
 
-erava:vac-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
+era-vta:vac-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationCase ; # subClassOf vpa:Case
     vpa:permissionType era-va-authcase:NEW ; # TEST I-7 SHACL OK: first authorisation requires absence of dcterms:issued on the type.
     # I-7 holder test ok: invalid with first authorisation, not NEW.
     era:typeRegistrationMethod era-va-trm:NewType ;
@@ -215,42 +215,42 @@ erava:vac-71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisationCase ; # subClass
     era:areaOfUse <http://publications.europa.eu/resource/authority/country/DEU> ;
     era:authorisingMemberState <http://publications.europa.eu/resource/authority/country/DEU> ; 
     vpa:concerns eratv:vt-71-001-0001-1-001 , evr:bat-mobile-metro-001 , evr:bat-mobile-metro-002 ;
-    vpa:constitutes erava:va-71-001-0001-1-001-US-1 .
+    vpa:constitutes era-vta:va-71-001-0001-1-001-US-1 .
 
-erava:71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisation ;
+era-vta:71-001-0001-1-001-US-1 a era:VehicleTypeAuthorisation ;
     dcterms:identifier "EU/81/2025/0001" ;
-    dcterms:replaces erava:V-20200101-001 ; # I-12: previous authorisation
+    dcterms:replaces era-vta:V-20200101-001 ; # I-12: previous authorisation
     # NOT YET dcterms:issued
     # dcterms:issued "2025-01-01"^^xsd:date ; # TEST
     # NOT YET vpa:valid
     # I-7 TEST OK: era:vehicleTypeAuthorisationHolder orgr:Wayne_Manufacturer ;
-    vpa:requestedIn erava:va-71-001-0001-1-001-US-1 .
+    vpa:requestedIn era-vta:va-71-001-0001-1-001-US-1 .
 
 # I-12: previous authorisation
 # TODO: process in order to assure these triples exist at the time of issuing the new application?
-erava:V-20200101-001 a era:VehicleTypeAuthorisation ;
+era-vta:V-20200101-001 a era:VehicleTypeAuthorisation ;
     dcterms:identifier "EU/81/2020/0786" ;
     dcterms:issued "2020-01-01"^^xsd:date ; # Previous authorisation
-    # dcterms:isReplacedBy erava:71-001-0001-1-001-US-1 ; # FIXME: how is this triple written?
+    # dcterms:isReplacedBy era-vta:71-001-0001-1-001-US-1 ; # FIXME: how is this triple written?
     vpa:valid [ a time:ProperInterval ;
       time:hasBeginning "2020-01-01"^^xsd:date ;
       time:hasEnd "2025-01-01"^^xsd:date ] ;
-    vpa:requestedIn erava:va-71-001-0001-1-001-US-previous ;
+    vpa:requestedIn era-vta:va-71-001-0001-1-001-US-previous ;
     era:vehicleTypeAuthorisationHolder orgr:Wayne_Manufacturer .
 
 # Previous application/case (minimal sketch)
-erava:va-71-001-0001-1-001-US-previous a era:VehicleTypeAuthorisationApplication ;
-    vpa:requestFor erava:V-20200101-001 ;
-    vpa:constitutedBy erava:vac-71-001-0001-1-001-US-previous .
+era-vta:va-71-001-0001-1-001-US-previous a era:VehicleTypeAuthorisationApplication ;
+    vpa:requestFor era-vta:V-20200101-001 ;
+    vpa:constitutedBy era-vta:vac-71-001-0001-1-001-US-previous .
 
-erava:vac-71-001-0001-1-001-US-previous a era:VehicleTypeAuthorisationCase ;
+era-vta:vac-71-001-0001-1-001-US-previous a era:VehicleTypeAuthorisationCase ;
     vpa:permissionType era-va-authcase:FA ;           # or EXT, etc.
     vpa:concerns eratv:vt-71-001-0001-1-001 .
 
 # VA-Library
 gotham:someNoBoCertificates a era:CABEvidence ;
     rdfs:member era-cld:cld-NoBoCert-15571 , era-cld:cld-NoBoCert-25403 , era-cld:cld-NoBoCert-32963    ;
-    vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 ;
+    vpa:supportsCase era-vta:vac-71-001-0001-1-001-US-1 ;
     rdfs:label "A set of real NoBo certificates for testing purposes"@en .
 
 gotham:debo-71-001-0001-1-001-US a era:CABEvidence ;
@@ -265,7 +265,7 @@ gotham:debo-71-001-0001-1-001-US a era:CABEvidence ;
         era:nonCodedRestrictions "Should not be exposed to extra-terrestrial blast weapons"@en
       ]
     ] ;	
-    vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 .
+    vpa:supportsCase era-vta:vac-71-001-0001-1-001-US-1 .
 
 gotham:nobo-71-001-0001-1-001-US a era:CABEvidence ;
   rdfs:label "NoBo covered declarations";
@@ -279,7 +279,7 @@ gotham:nobo-71-001-0001-1-001-US a era:CABEvidence ;
       era:nonCodedRestrictions "Not allowed on EU Railways, only to be used in Gotham metro."@en
     ]
   ] ;	
-  vpa:supportsCase erava:vac-71-001-0001-1-001-US-1 .
+  vpa:supportsCase era-vta:vac-71-001-0001-1-001-US-1 .
 
 
 ## ERADIS

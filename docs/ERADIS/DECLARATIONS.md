@@ -17,7 +17,7 @@ A Declaration of Conformity should be able to cover a large collection of IC's, 
 
 For EC Certificates, [see this document](CERTIFICATES.md).
 
-`era:ECDeclaration a vpa:DocumentedEvidence ;` are, like certificates, instantiated from ERADIS data, and complemented by verifiable credentials (under design).
+`era:ECDeclaration rdfs:subClassOf vpa:DocumentedEvidence ;` are, like certificates, instantiated from ERADIS data, and complemented by verifiable credentials (under design).
 
 ### Issuer
 
@@ -49,12 +49,12 @@ Declarations MUST hence refer to Certificate sets, so grouped together as per ve
 As explained, the data model most provide for sets of certificates, together forming at least one basis for the declaration. This means that some certificates will be linked more than once, if they can be combined with others, together forming another basis set for the declaration. An example will clarify the approach and used properties:
 
 ```csharp
-era:doc-uuid_of_document a era:ECDeclaration ;
+era-ecd:doc-uuid_of_document a era:ECDeclaration ;
         dct:issued "issue_date"^^xsd:date ;
         //# vpa:valid should NOT be used for declarations: the validity must be deduced from the underlying certificates! 
         //# refences to the certificate sets:
         dct:references [
-            a era:CertificateSet ;
+            a era:CABEvidence ;
             dct:hasPart IRI_to_Certificate_A , IRI_to_Certificate_B ;
         ], [
             //# another certificate set

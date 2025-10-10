@@ -43,7 +43,7 @@
 @prefix uorg: <http://data.europa.eu/949/organisations/units/> .
 @prefix eratv: <http://data.europa.eu/949/vehicleTypes/> .
 @prefix era-cfg: <http://data.europa.eu/949/vehicleTypes/configurations/> .
-@prefix erava: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
+@prefix era-vta: <http://data.europa.eu/949/vehicleTypes/authorisations/> .
 @prefix eravr: <http://data.europa.eu/949/vehicles/registrations/> .
 @prefix evr: <http://data.europa.eu/949/vehicles/> .
 @prefix iss: <http://data.europa.eu/949/iss/> . 
@@ -86,7 +86,7 @@
 
 # Properties to be post-processed, if shacl-form 
 @prefix update: <http://data.europa.eu/949/update/> .
-era:RailTransportLicenceShape a sh:NodeShape ;
+era-sh:RailTransportLicenceShape a sh:NodeShape ;
   sh:targetClass era:RailTransportLicense ;
   # 1. Licence issuing State
     # [ sh:name "Issuing State" ;
@@ -126,7 +126,7 @@ era:RailTransportLicenceShape a sh:NodeShape ;
     [ sh:name "Railway Undertaking" ;
       sh:path dcterms:audience ;
       sh:minCount 1 ; sh:maxCount 1 ;
-      sh:node era:LicenseHolderOrgRoleShape ;
+      sh:node era-sh:LicenseHolderOrgRoleShape ;
       sh:group issform:HOLDER
     ];
 
@@ -134,7 +134,7 @@ era:RailTransportLicenceShape a sh:NodeShape ;
     sh:property 
     [ sh:name "Valid from" ;
       sh:path vpa:valid ;
-      sh:node era:LicenseValidityShape ;
+      sh:node era-sh:LicenseValidityShape ;
       sh:minCount 1 ; sh:maxCount 1 ;
       sh:group issform:VALIDITY
     ],
@@ -194,7 +194,7 @@ era:RailTransportLicenceShape a sh:NodeShape ;
 
   # Name OR role (to convert into URI!)
 # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
-era:LicenseHolderOrgRoleShape a sh:NodeShape ;
+era-sh:LicenseHolderOrgRoleShape a sh:NodeShape ;
   sh:targetClass era:OrganisationRole ;
   sh:property [
     sh:name "Railway Undertaking Role" ;
@@ -209,17 +209,17 @@ era:LicenseHolderOrgRoleShape a sh:NodeShape ;
     sh:maxCount 1 ;
     sh:name "Confirm Railway Undertaking" ;
     sh:or (
-      [ sh:node era:ByNameShape ; 
+      [ sh:node era-sh:ByNameShape ; 
         sh:name "Railway Undertaking Name" ]
       [ 
-        sh:node era:ByCodeShape ; 
+        sh:node era-sh:ByCodeShape ; 
         sh:name "Railway Undertaking Code" ]
     )
   ] .
 
 
   # The Applicant must be identified with its OrgCode, it MUST be converted into a URI.
-  era:LAOrgRoleShape a sh:NodeShape ;
+  era-sh:LAOrgRoleShape a sh:NodeShape ;
     sh:targetClass era:OrganisationRole ;
     sh:property [
       # For conversion to an org URI
@@ -228,10 +228,10 @@ era:LicenseHolderOrgRoleShape a sh:NodeShape ;
       sh:minCount 1 ;
       sh:maxCount 1 ;
       sh:or (
-        [ sh:node era:ByNameShape ; 
+        [ sh:node era-sh:ByNameShape ; 
           sh:name "Licensing Authority Name" ]
         [ 
-          sh:node era:ByCodeShape ; 
+          sh:node era-sh:ByCodeShape ; 
           sh:name "Licensing Authority Code" ]
       )
     ];
@@ -245,7 +245,7 @@ era:LicenseHolderOrgRoleShape a sh:NodeShape ;
     ].
 
   # Id By Name
-  era:ByNameShape a sh:NodeShape ;
+  era-sh:ByNameShape a sh:NodeShape ;
     sh:targetClass era:Body ;
     sh:property [
       sh:path era:roleOf ;
@@ -256,7 +256,7 @@ era:LicenseHolderOrgRoleShape a sh:NodeShape ;
     ].
 
   # Id by orgCode
-  era:ByCodeShape a sh:NodeShape ;
+  era-sh:ByCodeShape a sh:NodeShape ;
     sh:targetClass era:Body;
     sh:property [
       sh:path era:orgCode ;
@@ -268,7 +268,7 @@ era:LicenseHolderOrgRoleShape a sh:NodeShape ;
 
 
   # Validity is a time: instance
-  era:LicenseValidityShape  a sh:NodeShape ;
+  era-sh:LicenseValidityShape  a sh:NodeShape ;
     sh:targetClass time:Interval ;
     sh:property [
       sh:name "Starting date" ;
@@ -303,16 +303,16 @@ era:LicenseHolderOrgRoleShape a sh:NodeShape ;
 # LICENCE INFORMATION FOR THE PERFORMANCE OF RAIL TRANSPORT SERVICES
 
 issform:ISSUING a sh:PropertyGroup ;
-  rdfs:label "1 - LICENCE INFORMATION FOR THE PERFORMANCE OF RAIL TRANSPORT SERVICES"@en ;
+  rdfs:label "1 - LICENCE INFORMATION FOR THE PERFORMANCE OF RAIL TRANSPORT SERVICES"@en .
 
 issform:HOLDER a sh:PropertyGroup ;
-  rdfs:label "2 - Licence Holder"@en ;
+  rdfs:label "2 - Licence Holder"@en .
 
 issform:VALIDITY a sh:PropertyGroup ;
-  rdfs:label "3 - Validity"@en ;
+  rdfs:label "3 - Validity"@en .
 
 issform:AMENDMENT a sh:PropertyGroup ;
-  rdfs:label "4 - Amendments"@en ;
+  rdfs:label "4 - Amendments"@en .
 
 issform:CONDITIONS a sh:PropertyGroup ;
   rdfs:label "5 - Conditions and Obligations"@en .
