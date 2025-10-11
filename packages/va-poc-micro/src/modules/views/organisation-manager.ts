@@ -1,6 +1,6 @@
 import { Parser } from 'n3';
 import rdfDataFactory from '@rdfjs/data-model';
-import type { Quad, Term, NamedNode } from '@rdfjs/types';
+import type { Quad, Term, NamedNode, DatasetCore } from '@rdfjs/types';
 import type { GraphStore } from '../data/graph-store';
 import type { LoadedShape } from '../data/organisation-shapes';
 import { discoverShapeDescriptors, type ShapeDescriptor } from '../data/shape-descriptors';
@@ -14,6 +14,9 @@ const RDFS_LABEL_IRI = 'http://www.w3.org/2000/01/rdf-schema#label';
 const RDF_TYPE = rdfDataFactory.namedNode(RDF_TYPE_IRI);
 const SKOS_PREF_LABEL = rdfDataFactory.namedNode(SKOS_PREF_LABEL_IRI);
 const RDFS_LABEL = rdfDataFactory.namedNode(RDFS_LABEL_IRI);
+const RDFS_SUBCLASS_OF = rdfDataFactory.namedNode(
+  'http://www.w3.org/2000/01/rdf-schema#subClassOf'
+);
 
 const ORG_FORMAL_ORGANIZATION = 'https://www.w3.org/ns/org#FormalOrganization';
 const ORG_ORGANIZATION = 'https://www.w3.org/ns/org#Organization';
@@ -22,6 +25,7 @@ const ORG_ROLE = 'https://www.w3.org/ns/org#Role';
 const ORG_SITE = 'https://www.w3.org/ns/org#Site';
 const DCTERMS_LOCATION = 'http://purl.org/dc/terms/Location';
 const LOCN_ADDRESS = 'http://www.w3.org/ns/locn#Address';
+const ERA_ORGANISATION_ROLE = 'http://data.europa.eu/949/OrganisationRole';
 
 interface OrganisationManagerOptions {
   container: HTMLElement;
@@ -88,7 +92,7 @@ export async function initOrganisationManagerView(
   const { container, store, shapes } = options;
 
   const descriptors = discoverShapeDescriptors(shapes.dataset);
-  const descriptorBuckets = categorizeDescriptors(descriptors);
+  const descriptorBuckets = categorizeDescriptors(descriptors, shapes.dataset);
   const layout = buildLayout(container);
 
   interface ModalHandle {
@@ -459,16 +463,22 @@ function buildLayout(container: HTMLElement) {
 }
 
 // Buckets shapes into the column that matches their target class semantics.
-function categorizeDescriptors(descriptors: ShapeDescriptor[]): DescriptorBuckets {
+function categorizeDescriptors(
+  descriptors: ShapeDescriptor[],
+  dataset: DatasetCore
+): DescriptorBuckets {
   const buckets: DescriptorBuckets = { roles: [], organisations: [], sites: [] };
 
   descriptors.forEach((descriptor) => {
-    const target = descriptor.targetClass.value;
-
-    if (target === ORG_ROLE) {
+    if (
+      isTargetClass(descriptor.targetClass, ORG_ROLE, dataset) ||
+      descriptor.targetClass.value === ERA_ORGANISATION_ROLE
+    ) {
       buckets.roles.push(descriptor);
       return;
     }
+
+    const target = descriptor.targetClass.value;
 
     if (target === ORG_SITE || target === DCTERMS_LOCATION || target === LOCN_ADDRESS) {
       buckets.sites.push(descriptor);
@@ -489,6 +499,37 @@ function categorizeDescriptors(descriptors: ShapeDescriptor[]): DescriptorBucket
   });
 
   return buckets;
+}
+
+function isTargetClass(target: NamedNode, parentIri: string, dataset: DatasetCore): boolean {
+  if (target.value === parentIri) {
+    return true;
+  }
+
+  const parent = rdfDataFactory.namedNode(parentIri);
+  const visited = new Set<string>();
+
+  const hasSubclass = (candidate: NamedNode): boolean => {
+    if (visited.has(candidate.value)) {
+      return false;
+    }
+    visited.add(candidate.value);
+
+    for (const quad of dataset.match(candidate, RDFS_SUBCLASS_OF, undefined)) {
+      if (quad.object.termType !== 'NamedNode') {
+        continue;
+      }
+      if (quad.object.value === parent.value) {
+        return true;
+      }
+      if (hasSubclass(quad.object)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  return hasSubclass(target);
 }
 
 async function fetchResources(
