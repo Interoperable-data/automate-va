@@ -5,6 +5,7 @@ export const DEFAULT_PREFIXES = {
   era: 'http://data.europa.eu/949/',
   org: 'https://www.w3.org/ns/org#',
   skos: 'http://www.w3.org/2004/02/skos/core#',
+  locn: 'http://www.w3.org/ns/locn#',
   rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
   rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
   xsd: 'http://www.w3.org/2001/XMLSchema#',

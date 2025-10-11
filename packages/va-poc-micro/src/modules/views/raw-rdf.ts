@@ -48,11 +48,15 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
       const quads = await store.getQuads();
       lastTripleCount = quads.length;
       lastSerialized = await serializeQuads(quads, currentFormat);
-      layout.output.textContent = lastSerialized || '# Dataset is empty.';
+      renderOutput(layout.output, lastSerialized || '# Dataset is empty.', currentFormat);
       layout.status.textContent = formatStatus(lastTripleCount, currentFormat);
     } catch (error) {
       console.error('[raw-rdf] Failed to serialize dataset', error);
-      layout.output.textContent = `# Unable to render dataset\n# ${extractMessage(error)}`;
+      renderOutput(
+        layout.output,
+        `# Unable to render dataset\n# ${extractMessage(error)}`,
+        currentFormat
+      );
       layout.status.textContent = 'Failed to refresh dataset.';
     } finally {
       pending = false;
@@ -225,4 +229,58 @@ function extractMessage(error: unknown): string {
     return error.message;
   }
   return String(error);
+}
+
+function renderOutput(host: HTMLElement, content: string, format: RdfSerializationFormat): void {
+  if (format === 'text/turtle') {
+    host.innerHTML = highlightTurtle(content);
+    return;
+  }
+  host.textContent = content;
+}
+
+function highlightTurtle(content: string): string {
+  if (!content) {
+    return '';
+  }
+
+  const tokenPattern = /<[^>]*>|"(?:[^"\\]|\\.)*"/g;
+  let result = '';
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = tokenPattern.exec(content)) !== null) {
+    const preceding = content.slice(lastIndex, match.index);
+    if (preceding) {
+      result += escapeHtml(preceding);
+    }
+
+    const token = match[0];
+    if (token.startsWith('<')) {
+      const className = token.endsWith('#graph>')
+        ? 'rdf-token rdf-token--iri rdf-token--iri-graph'
+        : 'rdf-token rdf-token--iri';
+      result += `<span class="${className}">${escapeHtml(token)}</span>`;
+    } else {
+      result += `<span class="rdf-token rdf-token--literal">${escapeHtml(token)}</span>`;
+    }
+
+    lastIndex = tokenPattern.lastIndex;
+  }
+
+  const remainder = content.slice(lastIndex);
+  if (remainder) {
+    result += escapeHtml(remainder);
+  }
+
+  return result;
+}
+
+function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

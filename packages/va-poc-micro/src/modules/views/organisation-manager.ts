@@ -15,6 +15,14 @@ const RDF_TYPE = rdfDataFactory.namedNode(RDF_TYPE_IRI);
 const SKOS_PREF_LABEL = rdfDataFactory.namedNode(SKOS_PREF_LABEL_IRI);
 const RDFS_LABEL = rdfDataFactory.namedNode(RDFS_LABEL_IRI);
 
+const ORG_FORMAL_ORGANIZATION = 'https://www.w3.org/ns/org#FormalOrganization';
+const ORG_ORGANIZATION = 'https://www.w3.org/ns/org#Organization';
+const ORG_ORGANIZATIONAL_UNIT = 'https://www.w3.org/ns/org#OrganizationalUnit';
+const ORG_ROLE = 'https://www.w3.org/ns/org#Role';
+const ORG_SITE = 'https://www.w3.org/ns/org#Site';
+const DCTERMS_LOCATION = 'http://purl.org/dc/terms/Location';
+const LOCN_ADDRESS = 'http://www.w3.org/ns/locn#Address';
+
 interface OrganisationManagerOptions {
   container: HTMLElement;
   store: GraphStore;
@@ -34,6 +42,40 @@ interface ResourceRecord {
 
 type ResourceIdentifiers = Pick<ResourceRecord, 'subject' | 'graph'>;
 
+interface DescriptorBuckets {
+  roles: ShapeDescriptor[];
+  organisations: ShapeDescriptor[];
+  sites: ShapeDescriptor[];
+}
+
+interface ResourceColumnElements {
+  roles: HTMLElement;
+  organisations: HTMLElement;
+  sites: HTMLElement;
+}
+
+type ColumnKey = keyof DescriptorBuckets;
+
+const COLUMN_COPY: Record<ColumnKey, { title: string; description: string; empty: string }> = {
+  roles: {
+    title: 'Roles & assignments',
+    description: 'Define organisational roles and link them to units or sites.',
+    empty: 'No role shapes available yet.',
+  },
+  organisations: {
+    title: 'Organisations & units',
+    description: 'Capture organisations and their units that participate in the application.',
+    empty: 'No organisation shapes available yet.',
+  },
+  sites: {
+    title: 'Sites & locations',
+    description: 'Record sites, facilities, and related location information.',
+    empty: 'No site or location shapes available yet.',
+  },
+} as const;
+
+const COLUMN_ORDER: ColumnKey[] = ['roles', 'organisations', 'sites'];
+
 type ShaclFormElement = HTMLElement & {
   serialize: (format?: string) => string;
   validate: (ignoreEmptyValues?: boolean) => Promise<boolean>;
@@ -46,6 +88,7 @@ export async function initOrganisationManagerView(
   const { container, store, shapes } = options;
 
   const descriptors = discoverShapeDescriptors(shapes.dataset);
+  const descriptorBuckets = categorizeDescriptors(descriptors);
   const layout = buildLayout(container);
 
   interface ModalHandle {
@@ -59,7 +102,7 @@ export async function initOrganisationManagerView(
     layout.emptyState.textContent =
       'Add targetable NodeShapes to the shapes graph to start managing resources.';
     layout.emptyState.hidden = false;
-    layout.resourceList.hidden = true;
+    layout.resourceListRoot.hidden = true;
     return {
       activate() {
         // Nothing to activate without shapes to drive the manager.
@@ -69,6 +112,11 @@ export async function initOrganisationManagerView(
 
   let resources: ResourceRecord[] = [];
   let selectedSubject: string | null = null;
+
+  const handleCreate = (descriptor: ShapeDescriptor) => {
+    selectedSubject = null;
+    void openForm(descriptor);
+  };
 
   await refreshResourceList();
 
@@ -185,20 +233,16 @@ export async function initOrganisationManagerView(
     { keepSelection = false }: { keepSelection?: boolean } = {}
   ) {
     resources = await fetchResources(store, descriptors);
-    renderResourceList(layout.resourceList, descriptors, resources, {
+    renderResourceList(layout.resourceColumns, descriptorBuckets, resources, {
       onSelect(resource) {
         selectedSubject = resource.subject;
         void openForm(resource.descriptor, resource);
       },
-      onCreate(descriptor) {
-        selectedSubject = null;
-        void openForm(descriptor);
-      },
+      onCreate: handleCreate,
       highlightSubject:
         highlightSubject ?? (keepSelection ? selectedSubject ?? undefined : undefined),
     });
-    layout.emptyState.hidden = resources.length > 0 || descriptors.length > 0;
-    layout.resourceList.hidden = descriptors.length === 0;
+    layout.emptyState.hidden = resources.length > 0;
   }
 
   async function openForm(descriptor: ShapeDescriptor, existing?: ResourceRecord) {
@@ -351,19 +395,38 @@ function buildLayout(container: HTMLElement) {
     <section class="panel panel--stacked">
       <header class="panel__header">
         <h2 class="panel__title">Manage organisation data</h2>
-        <p class="panel__body">Create holdings, organisations, and units. Saved entries appear below and remain grouped by their SHACL class.</p>
       </header>
       <p class="panel__body panel__body--muted" data-role="empty-state" hidden>No organisation data stored locally yet.</p>
-      <div class="resource-list" data-role="resource-list"></div>
+      <div class="resource-list" data-role="resource-list">
+        <div class="resource-list__column resource-list__column--roles" data-column="roles"></div>
+        <div class="resource-list__column resource-list__column--organisations" data-column="organisations"></div>
+        <div class="resource-list__column resource-list__column--sites" data-column="sites"></div>
+      </div>
     </section>
     <div data-role="modal-host"></div>
   `;
 
   return {
-    resourceList: assert(
+    resourceListRoot: assert(
       container.querySelector<HTMLElement>('[data-role="resource-list"]'),
-      'Resource list host missing'
+      'Resource list root missing'
     ),
+    resourceColumns: {
+      roles: assert(
+        container.querySelector<HTMLElement>('[data-role="resource-list"] [data-column="roles"]'),
+        'Resource roles column missing'
+      ),
+      organisations: assert(
+        container.querySelector<HTMLElement>(
+          '[data-role="resource-list"] [data-column="organisations"]'
+        ),
+        'Resource organisations column missing'
+      ),
+      sites: assert(
+        container.querySelector<HTMLElement>('[data-role="resource-list"] [data-column="sites"]'),
+        'Resource sites column missing'
+      ),
+    },
     emptyState: assert(
       container.querySelector<HTMLElement>('[data-role="empty-state"]'),
       'Empty state paragraph missing'
@@ -373,6 +436,39 @@ function buildLayout(container: HTMLElement) {
       'Modal host missing'
     ),
   } as const;
+}
+
+// Buckets shapes into the column that matches their target class semantics.
+function categorizeDescriptors(descriptors: ShapeDescriptor[]): DescriptorBuckets {
+  const buckets: DescriptorBuckets = { roles: [], organisations: [], sites: [] };
+
+  descriptors.forEach((descriptor) => {
+    const target = descriptor.targetClass.value;
+
+    if (target === ORG_ROLE) {
+      buckets.roles.push(descriptor);
+      return;
+    }
+
+    if (target === ORG_SITE || target === DCTERMS_LOCATION || target === LOCN_ADDRESS) {
+      buckets.sites.push(descriptor);
+      return;
+    }
+
+    if (
+      target === ORG_FORMAL_ORGANIZATION ||
+      target === ORG_ORGANIZATION ||
+      target === ORG_ORGANIZATIONAL_UNIT
+    ) {
+      buckets.organisations.push(descriptor);
+      return;
+    }
+
+    // Default to the organisations column so new shapes stay visible.
+    buckets.organisations.push(descriptor);
+  });
+
+  return buckets;
 }
 
 async function fetchResources(
@@ -409,68 +505,81 @@ interface RenderResourceListOptions {
 }
 
 function renderResourceList(
-  host: HTMLElement,
-  descriptors: ShapeDescriptor[],
+  columns: ResourceColumnElements,
+  buckets: DescriptorBuckets,
   items: ResourceRecord[],
   options: RenderResourceListOptions
 ): void {
-  host.replaceChildren();
+  COLUMN_ORDER.forEach((key) => {
+    const host = columns[key];
+    const descriptors = buckets[key];
 
-  descriptors.forEach((descriptor) => {
-    const subset = items.filter((item) => item.descriptor.shape.equals(descriptor.shape));
+    host.replaceChildren();
 
-    const section = document.createElement('section');
-    section.className = 'resource-list__group';
-
-    const heading = document.createElement('h3');
-    heading.className = 'resource-list__heading';
-    heading.textContent = descriptor.pluralLabel;
-    section.append(heading);
-
-    const description = document.createElement('p');
-    description.className = 'resource-list__description';
-    description.textContent = descriptor.description;
-    section.append(description);
-
-    if (subset.length === 0) {
+    if (descriptors.length === 0) {
       const empty = document.createElement('p');
-      empty.className = 'resource-list__empty';
-      empty.textContent = `No ${descriptor.pluralLabel.toLowerCase()} stored yet.`;
-      section.append(empty);
-    } else {
-      const list = document.createElement('ul');
-      list.className = 'resource-list__items';
-
-      subset.forEach((resource) => {
-        const listItem = document.createElement('li');
-        listItem.className = 'resource-list__item';
-
-        const button = document.createElement('button');
-        button.className = 'resource-list__button';
-        button.type = 'button';
-        button.dataset.subject = resource.subject;
-        button.textContent = resource.label;
-        if (options.highlightSubject && options.highlightSubject === resource.subject) {
-          button.classList.add('is-active');
-        }
-
-        button.addEventListener('click', () => options.onSelect(resource));
-
-        listItem.append(button);
-        list.append(listItem);
-      });
-
-      section.append(list);
+      empty.className = 'resource-list__column-empty';
+      empty.textContent = COLUMN_COPY[key].empty;
+      host.append(empty);
+      return;
     }
 
-    const createButton = document.createElement('button');
-    createButton.type = 'button';
-    createButton.className = 'panel__button resource-list__create';
-    createButton.textContent = descriptor.createButtonLabel;
-    createButton.addEventListener('click', () => options.onCreate(descriptor));
-    section.append(createButton);
+    descriptors.forEach((descriptor) => {
+      const subset = items.filter((item) => item.descriptor.shape.equals(descriptor.shape));
 
-    host.append(section);
+      const section = document.createElement('section');
+      section.className = 'resource-list__group';
+
+      const heading = document.createElement('h4');
+      heading.className = 'resource-list__heading';
+      heading.textContent = descriptor.pluralLabel;
+      section.append(heading);
+
+      const sectionDescription = document.createElement('p');
+      sectionDescription.className = 'resource-list__description';
+      sectionDescription.textContent = descriptor.description;
+      section.append(sectionDescription);
+
+      if (subset.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'resource-list__empty';
+        empty.textContent = `No ${descriptor.pluralLabel.toLowerCase()} stored yet.`;
+        section.append(empty);
+      } else {
+        const list = document.createElement('ul');
+        list.className = 'resource-list__items';
+
+        subset.forEach((resource) => {
+          const listItem = document.createElement('li');
+          listItem.className = 'resource-list__item';
+
+          const button = document.createElement('button');
+          button.className = 'resource-list__button';
+          button.type = 'button';
+          button.dataset.subject = resource.subject;
+          button.textContent = resource.label;
+          if (options.highlightSubject && options.highlightSubject === resource.subject) {
+            button.classList.add('is-active');
+          }
+
+          button.addEventListener('click', () => options.onSelect(resource));
+
+          listItem.append(button);
+          list.append(listItem);
+        });
+
+        section.append(list);
+      }
+
+      const createButton = document.createElement('button');
+      createButton.type = 'button';
+      createButton.className = 'panel__button resource-list__create';
+      createButton.textContent = descriptor.createButtonLabel;
+      createButton.addEventListener('click', () => options.onCreate(descriptor));
+      section.append(createButton);
+
+      host.append(section);
+    });
   });
 }
 

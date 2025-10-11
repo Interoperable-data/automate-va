@@ -1,23 +1,24 @@
-# VA-POC (local)
+# Vehicle Authorisation Toolbox (Preview)
 
-This package contains the W3C RDF-based Vehicle Authorisation toolbox for Applicants, Conformity Assessment Bodies (CAB) and Authorising Entities, for use in a modern HTML browser. With the current proof of concept you can either consume the hosted build provided by ERA or run the bundle locally (see _Runtime Options_ below).
+This application helps railway applicants, conformity assessment bodies, and authorising entities prepare the material needed for vehicle authorisation and registration. It runs entirely in a web browser—no database or server installation is required.
 
 > [!INFO]
-> This package is made available to all interested parties involved in vehicle authorisation and registration processes as a Proof of Concept. No rights can be deduced from its use and the EU Agency for Railways (ERA) is not responsible for any consequences of its use.
+> The toolbox is a proof of concept prepared by the EU Agency for Railways (ERA). It is shared to gather feedback from practitioners; using it does not grant any rights and ERA cannot be held responsible for the results produced.
 
-## What's new in this iteration
+## What the toolbox offers
 
-- **Organisation manager** – auto-discovers SHACL NodeShapes, then renders create/edit flows for holdings, organisations, sites, and units with zero hard-coded mappings. Instances now mint IRIs directly from the ontology stems advertised via `dash:stem`, ensuring predictable namespaces without legacy slugs. All data is written to the local quadstore and grouped per named graph for easier reuse.
-- **Raw RDF snapshot** – inspect the active dataset in Turtle or N-Triples, copy it to the clipboard, or download it for offline analysis. The view refreshes automatically whenever the graph changes.
-- **Endpoint validation console** – post the current dataset to a remote SHACL validation service using a single click, with optional bearer token support and readable response previews.
+- **Keep track of your organisations**: Record your holding companies, operational organisations, their units, and the sites where they operate. You can link units to their parent organisations and reuse the captured information in later tasks.
+- **Store supporting evidence**: Organise EC declarations, certification level documents (CLDs), conditions and limits of use, and other statements/documents you need during authorisation.
+- **Preview your data**: See the full dataset in a readable format, download it for archiving, or share it with colleagues for review.
+- **Run remote checks**: Send your dataset to an ERA-hosted validation service. The tool highlights feedback from the service so you can adjust your submission before filing it officially.
 
-## Manage your organisation data and roles
+## How your information is handled
 
-For reuse in all of your applications, you will be able to store linked data per W3C `org:`-ontology of all your Organizations (`org:Organization`), Units (`org:OrganizationalUnit`) and where they are located (`org:Site`). All resources are persisted in a browser-resident quadstore (IndexedDB) using one named graph per subject, so the dataset can be exported as Turtle/Trig at any time, rather than a single JSON-LD file.
+- Your entries stay in your browser. The app saves them in the local storage space of the browser you use (IndexedDB). Clearing your browsing data will remove the records unless you export them first.
+- You can export the information at any time as standards-based files (Turtle/Trig). These files can be shared with colleagues or re-imported later.
+- When you add or edit information, the forms are pre-configured so that relationships use the correct vocabulary (for example, linking a unit to its parent organisation uses the proper `org:hasUnit` and `org:unitOf` relations behind the scenes).
 
-When needing to quote another stakeholder, a lookup function will provide for the URI of its data as well. Bidirectional relations—such as linking units back to their formal organisations via `org:unitOf`—are available directly from the SHACL forms, relying on shared instance providers instead of manual URI entry.
-
-## Manage your Objects of Assessments
+## Manage your Objects of Assessment
 
 Because these will be reused in potentially many of your applications for authorisation of a vehicle (type), you will be able to group together:
 
@@ -28,17 +29,24 @@ You will also be able to link any CLD with Declarations of Verification or Confo
 
 Upon request of NBRail, Conditions and Limits of Use can be linked to certain types of CLD, and stored in separate files.
 
-In order to accomodate the automatic pre-assessment for CLD's which are partially covering for newer TSI's, or (added or optional) functions (see CSS), the tool allows to add this data to a given CLD.
+In order to accommodate the automatic pre-assessment for CLDs which are partially covering for newer TSIs, or (added or optional) functions (see CSS), the tool allows you to add this data to a given CLD.
 
 The tool also supports the creation and management of DeBo certificates or any other certificate under EU railway legislation. At last, it also supports the creation and management of `Statements`, like the ESC, RSC statements, or statements from an authorising entity.
 
 ## Apply for Efficient Vehicle(Type) Authorisations (EVA)
 
-The core function of the va-poc local version is to allow both Applicants as Authorising Entities to pre-assess their applications. After having created the OoA as above (as a set of `era:CABEvidence`), the data necessary to compose a `VehicleTypeAuthorisationApplication` and its `VehicleTypeAuthorisationCase`s can be entered and managed. The draft `VehicleAuthorisation` will also be created in the local KG (browser-based). The full data graph can then be sent to the EC Interoperability Testbed for validation, using public shape graphs from the ERA. On return, the SHACL Validation report (which is only readable by experts) will be converted in a human-readable pre-assessment report.
+The core function of the toolbox is to allow both Applicants and Authorising Entities to pre-assess their applications. After having created the Objects of Assessment as above (as a set of `era:CABEvidence`), the data necessary to compose a `VehicleTypeAuthorisationApplication` and its `VehicleTypeAuthorisationCase`s can be entered and managed. The draft `VehicleAuthorisation` will also be created in the local knowledge graph (browser-based). The full data graph can then be sent to the EC Interoperability Testbed for validation, using public shape graphs from the ERA. On return, the SHACL Validation report (which is only readable by experts) will be converted into a human-readable pre-assessment report.
 
-## Technical requirements and installation
+## Typical workflow
 
-## Runtime Options
+1. **Capture organisation details**: Add holdings, operating companies, their business units, and sites. Use the built-in pick lists to link one entry to another.
+2. **Upload or describe supporting evidence**: Keep Declarations of Conformity, Statements, and other documents together with the organisations or cases they support.
+3. **Review the dataset**: Open the “Raw data” view to confirm everything looks correct. Export a copy if you need an offline record.
+4. **Validate with ERA services**: When ready, trigger a validation round-trip to receive feedback on missing or inconsistent information.
 
-- **Hosted proof of concept**: ERA publishes the latest build on the Agency's GitHub Pages space at the URL communicated to stakeholders. Accessing the application through that HTTPS endpoint is the recommended path for day-to-day exploration.
-- **Local fallback**: If network policies block the hosted site or you need an offline demo, follow `TECHNICAL-SETUP.md` to serve the `dist/` bundle securely on your workstation.
+## Getting access
+
+- **Hosted preview**: ERA provides a secure HTTPS address for partners who want to try the toolbox. Use a recent version of Chrome, Edge, Firefox, or Safari.
+- **Secure local run**: Organisations that need an offline demo or are blocked by network policies can host the compiled bundle themselves. See `TECHNICAL-SETUP.md` for the step‑by‑step procedure.
+
+For additional support or to request new capabilities, contact the project team through the official ERA communication channels.
