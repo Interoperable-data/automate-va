@@ -341,6 +341,15 @@ era-sh:OrganisationRoleShape a sh:NodeShape ;
   dash:stem orgr: ;
   sh:targetClass era:OrganisationRole ;
   sh:property [
+    sh:path skos:prefLabel ;
+    sh:nodeKind sh:Literal ;
+    sh:datatype xsd:string;
+    sh:name "Description of the role";      
+    sh:minCount 1; sh:maxCount 1; # Better mandatory
+    sh:message "Each Organisational Role MUST have a human readable description"@en ;
+    sh:severity sh:Violation
+  ];
+  sh:property [
     sh:path era:roleOf ;
     sh:nodeKind sh:IRI ;
     sh:class org:Organization;

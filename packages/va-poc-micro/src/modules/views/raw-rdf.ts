@@ -1,6 +1,8 @@
+import type { Quad } from '@rdfjs/types';
 import { GraphStore } from '../data/graph-store';
 import { assert } from '../utils/assert';
 import { serializeQuads, type RdfSerializationFormat } from './rdf-utils';
+import { RDF_TYPE } from './resource-store-utils';
 
 interface RawRdfViewOptions {
   container: HTMLElement;
@@ -19,6 +21,7 @@ interface LayoutRefs {
   copyButton: HTMLButtonElement;
   downloadButton: HTMLButtonElement;
   clearButton: HTMLButtonElement;
+  cleanButton: HTMLButtonElement;
 }
 
 const FORMAT_LABELS: Record<RdfSerializationFormat, string> = {
@@ -129,6 +132,30 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
     }
   });
 
+  layout.cleanButton.addEventListener('click', async () => {
+    const confirmed = window.confirm(
+      'This will remove triples whose object IRIs do not correspond to existing subject nodes. This action cannot be undone. Do you want to continue?'
+    );
+    if (!confirmed) {
+      layout.status.textContent = 'Graph cleanup cancelled.';
+      return;
+    }
+
+    layout.status.textContent = 'Removing dangling references…';
+    try {
+      const removed = await removeDanglingReferenceQuads(store);
+      if (removed === 0) {
+        layout.status.textContent = 'No dangling references found.';
+      } else {
+        const label = removed === 1 ? 'dangling triple' : 'dangling triples';
+        layout.status.textContent = `Removed ${removed} ${label}.`;
+      }
+    } catch (error) {
+      console.error('[raw-rdf] Failed to clean dangling references', error);
+      layout.status.textContent = `Failed to clean graph: ${extractMessage(error)}`;
+    }
+  });
+
   store.subscribe(() => {
     void refreshDataset();
   });
@@ -172,6 +199,13 @@ function buildLayout(container: HTMLElement): LayoutRefs {
       </div>
       <pre class="rdf-preview" data-role="output"># Dataset is empty. Create an organisation to get started.</pre>
       <aside class="rdf-warning">
+        <p class="rdf-warning__message">Cleaning the browser graph from non-existing IRI's removes triples linking to non-existing subject nodes and cannot be undone.</p>
+        <button type="button" data-role="clean" class="panel__button panel__button--warning">
+          <i aria-hidden="true" class="panel__button-icon bi bi-stars"></i>
+          <span>Clean dangling triples</span>
+        </button>
+      </aside>
+      <aside class="rdf-warning">
         <p class="rdf-warning__message">Clearing the browser storage deletes every saved graph and cannot be undone.</p>
         <button type="button" data-role="clear" class="panel__button panel__button--danger">
           <i aria-hidden="true" class="panel__button-icon bi bi-trash"></i>
@@ -210,6 +244,10 @@ function buildLayout(container: HTMLElement): LayoutRefs {
     clearButton: assert(
       container.querySelector<HTMLButtonElement>('[data-role="clear"]'),
       'Raw RDF clear button missing'
+    ),
+    cleanButton: assert(
+      container.querySelector<HTMLButtonElement>('[data-role="clean"]'),
+      'Raw RDF clean button missing'
     ),
   };
 }
@@ -274,6 +312,37 @@ function highlightTurtle(content: string): string {
   }
 
   return result;
+}
+
+async function removeDanglingReferenceQuads(store: GraphStore): Promise<number> {
+  const quads = await store.getQuads();
+  if (quads.length === 0) {
+    return 0;
+  }
+
+  const subjectIris = new Set<string>();
+  const candidateObjects: Quad[] = [];
+
+  for (const quad of quads) {
+    if (quad.subject.termType === 'NamedNode') {
+      subjectIris.add(quad.subject.value);
+    }
+    if (quad.object.termType === 'NamedNode' && !quad.predicate.equals(RDF_TYPE)) {
+      candidateObjects.push(quad);
+    }
+  }
+
+  if (candidateObjects.length === 0) {
+    return 0;
+  }
+
+  const dangling = candidateObjects.filter((quad) => !subjectIris.has(quad.object.value));
+  if (dangling.length === 0) {
+    return 0;
+  }
+
+  await store.deleteQuads(dangling);
+  return dangling.length;
 }
 
 function escapeHtml(input: string): string {
