@@ -78,7 +78,7 @@ const COLUMN_ORDER: ColumnKey[] = ['roles', 'organisations', 'sites'];
 
 type ShaclFormElement = HTMLElement & {
   serialize: (format?: string) => string;
-  validate: (ignoreEmptyValues?: boolean) => Promise<boolean>;
+  validate: (ignoreEmptyValues?: boolean) => Promise<boolean | { conforms?: boolean }>;
   setClassInstanceProvider?: (provider: (className: string) => Promise<string>) => void;
 };
 
@@ -301,7 +301,6 @@ export async function initOrganisationManagerView(
 
     form.setAttribute('data-shapes', shapes.text);
     form.setAttribute('data-shape-subject', descriptor.shape.value);
-    form.setAttribute('data-submit-button', descriptor.submitButtonLabel);
     form.setAttribute('data-values-subject', identifiers.subject);
     form.setAttribute('data-values-graph', identifiers.graph);
     form.setAttribute('data-values-namespace', namespace);
@@ -328,14 +327,6 @@ export async function initOrganisationManagerView(
       refreshInspector();
     }
 
-    const cancelButton = document.createElement('button');
-    cancelButton.type = 'button';
-    cancelButton.textContent = 'Cancel';
-    cancelButton.className = 'modal__button modal__button--secondary';
-    cancelButton.addEventListener('click', () => {
-      modal.close();
-    });
-
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
     deleteButton.textContent = `Delete ${descriptor.label}`;
@@ -359,12 +350,37 @@ export async function initOrganisationManagerView(
         deleteButton.disabled = false;
       }
     });
-    modal.footer.append(cancelButton, deleteButton);
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.textContent = 'Cancel';
+    cancelButton.className = 'modal__button modal__button--secondary';
+    cancelButton.addEventListener('click', () => {
+      modal.close();
+    });
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      setStatusMessage(`Saving ${descriptor.label.toLowerCase()}…`);
+    const saveButton = document.createElement('button');
+    saveButton.type = 'button';
+    saveButton.textContent = existing ? `Save ${descriptor.label}` : `Create ${descriptor.label}`;
+    saveButton.className = 'modal__button';
+    saveButton.addEventListener('click', async () => {
+      saveButton.disabled = true;
+      setStatusMessage(`Validating ${descriptor.label.toLowerCase()}…`);
       try {
+        const report = await form.validate();
+        const conforms =
+          typeof report === 'object' && report !== null
+            ? report.conforms !== false
+            : report === true;
+        if (!conforms) {
+          setStatusMessage('Resolve validation issues before saving.');
+          const invalidField = modal.body.querySelector('.invalid .editor') as HTMLElement | null;
+          if (invalidField) {
+            invalidField.focus();
+          }
+          return;
+        }
+
+        setStatusMessage(`Saving ${descriptor.label.toLowerCase()}…`);
         const turtle = form.serialize('text/turtle');
         await persistForm(store, {
           turtle,
@@ -379,8 +395,12 @@ export async function initOrganisationManagerView(
       } catch (error) {
         console.error('[organisation-manager] Failed to save form', error);
         setStatusMessage(`Failed to save: ${extractMessage(error)}`);
+      } finally {
+        saveButton.disabled = false;
       }
     });
+
+    modal.footer.append(saveButton, cancelButton, deleteButton);
   }
 
   return {
