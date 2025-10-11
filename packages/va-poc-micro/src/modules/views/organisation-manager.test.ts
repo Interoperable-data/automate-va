@@ -436,12 +436,31 @@ describe('organisation-manager persistence', () => {
     expect(collectSpy).toHaveBeenCalledTimes(1);
     expect(collectSpy).toHaveBeenCalledWith(store, subjectIri);
     const remaining = await store.getQuads({ graph: namedNode(graphIri) });
-    expect(remaining.length).toBe(0);
+    expect(remaining.length).toBeGreaterThan(0);
+    expect(
+      remaining.some(
+        (quad) =>
+          quad.subject.value === `${subjectIri}#validity` &&
+          quad.predicate.value === 'http://www.w3.org/2006/time#hasEnd'
+      )
+    ).toBe(true);
+    const endLiteral = remaining.find(
+      (quad) =>
+        quad.subject.value === `${subjectIri}#validity-end` &&
+        quad.predicate.value === 'http://www.w3.org/2006/time#inXSDDateTime'
+    );
+    expect(endLiteral?.object.termType).toBe('Literal');
+    expect(Date.parse(endLiteral?.object.value ?? '')).not.toBeNaN();
+
     expect(container.querySelector('.modal')).toBeNull();
     const buttons = Array.from(
       container.querySelectorAll<HTMLButtonElement>('.resource-list__button')
     );
-    expect(buttons.some((button) => button.textContent?.includes('Disposable Org'))).toBe(false);
+    const disposableButton = buttons.find((button) =>
+      button.textContent?.includes('Disposable Org')
+    );
+    expect(disposableButton).toBeDefined();
+    expect(disposableButton?.style.textDecoration).toBe('line-through');
 
     confirmSpy.mockRestore();
     collectSpy.mockRestore();

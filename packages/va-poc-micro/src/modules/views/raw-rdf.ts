@@ -1,8 +1,13 @@
 import type { Quad } from '@rdfjs/types';
 import { GraphStore } from '../data/graph-store';
 import { assert } from '../utils/assert';
-import { serializeQuads, type RdfSerializationFormat } from './rdf-utils';
-import { RDF_TYPE } from './resource-store-utils';
+import { serializeQuads, DEFAULT_PREFIXES, type RdfSerializationFormat } from './rdf-utils';
+import {
+  RDF_TYPE,
+  DCTERMS_VALID,
+  TIME_HAS_END,
+  TIME_IN_XSD_DATE_TIME,
+} from './resource-store-utils';
 
 interface RawRdfViewOptions {
   container: HTMLElement;
@@ -282,7 +287,22 @@ function highlightTurtle(content: string): string {
     return '';
   }
 
-  const tokenPattern = /<[^>]*>|"(?:[^"\\]|\\.)*"/g;
+  const prefixPattern = /@prefix\s+([^:]+):\s*<([^>]+)>\s*\./g;
+  const knownPrefixes = new Map<string, string>();
+  let prefixMatch: RegExpExecArray | null;
+
+  while ((prefixMatch = prefixPattern.exec(content)) !== null) {
+    const [, prefix, iri] = prefixMatch;
+    knownPrefixes.set(iri, prefix);
+  }
+
+  for (const [prefix, iri] of Object.entries(DEFAULT_PREFIXES)) {
+    if (!knownPrefixes.has(iri)) {
+      knownPrefixes.set(iri, prefix);
+    }
+  }
+
+  const tokenPattern = /@prefix[^\r\n]*|<[^>]*>|"(?:[^"\\]|\\.)*"/g;
   let result = '';
   let lastIndex = 0;
   let match: RegExpExecArray | null;
@@ -294,11 +314,21 @@ function highlightTurtle(content: string): string {
     }
 
     const token = match[0];
-    if (token.startsWith('<')) {
-      const className = token.endsWith('#graph>')
-        ? 'rdf-token rdf-token--iri rdf-token--iri-graph'
-        : 'rdf-token rdf-token--iri';
-      result += `<span class="${className}">${escapeHtml(token)}</span>`;
+    if (token.startsWith('@prefix')) {
+      result += `<span class="rdf-token rdf-token--directive">${escapeHtml(token)}</span>`;
+    } else if (token.startsWith('<')) {
+      const iri = token.slice(1, -1);
+      let classNames = ['rdf-token', 'rdf-token--iri'];
+      if (token.endsWith('#graph>')) {
+        classNames.push('rdf-token--iri-graph');
+      }
+      for (const [base, prefix] of knownPrefixes.entries()) {
+        if (iri.startsWith(base)) {
+          classNames.push(`rdf-token--prefix-${prefix}`);
+          break;
+        }
+      }
+      result += `<span class="${classNames.join(' ')}">${escapeHtml(token)}</span>`;
     } else {
       result += `<span class="rdf-token rdf-token--literal">${escapeHtml(token)}</span>`;
     }
@@ -321,11 +351,25 @@ async function removeDanglingReferenceQuads(store: GraphStore): Promise<number> 
   }
 
   const subjectIris = new Set<string>();
+  const managedSubjects = new Set<string>();
+  const resourceValidity = new Map<string, string>();
+  const validityEndNode = new Map<string, string>();
+  const timeLiteral = new Map<string, string>();
   const candidateObjects: Quad[] = [];
 
   for (const quad of quads) {
     if (quad.subject.termType === 'NamedNode') {
       subjectIris.add(quad.subject.value);
+      if (quad.predicate.equals(DCTERMS_VALID) && quad.object.termType === 'NamedNode') {
+        managedSubjects.add(quad.subject.value);
+        resourceValidity.set(quad.subject.value, quad.object.value);
+      }
+      if (quad.predicate.equals(TIME_HAS_END) && quad.object.termType === 'NamedNode') {
+        validityEndNode.set(quad.subject.value, quad.object.value);
+      }
+      if (quad.predicate.equals(TIME_IN_XSD_DATE_TIME) && quad.object.termType === 'Literal') {
+        timeLiteral.set(quad.subject.value, quad.object.value);
+      }
     }
     if (quad.object.termType === 'NamedNode' && !quad.predicate.equals(RDF_TYPE)) {
       candidateObjects.push(quad);
@@ -336,7 +380,41 @@ async function removeDanglingReferenceQuads(store: GraphStore): Promise<number> 
     return 0;
   }
 
-  const dangling = candidateObjects.filter((quad) => !subjectIris.has(quad.object.value));
+  const now = Date.now();
+  const expiredSubjects = new Set<string>();
+
+  for (const subject of managedSubjects) {
+    const validityNode = resourceValidity.get(subject);
+    if (!validityNode) {
+      continue;
+    }
+    const endNode = validityEndNode.get(validityNode);
+    if (!endNode) {
+      continue;
+    }
+    const timestamp = timeLiteral.get(endNode);
+    if (!timestamp) {
+      continue;
+    }
+    const parsed = Date.parse(timestamp);
+    if (Number.isNaN(parsed) || parsed <= now) {
+      expiredSubjects.add(subject);
+    }
+  }
+
+  const dangling = candidateObjects.filter((quad) => {
+    if (quad.object.termType !== 'NamedNode') {
+      return false;
+    }
+    const objectIri = quad.object.value;
+    if (expiredSubjects.has(objectIri)) {
+      return true;
+    }
+    if (!managedSubjects.has(objectIri)) {
+      return false;
+    }
+    return !subjectIris.has(objectIri);
+  });
   if (dangling.length === 0) {
     return 0;
   }

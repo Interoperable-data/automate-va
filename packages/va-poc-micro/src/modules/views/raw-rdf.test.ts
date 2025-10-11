@@ -88,40 +88,89 @@ describe('raw rdf view', () => {
     confirmSpy.mockRestore();
   });
 
-  it('removes dangling triples when the user confirms the cleanup', async () => {
+  it('removes references to expired resources when the user confirms the cleanup', async () => {
     const container = document.createElement('div');
-    const dangling = quad(
+    const expired = namedNode('https://data.europa.eu/949/local/organisation/expired');
+    const expiredGraph = namedNode('https://data.europa.eu/949/local/organisation/expired#graph');
+    const validity = namedNode('https://data.europa.eu/949/local/organisation/expired#validity');
+    const validityBeginning = namedNode(
+      'https://data.europa.eu/949/local/organisation/expired#validity-beginning'
+    );
+    const validityEnd = namedNode(
+      'https://data.europa.eu/949/local/organisation/expired#validity-end'
+    );
+    const active = namedNode('https://data.europa.eu/949/local/organisation/active');
+    const activeGraph = namedNode('https://data.europa.eu/949/local/organisation/active#graph');
+
+    const expiredQuads = [
+      quad(
+        expired,
+        namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+        namedNode('https://www.w3.org/ns/org#Organization'),
+        expiredGraph
+      ),
+      quad(expired, namedNode('http://purl.org/dc/terms/valid'), validity, expiredGraph),
+      quad(
+        validity,
+        namedNode('http://www.w3.org/2006/time#hasBeginning'),
+        validityBeginning,
+        expiredGraph
+      ),
+      quad(
+        validityBeginning,
+        namedNode('http://www.w3.org/2006/time#inXSDDateTime'),
+        literal('2024-01-01T00:00:00Z', namedNode('http://www.w3.org/2001/XMLSchema#dateTime')),
+        expiredGraph
+      ),
+      quad(validity, namedNode('http://www.w3.org/2006/time#hasEnd'), validityEnd, expiredGraph),
+      quad(
+        validityEnd,
+        namedNode('http://www.w3.org/2006/time#inXSDDateTime'),
+        literal('2024-01-02T00:00:00Z', namedNode('http://www.w3.org/2001/XMLSchema#dateTime')),
+        expiredGraph
+      ),
+    ];
+
+    const activeQuads = [
+      quad(
+        active,
+        namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+        namedNode('https://www.w3.org/ns/org#Organization'),
+        activeGraph
+      ),
+    ];
+
+    const referenceToExpired = quad(
       namedNode('https://data.europa.eu/949/local/unit/1'),
       namedNode('http://example.org/relatesTo'),
-      namedNode('https://data.europa.eu/949/local/organisation/missing'),
+      expired,
       namedNode('https://data.europa.eu/949/local/unit/1#graph')
     );
-    const retained = quad(
-      namedNode('https://data.europa.eu/949/local/organisation/2'),
-      namedNode('http://example.org/name'),
-      literal('Active'),
-      namedNode('https://data.europa.eu/949/local/organisation/2#graph')
-    );
-    const typeTriple = quad(
-      namedNode('https://data.europa.eu/949/local/organisation/2'),
-      namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-      namedNode('https://www.w3.org/ns/org#Organization'),
-      namedNode('https://data.europa.eu/949/local/organisation/2#graph')
-    );
-    const referenced = quad(
-      namedNode('https://data.europa.eu/949/local/unit/3'),
+
+    const referenceToActive = quad(
+      namedNode('https://data.europa.eu/949/local/unit/2'),
       namedNode('http://example.org/relatesTo'),
-      namedNode('https://data.europa.eu/949/local/organisation/2'),
-      namedNode('https://data.europa.eu/949/local/unit/3#graph')
+      active,
+      namedNode('https://data.europa.eu/949/local/unit/2#graph')
     );
 
-    const { store, deleteQuads, getQuads } = createStore([
-      dangling,
-      retained,
-      referenced,
-      typeTriple,
-    ]);
-    getQuads.mockResolvedValue([dangling, retained, referenced, typeTriple]);
+    const externalConceptReference = quad(
+      active,
+      namedNode('http://example.org/relatedConcept'),
+      namedNode('http://example.org/concept/42'),
+      activeGraph
+    );
+
+    const dataset = [
+      ...expiredQuads,
+      ...activeQuads,
+      referenceToExpired,
+      referenceToActive,
+      externalConceptReference,
+    ];
+
+    const { store, deleteQuads, getQuads } = createStore(dataset);
+    getQuads.mockResolvedValue(dataset);
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     initRawRdfView({ container, store });
@@ -138,7 +187,7 @@ describe('raw rdf view', () => {
     expect(confirmSpy).toHaveBeenCalledTimes(1);
     expect(deleteQuads).toHaveBeenCalledTimes(1);
     const [payload] = deleteQuads.mock.calls[0];
-    expect(payload).toEqual([dangling]);
+    expect(payload).toEqual([referenceToExpired]);
     expect(status!.textContent).toBe('Removed 1 dangling triple.');
 
     confirmSpy.mockRestore();

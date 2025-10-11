@@ -11,6 +11,10 @@ import {
   getGraphId,
   extractMessage,
   collectIncomingReferenceSubjects,
+  ensureValidityMetadata,
+  readValidityWindow,
+  isExpired,
+  markResourceExpiration,
 } from './resource-store-utils.js';
 import type { GraphStore } from '../data/graph-store.js';
 
@@ -35,6 +39,49 @@ function createStore({
   return {
     getQuads,
   } as unknown as GraphStore;
+}
+
+function createMutableStore(initialQuads: ReturnType<typeof quad>[] = []) {
+  let data = [...initialQuads];
+
+  const getQuads = vi.fn(async (pattern: Record<string, unknown> = {}) => {
+    if (pattern.graph) {
+      const graphValue = (pattern.graph as { value?: string }).value;
+      return data.filter(
+        (entry) => entry.graph.termType === 'NamedNode' && entry.graph.value === graphValue
+      );
+    }
+    return data;
+  });
+
+  const deleteQuads = vi.fn(async (entries: ReturnType<typeof quad>[]) => {
+    if (entries.length === 0) {
+      return;
+    }
+    const removal = new Set(entries);
+    data = data.filter((entry) => !removal.has(entry));
+  });
+
+  const putQuads = vi.fn(async (entries: ReturnType<typeof quad>[]) => {
+    if (entries.length === 0) {
+      return;
+    }
+    data = [...data, ...entries];
+  });
+
+  return {
+    store: {
+      getQuads,
+      deleteQuads,
+      putQuads,
+    } as unknown as GraphStore,
+    getQuads,
+    deleteQuads,
+    putQuads,
+    snapshot() {
+      return data;
+    },
+  };
 }
 
 describe('resource-store-utils', () => {
@@ -218,6 +265,113 @@ describe('resource-store-utils', () => {
 
     const subjects = await collectIncomingReferenceSubjects(store, target);
     expect(subjects).toEqual(['http://example.org/alsoGood', 'http://example.org/good']);
+  });
+
+  it('ensures validity metadata for new resources', () => {
+    const subject = namedNode('http://example.org/resource');
+    const graph = namedNode('http://example.org/resource#graph');
+    const quads: ReturnType<typeof quad>[] = [
+      quad(subject, namedNode('http://example.org/name'), literal('Example'), graph),
+    ];
+
+    ensureValidityMetadata({
+      quads,
+      subject,
+      graph,
+      createdAt: '2024-01-01T00:00:00Z',
+    });
+
+    const validityNode = `${subject.value}#validity`;
+    const beginningNode = `${subject.value}#validity-beginning`;
+
+    expect(
+      quads.some(
+        (entry) =>
+          entry.subject.value === subject.value &&
+          entry.predicate.value === 'http://purl.org/dc/terms/valid' &&
+          entry.object.value === validityNode
+      )
+    ).toBe(true);
+    const creationLiteral = quads.find(
+      (entry) =>
+        entry.subject.value === beginningNode &&
+        entry.predicate.value === 'http://www.w3.org/2006/time#inXSDDateTime'
+    );
+    expect(creationLiteral?.object.value).toBe('2024-01-01T00:00:00Z');
+  });
+
+  it('retains existing validity end values when ensuring metadata for updates', () => {
+    const subject = namedNode('http://example.org/resource');
+    const graph = namedNode('http://example.org/resource#graph');
+    const validity = namedNode(`${subject.value}#validity`);
+    const end = namedNode(`${subject.value}#validity-end`);
+    const existingEnd = literal(
+      '2024-03-01T10:00:00Z',
+      namedNode('http://www.w3.org/2001/XMLSchema#dateTime')
+    );
+    const existingQuads = [
+      quad(subject, namedNode('http://purl.org/dc/terms/valid'), validity, graph),
+      quad(validity, namedNode('http://www.w3.org/2006/time#hasEnd'), end, graph),
+      quad(end, namedNode('http://www.w3.org/2006/time#inXSDDateTime'), existingEnd, graph),
+    ];
+    const updated: ReturnType<typeof quad>[] = [
+      quad(subject, namedNode('http://example.org/name'), literal('Updated'), graph),
+    ];
+
+    ensureValidityMetadata({
+      quads: updated,
+      subject,
+      graph,
+      existingQuads,
+    });
+
+    const preservedEnd = updated.find(
+      (entry) =>
+        entry.subject.value === end.value &&
+        entry.predicate.value === 'http://www.w3.org/2006/time#inXSDDateTime'
+    );
+    expect(preservedEnd?.object.value).toBe(existingEnd.value);
+  });
+
+  it('marks resources as expired by adding a validity end timestamp', async () => {
+    const subject = namedNode('http://example.org/resource');
+    const graph = namedNode('http://example.org/resource#graph');
+    const baseQuads: ReturnType<typeof quad>[] = [
+      quad(subject, RDF_TYPE, namedNode('http://example.org/Type'), graph),
+      quad(
+        subject,
+        namedNode('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        literal('Resource'),
+        graph
+      ),
+    ];
+
+    ensureValidityMetadata({
+      quads: baseQuads,
+      subject,
+      graph,
+      createdAt: '2024-01-01T00:00:00Z',
+    });
+
+    const storeWrapper = createMutableStore(baseQuads);
+    await markResourceExpiration(
+      storeWrapper.store,
+      subject.value,
+      graph.value,
+      '2024-02-01T00:00:00Z'
+    );
+
+    const storedAfter = await storeWrapper.getQuads({ graph });
+    const validity = readValidityWindow(storedAfter, subject);
+    expect(validity.ends).toBe('2024-02-01T00:00:00Z');
+    expect(isExpired(validity, Date.parse('2024-02-02T00:00:00Z'))).toBe(true);
+    expect(
+      storedAfter.some(
+        (entry) =>
+          entry.subject.value === subject.value &&
+          entry.predicate.value === 'http://purl.org/dc/terms/valid'
+      )
+    ).toBe(true);
   });
 
   it('reuses getQuads lookups when matchLiteral is invoked without a graph', async () => {

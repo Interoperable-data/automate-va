@@ -7,6 +7,7 @@ import { discoverShapeDescriptors, type ShapeDescriptor } from '../data/shape-de
 import { assert } from '../utils/assert';
 import { quadsToTurtle } from './rdf-utils';
 import { attachClassInstanceProvider } from './shacl-class-provider';
+import { applyMaterialShaclTheme } from './shacl-material-theme';
 import {
   RDF_TYPE,
   ensureGraph,
@@ -15,6 +16,10 @@ import {
   getGraphId,
   extractMessage,
   collectIncomingReferenceSubjects,
+  ensureValidityMetadata,
+  readValidityWindow,
+  isExpired,
+  markResourceExpiration,
 } from './resource-store-utils';
 
 const RDFS_SUBCLASS_OF = rdfDataFactory.namedNode(
@@ -45,6 +50,7 @@ interface ResourceRecord {
   subject: string;
   graph: string;
   label: string;
+  expired: boolean;
 }
 
 type ResourceIdentifiers = Pick<ResourceRecord, 'subject' | 'graph'>;
@@ -87,6 +93,12 @@ type ShaclFormElement = HTMLElement & {
   serialize: (format?: string) => string;
   validate: (ignoreEmptyValues?: boolean) => Promise<boolean | { conforms?: boolean }>;
   setClassInstanceProvider?: (provider: (className: string) => Promise<string>) => void;
+  config?: {
+    theme?: {
+      stylesheet: CSSStyleSheet;
+      setDense: (dense: boolean) => void;
+    };
+  };
 };
 
 export async function initOrganisationManagerView(
@@ -258,6 +270,7 @@ export async function initOrganisationManagerView(
     );
 
     const form = document.createElement('shacl-form') as ShaclFormElement;
+    applyMaterialShaclTheme(form);
 
     modal.addCleanup(() => {
       form.replaceWith();
@@ -372,9 +385,9 @@ export async function initOrganisationManagerView(
           }
         }
 
-        setStatusMessage(`Removing ${descriptor.label.toLowerCase()}…`);
+        setStatusMessage(`Marking ${descriptor.label.toLowerCase()} as expired…`);
         await removeResource(store, existing);
-        setStatusMessage(`${descriptor.label} deleted.`);
+        setStatusMessage(`${descriptor.label} expired.`);
         selectedSubject = null;
         await refreshResourceList();
         modal.close();
@@ -576,11 +589,16 @@ async function fetchResources(
       }
       const graph = getGraphId(quad.graph);
       const label = await resolveLabel(store, quad.subject, graph ?? undefined);
+      const graphNode = rdfDataFactory.namedNode(graph ?? `${quad.subject.value}#graph`);
+      const resourceQuads = await store.getQuads({ graph: graphNode });
+      const validity = readValidityWindow(resourceQuads, quad.subject);
+      const expired = isExpired(validity);
       results.push({
         descriptor,
         subject: quad.subject.value,
         graph: graph ?? `${quad.subject.value}#graph`,
         label,
+        expired,
       });
     }
   }
@@ -649,6 +667,11 @@ function renderResourceList(
           button.type = 'button';
           button.dataset.subject = resource.subject;
           button.textContent = resource.label;
+          if (resource.expired) {
+            button.classList.add('resource-list__button--expired');
+            button.style.textDecoration = 'line-through';
+            button.title = `${resource.label} (expired)`;
+          }
           if (options.highlightSubject && options.highlightSubject === resource.subject) {
             button.classList.add('is-active');
           }
@@ -696,19 +719,34 @@ async function persistForm(
   ensureTypeQuad(normalized, subjectNode, options.targetClass, graphNode);
 
   const existing = await store.getQuads({ graph: graphNode });
+  const createdAt = existing.length === 0 ? new Date().toISOString() : undefined;
+  const { validity, beginning, end } = ensureValidityMetadata({
+    quads: normalized,
+    subject: subjectNode,
+    graph: graphNode,
+    existingQuads: existing,
+    createdAt,
+  });
+
   if (existing.length > 0) {
-    await store.deleteQuads(existing);
+    const removableSubjects = new Set([
+      subjectNode.value,
+      validity.value,
+      beginning.value,
+      end.value,
+    ]);
+    const staleQuads = existing.filter(
+      (quad) => quad.subject.termType === 'NamedNode' && removableSubjects.has(quad.subject.value)
+    );
+    if (staleQuads.length > 0) {
+      await store.deleteQuads(staleQuads);
+    }
   }
   await store.putQuads(normalized);
 }
 
 async function removeResource(store: GraphStore, record: ResourceRecord): Promise<void> {
-  const graphNode = rdfDataFactory.namedNode(record.graph);
-  const quads = await store.getQuads({ graph: graphNode });
-  if (quads.length === 0) {
-    return;
-  }
-  await store.deleteQuads(quads);
+  await markResourceExpiration(store, record.subject, record.graph);
 }
 
 function createIdentifiers(descriptor: ShapeDescriptor): ResourceIdentifiers {
