@@ -270,13 +270,27 @@ export async function markResourceExpiration(
     return;
   }
 
+  const previousWindow = readValidityWindow(existing, subject);
   const working = existing.map((quad) => quad);
-  const { validity, end } = ensureValidityMetadata({
+  const { validity, beginning, end, window } = ensureValidityMetadata({
     quads: working,
     subject,
     graph,
     existingQuads: existing,
   });
+
+  const beginsAt = window.begins ?? previousWindow.begins;
+  const hasBeginningLiteral = working.some(
+    (quad) =>
+      quad.subject.termType === 'NamedNode' &&
+      quad.subject.value === beginning.value &&
+      quad.predicate.equals(TIME_IN_XSD_DATE_TIME)
+  );
+  if (!hasBeginningLiteral && beginsAt) {
+    working.push(
+      rdfDataFactory.quad(beginning, TIME_IN_XSD_DATE_TIME, literalForTimestamp(beginsAt), graph)
+    );
+  }
 
   const filtered = working.filter(
     (quad) =>
