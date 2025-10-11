@@ -1,19 +1,22 @@
 import { Parser } from 'n3';
 import rdfDataFactory from '@rdfjs/data-model';
-import type { Quad, Term, NamedNode, DatasetCore } from '@rdfjs/types';
+import type { Quad, NamedNode, DatasetCore } from '@rdfjs/types';
 import type { GraphStore } from '../data/graph-store';
 import type { LoadedShape } from '../data/organisation-shapes';
 import { discoverShapeDescriptors, type ShapeDescriptor } from '../data/shape-descriptors';
 import { assert } from '../utils/assert';
 import { quadsToTurtle } from './rdf-utils';
 import { attachClassInstanceProvider } from './shacl-class-provider';
+import {
+  RDF_TYPE,
+  ensureGraph,
+  ensureTypeQuad,
+  resolveLabel,
+  getGraphId,
+  extractMessage,
+  collectIncomingReferenceSubjects,
+} from './resource-store-utils';
 
-const RDF_TYPE_IRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
-const SKOS_PREF_LABEL_IRI = 'http://www.w3.org/2004/02/skos/core#prefLabel';
-const RDFS_LABEL_IRI = 'http://www.w3.org/2000/01/rdf-schema#label';
-const RDF_TYPE = rdfDataFactory.namedNode(RDF_TYPE_IRI);
-const SKOS_PREF_LABEL = rdfDataFactory.namedNode(SKOS_PREF_LABEL_IRI);
-const RDFS_LABEL = rdfDataFactory.namedNode(RDFS_LABEL_IRI);
 const RDFS_SUBCLASS_OF = rdfDataFactory.namedNode(
   'http://www.w3.org/2000/01/rdf-schema#subClassOf'
 );
@@ -341,8 +344,35 @@ export async function initOrganisationManagerView(
         return;
       }
       deleteButton.disabled = true;
-      setStatusMessage(`Removing ${descriptor.label.toLowerCase()}…`);
       try {
+        const references = await collectIncomingReferenceSubjects(store, existing.subject);
+        if (references.length > 0) {
+          const previewLimit = 10;
+          const listed = references
+            .slice(0, previewLimit)
+            .map((iri) => `• ${iri}`)
+            .join('\n');
+          const remainder =
+            references.length > previewLimit
+              ? `\n…and ${references.length - previewLimit} more.`
+              : '';
+          const confirmMessage = [
+            `${descriptor.label} is referenced by the following resources:`,
+            listed,
+            remainder,
+            '',
+            'Deleting it will leave those triples with dangling object IRIs. Continue?',
+          ]
+            .filter(Boolean)
+            .join('\n');
+          const proceed = window.confirm(confirmMessage);
+          if (!proceed) {
+            deleteButton.disabled = false;
+            return;
+          }
+        }
+
+        setStatusMessage(`Removing ${descriptor.label.toLowerCase()}…`);
         await removeResource(store, existing);
         setStatusMessage(`${descriptor.label} deleted.`);
         selectedSubject = null;
@@ -681,69 +711,6 @@ async function removeResource(store: GraphStore, record: ResourceRecord): Promis
   await store.deleteQuads(quads);
 }
 
-function ensureGraph(quad: Quad, graph: NamedNode): Quad {
-  if (quad.graph.termType === 'NamedNode' && quad.graph.value === graph.value) {
-    return quad;
-  }
-  return rdfDataFactory.quad(quad.subject, quad.predicate, quad.object, graph);
-}
-
-function ensureTypeQuad(
-  quads: Quad[],
-  subject: NamedNode,
-  type: NamedNode,
-  graph: NamedNode
-): void {
-  const hasType = quads.some(
-    (quad) =>
-      quad.subject.termType === 'NamedNode' &&
-      quad.subject.value === subject.value &&
-      quad.predicate.termType === 'NamedNode' &&
-      quad.predicate.value === RDF_TYPE_IRI
-  );
-  if (!hasType) {
-    quads.push(rdfDataFactory.quad(subject, RDF_TYPE, type, graph));
-  }
-}
-
-async function resolveLabel(
-  store: GraphStore,
-  subject: NamedNode,
-  graph?: string
-): Promise<string> {
-  const graphNode = graph ? rdfDataFactory.namedNode(graph) : undefined;
-
-  const pref = await matchLiteral(store, subject, SKOS_PREF_LABEL, graphNode);
-  if (pref) {
-    return pref;
-  }
-
-  const fallback = await matchLiteral(store, subject, RDFS_LABEL, graphNode);
-  if (fallback) {
-    return fallback;
-  }
-
-  return subject.value;
-}
-
-async function matchLiteral(
-  store: GraphStore,
-  subject: NamedNode,
-  predicate: NamedNode,
-  graph?: NamedNode
-): Promise<string | null> {
-  const pattern: { subject: NamedNode; predicate: NamedNode; graph?: NamedNode } = {
-    subject,
-    predicate,
-  };
-  if (graph) {
-    pattern.graph = graph;
-  }
-  const quads = await store.getQuads(pattern);
-  const literal = quads.find((quad) => quad.object.termType === 'Literal');
-  return literal ? literal.object.value : null;
-}
-
 function createIdentifiers(descriptor: ShapeDescriptor): ResourceIdentifiers {
   const id = crypto.randomUUID();
   const subject = `${ensureTrailingSlash(descriptor.valuesNamespace)}${id}`;
@@ -753,22 +720,4 @@ function createIdentifiers(descriptor: ShapeDescriptor): ResourceIdentifiers {
 
 function ensureTrailingSlash(input: string): string {
   return input.endsWith('/') ? input : `${input}/`;
-}
-
-function quadsToGraphId(graph: Term): string | null {
-  if (graph.termType === 'NamedNode') {
-    return graph.value;
-  }
-  return null;
-}
-
-function getGraphId(graph: Term): string | null {
-  return quadsToGraphId(graph);
-}
-
-function extractMessage(error: unknown): string {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  return String(error);
 }

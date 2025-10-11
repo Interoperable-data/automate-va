@@ -28,6 +28,8 @@
 @prefix uorg:     <http://data.europa.eu/949/organisations/units/> .
 @prefix orgr:     <http://data.europa.eu/949/organisations/roles/> .
 
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
+
 org:FormalOrganization rdfs:subClassOf org:Organization .
 org:OrganizationalUnit rdfs:subClassOf org:Organization .
 era:Body rdfs:subClassOf org:Organization .
@@ -353,6 +355,29 @@ era-sh:OrganisationRoleShape a sh:NodeShape ;
     sh:class skos:Concept ;
     sh:minCount 1; sh:maxCount 1; # one role per resource
     owl:imports <https://data-interop.era.europa.eu/era-vocabulary/era-skos> ;
+    sh:in (
+      era-organisation-roles:IM 
+      era-organisation-roles:RU  
+      era-organisation-roles:Owner
+	    era-organisation-roles:Keeper 
+      era-organisation-roles:Applicant 
+      era-organisation-roles:ECM 
+      era-organisation-roles:Manufacturer
+      era-organisation-roles:NSA 
+      era-organisation-roles:MWS 
+      era-organisation-roles:NIB 
+      era-organisation-roles:CAB 
+      era-organisation-roles:AB
+      era-organisation-roles:NAB 
+      era-organisation-roles:CB 
+      era-organisation-roles:EUBody 
+      era-organisation-roles:EC 
+      era-organisation-roles:CB 
+      era-organisation-roles:TDGCA 
+      era-organisation-roles:RB
+      era-organisation-roles:SB
+      era-organisation-roles:AuthEntity
+    );
     sh:name "The role played by the Body"@en ;
     sh:message "Each Organisational Role MUST be defined by exactly one Role"@en;
     sh:severity sh:Violation
