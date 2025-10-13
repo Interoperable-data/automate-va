@@ -401,3 +401,11 @@ era-sh:OrganisationRoleShape a sh:NodeShape ;
     sh:message "Each Organisational Role MUST have exactly one Organisation Code"@en;
     sh:severity sh:Violation
   ].
+sh:OrganisationRolePermissionShape a sh:NodeShape ;
+ rdfs:label "Organisation's formal permission" ;
+ rdfs:comment "The (subClassOf) vpa:Permission which allows the Organisation to play the role."@en ;
+ # TODO: Depending on the role SKOS, the targetClass is different:
+ # For a RU, we should provide the era:Permission of type `SSC`
+ # see all cases on the Github: https://github.com/Interoperable-data/automate-va/tree/dev-lws/TTL/form-shapes
+ # 
+ .

@@ -10,7 +10,10 @@ import { initEndpointsView } from './modules/views/endpoints';
 
 const appRoot = assert(document.querySelector<HTMLElement>('[data-app]'), 'App shell not found');
 
-void bootstrap();
+void bootstrap().catch((error) => {
+  console.error('[bootstrap] Application failed to start', error);
+  renderFatalBootstrapError(error);
+});
 
 interface ViewController {
   activate: () => void;
@@ -138,4 +141,57 @@ function readStoredTheme(): 'light' | 'dark' | null {
     console.warn('[theme] Unable to read theme preference', error);
   }
   return null;
+}
+
+function renderFatalBootstrapError(error: unknown): void {
+  const message = formatBootstrapError(error);
+  appRoot.classList.add('app-shell--error');
+  appRoot.replaceChildren();
+
+  const container = document.createElement('section');
+  container.className = 'app-error';
+  container.setAttribute('role', 'alert');
+  container.setAttribute('aria-live', 'assertive');
+
+  const title = document.createElement('h1');
+  title.className = 'app-error__title';
+  title.textContent = 'Unable to start the application';
+
+  const summary = document.createElement('p');
+  summary.className = 'app-error__message';
+  summary.textContent =
+    'The app could not load the organisation shapes it needs. Please review the shapes file and reload the page.';
+
+  const details = document.createElement('details');
+  details.className = 'app-error__details';
+  const detailsSummary = document.createElement('summary');
+  detailsSummary.textContent = 'Technical details';
+  const detailsBody = document.createElement('pre');
+  detailsBody.textContent = message;
+  details.append(detailsSummary, detailsBody);
+
+  const actions = document.createElement('div');
+  actions.className = 'app-error__actions';
+  const reloadButton = document.createElement('button');
+  reloadButton.type = 'button';
+  reloadButton.className = 'app-error__button';
+  reloadButton.textContent = 'Reload application';
+  reloadButton.addEventListener('click', () => {
+    window.location.reload();
+  });
+  actions.append(reloadButton);
+
+  container.append(title, summary, details, actions);
+  appRoot.append(container);
+}
+
+function formatBootstrapError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  try {
+    return JSON.stringify(error, null, 2);
+  } catch {
+    return String(error);
+  }
 }
