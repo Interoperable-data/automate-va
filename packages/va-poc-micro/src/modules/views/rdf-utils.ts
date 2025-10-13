@@ -1,22 +1,6 @@
 import { Writer } from 'n3';
 import type { Quad } from '@rdfjs/types';
-
-export const DEFAULT_PREFIXES = {
-  era: 'http://data.europa.eu/949/',
-  org: 'https://www.w3.org/ns/org#',
-  skos: 'http://www.w3.org/2004/02/skos/core#',
-  locn: 'http://www.w3.org/ns/locn#',
-  rorg: 'http://data.europa.eu/949/organisations/',
-  uorg: 'http://data.europa.eu/949/organisations/units/',
-  orgr: 'http://data.europa.eu/949/organisations/roles/',
-  lorg: 'http://data.europa.eu/949/organisations/sites/',
-  rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-  rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
-  xsd: 'http://www.w3.org/2001/XMLSchema#',
-  time: 'http://www.w3.org/2006/time#',
-  geo: 'http://www.opengis.net/ont/geosparql#',
-  dcterms: 'http://purl.org/dc/terms/',
-} as const;
+import { DEFAULT_PREFIXES } from './ontologies';
 
 export type RdfSerializationFormat = 'text/turtle' | 'application/n-triples';
 

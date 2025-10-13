@@ -9,31 +9,33 @@ import { quadsToTurtle } from './rdf-utils';
 import { attachClassInstanceProvider } from './shacl-class-provider';
 import { applyMaterialShaclTheme } from './shacl-material-theme';
 import {
-  RDF_TYPE,
   ensureGraph,
   ensureTypeQuad,
   resolveLabel,
   getGraphId,
   extractMessage,
   collectIncomingReferenceSubjects,
+  ensureCreationMetadata,
+  ensureModificationMetadata,
   ensureValidityMetadata,
   readValidityWindow,
   isExpired,
   markResourceExpiration,
 } from './resource-store-utils';
+import { RDF_NODES, RDFS_NODES, ORG, DCTERMS, LOCN, ERA } from './ontologies';
 
-const RDFS_SUBCLASS_OF = rdfDataFactory.namedNode(
-  'http://www.w3.org/2000/01/rdf-schema#subClassOf'
-);
+const RDFS_SUBCLASS_OF = RDFS_NODES.subClassOf;
 
-const ORG_FORMAL_ORGANIZATION = 'https://www.w3.org/ns/org#FormalOrganization';
-const ORG_ORGANIZATION = 'https://www.w3.org/ns/org#Organization';
-const ORG_ORGANIZATIONAL_UNIT = 'https://www.w3.org/ns/org#OrganizationalUnit';
-const ORG_ROLE = 'https://www.w3.org/ns/org#Role';
-const ORG_SITE = 'https://www.w3.org/ns/org#Site';
-const DCTERMS_LOCATION = 'http://purl.org/dc/terms/Location';
-const LOCN_ADDRESS = 'http://www.w3.org/ns/locn#Address';
-const ERA_ORGANISATION_ROLE = 'http://data.europa.eu/949/OrganisationRole';
+const RDF_TYPE = RDF_NODES.type;
+
+const ORG_FORMAL_ORGANIZATION = ORG.FormalOrganization;
+const ORG_ORGANIZATION = ORG.Organization;
+const ORG_ORGANIZATIONAL_UNIT = ORG.OrganizationalUnit;
+const ORG_ROLE = ORG.Role;
+const ORG_SITE = ORG.Site;
+const DCTERMS_LOCATION = DCTERMS.Location;
+const LOCN_ADDRESS = LOCN.Address;
+const ERA_ORGANISATION_ROLE = ERA.OrganisationRole;
 
 interface OrganisationManagerOptions {
   container: HTMLElement;
@@ -719,13 +721,31 @@ async function persistForm(
   ensureTypeQuad(normalized, subjectNode, options.targetClass, graphNode);
 
   const existing = await store.getQuads({ graph: graphNode });
-  const createdAt = existing.length === 0 ? new Date().toISOString() : undefined;
+  const isNewResource = existing.length === 0;
+  const timestamp = new Date().toISOString();
+  const createdAt = isNewResource ? timestamp : undefined;
+
+  ensureCreationMetadata({
+    quads: normalized,
+    graph: graphNode,
+    existingQuads: existing,
+    timestamp: createdAt,
+  });
+
+  if (!isNewResource) {
+    ensureModificationMetadata({
+      quads: normalized,
+      subject: subjectNode,
+      graph: graphNode,
+      timestamp,
+    });
+  }
+
   const { validity, beginning, end } = ensureValidityMetadata({
     quads: normalized,
     subject: subjectNode,
     graph: graphNode,
     existingQuads: existing,
-    createdAt,
   });
 
   if (existing.length > 0) {
@@ -735,9 +755,20 @@ async function persistForm(
       beginning.value,
       end.value,
     ]);
-    const staleQuads = existing.filter(
-      (quad) => quad.subject.termType === 'NamedNode' && removableSubjects.has(quad.subject.value)
-    );
+    const staleQuads = existing.filter((quad) => {
+      if (quad.subject.termType !== 'NamedNode') {
+        return false;
+      }
+      if (!removableSubjects.has(quad.subject.value)) {
+        return false;
+      }
+      if (quad.subject.value === subjectNode.value) {
+        if (quad.predicate.termType === 'NamedNode' && quad.predicate.value === DCTERMS.created) {
+          return false;
+        }
+      }
+      return true;
+    });
     if (staleQuads.length > 0) {
       await store.deleteQuads(staleQuads);
     }

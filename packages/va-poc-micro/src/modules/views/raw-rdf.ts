@@ -1,13 +1,13 @@
 import type { Quad } from '@rdfjs/types';
 import { GraphStore } from '../data/graph-store';
 import { assert } from '../utils/assert';
-import { serializeQuads, DEFAULT_PREFIXES, type RdfSerializationFormat } from './rdf-utils';
-import {
-  RDF_TYPE,
-  DCTERMS_VALID,
-  TIME_HAS_END,
-  TIME_IN_XSD_DATE_TIME,
-} from './resource-store-utils';
+import { serializeQuads, type RdfSerializationFormat } from './rdf-utils';
+import { DEFAULT_PREFIXES, RDF_NODES, DCTERMS_NODES, TIME_NODES } from './ontologies';
+
+const RDF_TYPE = RDF_NODES.type;
+const DCTERMS_VALID = DCTERMS_NODES.valid;
+const TIME_HAS_END = TIME_NODES.hasEnd;
+const TIME_IN_XSD_DATE_TIME = TIME_NODES.inXSDDateTime;
 
 interface RawRdfViewOptions {
   container: HTMLElement;

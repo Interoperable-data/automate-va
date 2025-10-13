@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { literal, namedNode, quad, blankNode } from '@rdfjs/data-model';
 import {
-  RDF_TYPE,
-  RDF_TYPE_IRI,
   ensureGraph,
   ensureTypeQuad,
   resolveLabel,
@@ -11,12 +9,18 @@ import {
   getGraphId,
   extractMessage,
   collectIncomingReferenceSubjects,
+  ensureCreationMetadata,
   ensureValidityMetadata,
   readValidityWindow,
   isExpired,
   markResourceExpiration,
+  ensureModificationMetadata,
 } from './resource-store-utils.js';
 import type { GraphStore } from '../data/graph-store.js';
+import { DCTERMS, TIME, XSD, RDF, RDF_NODES } from './ontologies.js';
+
+const RDF_TYPE_IRI = RDF.type;
+const RDF_TYPE = RDF_NODES.type;
 
 function createStore({
   quads = [] as ReturnType<typeof quad>[],
@@ -267,7 +271,74 @@ describe('resource-store-utils', () => {
     expect(subjects).toEqual(['http://example.org/alsoGood', 'http://example.org/good']);
   });
 
-  it('ensures validity metadata for new resources', () => {
+  it('adds creation timestamps for new named node subjects', () => {
+    const subject = namedNode('http://example.org/resource');
+    const related = namedNode('http://example.org/resource/child');
+    const graph = namedNode('http://example.org/resource#graph');
+    const quads: ReturnType<typeof quad>[] = [
+      quad(subject, namedNode('http://example.org/name'), literal('Example'), graph),
+      quad(related, namedNode('http://example.org/name'), literal('Child'), graph),
+      quad(
+        namedNode(`${subject.value}#validity`),
+        RDF_TYPE,
+        namedNode('http://www.w3.org/2006/time#Interval'),
+        graph
+      ),
+    ];
+
+    ensureCreationMetadata({
+      quads,
+      graph,
+      timestamp: '2024-01-01T00:00:00Z',
+    });
+
+    const createdSubjects = quads
+      .filter((entry) => entry.predicate.value === DCTERMS.created)
+      .map((entry) => entry.subject.value);
+    expect(createdSubjects).toContain(subject.value);
+    expect(createdSubjects).toContain(related.value);
+    expect(createdSubjects).not.toContain(`${subject.value}#validity`);
+  });
+
+  it('avoids duplicating creation timestamps when already present', () => {
+    const subject = namedNode('http://example.org/resource');
+    const graph = namedNode('http://example.org/resource#graph');
+    const existingCreated = literal('2024-01-01T00:00:00Z', namedNode(XSD.dateTime));
+    const existingQuads = [quad(subject, namedNode(DCTERMS.created), existingCreated, graph)];
+    const quads: ReturnType<typeof quad>[] = [
+      quad(subject, namedNode('http://example.org/name'), literal('Example'), graph),
+    ];
+
+    ensureCreationMetadata({ quads, graph, existingQuads, timestamp: '2024-02-01T00:00:00Z' });
+
+    const created = quads.filter((entry) => entry.predicate.value === DCTERMS.created);
+    expect(created).toHaveLength(0);
+  });
+
+  it('replaces modification timestamps when ensuring metadata', () => {
+    const subject = namedNode('http://example.org/resource');
+    const graph = namedNode('http://example.org/resource#graph');
+    const existing = quad(
+      subject,
+      namedNode(DCTERMS.modified),
+      literal('2024-01-01T00:00:00Z', namedNode(XSD.dateTime)),
+      graph
+    );
+    const quads: ReturnType<typeof quad>[] = [existing];
+
+    ensureModificationMetadata({
+      quads,
+      subject,
+      graph,
+      timestamp: '2024-02-01T00:00:00Z',
+    });
+
+    const modified = quads.filter((entry) => entry.predicate.value === DCTERMS.modified);
+    expect(modified).toHaveLength(1);
+    expect(modified[0]?.object.value).toBe('2024-02-01T00:00:00Z');
+  });
+
+  it('does not add validity metadata for new resources when none exists', () => {
     const subject = namedNode('http://example.org/resource');
     const graph = namedNode('http://example.org/resource#graph');
     const quads: ReturnType<typeof quad>[] = [
@@ -278,26 +349,10 @@ describe('resource-store-utils', () => {
       quads,
       subject,
       graph,
-      createdAt: '2024-01-01T00:00:00Z',
     });
 
-    const validityNode = `${subject.value}#validity`;
-    const beginningNode = `${subject.value}#validity-beginning`;
-
-    expect(
-      quads.some(
-        (entry) =>
-          entry.subject.value === subject.value &&
-          entry.predicate.value === 'http://purl.org/dc/terms/valid' &&
-          entry.object.value === validityNode
-      )
-    ).toBe(true);
-    const creationLiteral = quads.find(
-      (entry) =>
-        entry.subject.value === beginningNode &&
-        entry.predicate.value === 'http://www.w3.org/2006/time#inXSDDateTime'
-    );
-    expect(creationLiteral?.object.value).toBe('2024-01-01T00:00:00Z');
+    expect(quads.some((entry) => entry.predicate.value === DCTERMS.valid)).toBe(false);
+    expect(quads.some((entry) => entry.predicate.value === TIME.inXSDDateTime)).toBe(false);
   });
 
   it('retains existing validity end values when ensuring metadata for updates', () => {
@@ -305,14 +360,11 @@ describe('resource-store-utils', () => {
     const graph = namedNode('http://example.org/resource#graph');
     const validity = namedNode(`${subject.value}#validity`);
     const end = namedNode(`${subject.value}#validity-end`);
-    const existingEnd = literal(
-      '2024-03-01T10:00:00Z',
-      namedNode('http://www.w3.org/2001/XMLSchema#dateTime')
-    );
+    const existingEnd = literal('2024-03-01T10:00:00Z', namedNode(XSD.dateTime));
     const existingQuads = [
-      quad(subject, namedNode('http://purl.org/dc/terms/valid'), validity, graph),
-      quad(validity, namedNode('http://www.w3.org/2006/time#hasEnd'), end, graph),
-      quad(end, namedNode('http://www.w3.org/2006/time#inXSDDateTime'), existingEnd, graph),
+      quad(subject, namedNode(DCTERMS.valid), validity, graph),
+      quad(validity, namedNode(TIME.hasEnd), end, graph),
+      quad(end, namedNode(TIME.inXSDDateTime), existingEnd, graph),
     ];
     const updated: ReturnType<typeof quad>[] = [
       quad(subject, namedNode('http://example.org/name'), literal('Updated'), graph),
@@ -326,9 +378,7 @@ describe('resource-store-utils', () => {
     });
 
     const preservedEnd = updated.find(
-      (entry) =>
-        entry.subject.value === end.value &&
-        entry.predicate.value === 'http://www.w3.org/2006/time#inXSDDateTime'
+      (entry) => entry.subject.value === end.value && entry.predicate.value === TIME.inXSDDateTime
     );
     expect(preservedEnd?.object.value).toBe(existingEnd.value);
   });
@@ -346,11 +396,15 @@ describe('resource-store-utils', () => {
       ),
     ];
 
+    ensureCreationMetadata({
+      quads: baseQuads,
+      graph,
+      timestamp: '2024-01-01T00:00:00Z',
+    });
     ensureValidityMetadata({
       quads: baseQuads,
       subject,
       graph,
-      createdAt: '2024-01-01T00:00:00Z',
     });
 
     const storeWrapper = createMutableStore(baseQuads);
@@ -367,9 +421,13 @@ describe('resource-store-utils', () => {
     expect(isExpired(validity, Date.parse('2024-02-02T00:00:00Z'))).toBe(true);
     expect(
       storedAfter.some(
+        (entry) => entry.subject.value === subject.value && entry.predicate.value === DCTERMS.valid
+      )
+    ).toBe(true);
+    expect(
+      storedAfter.some(
         (entry) =>
-          entry.subject.value === subject.value &&
-          entry.predicate.value === 'http://purl.org/dc/terms/valid'
+          entry.subject.value === subject.value && entry.predicate.value === DCTERMS.created
       )
     ).toBe(true);
   });

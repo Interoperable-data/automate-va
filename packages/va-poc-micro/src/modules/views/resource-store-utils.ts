@@ -1,28 +1,29 @@
 import rdfDataFactory from '@rdfjs/data-model';
 import type { NamedNode, Quad, Term } from '@rdfjs/types';
 import type { GraphStore } from '../data/graph-store';
+import {
+  RDF,
+  RDF_NODES,
+  SKOS_NODES,
+  RDFS_NODES,
+  DCTERMS_NODES,
+  TIME_NODES,
+  XSD_NODES,
+} from './ontologies';
 
-export const RDF_TYPE_IRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
-const SKOS_PREF_LABEL_IRI = 'http://www.w3.org/2004/02/skos/core#prefLabel';
-const RDFS_LABEL_IRI = 'http://www.w3.org/2000/01/rdf-schema#label';
-const DCTERMS_VALID_IRI = 'http://purl.org/dc/terms/valid';
-const TIME_INTERVAL_IRI = 'http://www.w3.org/2006/time#Interval';
-const TIME_INSTANT_IRI = 'http://www.w3.org/2006/time#Instant';
-const TIME_HAS_BEGINNING_IRI = 'http://www.w3.org/2006/time#hasBeginning';
-const TIME_HAS_END_IRI = 'http://www.w3.org/2006/time#hasEnd';
-const TIME_IN_XSD_DATE_TIME_IRI = 'http://www.w3.org/2006/time#inXSDDateTime';
-const XSD_DATE_TIME_IRI = 'http://www.w3.org/2001/XMLSchema#dateTime';
-
-export const RDF_TYPE = rdfDataFactory.namedNode(RDF_TYPE_IRI);
-export const DCTERMS_VALID = rdfDataFactory.namedNode(DCTERMS_VALID_IRI);
-export const TIME_INTERVAL = rdfDataFactory.namedNode(TIME_INTERVAL_IRI);
-export const TIME_INSTANT = rdfDataFactory.namedNode(TIME_INSTANT_IRI);
-export const TIME_HAS_BEGINNING = rdfDataFactory.namedNode(TIME_HAS_BEGINNING_IRI);
-export const TIME_HAS_END = rdfDataFactory.namedNode(TIME_HAS_END_IRI);
-export const TIME_IN_XSD_DATE_TIME = rdfDataFactory.namedNode(TIME_IN_XSD_DATE_TIME_IRI);
-export const XSD_DATE_TIME = rdfDataFactory.namedNode(XSD_DATE_TIME_IRI);
-const SKOS_PREF_LABEL = rdfDataFactory.namedNode(SKOS_PREF_LABEL_IRI);
-const RDFS_LABEL = rdfDataFactory.namedNode(RDFS_LABEL_IRI);
+const RDF_TYPE_IRI = RDF.type;
+const RDF_TYPE = RDF_NODES.type;
+const DCTERMS_VALID = DCTERMS_NODES.valid;
+const DCTERMS_CREATED = DCTERMS_NODES.created;
+const DCTERMS_MODIFIED = DCTERMS_NODES.modified;
+const TIME_INTERVAL = TIME_NODES.Interval;
+const TIME_INSTANT = TIME_NODES.Instant;
+const TIME_HAS_BEGINNING = TIME_NODES.hasBeginning;
+const TIME_HAS_END = TIME_NODES.hasEnd;
+const TIME_IN_XSD_DATE_TIME = TIME_NODES.inXSDDateTime;
+const XSD_DATE_TIME = XSD_NODES.dateTime;
+const SKOS_PREF_LABEL = SKOS_NODES.prefLabel;
+const RDFS_LABEL = RDFS_NODES.label;
 
 export function ensureGraph(quad: Quad, graph: NamedNode): Quad {
   if (quad.graph.termType === 'NamedNode' && quad.graph.value === graph.value) {
@@ -166,8 +167,8 @@ function pushQuad(target: Quad[], quad: Quad): void {
   target.push(quad);
 }
 
-function literalForTimestamp(value: string) {
-  return rdfDataFactory.literal(value, rdfDataFactory.namedNode(XSD_DATE_TIME_IRI));
+export function literalForTimestamp(value: string) {
+  return rdfDataFactory.literal(value, XSD_DATE_TIME);
 }
 
 export interface ValidityWindow {
@@ -175,48 +176,145 @@ export interface ValidityWindow {
   ends?: string;
 }
 
+const VALIDITY_SUFFIXES = ['#validity', '#validity-beginning', '#validity-end'] as const;
+
+function shouldSkipCreationFor(subject: NamedNode): boolean {
+  const value = subject.value;
+  return VALIDITY_SUFFIXES.some((suffix) => value.endsWith(suffix));
+}
+
+export function ensureCreationMetadata(options: {
+  quads: Quad[];
+  graph: NamedNode;
+  existingQuads?: Quad[];
+  timestamp?: string;
+}): void {
+  const { quads, graph, existingQuads = [], timestamp } = options;
+
+  const existingCreated = new Set(
+    existingQuads
+      .filter(
+        (quad) =>
+          quad.predicate.equals(DCTERMS_CREATED) &&
+          quad.subject.termType === 'NamedNode' &&
+          quad.graph.termType === 'NamedNode' &&
+          quad.graph.equals(graph)
+      )
+      .map((quad) => quad.subject.value)
+  );
+
+  const currentCreated = new Set(
+    quads
+      .filter(
+        (quad) =>
+          quad.predicate.equals(DCTERMS_CREATED) &&
+          quad.subject.termType === 'NamedNode' &&
+          quad.graph.termType === 'NamedNode' &&
+          quad.graph.equals(graph)
+      )
+      .map((quad) => quad.subject.value)
+  );
+
+  const subjects = new Set<string>();
+  for (const quad of quads) {
+    if (quad.graph.termType !== 'NamedNode' || !quad.graph.equals(graph)) {
+      continue;
+    }
+    if (quad.subject.termType !== 'NamedNode') {
+      continue;
+    }
+    if (shouldSkipCreationFor(quad.subject)) {
+      continue;
+    }
+    subjects.add(quad.subject.value);
+  }
+
+  for (const subjectIri of subjects) {
+    if (existingCreated.has(subjectIri) || currentCreated.has(subjectIri)) {
+      continue;
+    }
+
+    const literal = literalForTimestamp(timestamp ?? new Date().toISOString());
+    const subject = rdfDataFactory.namedNode(subjectIri);
+
+    quads.push(rdfDataFactory.quad(subject, DCTERMS_CREATED, literal, graph));
+    currentCreated.add(subjectIri);
+  }
+}
+
+export function ensureModificationMetadata(options: {
+  quads: Quad[];
+  subject: NamedNode;
+  graph: NamedNode;
+  timestamp?: string;
+}): void {
+  const { quads, subject, graph, timestamp } = options;
+
+  for (let index = quads.length - 1; index >= 0; index -= 1) {
+    const candidate = quads[index];
+    if (
+      candidate.subject.termType === 'NamedNode' &&
+      candidate.subject.value === subject.value &&
+      candidate.predicate.equals(DCTERMS_MODIFIED) &&
+      candidate.graph.termType === 'NamedNode' &&
+      candidate.graph.equals(graph)
+    ) {
+      quads.splice(index, 1);
+    }
+  }
+
+  const literal = literalForTimestamp(timestamp ?? new Date().toISOString());
+  quads.push(rdfDataFactory.quad(subject, DCTERMS_MODIFIED, literal, graph));
+}
+
 export function ensureValidityMetadata(options: {
   quads: Quad[];
   subject: NamedNode;
   graph: NamedNode;
   existingQuads?: Quad[];
-  createdAt?: string;
+  createValidity?: boolean;
 }): { validity: NamedNode; beginning: NamedNode; end: NamedNode; window: ValidityWindow } {
-  const { quads, subject, graph, existingQuads = [], createdAt } = options;
+  const { quads, subject, graph, existingQuads = [], createValidity = false } = options;
   const { validity, beginning, end } = validityNodesFor(subject);
 
   const combined = [...existingQuads, ...quads];
 
   const existingBeginning = findDateLiteral(combined, beginning);
   const existingEnd = findDateLiteral(combined, end);
+  const hasExistingValidity = combined.some(
+    (quad) =>
+      quad.subject.termType === 'NamedNode' &&
+      quad.subject.value === subject.value &&
+      quad.predicate.equals(DCTERMS_VALID)
+  );
 
   const working = [...quads];
 
-  pushQuad(working, rdfDataFactory.quad(subject, DCTERMS_VALID, validity, graph));
-  pushQuad(working, rdfDataFactory.quad(validity, RDF_TYPE, TIME_INTERVAL, graph));
-  pushQuad(working, rdfDataFactory.quad(validity, TIME_HAS_BEGINNING, beginning, graph));
-  pushQuad(working, rdfDataFactory.quad(beginning, RDF_TYPE, TIME_INSTANT, graph));
+  if (hasExistingValidity || createValidity) {
+    pushQuad(working, rdfDataFactory.quad(subject, DCTERMS_VALID, validity, graph));
+    pushQuad(working, rdfDataFactory.quad(validity, RDF_TYPE, TIME_INTERVAL, graph));
 
-  const beginningValue = existingBeginning ?? createdAt;
-  if (beginningValue) {
-    pushQuad(
-      working,
-      rdfDataFactory.quad(
-        beginning,
-        TIME_IN_XSD_DATE_TIME,
-        literalForTimestamp(beginningValue),
-        graph
-      )
-    );
-  }
+    if (existingBeginning) {
+      const preservedBeginningQuads = existingQuads.filter(
+        (quad) =>
+          (quad.subject.termType === 'NamedNode' &&
+            quad.subject.value === validity.value &&
+            quad.predicate.equals(TIME_HAS_BEGINNING)) ||
+          (quad.subject.termType === 'NamedNode' && quad.subject.value === beginning.value)
+      );
+      for (const preserved of preservedBeginningQuads) {
+        pushQuad(working, preserved);
+      }
+    }
 
-  if (existingEnd) {
-    pushQuad(working, rdfDataFactory.quad(validity, TIME_HAS_END, end, graph));
-    pushQuad(working, rdfDataFactory.quad(end, RDF_TYPE, TIME_INSTANT, graph));
-    pushQuad(
-      working,
-      rdfDataFactory.quad(end, TIME_IN_XSD_DATE_TIME, literalForTimestamp(existingEnd), graph)
-    );
+    if (existingEnd) {
+      pushQuad(working, rdfDataFactory.quad(validity, TIME_HAS_END, end, graph));
+      pushQuad(working, rdfDataFactory.quad(end, RDF_TYPE, TIME_INSTANT, graph));
+      pushQuad(
+        working,
+        rdfDataFactory.quad(end, TIME_IN_XSD_DATE_TIME, literalForTimestamp(existingEnd), graph)
+      );
+    }
   }
 
   const deduped = dedupeQuadsInPlace(working);
@@ -227,7 +325,7 @@ export function ensureValidityMetadata(options: {
     beginning,
     end,
     window: {
-      begins: beginningValue,
+      begins: existingBeginning,
       ends: existingEnd,
     },
   };
@@ -270,27 +368,14 @@ export async function markResourceExpiration(
     return;
   }
 
-  const previousWindow = readValidityWindow(existing, subject);
   const working = existing.map((quad) => quad);
-  const { validity, beginning, end, window } = ensureValidityMetadata({
+  const { validity, end } = ensureValidityMetadata({
     quads: working,
     subject,
     graph,
     existingQuads: existing,
+    createValidity: true,
   });
-
-  const beginsAt = window.begins ?? previousWindow.begins;
-  const hasBeginningLiteral = working.some(
-    (quad) =>
-      quad.subject.termType === 'NamedNode' &&
-      quad.subject.value === beginning.value &&
-      quad.predicate.equals(TIME_IN_XSD_DATE_TIME)
-  );
-  if (!hasBeginningLiteral && beginsAt) {
-    working.push(
-      rdfDataFactory.quad(beginning, TIME_IN_XSD_DATE_TIME, literalForTimestamp(beginsAt), graph)
-    );
-  }
 
   const filtered = working.filter(
     (quad) =>

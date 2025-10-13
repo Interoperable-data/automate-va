@@ -109,6 +109,7 @@ describe('organisation-manager persistence', () => {
 
     const subjectIri = 'https://data.europa.eu/949/local/organization/42';
     const graphIri = `${subjectIri}#graph`;
+
     await store.putQuads([
       quad(
         namedNode(subjectIri),
@@ -123,10 +124,6 @@ describe('organisation-manager persistence', () => {
         namedNode(graphIri)
       ),
     ]);
-
-    const collectSpy = vi
-      .spyOn(resourceStoreUtils, 'collectIncomingReferenceSubjects')
-      .mockResolvedValue(['https://data.europa.eu/949/local/unit/200']);
 
     await initOrganisationManagerView({ container, store, shapes });
 
@@ -244,6 +241,13 @@ describe('organisation-manager persistence', () => {
           quad.object.value === 'ACME Logistics'
       )
     ).toBe(true);
+    expect(
+      typedQuads.some(
+        (quad) =>
+          quad.subject.value === subjectValue &&
+          quad.predicate.value === 'http://purl.org/dc/terms/modified'
+      )
+    ).toBe(false);
 
     expect(uuidSpy).toHaveBeenCalled();
     expect(container.querySelector('.modal')).toBeNull();
@@ -288,6 +292,96 @@ describe('organisation-manager persistence', () => {
 
     expect(uuidSpy).toHaveBeenCalled();
     expect(container.querySelector('.modal')).toBeNull();
+  });
+
+  it('preserves creation metadata and records modification timestamps when updating resources', async () => {
+    const quads = parser.parse(SHAPE_TTL);
+    const dataset = datasetFactory.dataset(quads);
+    const shapes = { text: SHAPE_TTL, quads, dataset };
+
+    const subjectIri = 'https://data.europa.eu/949/local/organization/90';
+    const graphIri = `${subjectIri}#graph`;
+    const previousModified = '2024-03-01T00:00:00Z';
+
+    await store.putQuads([
+      quad(
+        namedNode(subjectIri),
+        namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+        namedNode('http://www.w3.org/ns/org#Organization'),
+        namedNode(graphIri)
+      ),
+      quad(
+        namedNode(subjectIri),
+        namedNode('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        literal('Original Org'),
+        namedNode(graphIri)
+      ),
+      quad(
+        namedNode(subjectIri),
+        namedNode('http://purl.org/dc/terms/created'),
+        literal('2024-01-01T00:00:00Z', namedNode('http://www.w3.org/2001/XMLSchema#dateTime')),
+        namedNode(graphIri)
+      ),
+      quad(
+        namedNode(subjectIri),
+        namedNode('http://purl.org/dc/terms/modified'),
+        literal(previousModified, namedNode('http://www.w3.org/2001/XMLSchema#dateTime')),
+        namedNode(graphIri)
+      ),
+    ]);
+
+    serializeProvider = () =>
+      `@prefix skos: <http://www.w3.org/2004/02/skos/core#> .\n<${subjectIri}> skos:prefLabel "Updated Org" .`;
+    await initOrganisationManagerView({ container, store, shapes });
+
+    const resourceButton = await waitForElement<HTMLButtonElement>(
+      container,
+      '.resource-list__button'
+    );
+    resourceButton.click();
+
+    await flushMicrotasks();
+
+    const saveButton = await waitForElement<HTMLButtonElement>(
+      container,
+      '.modal__button:not(.modal__button--secondary):not(.modal__button--danger)'
+    );
+    expect(saveButton.textContent ?? '').toContain('Save');
+    saveButton.click();
+
+    await waitForModalToDisappear(container);
+
+    const stored = await store.getQuads({ graph: namedNode(graphIri) });
+    const created = stored.filter(
+      (entry) =>
+        entry.subject.termType === 'NamedNode' &&
+        entry.subject.value === subjectIri &&
+        entry.predicate.termType === 'NamedNode' &&
+        entry.predicate.value === 'http://purl.org/dc/terms/created'
+    );
+    expect(created).toHaveLength(1);
+    expect(created[0]?.object.value).toBe('2024-01-01T00:00:00Z');
+
+    const modified = stored.filter(
+      (entry) =>
+        entry.subject.termType === 'NamedNode' &&
+        entry.subject.value === subjectIri &&
+        entry.predicate.termType === 'NamedNode' &&
+        entry.predicate.value === 'http://purl.org/dc/terms/modified'
+    );
+    expect(modified).toHaveLength(1);
+    const modifiedValue = modified[0]?.object.value ?? '';
+    expect(modifiedValue).not.toBe(previousModified);
+    expect(Date.parse(modifiedValue)).not.toBeNaN();
+
+    const labels = stored.filter(
+      (entry) =>
+        entry.subject.termType === 'NamedNode' &&
+        entry.subject.value === subjectIri &&
+        entry.predicate.termType === 'NamedNode' &&
+        entry.predicate.value === 'http://www.w3.org/2004/02/skos/core#prefLabel'
+    );
+    expect(labels.some((entry) => entry.object.value === 'Updated Org')).toBe(true);
   });
 
   it('closes the modal without persisting data when cancelled', async () => {

@@ -76,6 +76,7 @@ era-sh:FormalOrganisationShape a sh:NodeShape, rdfs:Class ;
   sh:property [
     sh:path rdfs:comment ;
     sh:datatype xsd:string ;
+    dash:singleLine false ;
     sh:name "Description of the Holding or Group"@en ;
     sh:description "A description of the mother holding or group. Do NOT include locations in this name." ;
     sh:minCount 0 ; sh:maxCount 1
@@ -353,7 +354,7 @@ era-sh:OrganisationRoleShape a sh:NodeShape ;
     sh:nodeKind sh:IRI ;
     sh:class org:Organization;
     sh:name "The Organisation(al Unit) which plays the role";      
-    sh:minCount 0; sh:maxCount 1; # one role per resource
+    sh:minCount 0; sh:maxCount 1; # MINCount MUST be 0 (or it forces new org update)
     sh:message "Each Organisational Role MUST be played by exactly one Organisation(al Unit)"@en ;
     sh:severity sh:Violation
   ];
