@@ -1,19 +1,39 @@
 import { Parser } from 'n3';
 import rdfDataFactory from '@rdfjs/data-model';
-import type { Quad, Term, NamedNode } from '@rdfjs/types';
+import type { Quad, NamedNode, DatasetCore } from '@rdfjs/types';
 import type { GraphStore } from '../data/graph-store';
 import type { LoadedShape } from '../data/organisation-shapes';
 import { discoverShapeDescriptors, type ShapeDescriptor } from '../data/shape-descriptors';
 import { assert } from '../utils/assert';
 import { quadsToTurtle } from './rdf-utils';
 import { attachClassInstanceProvider } from './shacl-class-provider';
+import { applyMaterialShaclTheme } from './shacl-material-theme';
+import {
+  RDF_TYPE,
+  ensureGraph,
+  ensureTypeQuad,
+  resolveLabel,
+  getGraphId,
+  extractMessage,
+  collectIncomingReferenceSubjects,
+  ensureValidityMetadata,
+  readValidityWindow,
+  isExpired,
+  markResourceExpiration,
+} from './resource-store-utils';
 
-const RDF_TYPE_IRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
-const SKOS_PREF_LABEL_IRI = 'http://www.w3.org/2004/02/skos/core#prefLabel';
-const RDFS_LABEL_IRI = 'http://www.w3.org/2000/01/rdf-schema#label';
-const RDF_TYPE = rdfDataFactory.namedNode(RDF_TYPE_IRI);
-const SKOS_PREF_LABEL = rdfDataFactory.namedNode(SKOS_PREF_LABEL_IRI);
-const RDFS_LABEL = rdfDataFactory.namedNode(RDFS_LABEL_IRI);
+const RDFS_SUBCLASS_OF = rdfDataFactory.namedNode(
+  'http://www.w3.org/2000/01/rdf-schema#subClassOf'
+);
+
+const ORG_FORMAL_ORGANIZATION = 'https://www.w3.org/ns/org#FormalOrganization';
+const ORG_ORGANIZATION = 'https://www.w3.org/ns/org#Organization';
+const ORG_ORGANIZATIONAL_UNIT = 'https://www.w3.org/ns/org#OrganizationalUnit';
+const ORG_ROLE = 'https://www.w3.org/ns/org#Role';
+const ORG_SITE = 'https://www.w3.org/ns/org#Site';
+const DCTERMS_LOCATION = 'http://purl.org/dc/terms/Location';
+const LOCN_ADDRESS = 'http://www.w3.org/ns/locn#Address';
+const ERA_ORGANISATION_ROLE = 'http://data.europa.eu/949/OrganisationRole';
 
 interface OrganisationManagerOptions {
   container: HTMLElement;
@@ -30,14 +50,55 @@ interface ResourceRecord {
   subject: string;
   graph: string;
   label: string;
+  expired: boolean;
 }
 
 type ResourceIdentifiers = Pick<ResourceRecord, 'subject' | 'graph'>;
 
+interface DescriptorBuckets {
+  roles: ShapeDescriptor[];
+  organisations: ShapeDescriptor[];
+  sites: ShapeDescriptor[];
+}
+
+interface ResourceColumnElements {
+  roles: HTMLElement;
+  organisations: HTMLElement;
+  sites: HTMLElement;
+}
+
+type ColumnKey = keyof DescriptorBuckets;
+
+const COLUMN_COPY: Record<ColumnKey, { title: string; description: string; empty: string }> = {
+  roles: {
+    title: 'Roles & assignments',
+    description: 'Define organisational roles and link them to units or sites.',
+    empty: 'No role shapes available yet.',
+  },
+  organisations: {
+    title: 'Organisations & units',
+    description: 'Capture organisations and their units that participate in the application.',
+    empty: 'No organisation shapes available yet.',
+  },
+  sites: {
+    title: 'Sites & locations',
+    description: 'Record sites, facilities, and related location information.',
+    empty: 'No site or location shapes available yet.',
+  },
+} as const;
+
+const COLUMN_ORDER: ColumnKey[] = ['roles', 'organisations', 'sites'];
+
 type ShaclFormElement = HTMLElement & {
   serialize: (format?: string) => string;
-  validate: (ignoreEmptyValues?: boolean) => Promise<boolean>;
+  validate: (ignoreEmptyValues?: boolean) => Promise<boolean | { conforms?: boolean }>;
   setClassInstanceProvider?: (provider: (className: string) => Promise<string>) => void;
+  config?: {
+    theme?: {
+      stylesheet: CSSStyleSheet;
+      setDense: (dense: boolean) => void;
+    };
+  };
 };
 
 export async function initOrganisationManagerView(
@@ -46,6 +107,7 @@ export async function initOrganisationManagerView(
   const { container, store, shapes } = options;
 
   const descriptors = discoverShapeDescriptors(shapes.dataset);
+  const descriptorBuckets = categorizeDescriptors(descriptors, shapes.dataset);
   const layout = buildLayout(container);
 
   interface ModalHandle {
@@ -59,7 +121,7 @@ export async function initOrganisationManagerView(
     layout.emptyState.textContent =
       'Add targetable NodeShapes to the shapes graph to start managing resources.';
     layout.emptyState.hidden = false;
-    layout.resourceList.hidden = true;
+    layout.resourceListRoot.hidden = true;
     return {
       activate() {
         // Nothing to activate without shapes to drive the manager.
@@ -69,6 +131,11 @@ export async function initOrganisationManagerView(
 
   let resources: ResourceRecord[] = [];
   let selectedSubject: string | null = null;
+
+  const handleCreate = (descriptor: ShapeDescriptor) => {
+    selectedSubject = null;
+    void openForm(descriptor);
+  };
 
   await refreshResourceList();
 
@@ -185,20 +252,16 @@ export async function initOrganisationManagerView(
     { keepSelection = false }: { keepSelection?: boolean } = {}
   ) {
     resources = await fetchResources(store, descriptors);
-    renderResourceList(layout.resourceList, descriptors, resources, {
+    renderResourceList(layout.resourceColumns, descriptorBuckets, resources, {
       onSelect(resource) {
         selectedSubject = resource.subject;
         void openForm(resource.descriptor, resource);
       },
-      onCreate(descriptor) {
-        selectedSubject = null;
-        void openForm(descriptor);
-      },
+      onCreate: handleCreate,
       highlightSubject:
         highlightSubject ?? (keepSelection ? selectedSubject ?? undefined : undefined),
     });
-    layout.emptyState.hidden = resources.length > 0 || descriptors.length > 0;
-    layout.resourceList.hidden = descriptors.length === 0;
+    layout.emptyState.hidden = resources.length > 0;
   }
 
   async function openForm(descriptor: ShapeDescriptor, existing?: ResourceRecord) {
@@ -207,6 +270,7 @@ export async function initOrganisationManagerView(
     );
 
     const form = document.createElement('shacl-form') as ShaclFormElement;
+    applyMaterialShaclTheme(form);
 
     modal.addCleanup(() => {
       form.replaceWith();
@@ -257,7 +321,6 @@ export async function initOrganisationManagerView(
 
     form.setAttribute('data-shapes', shapes.text);
     form.setAttribute('data-shape-subject', descriptor.shape.value);
-    form.setAttribute('data-submit-button', descriptor.submitButtonLabel);
     form.setAttribute('data-values-subject', identifiers.subject);
     form.setAttribute('data-values-graph', identifiers.graph);
     form.setAttribute('data-values-namespace', namespace);
@@ -284,14 +347,6 @@ export async function initOrganisationManagerView(
       refreshInspector();
     }
 
-    const cancelButton = document.createElement('button');
-    cancelButton.type = 'button';
-    cancelButton.textContent = 'Cancel';
-    cancelButton.className = 'modal__button modal__button--secondary';
-    cancelButton.addEventListener('click', () => {
-      modal.close();
-    });
-
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
     deleteButton.textContent = `Delete ${descriptor.label}`;
@@ -302,10 +357,37 @@ export async function initOrganisationManagerView(
         return;
       }
       deleteButton.disabled = true;
-      setStatusMessage(`Removing ${descriptor.label.toLowerCase()}…`);
       try {
+        const references = await collectIncomingReferenceSubjects(store, existing.subject);
+        if (references.length > 0) {
+          const previewLimit = 10;
+          const listed = references
+            .slice(0, previewLimit)
+            .map((iri) => `• ${iri}`)
+            .join('\n');
+          const remainder =
+            references.length > previewLimit
+              ? `\n…and ${references.length - previewLimit} more.`
+              : '';
+          const confirmMessage = [
+            `${descriptor.label} is referenced by the following resources:`,
+            listed,
+            remainder,
+            '',
+            'Deleting it will leave those triples with dangling object IRIs. Continue?',
+          ]
+            .filter(Boolean)
+            .join('\n');
+          const proceed = window.confirm(confirmMessage);
+          if (!proceed) {
+            deleteButton.disabled = false;
+            return;
+          }
+        }
+
+        setStatusMessage(`Marking ${descriptor.label.toLowerCase()} as expired…`);
         await removeResource(store, existing);
-        setStatusMessage(`${descriptor.label} deleted.`);
+        setStatusMessage(`${descriptor.label} expired.`);
         selectedSubject = null;
         await refreshResourceList();
         modal.close();
@@ -315,12 +397,37 @@ export async function initOrganisationManagerView(
         deleteButton.disabled = false;
       }
     });
-    modal.footer.append(cancelButton, deleteButton);
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.textContent = 'Cancel';
+    cancelButton.className = 'modal__button modal__button--secondary';
+    cancelButton.addEventListener('click', () => {
+      modal.close();
+    });
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      setStatusMessage(`Saving ${descriptor.label.toLowerCase()}…`);
+    const saveButton = document.createElement('button');
+    saveButton.type = 'button';
+    saveButton.textContent = existing ? `Save ${descriptor.label}` : `Create ${descriptor.label}`;
+    saveButton.className = 'modal__button';
+    saveButton.addEventListener('click', async () => {
+      saveButton.disabled = true;
+      setStatusMessage(`Validating ${descriptor.label.toLowerCase()}…`);
       try {
+        const report = await form.validate();
+        const conforms =
+          typeof report === 'object' && report !== null
+            ? report.conforms !== false
+            : report === true;
+        if (!conforms) {
+          setStatusMessage('Resolve validation issues before saving.');
+          const invalidField = modal.body.querySelector('.invalid .editor') as HTMLElement | null;
+          if (invalidField) {
+            invalidField.focus();
+          }
+          return;
+        }
+
+        setStatusMessage(`Saving ${descriptor.label.toLowerCase()}…`);
         const turtle = form.serialize('text/turtle');
         await persistForm(store, {
           turtle,
@@ -335,8 +442,12 @@ export async function initOrganisationManagerView(
       } catch (error) {
         console.error('[organisation-manager] Failed to save form', error);
         setStatusMessage(`Failed to save: ${extractMessage(error)}`);
+      } finally {
+        saveButton.disabled = false;
       }
     });
+
+    modal.footer.append(saveButton, cancelButton, deleteButton);
   }
 
   return {
@@ -351,19 +462,38 @@ function buildLayout(container: HTMLElement) {
     <section class="panel panel--stacked">
       <header class="panel__header">
         <h2 class="panel__title">Manage organisation data</h2>
-        <p class="panel__body">Create holdings, organisations, and units. Saved entries appear below and remain grouped by their SHACL class.</p>
       </header>
       <p class="panel__body panel__body--muted" data-role="empty-state" hidden>No organisation data stored locally yet.</p>
-      <div class="resource-list" data-role="resource-list"></div>
+      <div class="resource-list" data-role="resource-list">
+        <div class="resource-list__column resource-list__column--roles" data-column="roles"></div>
+        <div class="resource-list__column resource-list__column--organisations" data-column="organisations"></div>
+        <div class="resource-list__column resource-list__column--sites" data-column="sites"></div>
+      </div>
     </section>
     <div data-role="modal-host"></div>
   `;
 
   return {
-    resourceList: assert(
+    resourceListRoot: assert(
       container.querySelector<HTMLElement>('[data-role="resource-list"]'),
-      'Resource list host missing'
+      'Resource list root missing'
     ),
+    resourceColumns: {
+      roles: assert(
+        container.querySelector<HTMLElement>('[data-role="resource-list"] [data-column="roles"]'),
+        'Resource roles column missing'
+      ),
+      organisations: assert(
+        container.querySelector<HTMLElement>(
+          '[data-role="resource-list"] [data-column="organisations"]'
+        ),
+        'Resource organisations column missing'
+      ),
+      sites: assert(
+        container.querySelector<HTMLElement>('[data-role="resource-list"] [data-column="sites"]'),
+        'Resource sites column missing'
+      ),
+    },
     emptyState: assert(
       container.querySelector<HTMLElement>('[data-role="empty-state"]'),
       'Empty state paragraph missing'
@@ -373,6 +503,76 @@ function buildLayout(container: HTMLElement) {
       'Modal host missing'
     ),
   } as const;
+}
+
+// Buckets shapes into the column that matches their target class semantics.
+function categorizeDescriptors(
+  descriptors: ShapeDescriptor[],
+  dataset: DatasetCore
+): DescriptorBuckets {
+  const buckets: DescriptorBuckets = { roles: [], organisations: [], sites: [] };
+
+  descriptors.forEach((descriptor) => {
+    if (
+      isTargetClass(descriptor.targetClass, ORG_ROLE, dataset) ||
+      descriptor.targetClass.value === ERA_ORGANISATION_ROLE
+    ) {
+      buckets.roles.push(descriptor);
+      return;
+    }
+
+    const target = descriptor.targetClass.value;
+
+    if (target === ORG_SITE || target === DCTERMS_LOCATION || target === LOCN_ADDRESS) {
+      buckets.sites.push(descriptor);
+      return;
+    }
+
+    if (
+      target === ORG_FORMAL_ORGANIZATION ||
+      target === ORG_ORGANIZATION ||
+      target === ORG_ORGANIZATIONAL_UNIT
+    ) {
+      buckets.organisations.push(descriptor);
+      return;
+    }
+
+    // Default to the organisations column so new shapes stay visible.
+    buckets.organisations.push(descriptor);
+  });
+
+  return buckets;
+}
+
+function isTargetClass(target: NamedNode, parentIri: string, dataset: DatasetCore): boolean {
+  if (target.value === parentIri) {
+    return true;
+  }
+
+  const parent = rdfDataFactory.namedNode(parentIri);
+  const visited = new Set<string>();
+
+  const hasSubclass = (candidate: NamedNode): boolean => {
+    if (visited.has(candidate.value)) {
+      return false;
+    }
+    visited.add(candidate.value);
+
+    for (const quad of dataset.match(candidate, RDFS_SUBCLASS_OF, undefined)) {
+      if (quad.object.termType !== 'NamedNode') {
+        continue;
+      }
+      if (quad.object.value === parent.value) {
+        return true;
+      }
+      if (hasSubclass(quad.object)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  return hasSubclass(target);
 }
 
 async function fetchResources(
@@ -389,11 +589,16 @@ async function fetchResources(
       }
       const graph = getGraphId(quad.graph);
       const label = await resolveLabel(store, quad.subject, graph ?? undefined);
+      const graphNode = rdfDataFactory.namedNode(graph ?? `${quad.subject.value}#graph`);
+      const resourceQuads = await store.getQuads({ graph: graphNode });
+      const validity = readValidityWindow(resourceQuads, quad.subject);
+      const expired = isExpired(validity);
       results.push({
         descriptor,
         subject: quad.subject.value,
         graph: graph ?? `${quad.subject.value}#graph`,
         label,
+        expired,
       });
     }
   }
@@ -409,68 +614,86 @@ interface RenderResourceListOptions {
 }
 
 function renderResourceList(
-  host: HTMLElement,
-  descriptors: ShapeDescriptor[],
+  columns: ResourceColumnElements,
+  buckets: DescriptorBuckets,
   items: ResourceRecord[],
   options: RenderResourceListOptions
 ): void {
-  host.replaceChildren();
+  COLUMN_ORDER.forEach((key) => {
+    const host = columns[key];
+    const descriptors = buckets[key];
 
-  descriptors.forEach((descriptor) => {
-    const subset = items.filter((item) => item.descriptor.shape.equals(descriptor.shape));
+    host.replaceChildren();
 
-    const section = document.createElement('section');
-    section.className = 'resource-list__group';
-
-    const heading = document.createElement('h3');
-    heading.className = 'resource-list__heading';
-    heading.textContent = descriptor.pluralLabel;
-    section.append(heading);
-
-    const description = document.createElement('p');
-    description.className = 'resource-list__description';
-    description.textContent = descriptor.description;
-    section.append(description);
-
-    if (subset.length === 0) {
+    if (descriptors.length === 0) {
       const empty = document.createElement('p');
-      empty.className = 'resource-list__empty';
-      empty.textContent = `No ${descriptor.pluralLabel.toLowerCase()} stored yet.`;
-      section.append(empty);
-    } else {
-      const list = document.createElement('ul');
-      list.className = 'resource-list__items';
-
-      subset.forEach((resource) => {
-        const listItem = document.createElement('li');
-        listItem.className = 'resource-list__item';
-
-        const button = document.createElement('button');
-        button.className = 'resource-list__button';
-        button.type = 'button';
-        button.dataset.subject = resource.subject;
-        button.textContent = resource.label;
-        if (options.highlightSubject && options.highlightSubject === resource.subject) {
-          button.classList.add('is-active');
-        }
-
-        button.addEventListener('click', () => options.onSelect(resource));
-
-        listItem.append(button);
-        list.append(listItem);
-      });
-
-      section.append(list);
+      empty.className = 'resource-list__column-empty';
+      empty.textContent = COLUMN_COPY[key].empty;
+      host.append(empty);
+      return;
     }
 
-    const createButton = document.createElement('button');
-    createButton.type = 'button';
-    createButton.className = 'panel__button resource-list__create';
-    createButton.textContent = descriptor.createButtonLabel;
-    createButton.addEventListener('click', () => options.onCreate(descriptor));
-    section.append(createButton);
+    descriptors.forEach((descriptor) => {
+      const subset = items.filter((item) => item.descriptor.shape.equals(descriptor.shape));
 
-    host.append(section);
+      const section = document.createElement('section');
+      section.className = 'resource-list__group';
+
+      const heading = document.createElement('h4');
+      heading.className = 'resource-list__heading';
+      heading.textContent = descriptor.pluralLabel;
+      section.append(heading);
+
+      const sectionDescription = document.createElement('p');
+      sectionDescription.className = 'resource-list__description';
+      sectionDescription.textContent = descriptor.description;
+      section.append(sectionDescription);
+
+      if (subset.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'resource-list__empty';
+        empty.textContent = `No ${descriptor.pluralLabel.toLowerCase()} stored yet.`;
+        section.append(empty);
+      } else {
+        const list = document.createElement('ul');
+        list.className = 'resource-list__items';
+
+        subset.forEach((resource) => {
+          const listItem = document.createElement('li');
+          listItem.className = 'resource-list__item';
+
+          const button = document.createElement('button');
+          button.className = 'resource-list__button';
+          button.type = 'button';
+          button.dataset.subject = resource.subject;
+          button.textContent = resource.label;
+          if (resource.expired) {
+            button.classList.add('resource-list__button--expired');
+            button.style.textDecoration = 'line-through';
+            button.title = `${resource.label} (expired)`;
+          }
+          if (options.highlightSubject && options.highlightSubject === resource.subject) {
+            button.classList.add('is-active');
+          }
+
+          button.addEventListener('click', () => options.onSelect(resource));
+
+          listItem.append(button);
+          list.append(listItem);
+        });
+
+        section.append(list);
+      }
+
+      const createButton = document.createElement('button');
+      createButton.type = 'button';
+      createButton.className = 'panel__button resource-list__create';
+      createButton.textContent = descriptor.createButtonLabel;
+      createButton.addEventListener('click', () => options.onCreate(descriptor));
+      section.append(createButton);
+
+      host.append(section);
+    });
   });
 }
 
@@ -496,82 +719,34 @@ async function persistForm(
   ensureTypeQuad(normalized, subjectNode, options.targetClass, graphNode);
 
   const existing = await store.getQuads({ graph: graphNode });
+  const createdAt = existing.length === 0 ? new Date().toISOString() : undefined;
+  const { validity, beginning, end } = ensureValidityMetadata({
+    quads: normalized,
+    subject: subjectNode,
+    graph: graphNode,
+    existingQuads: existing,
+    createdAt,
+  });
+
   if (existing.length > 0) {
-    await store.deleteQuads(existing);
+    const removableSubjects = new Set([
+      subjectNode.value,
+      validity.value,
+      beginning.value,
+      end.value,
+    ]);
+    const staleQuads = existing.filter(
+      (quad) => quad.subject.termType === 'NamedNode' && removableSubjects.has(quad.subject.value)
+    );
+    if (staleQuads.length > 0) {
+      await store.deleteQuads(staleQuads);
+    }
   }
   await store.putQuads(normalized);
 }
 
 async function removeResource(store: GraphStore, record: ResourceRecord): Promise<void> {
-  const graphNode = rdfDataFactory.namedNode(record.graph);
-  const quads = await store.getQuads({ graph: graphNode });
-  if (quads.length === 0) {
-    return;
-  }
-  await store.deleteQuads(quads);
-}
-
-function ensureGraph(quad: Quad, graph: NamedNode): Quad {
-  if (quad.graph.termType === 'NamedNode' && quad.graph.value === graph.value) {
-    return quad;
-  }
-  return rdfDataFactory.quad(quad.subject, quad.predicate, quad.object, graph);
-}
-
-function ensureTypeQuad(
-  quads: Quad[],
-  subject: NamedNode,
-  type: NamedNode,
-  graph: NamedNode
-): void {
-  const hasType = quads.some(
-    (quad) =>
-      quad.subject.termType === 'NamedNode' &&
-      quad.subject.value === subject.value &&
-      quad.predicate.termType === 'NamedNode' &&
-      quad.predicate.value === RDF_TYPE_IRI
-  );
-  if (!hasType) {
-    quads.push(rdfDataFactory.quad(subject, RDF_TYPE, type, graph));
-  }
-}
-
-async function resolveLabel(
-  store: GraphStore,
-  subject: NamedNode,
-  graph?: string
-): Promise<string> {
-  const graphNode = graph ? rdfDataFactory.namedNode(graph) : undefined;
-
-  const pref = await matchLiteral(store, subject, SKOS_PREF_LABEL, graphNode);
-  if (pref) {
-    return pref;
-  }
-
-  const fallback = await matchLiteral(store, subject, RDFS_LABEL, graphNode);
-  if (fallback) {
-    return fallback;
-  }
-
-  return subject.value;
-}
-
-async function matchLiteral(
-  store: GraphStore,
-  subject: NamedNode,
-  predicate: NamedNode,
-  graph?: NamedNode
-): Promise<string | null> {
-  const pattern: { subject: NamedNode; predicate: NamedNode; graph?: NamedNode } = {
-    subject,
-    predicate,
-  };
-  if (graph) {
-    pattern.graph = graph;
-  }
-  const quads = await store.getQuads(pattern);
-  const literal = quads.find((quad) => quad.object.termType === 'Literal');
-  return literal ? literal.object.value : null;
+  await markResourceExpiration(store, record.subject, record.graph);
 }
 
 function createIdentifiers(descriptor: ShapeDescriptor): ResourceIdentifiers {
@@ -583,22 +758,4 @@ function createIdentifiers(descriptor: ShapeDescriptor): ResourceIdentifiers {
 
 function ensureTrailingSlash(input: string): string {
   return input.endsWith('/') ? input : `${input}/`;
-}
-
-function quadsToGraphId(graph: Term): string | null {
-  if (graph.termType === 'NamedNode') {
-    return graph.value;
-  }
-  return null;
-}
-
-function getGraphId(graph: Term): string | null {
-  return quadsToGraphId(graph);
-}
-
-function extractMessage(error: unknown): string {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  return String(error);
 }

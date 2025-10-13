@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 legacy-vue/
+coverage/
 
 # Editor directories and files
 .vscode/*

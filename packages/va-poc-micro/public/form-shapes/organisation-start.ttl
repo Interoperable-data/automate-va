@@ -26,9 +26,13 @@
 @prefix lorg:     <http://data.europa.eu/949/organisations/sites/> .
 @prefix locs:     <http://data.europa.eu/949/organisations/locations/> .
 @prefix uorg:     <http://data.europa.eu/949/organisations/units/> .
+@prefix orgr:     <http://data.europa.eu/949/organisations/roles/> .
+
+@prefix era-organisation-roles: <http://data.europa.eu/949/concepts/organisation-roles/> .
 
 org:FormalOrganization rdfs:subClassOf org:Organization .
 org:OrganizationalUnit rdfs:subClassOf org:Organization .
+era:Body rdfs:subClassOf org:Organization .
 
 era-sh:OrgOrFormalOrgShape a sh:NodeShape, rdfs:Class ;
   rdfs:label "Organisation entry"@en ;
@@ -117,20 +121,6 @@ era-sh:OrganisationShape a sh:NodeShape, rdfs:Class ;
     sh:description "The legally recognized name of the organisation. Do NOT include locations in this name." ;
   ] ;
   sh:property [
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:path org:identifier ;
-    sh:name "Organisation Code" ;
-    sh:pattern "^[A-Z0-9]{4}";
-    sh:description "The organisation's orgCode as assigned by OCR";
-    sh:minLength 4;
-    sh:maxLength 4;
-    # sh:or (
-    #   [ sh:node era-sh:CompanyCode ; rdfs:label "Company Code" ]    
-    #   [ sh:node era-sh:OrganisationCode ; rdfs:label "Organisation Code" ]
-    # )
-  ];
-  sh:property [
     sh:minCount 0 ; # Not mandatory
     sh:path org:hasSubOrganization;
     sh:nodeKind sh:IRI ;
@@ -165,6 +155,14 @@ era-sh:OrganisationShape a sh:NodeShape, rdfs:Class ;
     sh:description "Units or departments which fall under the leadership of this organization." ;
     sh:minCount 0 ; # a org CAN have no Units, in that case, it is assumed all activities run in one location.
     # sh:maxCount 10 ; in fact no limits exist
+  ];
+  sh:property [
+    sh:path era:role ;
+    sh:nodeKind sh:IRI ;
+    sh:class era:OrganisationRole ;
+    sh:name "The role this Organisation can play in the ERA systems/processes"@en ;
+    sh:description "An Organisation SHOULD play an organisational role"@en ;
+    sh:minCount 0
   ].
 
 era-sh:UnitShape a sh:NodeShape, rdfs:Class ;
@@ -185,7 +183,7 @@ era-sh:UnitShape a sh:NodeShape, rdfs:Class ;
   sh:property [
     sh:path skos:altLabel ;
     xsd:datatype xsd:string ;
-    sh:name "Abbreviation of the Unit/Department"@en;
+    sh:name "abbreviation of the Unit/Department"@en;
     sh:description "The abbreviation as it is known in the organisation structure.";
     sh:minCount 1;
     sh:maxLength 10;
@@ -194,7 +192,7 @@ era-sh:UnitShape a sh:NodeShape, rdfs:Class ;
     sh:path org:hasSite ;
     sh:nodeKind sh:IRI ;
     sh:class org:Site ;
-    sh:name "Legal Address of the Unit" ;
+    sh:name "legal address of the Unit" ;
     sh:description "The Site where this Unit is located and its teams are working." ;
     sh:minCount 0 ; # a unit MUST have a site address, can be added later
     sh:maxCount 3 ; # a unit can be housed in 3 different sites.
@@ -203,16 +201,18 @@ era-sh:UnitShape a sh:NodeShape, rdfs:Class ;
     sh:path org:unitOf ;
     sh:nodeKind sh:IRI ;
     sh:class org:FormalOrganization ; # ontology limit/error!?
-    sh:name "To which Formal Organisation this Unit belongs" ;
+    sh:name "formal organisation to which this Unit belongs" ;
     sh:description "The Formal Organisation to which the Unit belongs";
     sh:minCount 0
+  ];
+  sh:property [
+    sh:path era:role ;
+    sh:nodeKind sh:IRI ;
+    sh:class era:OrganisationRole ;
+    sh:name "role this Unit can play in the ERA systems/processes"@en ;
+    sh:description "A Unit within an Organisation COULD play an individual organisational role"@en ;
+    sh:minCount 0
   ].
-  # sh:property [
-  #   sh:name "Unit - editorial data";
-  #   sh:path skos:changeNote ;
-  #   sh:node era-sh:OrgRecordShape ;
-  #   sh:minCount 1 ; # mandatory date of record and change.
-  # ].
 
 era-sh:SiteShape a sh:NodeShape, rdfs:Class ;
   rdfs:label "Organisation site"@en ;
@@ -222,14 +222,14 @@ era-sh:SiteShape a sh:NodeShape, rdfs:Class ;
   sh:property [
     sh:path skos:prefLabel ;
     sh:datatype xsd:string ;
-    sh:name "Site name"@en ;
+    sh:name "site name"@en ;
     sh:description "The human-readable name of the site."@en ;
     sh:minCount 1 ;
     sh:maxCount 1
   ] ;
   sh:property [
     sh:path org:siteAddress ;
-    sh:name "Site address"@en ;
+    sh:name "site address"@en ;
     sh:nodeKind sh:IRI ;
     sh:class locn:Address ;
     sh:description "The postal address associated with this site."@en ;
@@ -238,16 +238,15 @@ era-sh:SiteShape a sh:NodeShape, rdfs:Class ;
   ] ;
   sh:property [
     sh:path org:siteOf ;
-    sh:name "Site belongs to"@en ;
+    sh:name "belongs to site"@en ;
     sh:nodeKind sh:IRI ;
     sh:class org:Organization ;
     sh:description "Link back to the organisation that owns this site."@en ;
     sh:minCount 0 ;
-    sh:maxCount 1
   ] ;
   sh:property [
     sh:path org:location ;
-    sh:name "Geolocation"@en ;
+    sh:name "geolocation"@en ;
     sh:nodeKind sh:IRI ;
     sh:class dcterms:Location ;
     sh:description "Spatial location represented as geometry and optional description."@en ;
@@ -333,4 +332,71 @@ era-sh:AddressNodeShape a sh:NodeShape, rdfs:Class ;
     sh:description "Reference to a country concept."@en ;
     sh:minCount 0 ;
     sh:maxCount 1
+  ].
+
+era-sh:OrganisationRoleShape a sh:NodeShape ;
+  rdfs:label "Organisational role"@en ;
+  rdfs:comment "ERA roles this organisation or unit plays in the railway system processes."@en ;
+  dash:stem orgr: ;
+  sh:targetClass era:OrganisationRole ;
+  sh:property [
+    sh:path skos:prefLabel ;
+    sh:nodeKind sh:Literal ;
+    sh:datatype xsd:string;
+    sh:name "Description of the role";      
+    sh:minCount 1; sh:maxCount 1; # Better mandatory
+    sh:message "Each Organisational Role MUST have a human readable description"@en ;
+    sh:severity sh:Violation
+  ];
+  sh:property [
+    sh:path era:roleOf ;
+    sh:nodeKind sh:IRI ;
+    sh:class org:Organization;
+    sh:name "The Organisation(al Unit) which plays the role";      
+    sh:minCount 0; sh:maxCount 1; # one role per resource
+    sh:message "Each Organisational Role MUST be played by exactly one Organisation(al Unit)"@en ;
+    sh:severity sh:Violation
+  ];
+  sh:property [
+    sh:path era:hasOrganisationRole ;
+    sh:nodeKind sh:IRI ;
+    sh:class skos:Concept ;
+    sh:minCount 1; sh:maxCount 1; # one role per resource
+    owl:imports <https://data-interop.era.europa.eu/era-vocabulary/era-skos> ;
+    sh:in (
+      era-organisation-roles:IM 
+      era-organisation-roles:RU  
+      era-organisation-roles:Owner
+	    era-organisation-roles:Keeper 
+      era-organisation-roles:Applicant 
+      era-organisation-roles:ECM 
+      era-organisation-roles:Manufacturer
+      era-organisation-roles:NSA 
+      era-organisation-roles:MWS 
+      era-organisation-roles:NIB 
+      era-organisation-roles:CAB 
+      era-organisation-roles:AB
+      era-organisation-roles:NAB 
+      era-organisation-roles:CB 
+      era-organisation-roles:EUBody 
+      era-organisation-roles:EC 
+      era-organisation-roles:CB 
+      era-organisation-roles:TDGCA 
+      era-organisation-roles:RB
+      era-organisation-roles:SB
+      era-organisation-roles:AuthEntity
+    );
+    sh:name "The role played by the Body"@en ;
+    sh:message "Each Organisational Role MUST be defined by exactly one Role"@en;
+    sh:severity sh:Violation
+  ];
+  sh:property [
+    sh:path era:organisationCode ;
+    sh:pattern "^[A-Z0-9]{4}";
+    sh:maxCount 1 ; sh:minCount 1 ;
+    sh:minLength 4;  sh:maxLength 4;
+    sh:name "Organisation Code" ;
+    sh:description "Each Role - Body combination can be identified by an Organisation Code";
+    sh:message "Each Organisational Role MUST have exactly one Organisation Code"@en;
+    sh:severity sh:Violation
   ].

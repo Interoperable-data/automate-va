@@ -1,6 +1,13 @@
+import type { Quad } from '@rdfjs/types';
 import { GraphStore } from '../data/graph-store';
 import { assert } from '../utils/assert';
-import { serializeQuads, type RdfSerializationFormat } from './rdf-utils';
+import { serializeQuads, DEFAULT_PREFIXES, type RdfSerializationFormat } from './rdf-utils';
+import {
+  RDF_TYPE,
+  DCTERMS_VALID,
+  TIME_HAS_END,
+  TIME_IN_XSD_DATE_TIME,
+} from './resource-store-utils';
 
 interface RawRdfViewOptions {
   container: HTMLElement;
@@ -19,6 +26,7 @@ interface LayoutRefs {
   copyButton: HTMLButtonElement;
   downloadButton: HTMLButtonElement;
   clearButton: HTMLButtonElement;
+  cleanButton: HTMLButtonElement;
 }
 
 const FORMAT_LABELS: Record<RdfSerializationFormat, string> = {
@@ -48,11 +56,15 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
       const quads = await store.getQuads();
       lastTripleCount = quads.length;
       lastSerialized = await serializeQuads(quads, currentFormat);
-      layout.output.textContent = lastSerialized || '# Dataset is empty.';
+      renderOutput(layout.output, lastSerialized || '# Dataset is empty.', currentFormat);
       layout.status.textContent = formatStatus(lastTripleCount, currentFormat);
     } catch (error) {
       console.error('[raw-rdf] Failed to serialize dataset', error);
-      layout.output.textContent = `# Unable to render dataset\n# ${extractMessage(error)}`;
+      renderOutput(
+        layout.output,
+        `# Unable to render dataset\n# ${extractMessage(error)}`,
+        currentFormat
+      );
       layout.status.textContent = 'Failed to refresh dataset.';
     } finally {
       pending = false;
@@ -125,6 +137,30 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
     }
   });
 
+  layout.cleanButton.addEventListener('click', async () => {
+    const confirmed = window.confirm(
+      'This will remove triples whose object IRIs do not correspond to existing subject nodes. This action cannot be undone. Do you want to continue?'
+    );
+    if (!confirmed) {
+      layout.status.textContent = 'Graph cleanup cancelled.';
+      return;
+    }
+
+    layout.status.textContent = 'Removing dangling references…';
+    try {
+      const removed = await removeDanglingReferenceQuads(store);
+      if (removed === 0) {
+        layout.status.textContent = 'No dangling references found.';
+      } else {
+        const label = removed === 1 ? 'dangling triple' : 'dangling triples';
+        layout.status.textContent = `Removed ${removed} ${label}.`;
+      }
+    } catch (error) {
+      console.error('[raw-rdf] Failed to clean dangling references', error);
+      layout.status.textContent = `Failed to clean graph: ${extractMessage(error)}`;
+    }
+  });
+
   store.subscribe(() => {
     void refreshDataset();
   });
@@ -168,6 +204,13 @@ function buildLayout(container: HTMLElement): LayoutRefs {
       </div>
       <pre class="rdf-preview" data-role="output"># Dataset is empty. Create an organisation to get started.</pre>
       <aside class="rdf-warning">
+        <p class="rdf-warning__message">Cleaning the browser graph from non-existing IRI's removes triples linking to non-existing subject nodes and cannot be undone.</p>
+        <button type="button" data-role="clean" class="panel__button panel__button--warning">
+          <i aria-hidden="true" class="panel__button-icon bi bi-stars"></i>
+          <span>Clean dangling triples</span>
+        </button>
+      </aside>
+      <aside class="rdf-warning">
         <p class="rdf-warning__message">Clearing the browser storage deletes every saved graph and cannot be undone.</p>
         <button type="button" data-role="clear" class="panel__button panel__button--danger">
           <i aria-hidden="true" class="panel__button-icon bi bi-trash"></i>
@@ -207,6 +250,10 @@ function buildLayout(container: HTMLElement): LayoutRefs {
       container.querySelector<HTMLButtonElement>('[data-role="clear"]'),
       'Raw RDF clear button missing'
     ),
+    cleanButton: assert(
+      container.querySelector<HTMLButtonElement>('[data-role="clean"]'),
+      'Raw RDF clean button missing'
+    ),
   };
 }
 
@@ -225,4 +272,162 @@ function extractMessage(error: unknown): string {
     return error.message;
   }
   return String(error);
+}
+
+function renderOutput(host: HTMLElement, content: string, format: RdfSerializationFormat): void {
+  if (format === 'text/turtle') {
+    host.innerHTML = highlightTurtle(content);
+    return;
+  }
+  host.textContent = content;
+}
+
+function highlightTurtle(content: string): string {
+  if (!content) {
+    return '';
+  }
+
+  const prefixPattern = /@prefix\s+([^:]+):\s*<([^>]+)>\s*\./g;
+  const knownPrefixes = new Map<string, string>();
+  let prefixMatch: RegExpExecArray | null;
+
+  while ((prefixMatch = prefixPattern.exec(content)) !== null) {
+    const [, prefix, iri] = prefixMatch;
+    knownPrefixes.set(iri, prefix);
+  }
+
+  for (const [prefix, iri] of Object.entries(DEFAULT_PREFIXES)) {
+    if (!knownPrefixes.has(iri)) {
+      knownPrefixes.set(iri, prefix);
+    }
+  }
+
+  const tokenPattern = /@prefix[^\r\n]*|<[^>]*>|"(?:[^"\\]|\\.)*"/g;
+  let result = '';
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = tokenPattern.exec(content)) !== null) {
+    const preceding = content.slice(lastIndex, match.index);
+    if (preceding) {
+      result += escapeHtml(preceding);
+    }
+
+    const token = match[0];
+    if (token.startsWith('@prefix')) {
+      result += `<span class="rdf-token rdf-token--directive">${escapeHtml(token)}</span>`;
+    } else if (token.startsWith('<')) {
+      const iri = token.slice(1, -1);
+      let classNames = ['rdf-token', 'rdf-token--iri'];
+      if (token.endsWith('#graph>')) {
+        classNames.push('rdf-token--iri-graph');
+      }
+      for (const [base, prefix] of knownPrefixes.entries()) {
+        if (iri.startsWith(base)) {
+          classNames.push(`rdf-token--prefix-${prefix}`);
+          break;
+        }
+      }
+      result += `<span class="${classNames.join(' ')}">${escapeHtml(token)}</span>`;
+    } else {
+      result += `<span class="rdf-token rdf-token--literal">${escapeHtml(token)}</span>`;
+    }
+
+    lastIndex = tokenPattern.lastIndex;
+  }
+
+  const remainder = content.slice(lastIndex);
+  if (remainder) {
+    result += escapeHtml(remainder);
+  }
+
+  return result;
+}
+
+async function removeDanglingReferenceQuads(store: GraphStore): Promise<number> {
+  const quads = await store.getQuads();
+  if (quads.length === 0) {
+    return 0;
+  }
+
+  const subjectIris = new Set<string>();
+  const managedSubjects = new Set<string>();
+  const resourceValidity = new Map<string, string>();
+  const validityEndNode = new Map<string, string>();
+  const timeLiteral = new Map<string, string>();
+  const candidateObjects: Quad[] = [];
+
+  for (const quad of quads) {
+    if (quad.subject.termType === 'NamedNode') {
+      subjectIris.add(quad.subject.value);
+      if (quad.predicate.equals(DCTERMS_VALID) && quad.object.termType === 'NamedNode') {
+        managedSubjects.add(quad.subject.value);
+        resourceValidity.set(quad.subject.value, quad.object.value);
+      }
+      if (quad.predicate.equals(TIME_HAS_END) && quad.object.termType === 'NamedNode') {
+        validityEndNode.set(quad.subject.value, quad.object.value);
+      }
+      if (quad.predicate.equals(TIME_IN_XSD_DATE_TIME) && quad.object.termType === 'Literal') {
+        timeLiteral.set(quad.subject.value, quad.object.value);
+      }
+    }
+    if (quad.object.termType === 'NamedNode' && !quad.predicate.equals(RDF_TYPE)) {
+      candidateObjects.push(quad);
+    }
+  }
+
+  if (candidateObjects.length === 0) {
+    return 0;
+  }
+
+  const now = Date.now();
+  const expiredSubjects = new Set<string>();
+
+  for (const subject of managedSubjects) {
+    const validityNode = resourceValidity.get(subject);
+    if (!validityNode) {
+      continue;
+    }
+    const endNode = validityEndNode.get(validityNode);
+    if (!endNode) {
+      continue;
+    }
+    const timestamp = timeLiteral.get(endNode);
+    if (!timestamp) {
+      continue;
+    }
+    const parsed = Date.parse(timestamp);
+    if (Number.isNaN(parsed) || parsed <= now) {
+      expiredSubjects.add(subject);
+    }
+  }
+
+  const dangling = candidateObjects.filter((quad) => {
+    if (quad.object.termType !== 'NamedNode') {
+      return false;
+    }
+    const objectIri = quad.object.value;
+    if (expiredSubjects.has(objectIri)) {
+      return true;
+    }
+    if (!managedSubjects.has(objectIri)) {
+      return false;
+    }
+    return !subjectIris.has(objectIri);
+  });
+  if (dangling.length === 0) {
+    return 0;
+  }
+
+  await store.deleteQuads(dangling);
+  return dangling.length;
+}
+
+function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

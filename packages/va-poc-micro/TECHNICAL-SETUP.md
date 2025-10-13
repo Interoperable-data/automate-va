@@ -5,6 +5,7 @@
 - The Agency publishes the current VA-POC micro build on its GitHub Pages environment.
 - Stakeholders receive the canonical HTTPS URL via official ERA communication channels.
 - Use a modern Chromium, Firefox, or WebKit browser with IndexedDB enabled; no plug-ins are required.
+- Data in the hosted environment remains in the visitor’s browser storage (IndexedDB) unless explicitly exported.
 
 ## Local Secure Fallback
 
@@ -15,6 +16,7 @@
 5. Trust the self-signed certificate in your browser if prompted, then browse to `https://localhost:<port>/`.
 6. Ensure the MSAL app registration contains the `https://localhost:<port>/` redirect URI before attempting to sign in.
 7. Clear the QuadStore/IndexedDB data and revoke tokens when you finish testing on shared machines.
+8. Export saved datasets regularly during testing so you can re-import them if the browser storage is cleared.
 
 ## Browser Capabilities
 

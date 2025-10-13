@@ -5,6 +5,7 @@ import { literal, namedNode, quad } from '@rdfjs/data-model';
 import { MemoryLevel } from 'memory-level';
 import { GraphStore } from '../data/graph-store.js';
 import { initOrganisationManagerView } from './organisation-manager.js';
+import * as resourceStoreUtils from './resource-store-utils.js';
 
 const SHAPE_TTL = `
   @prefix sh: <http://www.w3.org/ns/shacl#> .
@@ -39,6 +40,16 @@ class ShaclFormStub extends HTMLElement {
   }
 }
 
+async function flushMicrotasks(): Promise<void> {
+  await Promise.resolve();
+  await Promise.resolve();
+}
+
+function findButtonByText(root: ParentNode, text: string): HTMLButtonElement | null {
+  const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('button'));
+  return buttons.find((button) => button.textContent?.includes(text)) ?? null;
+}
+
 describe('organisation-manager persistence', () => {
   let store: GraphStore;
   let container: HTMLElement;
@@ -52,6 +63,20 @@ describe('organisation-manager persistence', () => {
       }
     }
     throw new Error('Modal did not close in time');
+  }
+
+  async function waitForElement<TElement extends Element>(
+    root: ParentNode,
+    selector: string
+  ): Promise<TElement> {
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      const element = root.querySelector<TElement>(selector);
+      if (element) {
+        return element;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+    throw new Error(`Element matching selector "${selector}" not found in time`);
   }
 
   beforeAll(() => {
@@ -99,14 +124,17 @@ describe('organisation-manager persistence', () => {
       ),
     ]);
 
+    const collectSpy = vi
+      .spyOn(resourceStoreUtils, 'collectIncomingReferenceSubjects')
+      .mockResolvedValue(['https://data.europa.eu/949/local/unit/200']);
+
     await initOrganisationManagerView({ container, store, shapes });
 
     const resourceButton = container.querySelector<HTMLButtonElement>('.resource-list__button');
     expect(resourceButton, 'resource list should surface existing entry').not.toBeNull();
     resourceButton?.dispatchEvent(new Event('click'));
 
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushMicrotasks();
 
     const statusButton = container.querySelector<HTMLButtonElement>('.modal__status--toggle');
     const inspector = container.querySelector<HTMLPreElement>('.modal__inspector');
@@ -135,7 +163,7 @@ describe('organisation-manager persistence', () => {
     expect(createButton).not.toBeNull();
     createButton?.dispatchEvent(new Event('click'));
 
-    await Promise.resolve();
+    await flushMicrotasks();
 
     const statusButton = container.querySelector<HTMLButtonElement>('.modal__status--toggle');
     const inspector = container.querySelector<HTMLPreElement>('.modal__inspector');
@@ -162,7 +190,7 @@ describe('organisation-manager persistence', () => {
     expect(createButton).not.toBeNull();
     createButton?.dispatchEvent(new Event('click'));
 
-    await Promise.resolve();
+    await flushMicrotasks();
 
     const form = container.querySelector('shacl-form') as ShaclFormStub | null;
     expect(form).not.toBeNull();
@@ -176,7 +204,9 @@ describe('organisation-manager persistence', () => {
     expect(subject).toBe(expectedSubject);
     expect(graph).toBe(expectedGraph);
 
-    form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    const saveButton = findButtonByText(container, 'Create Organisation');
+    expect(saveButton).not.toBeNull();
+    saveButton?.click();
 
     await waitForModalToDisappear(container);
 
@@ -239,12 +269,14 @@ describe('organisation-manager persistence', () => {
     expect(createButton).not.toBeNull();
     createButton?.dispatchEvent(new Event('click'));
 
-    await Promise.resolve();
+    await flushMicrotasks();
 
     const form = container.querySelector('shacl-form') as ShaclFormStub | null;
     expect(form).not.toBeNull();
 
-    form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    const saveButton = findButtonByText(container, 'Create Organisation');
+    expect(saveButton).not.toBeNull();
+    saveButton?.click();
 
     await waitForModalToDisappear(container);
 
@@ -269,7 +301,7 @@ describe('organisation-manager persistence', () => {
     expect(createButton).not.toBeNull();
     createButton?.dispatchEvent(new Event('click'));
 
-    await Promise.resolve();
+    await flushMicrotasks();
 
     const cancelButton = container.querySelector('.modal__button--secondary');
     expect(cancelButton).not.toBeNull();
@@ -280,5 +312,157 @@ describe('organisation-manager persistence', () => {
     expect(container.querySelector('.modal')).toBeNull();
     const allQuads = await store.getQuads({});
     expect(allQuads.length).toBe(0);
+  });
+
+  it('warns about inbound references before deleting a resource and honours cancellation', async () => {
+    const quads = parser.parse(SHAPE_TTL);
+    const dataset = datasetFactory.dataset(quads);
+    const shapes = { text: SHAPE_TTL, quads, dataset };
+
+    const subjectIri = 'https://data.europa.eu/949/local/organization/77';
+    const graphIri = `${subjectIri}#graph`;
+    await store.putQuads([
+      quad(
+        namedNode(subjectIri),
+        namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+        namedNode('http://www.w3.org/ns/org#Organization'),
+        namedNode(graphIri)
+      ),
+      quad(
+        namedNode(subjectIri),
+        namedNode('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        literal('Referenced Org'),
+        namedNode(graphIri)
+      ),
+      quad(
+        namedNode('https://data.europa.eu/949/local/unit/123'),
+        namedNode('http://data.europa.eu/949/role'),
+        namedNode(subjectIri),
+        namedNode('https://data.europa.eu/949/local/unit/123#graph')
+      ),
+    ]);
+
+    const collectSpy = vi
+      .spyOn(resourceStoreUtils, 'collectIncomingReferenceSubjects')
+      .mockResolvedValue(['https://data.europa.eu/949/local/unit/123']);
+
+    await initOrganisationManagerView({ container, store, shapes });
+
+    const resourceButton = container.querySelector<HTMLButtonElement>('.resource-list__button');
+    expect(resourceButton).not.toBeNull();
+    resourceButton?.dispatchEvent(new Event('click'));
+
+    await flushMicrotasks();
+
+    const deleteButton = await waitForElement<HTMLButtonElement>(
+      container,
+      '.modal__button--danger'
+    );
+
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+    deleteButton.click();
+
+    await flushMicrotasks();
+
+    expect(confirmSpy).toHaveBeenCalledTimes(1);
+    expect(collectSpy).toHaveBeenCalledTimes(1);
+    expect(collectSpy).toHaveBeenCalledWith(store, subjectIri);
+    const message = confirmSpy.mock.calls[0]?.[0];
+    expect(typeof message).toBe('string');
+    expect((message as string) ?? '').toContain('• https://data.europa.eu/949/local/unit/123');
+    expect(deleteButton.disabled).toBe(false);
+
+    const remaining = await store.getQuads({ graph: namedNode(graphIri) });
+    expect(remaining.length).toBeGreaterThan(0);
+
+    confirmSpy.mockRestore();
+    collectSpy.mockRestore();
+  });
+
+  it('removes the resource when the user confirms the deletion warning', async () => {
+    const quads = parser.parse(SHAPE_TTL);
+    const dataset = datasetFactory.dataset(quads);
+    const shapes = { text: SHAPE_TTL, quads, dataset };
+
+    const subjectIri = 'https://data.europa.eu/949/local/organization/88';
+    const graphIri = `${subjectIri}#graph`;
+    await store.putQuads([
+      quad(
+        namedNode(subjectIri),
+        namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+        namedNode('http://www.w3.org/ns/org#Organization'),
+        namedNode(graphIri)
+      ),
+      quad(
+        namedNode(subjectIri),
+        namedNode('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        literal('Disposable Org'),
+        namedNode(graphIri)
+      ),
+      quad(
+        namedNode('https://data.europa.eu/949/local/unit/200'),
+        namedNode('http://data.europa.eu/949/role'),
+        namedNode(subjectIri),
+        namedNode('https://data.europa.eu/949/local/unit/200#graph')
+      ),
+    ]);
+
+    const collectSpy = vi
+      .spyOn(resourceStoreUtils, 'collectIncomingReferenceSubjects')
+      .mockResolvedValue(['https://data.europa.eu/949/local/unit/200']);
+
+    await initOrganisationManagerView({ container, store, shapes });
+
+    const resourceButton = container.querySelector<HTMLButtonElement>('.resource-list__button');
+    expect(resourceButton).not.toBeNull();
+    resourceButton?.dispatchEvent(new Event('click'));
+
+    await flushMicrotasks();
+
+    const deleteButton = await waitForElement<HTMLButtonElement>(
+      container,
+      '.modal__button--danger'
+    );
+
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    deleteButton.click();
+
+    await flushMicrotasks();
+    await waitForModalToDisappear(container);
+
+    expect(confirmSpy).toHaveBeenCalledTimes(1);
+    expect(collectSpy).toHaveBeenCalledTimes(1);
+    expect(collectSpy).toHaveBeenCalledWith(store, subjectIri);
+    const remaining = await store.getQuads({ graph: namedNode(graphIri) });
+    expect(remaining.length).toBeGreaterThan(0);
+    expect(
+      remaining.some(
+        (quad) =>
+          quad.subject.value === `${subjectIri}#validity` &&
+          quad.predicate.value === 'http://www.w3.org/2006/time#hasEnd'
+      )
+    ).toBe(true);
+    const endLiteral = remaining.find(
+      (quad) =>
+        quad.subject.value === `${subjectIri}#validity-end` &&
+        quad.predicate.value === 'http://www.w3.org/2006/time#inXSDDateTime'
+    );
+    expect(endLiteral?.object.termType).toBe('Literal');
+    expect(Date.parse(endLiteral?.object.value ?? '')).not.toBeNaN();
+
+    expect(container.querySelector('.modal')).toBeNull();
+    const buttons = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('.resource-list__button')
+    );
+    const disposableButton = buttons.find((button) =>
+      button.textContent?.includes('Disposable Org')
+    );
+    expect(disposableButton).toBeDefined();
+    expect(disposableButton?.style.textDecoration).toBe('line-through');
+
+    confirmSpy.mockRestore();
+    collectSpy.mockRestore();
   });
 });
