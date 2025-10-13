@@ -591,7 +591,10 @@ era-sh:VehicleType a
         sh:datatype xsd:integer ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
-        sh:description "Design mass for exceptional payload"
+        sh:minInclusive 500 ; # Minimum weight in KILOGRAM, NOT TONNES
+        sh:description "Vehicle type mentions Design mass for exceptional payload"@en ;
+        sh:message "Abnormally low value for Design mass for exceptional payload."@en ;
+        sh:severity sh:Warning
     ] ;
     sh:property [
         a sh:PropertyShape ;
@@ -599,7 +602,10 @@ era-sh:VehicleType a
         sh:datatype xsd:integer ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
-        sh:description "Design mass for normal payload"
+        sh:minInclusive 500 ; # Minimum weight in KILOGRAM, NOT TONNES
+        sh:description "Vehicle type mentions Design mass for normal payload"@en ;
+        sh:message "Abnormally low value for Design mass for normal payload."@en ;
+        sh:severity sh:Warning
     ] ;
     sh:property [
         a sh:PropertyShape ;
@@ -607,7 +613,41 @@ era-sh:VehicleType a
         sh:datatype xsd:integer ;
         sh:nodeKind sh:Literal ;
         sh:minCount 0 ; sh:maxCount 1 ;
-        sh:description "Design mass in working order"
+        sh:minInclusive 500 ; # Minimum weight in KILOGRAM, NOT TONNES
+        sh:description "Vehicle type mentions Design mass in working order"@en ;
+        sh:message "Abnormally low value for Design mass in working order."@en ;
+        sh:severity sh:Warning
+    ] ;
+    sh:sparql [
+            sh:name "Design mass payload ordering"@en ;
+            sh:message "VehicleType {$this} must satisfy designMassExceptionalPayload (={$exceptional}) ≥ designMassNormalPayload (={$normal}) ≥ designMassWorkingOrder (={$working}) whenever the respective values are provided."@en ;
+            sh:severity sh:Violation ;
+            sh:select '''
+                    PREFIX era: <http://data.europa.eu/949/>
+                    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+                    SELECT $this ?exceptional ?normal ?working
+                    WHERE {
+                        OPTIONAL {
+                            $this era:designMassExceptionalPayload ?exceptionalRaw .
+                            BIND(xsd:decimal(STR(?exceptionalRaw)) AS ?exceptional)
+                        }
+                        OPTIONAL {
+                            $this era:designMassNormalPayload ?normalRaw .
+                            BIND(xsd:decimal(STR(?normalRaw)) AS ?normal)
+                        }
+                        OPTIONAL {
+                            $this era:designMassWorkingOrder ?workingRaw .
+                            BIND(xsd:decimal(STR(?workingRaw)) AS ?working)
+                        }
+
+                        FILTER(
+                            (BOUND(?exceptional) && BOUND(?normal) && ?exceptional < ?normal)
+                            ||
+                            (BOUND(?normal) && BOUND(?working) && ?normal < ?working)
+                        )
+                    }
+            '''
     ] ;
     sh:property [
         a sh:PropertyShape ;

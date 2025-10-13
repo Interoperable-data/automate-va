@@ -11,12 +11,12 @@
 # Relevant SKOS Concept Schemes
 @prefix era-vehicle-types-eratv: <http://data.europa.eu/949/concepts/vehicle-types/eratv/> .
 
-era-sh:VehicleTypeShape
-      a sh:NodeShape ;
-      sh:class era:VehicleType ;
-      sh:name "Vehicle Type must be an IRI of class era:VehicleType."@en ;
-      sh:message "Vehicle type must be an IRI of class era:VehicleType."@en ;
-      sh:severity sh:Violation .
+# era-sh:VehicleTypeShape
+#       a sh:NodeShape ;
+#       sh:class era:VehicleType ;
+#       sh:name "Vehicle Type must be an IRI of class era:VehicleType."@en ;
+#       sh:message "Vehicle type must be an IRI of class era:VehicleType."@en ;
+#       sh:severity sh:Violation .
 
 # Vehicle validation shape for VA scope
 era-sh:VehicleShape a sh:NodeShape ;
@@ -48,7 +48,7 @@ era-sh:VehicleShape a sh:NodeShape ;
     sh:name "Vehicle Type" ;
     sh:description "IRI to the vehicle type. Must be present and an IRI." ;
     sh:nodeKind sh:IRI ;
-    sh:node era-sh:VehicleTypeShape ;
+    # sh:node era-sh:VehicleTypeShape ;
     sh:minCount 1 ;
     sh:severity sh:Violation ;
   ] ;
