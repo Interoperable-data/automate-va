@@ -122,7 +122,7 @@ era-sh:SafetyCertificateAShape a sh:NodeShape ;
     #   Is not needed as link is created automatically when the previous certificate is replaced
     # ],
     [ sh:name "1.7 ECM certificate number" ;
-      sh:path era:certificateNumber ;
+      sh:path era:relatedCertificate ;
       sh:minCount 0 ; sh:maxCount 1 ;
       sh:datatype xsd:string ;
       sh:group issform:CT
