@@ -1,6 +1,7 @@
 import rdfDataFactory from '@rdfjs/data-model';
 import type { Literal, NamedNode, Quad } from '@rdfjs/types';
 import type { GraphStore, GraphStoreChange } from '../data/graph-store';
+import type { ShaclFormElement } from '../../types/shacl-form';
 import { serializeQuads } from './rdf-utils';
 
 const RDF_TYPE_IRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
@@ -11,12 +12,6 @@ const RDF_TYPE = rdfDataFactory.namedNode(RDF_TYPE_IRI);
 const SKOS_PREF_LABEL = rdfDataFactory.namedNode(SKOS_PREF_LABEL_IRI);
 const RDFS_LABEL = rdfDataFactory.namedNode(RDFS_LABEL_IRI);
 const LABEL_PREDICATES = [SKOS_PREF_LABEL, RDFS_LABEL] as const;
-
-type ClassInstanceProviderFn = (className: string) => Promise<string>;
-
-type ShaclFormElement = HTMLElement & {
-  setClassInstanceProvider?: (provider: ClassInstanceProviderFn) => void;
-};
 
 export function attachClassInstanceProvider(form: ShaclFormElement, store: GraphStore): () => void {
   if (typeof form.setClassInstanceProvider !== 'function') {

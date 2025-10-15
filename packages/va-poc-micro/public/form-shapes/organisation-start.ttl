@@ -337,7 +337,7 @@ era-sh:AddressNodeShape a sh:NodeShape, rdfs:Class ;
 
 era-sh:OrganisationRoleShape a sh:NodeShape ;
   rdfs:label "Organisational role"@en ;
-  rdfs:comment "ERA roles this organisation or unit plays in the railway system processes."@en ;
+  rdfs:comment "Confirm the ERA-defined roles that your organisations and units play in the railway system processes."@en ;
   dash:stem orgr: ;
   sh:targetClass era:OrganisationRole ;
   sh:property [

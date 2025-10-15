@@ -5,6 +5,7 @@ import { assert } from './modules/utils/assert';
 import { GraphStore } from './modules/data/graph-store';
 import { loadOrganisationShapes } from './modules/data/organisation-shapes';
 import { initOrganisationManagerView } from './modules/views/organisation-manager';
+import { initObjectOfAssessmentManagerView } from './modules/views/object-of-assessment-manager';
 import { initRawRdfView } from './modules/views/raw-rdf';
 import { initEndpointsView } from './modules/views/endpoints';
 
@@ -20,14 +21,24 @@ interface ViewController {
 }
 
 async function bootstrap(): Promise<void> {
-  const [store, shapes] = await Promise.all([GraphStore.create(), loadOrganisationShapes()]);
+  const [store, organisationShapes, objectsShapes] = await Promise.all([
+    GraphStore.create(),
+    loadOrganisationShapes(),
+    loadOrganisationShapes({ url: '/form-shapes/objects-of-assessments-start.ttl' }),
+  ]);
 
   const viewControllers: Partial<Record<ViewId, ViewController>> = {};
 
   viewControllers.organisation = await initOrganisationManagerView({
     container: getViewSlot('organisation'),
     store,
-    shapes,
+    shapes: organisationShapes,
+  });
+
+  viewControllers.objects = await initObjectOfAssessmentManagerView({
+    container: getViewSlot('objects'),
+    store,
+    shapes: objectsShapes,
   });
 
   viewControllers.rawRdf = initRawRdfView({

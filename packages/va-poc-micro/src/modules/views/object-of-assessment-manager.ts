@@ -19,59 +19,55 @@ import {
 } from './resource-manager-shared';
 import { renderResourceColumns, type ColumnDefinition } from './resource-column-renderer';
 import { isClassOrSubclassOf } from './rdf-utils';
-import { ORG, DCTERMS, LOCN, ERA } from './ontologies';
+import { ERA } from './ontologies';
 import type { ShaclFormElement } from '../../types/shacl-form';
 
-const ORG_FORMAL_ORGANIZATION = ORG.FormalOrganization;
-const ORG_ORGANIZATION = ORG.Organization;
-const ORG_ORGANIZATIONAL_UNIT = ORG.OrganizationalUnit;
-const ORG_ROLE = ORG.Role;
-const ORG_SITE = ORG.Site;
-const DCTERMS_LOCATION = DCTERMS.Location;
-const LOCN_ADDRESS = LOCN.Address;
-const ERA_ORGANISATION_ROLE = ERA.OrganisationRole;
+const ERA_EC_DECLARATION = ERA.ECDeclaration;
+const ERA_CLD = ERA.CLD;
+const ERA_CAB_EVIDENCE = ERA.CABEvidence;
 
-interface OrganisationManagerOptions {
+interface ObjectOfAssessmentManagerOptions {
   container: HTMLElement;
   store: GraphStore;
   shapes: LoadedShape;
 }
 
-interface OrganisationManagerController {
+interface ObjectOfAssessmentManagerController {
   activate: () => void;
 }
 
 interface DescriptorBuckets {
-  roles: ShapeDescriptor[];
-  organisations: ShapeDescriptor[];
-  sites: ShapeDescriptor[];
+  declarations: ShapeDescriptor[];
+  certificates: ShapeDescriptor[];
+  evidence: ShapeDescriptor[];
 }
 
-type ColumnKey = keyof DescriptorBuckets;
+type ColumnKey = 'ecEvidence' | 'otherCertificates' | 'statements';
 
 const COLUMN_COPY: Record<ColumnKey, { title: string; description: string; empty: string }> = {
-  roles: {
-    title: 'Roles & assignments',
-    description: 'Define organisational roles and link them to units or sites.',
-    empty: 'No role shapes available yet.',
+  ecEvidence: {
+    title: 'EC Evidence (CLD, ECD)',
+    description:
+      'Capture EC declarations, EC certificates, and assessment evidence used for conformity.',
+    empty: 'No EC evidence, declarations, or certificates available yet.',
   },
-  organisations: {
-    title: 'Organisations & units',
-    description: 'Capture organisations and their units that participate in the application.',
-    empty: 'No organisation shapes available yet.',
+  otherCertificates: {
+    title: 'Other Certificates (RID…)',
+    description: 'Track additional certificates as soon as corresponding shapes are introduced.',
+    empty: 'No other certificate shapes available yet.',
   },
-  sites: {
-    title: 'Sites & locations',
-    description: 'Record sites, facilities, and related location information.',
-    empty: 'No site or location shapes available yet.',
+  statements: {
+    title: 'Statements (NSA, ESC/RSC…)',
+    description: 'Record statements from authorities and safety bodies when shapes are defined.',
+    empty: 'No statement shapes available yet.',
   },
 } as const;
 
-const COLUMN_ORDER: ColumnKey[] = ['roles', 'organisations', 'sites'];
+const COLUMN_ORDER: ColumnKey[] = ['ecEvidence', 'otherCertificates', 'statements'];
 
-export async function initOrganisationManagerView(
-  options: OrganisationManagerOptions
-): Promise<OrganisationManagerController> {
+export async function initObjectOfAssessmentManagerView(
+  options: ObjectOfAssessmentManagerOptions
+): Promise<ObjectOfAssessmentManagerController> {
   const { container, store, shapes } = options;
 
   const descriptors = discoverShapeDescriptors(shapes.dataset);
@@ -87,7 +83,7 @@ export async function initOrganisationManagerView(
 
   if (descriptors.length === 0) {
     layout.emptyState.textContent =
-      'Add targetable NodeShapes to the shapes graph to start managing resources.';
+      'Add targetable NodeShapes to the shapes graph to start managing assessment objects.';
     layout.emptyState.hidden = false;
     layout.resourceListRoot.hidden = true;
     return {
@@ -171,7 +167,7 @@ export async function initOrganisationManagerView(
         try {
           callback();
         } catch (error) {
-          console.warn('[organisation-manager] Modal cleanup failed', error);
+          console.warn('[object-of-assessment-manager] Modal cleanup failed', error);
         }
       }
       cleanupCallbacks.clear();
@@ -221,10 +217,21 @@ export async function initOrganisationManagerView(
   ) {
     resources = await fetchResources(store, descriptors);
 
+    // Aggregate current descriptor groups into the first column, leaving placeholders for upcoming ones.
+    const columnBuckets: Record<ColumnKey, ShapeDescriptor[]> = {
+      ecEvidence: [
+        ...descriptorBuckets.evidence,
+        ...descriptorBuckets.declarations,
+        ...descriptorBuckets.certificates,
+      ],
+      otherCertificates: [],
+      statements: [],
+    };
+
     const columnDefinitions: ColumnDefinition[] = COLUMN_ORDER.map((key) => ({
       key,
       host: layout.resourceColumns[key],
-      descriptors: descriptorBuckets[key],
+      descriptors: columnBuckets[key],
       copy: COLUMN_COPY[key],
     }));
 
@@ -340,7 +347,7 @@ export async function initOrganisationManagerView(
         await refreshResourceList();
         modal.close();
       } catch (error) {
-        console.error('[organisation-manager] Failed to delete resource', error);
+        console.error('[object-of-assessment-manager] Failed to delete resource', error);
         setStatusMessage(`Failed to delete: ${extractMessage(error)}`);
         deleteButton.disabled = false;
       }
@@ -388,7 +395,7 @@ export async function initOrganisationManagerView(
         await refreshResourceList(selectedSubject ?? undefined);
         modal.close();
       } catch (error) {
-        console.error('[organisation-manager] Failed to save form', error);
+        console.error('[object-of-assessment-manager] Failed to save form', error);
         setStatusMessage(`Failed to save: ${extractMessage(error)}`);
       } finally {
         saveButton.disabled = false;
@@ -409,13 +416,13 @@ function buildLayout(container: HTMLElement) {
   container.innerHTML = `
     <section class="panel panel--stacked">
       <header class="panel__header">
-        <h2 class="panel__title">Manage organisation data</h2>
+        <h2 class="panel__title">Manage assessment objects</h2>
       </header>
-      <p class="panel__body panel__body--muted" data-role="empty-state" hidden>No organisation data stored locally yet.</p>
+      <p class="panel__body panel__body--muted" data-role="empty-state" hidden>No assessment data stored locally yet.</p>
       <div class="resource-list" data-role="resource-list">
-        <div class="resource-list__column resource-list__column--roles" data-column="roles"></div>
-        <div class="resource-list__column resource-list__column--organisations" data-column="organisations"></div>
-        <div class="resource-list__column resource-list__column--sites" data-column="sites"></div>
+        <div class="resource-list__column resource-list__column--ec-evidence" data-column="ecEvidence"></div>
+        <div class="resource-list__column resource-list__column--other-certificates" data-column="otherCertificates"></div>
+        <div class="resource-list__column resource-list__column--statements" data-column="statements"></div>
       </div>
     </section>
     <div data-role="modal-host"></div>
@@ -427,19 +434,23 @@ function buildLayout(container: HTMLElement) {
       'Resource list root missing'
     ),
     resourceColumns: {
-      roles: assert(
-        container.querySelector<HTMLElement>('[data-role="resource-list"] [data-column="roles"]'),
-        'Resource roles column missing'
-      ),
-      organisations: assert(
+      ecEvidence: assert(
         container.querySelector<HTMLElement>(
-          '[data-role="resource-list"] [data-column="organisations"]'
+          '[data-role="resource-list"] [data-column="ecEvidence"]'
         ),
-        'Resource organisations column missing'
+        'Resource EC evidence column missing'
       ),
-      sites: assert(
-        container.querySelector<HTMLElement>('[data-role="resource-list"] [data-column="sites"]'),
-        'Resource sites column missing'
+      otherCertificates: assert(
+        container.querySelector<HTMLElement>(
+          '[data-role="resource-list"] [data-column="otherCertificates"]'
+        ),
+        'Resource other certificates column missing'
+      ),
+      statements: assert(
+        container.querySelector<HTMLElement>(
+          '[data-role="resource-list"] [data-column="statements"]'
+        ),
+        'Resource statements column missing'
       ),
     },
     emptyState: assert(
@@ -458,35 +469,34 @@ function categorizeDescriptors(
   descriptors: ShapeDescriptor[],
   dataset: DatasetCore
 ): DescriptorBuckets {
-  const buckets: DescriptorBuckets = { roles: [], organisations: [], sites: [] };
+  const buckets: DescriptorBuckets = { declarations: [], certificates: [], evidence: [] };
 
   descriptors.forEach((descriptor) => {
-    if (
-      isClassOrSubclassOf(descriptor.targetClass, ORG_ROLE, dataset) ||
-      descriptor.targetClass.value === ERA_ORGANISATION_ROLE
-    ) {
-      buckets.roles.push(descriptor);
-      return;
-    }
-
     const target = descriptor.targetClass.value;
 
-    if (target === ORG_SITE || target === DCTERMS_LOCATION || target === LOCN_ADDRESS) {
-      buckets.sites.push(descriptor);
+    if (
+      target === ERA_EC_DECLARATION ||
+      isClassOrSubclassOf(descriptor.targetClass, ERA_EC_DECLARATION, dataset)
+    ) {
+      buckets.declarations.push(descriptor);
+      return;
+    }
+
+    if (target === ERA_CLD || isClassOrSubclassOf(descriptor.targetClass, ERA_CLD, dataset)) {
+      buckets.certificates.push(descriptor);
       return;
     }
 
     if (
-      target === ORG_FORMAL_ORGANIZATION ||
-      target === ORG_ORGANIZATION ||
-      target === ORG_ORGANIZATIONAL_UNIT
+      target === ERA_CAB_EVIDENCE ||
+      isClassOrSubclassOf(descriptor.targetClass, ERA_CAB_EVIDENCE, dataset)
     ) {
-      buckets.organisations.push(descriptor);
+      buckets.evidence.push(descriptor);
       return;
     }
 
-    // Default to the organisations column so new shapes stay visible.
-    buckets.organisations.push(descriptor);
+    // Default to declarations so new shapes stay visible while awaiting categorisation.
+    buckets.declarations.push(descriptor);
   });
 
   return buckets;

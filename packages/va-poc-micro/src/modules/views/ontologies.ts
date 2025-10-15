@@ -83,10 +83,16 @@ export const LOCN_NODES = Object.freeze({
 
 export const ERA = Object.freeze({
   OrganisationRole: `${NAMESPACES.era}OrganisationRole`,
+  ECDeclaration: `${NAMESPACES.era}ECDeclaration`,
+  CLD: `${NAMESPACES.era}CLD`,
+  CABEvidence: `${NAMESPACES.era}CABEvidence`,
 });
 
 export const ERA_NODES = Object.freeze({
   OrganisationRole: rdfDataFactory.namedNode(ERA.OrganisationRole),
+  ECDeclaration: rdfDataFactory.namedNode(ERA.ECDeclaration),
+  CLD: rdfDataFactory.namedNode(ERA.CLD),
+  CABEvidence: rdfDataFactory.namedNode(ERA.CABEvidence),
 });
 
 export const TIME = Object.freeze({

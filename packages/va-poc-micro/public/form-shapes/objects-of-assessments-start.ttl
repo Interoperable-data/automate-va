@@ -1,40 +1,70 @@
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix era: <http://data.europa.eu/949/> .
-@prefix era-sh: <http://data.europa.eu/949/shapes/> .
-@prefix ooa: <http://data.europa.eu/949/objects-of-assessment/> .
+# https://github.com/ULB-Darmstadt/shacl-form
+@prefix dash:    <http://datashapes.org/dash#> .
+@prefix dbpedia: <http://dbpedia.org/ontology/> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix geo:     <http://www.opengis.net/ont/geosparql#> .
+@prefix org:     <https://www.w3.org/ns/org#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema:  <http://schema.org/> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix ex:      <http://example.org/> .
+@prefix as:      <https://www.w3.org/ns/activitystreams#> .
+@prefix eraUi:   <http://data.europa.eu/949/ui/> .
+@prefix locn:    <http://www.w3.org/ns/locn#> .
+
+
+@prefix era:      <http://data.europa.eu/949/> .
+@prefix era-sh:   <http://data.europa.eu/949/shapes/> .
+@prefix era-cert: <http://data.europa.eu/949/evidences/> .
+@prefix era-ecd: <http://data.europa.eu/949/evidences/ecds/> .
+@prefix era-cld: <http://data.europa.eu/949/evidences/clds/> .
+
 
 # Minimal placeholder shapes to bootstrap the Objects of Assessments view.
 era-sh:AssessmentDeclarationShape a sh:NodeShape ;
   sh:targetClass era:ECDeclaration ;
-  sh:name "Assessment declaration"@en ;
+  rdfs:label "EC declaration"@en ;
+  rdfs:comment "Add a reference to an EC Declaration."@en ;
+  dash:stem era-ecd: ;
+
   sh:property [
     sh:path skos:prefLabel ;
-    sh:name "Title"@en ;
+    sh:name "Object of the ECD"@en ;
     sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    sh:maxCount 1
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "ECD object MUST be provided"@en
   ] ;
   sh:property [
     sh:path era:issuedOn ;
     sh:name "Issued on"@en ;
     sh:datatype xsd:date ;
-    sh:minCount 0 ;
-    sh:maxCount 1
+    sh:nodeKind sh:Literal ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "Issue date MUST be provided"@en
   ] ;
   sh:property [
-    sh:path era:belongsToSubsystem ;
-    sh:name "Subsystem"@en ;
+    sh:path dcterms:requires ;
+    sh:name "Subsystem certificate"@en ;
+    sh:class era:CLD ;
     sh:nodeKind sh:IRI ;
     sh:minCount 0 ;
-    sh:maxCount 1
+    sh:maxCount 3
   ] ;
   sh:closed false .
 
 era-sh:AssessmentCertificateShape a sh:NodeShape ;
-  sh:targetClass era:ECCertificate ;
-  sh:name "Assessment certificate"@en ;
+  sh:targetClass era:CLD ;
+  rdfs:label "EC certificate"@en ;
+  rdfs:comment "Add EC certifiate references, and link them to the Declarations"@en ;
+  dash:stem era-cld: ;
+  
   sh:property [
     sh:path skos:prefLabel ;
     sh:name "Certificate title"@en ;
@@ -43,15 +73,16 @@ era-sh:AssessmentCertificateShape a sh:NodeShape ;
     sh:maxCount 1
   ] ;
   sh:property [
-    sh:path era:issuedOn ;
+    sh:path dcterms:issued ;
     sh:name "Issued on"@en ;
     sh:datatype xsd:date ;
     sh:minCount 0 ;
     sh:maxCount 1
   ] ;
   sh:property [
-    sh:path era:relatesTo ;
-    sh:name "Related resource"@en ;
+    sh:path dcterms:related ;
+    sh:name "Related declaration"@en ;
+    sh:class era:ECDeclaration ;
     sh:nodeKind sh:IRI ;
     sh:minCount 0 ;
     sh:maxCount 1
@@ -59,8 +90,10 @@ era-sh:AssessmentCertificateShape a sh:NodeShape ;
   sh:closed false .
 
 era-sh:AssessmentEvidenceShape a sh:NodeShape ;
-  sh:targetClass era:AssessmentEvidence ;
-  sh:name "Assessment evidence"@en ;
+  sh:targetClass era:CABEvidence ;
+  rdfs:label "Assessment evidence"@en ;
+  rdfs:comment "Combine CLDs with EC Declarations in order to create evidence collections."@en ;
+  dash:stem era-cert: ;
   sh:property [
     sh:path skos:prefLabel ;
     sh:name "Evidence label"@en ;
@@ -69,17 +102,22 @@ era-sh:AssessmentEvidenceShape a sh:NodeShape ;
     sh:maxCount 1
   ] ;
   sh:property [
-    sh:path era:description ;
+    sh:path rdfs:comment ;
     sh:name "Description"@en ;
     sh:datatype xsd:string ;
     sh:minCount 0 ;
     sh:maxCount 1
   ] ;
   sh:property [
-    sh:path era:hasDocument ;
-    sh:name "Document reference"@en ;
+    sh:path rdfs:member ;
+    sh:name "Document basis"@en ;
+    sh:description "Combine with ECD and CLD resources for reusable evidence collections."@en ;
     sh:nodeKind sh:IRI ;
+    sh:or (
+      [ rdfs:label "EC Declaration" ; sh:class era:ECDeclaration ]
+      [ rdfs:label "EC Certificate" ; sh:class era:CLD ]
+    );
     sh:minCount 0 ;
-    sh:maxCount 1
+    sh:maxCount 10
   ] ;
   sh:closed false .
