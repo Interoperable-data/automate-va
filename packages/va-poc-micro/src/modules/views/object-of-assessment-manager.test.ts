@@ -67,7 +67,7 @@ function findButtonByText(root: ParentNode, text: string): HTMLButtonElement | n
 describe('object-of-assessment-manager view', () => {
   let store: GraphStore;
   let container: HTMLElement;
-  const parser = new Parser({ format: 'text/turtle' });
+  const parser = new Parser({ format: 'application/trig' });
 
   beforeAll(() => {
     if (!customElements.get('shacl-form')) {
@@ -159,7 +159,7 @@ describe('object-of-assessment-manager view', () => {
     expect(uuidSpy).toHaveBeenCalled();
   });
 
-  it('opens existing resources in an editor modal with loaded turtle data', async () => {
+  it('opens existing resources in an editor modal with loaded TriG data', async () => {
     const quads = parser.parse(SHAPES_TTL);
     const dataset = datasetFactory.dataset(quads);
     const shapes = { text: SHAPES_TTL, quads, dataset };

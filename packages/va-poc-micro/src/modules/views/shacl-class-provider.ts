@@ -47,7 +47,7 @@ export function attachClassInstanceProvider(form: ShaclFormElement, store: Graph
       }
     }
 
-    const serialized = await serializeQuads(output, 'text/turtle');
+    const serialized = await serializeQuads(output, 'application/trig');
     console.debug('[shacl-class-provider] instances for class', classIri, serialized.trim());
     return serialized.trim();
   };
@@ -61,10 +61,10 @@ export function attachClassInstanceProvider(form: ShaclFormElement, store: Graph
     }
 
     const promise = buildInstances(classIri)
-      .then((ttl) => {
-        cache.set(classIri, ttl);
+      .then((trig) => {
+        cache.set(classIri, trig);
         inFlight.delete(classIri);
-        return ttl;
+        return trig;
       })
       .catch((error) => {
         console.warn('[shacl-class-provider] Failed to gather instances', error);

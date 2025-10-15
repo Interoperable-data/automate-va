@@ -53,7 +53,7 @@ function findButtonByText(root: ParentNode, text: string): HTMLButtonElement | n
 describe('organisation-manager persistence', () => {
   let store: GraphStore;
   let container: HTMLElement;
-  const parser = new Parser({ format: 'text/turtle' });
+  const parser = new Parser({ format: 'application/trig' });
 
   async function waitForModalToDisappear(root: HTMLElement): Promise<void> {
     for (let attempt = 0; attempt < 20; attempt += 1) {

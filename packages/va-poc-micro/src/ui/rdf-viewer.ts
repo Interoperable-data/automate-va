@@ -29,8 +29,8 @@ export interface RdfViewerController {
 }
 
 const FORMAT_LABELS: Record<RdfSerializationFormat, string> = {
-  'text/turtle': 'Turtle (TTL)',
-  'application/n-triples': 'N-Triples',
+  'application/trig': 'TriG',
+  'text/plain': 'N-Triples',
 } as const;
 
 type LayoutRefs = {
@@ -45,7 +45,7 @@ type TriplePosition = 'subject' | 'predicate' | 'object';
 export function initRdfViewer(options: RdfViewerOptions): RdfViewerController {
   const {
     container,
-    initialFormat = 'text/turtle',
+    initialFormat = 'application/trig',
     initialStatus = 'Waiting for data…',
     initialContent = '# Dataset is empty. Create an organisation to get started.',
     onFormatChange,
@@ -123,8 +123,8 @@ function buildLayout(container: HTMLElement): LayoutRefs {
         <label class="rdf-toolbar__format">
           Format
           <select data-role="format">
-            <option value="text/turtle">Turtle (TTL)</option>
-            <option value="application/n-triples">N-Triples</option>
+            <option value="application/trig">TriG</option>
+            <option value="text/plain">N-Triples</option>
           </select>
         </label>
         <div class="rdf-toolbar__actions">
@@ -214,14 +214,14 @@ function triggerButtonFeedback(button: HTMLButtonElement): void {
 }
 
 function renderOutput(host: HTMLElement, content: string, format: RdfSerializationFormat): void {
-  if (format === 'text/turtle') {
-    host.innerHTML = highlightTurtle(content);
+  if (format === 'application/trig') {
+    host.innerHTML = highlightTrig(content);
     return;
   }
   host.textContent = content;
 }
 
-function highlightTurtle(content: string): string {
+function highlightTrig(content: string): string {
   if (!content) {
     return '';
   }
@@ -242,7 +242,7 @@ function highlightTurtle(content: string): string {
   }
 
   const tokenPattern =
-    /@prefix[^\r\n]*|"(?:[^"\\]|\\.)*"|<[^>]*>|\b[A-Za-z][A-Za-z0-9_-]*:[^\s;.,()]+|\ba\b/g;
+    /@prefix[^\r\n]*|"(?:[^"\\]|\\.)*"|<[^>]*>|\bGRAPH\b|\b[A-Za-z][A-Za-z0-9_-]*:[^\s;.,()]+|\ba\b/g;
   let result = '';
   let lastIndex = 0;
   let match: RegExpExecArray | null;
@@ -264,7 +264,10 @@ function highlightTurtle(content: string): string {
     const priorPosition: TriplePosition = triplePosition;
     let nextPosition: TriplePosition = priorPosition;
 
-    if (token === 'a') {
+    if (token === 'GRAPH') {
+      result += `<span class="rdf-token rdf-token--directive">${token}</span>`;
+      nextPosition = 'subject';
+    } else if (token === 'a') {
       result += `<span class="rdf-token rdf-token--predicate">${escapeHtml(token)}</span>`;
       nextPosition = 'object';
     } else if (token.startsWith('<')) {

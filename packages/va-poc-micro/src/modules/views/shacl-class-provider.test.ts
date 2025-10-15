@@ -15,7 +15,7 @@ describe('shacl-class-provider', () => {
   let capturedProvider: ((classIri: string) => Promise<string>) | null;
   let detach: () => void;
 
-  const parser = new Parser({ format: 'text/turtle' });
+  const parser = new Parser({ format: 'application/trig' });
   const dataFactory = rdfDataFactory as any;
 
   async function insertResource(subject: string, label?: string): Promise<void> {
@@ -79,10 +79,10 @@ describe('shacl-class-provider', () => {
 
     await insertResource(resource, label);
 
-    const ttl = await callProvider(CLASS_IRI);
-    expect(ttl).not.toBe('');
+    const trig = await callProvider(CLASS_IRI);
+    expect(trig).not.toBe('');
 
-    const dataset = datasetFactory.dataset(parser.parse(ttl));
+    const dataset = datasetFactory.dataset(parser.parse(trig));
     expect(
       dataset.match(namedNode(resource), namedNode(RDF_TYPE_IRI), namedNode(CLASS_IRI)).size
     ).toBeGreaterThan(0);
@@ -96,8 +96,8 @@ describe('shacl-class-provider', () => {
     await insertResource(firstResource);
 
     const getQuadsSpy = vi.spyOn(store, 'getQuads');
-    const firstTtl = await callProvider(CLASS_IRI);
-    expect(firstTtl).not.toBe('');
+    const firstTrig = await callProvider(CLASS_IRI);
+    expect(firstTrig).not.toBe('');
     const callsAfterFirst = getQuadsSpy.mock.calls.length;
     await callProvider(CLASS_IRI);
     expect(getQuadsSpy.mock.calls.length).toBe(callsAfterFirst);
@@ -105,10 +105,10 @@ describe('shacl-class-provider', () => {
     const secondResource = 'http://example.org/resources/2';
     await insertResource(secondResource);
 
-    const refreshedTtl = await callProvider(CLASS_IRI);
+    const refreshedTrig = await callProvider(CLASS_IRI);
     expect(getQuadsSpy.mock.calls.length).toBeGreaterThan(callsAfterFirst);
 
-    const dataset = datasetFactory.dataset(parser.parse(refreshedTtl));
+    const dataset = datasetFactory.dataset(parser.parse(refreshedTrig));
     expect(
       dataset.match(namedNode(secondResource), namedNode(RDF_TYPE_IRI), namedNode(CLASS_IRI)).size
     ).toBeGreaterThan(0);
@@ -133,10 +133,10 @@ describe('shacl-class-provider', () => {
       ),
     ]);
 
-    const ttl = await callProvider(CLASS_IRI);
-    expect(ttl).not.toBe('');
+    const trig = await callProvider(CLASS_IRI);
+    expect(trig).not.toBe('');
 
-    const dataset = datasetFactory.dataset(parser.parse(ttl));
+    const dataset = datasetFactory.dataset(parser.parse(trig));
     expect(
       dataset.match(namedNode(subject), namedNode(RDF_TYPE_IRI), namedNode(CLASS_IRI)).size
     ).toBeGreaterThan(0);
@@ -154,8 +154,8 @@ describe('shacl-class-provider', () => {
 
     const getQuadsSpy = vi.spyOn(store, 'getQuads');
     await store.clear();
-    const ttl = await callProvider(CLASS_IRI);
-    expect(ttl).toBe('');
+    const trig = await callProvider(CLASS_IRI);
+    expect(trig).toBe('');
     expect(getQuadsSpy).toHaveBeenCalled();
   });
 });

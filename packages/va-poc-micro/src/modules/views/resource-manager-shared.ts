@@ -3,7 +3,7 @@ import rdfDataFactory from '@rdfjs/data-model';
 import type { Quad, NamedNode } from '@rdfjs/types';
 import type { GraphStore } from '../data/graph-store';
 import type { ShapeDescriptor } from '../data/shape-descriptors';
-import { quadsToTurtle } from './rdf-utils';
+import { quadsToTrig } from './rdf-utils';
 import {
   ensureGraph,
   ensureTypeQuad,
@@ -67,7 +67,7 @@ export async function fetchResources(
   return results;
 }
 
-export async function readResourceAsTurtle(
+export async function readResourceAsTrig(
   store: GraphStore,
   record: ResourceRecord
 ): Promise<string> {
@@ -76,18 +76,18 @@ export async function readResourceAsTurtle(
   if (quads.length === 0) {
     return '';
   }
-  return quadsToTurtle(quads);
+  return quadsToTrig(quads);
 }
 
 export async function persistForm(
   store: GraphStore,
-  options: { turtle: string; subject: string; graph: string; targetClass: NamedNode }
+  options: { trig: string; subject: string; graph: string; targetClass: NamedNode }
 ): Promise<void> {
   const graphNode = rdfDataFactory.namedNode(options.graph);
   const subjectNode = rdfDataFactory.namedNode(options.subject);
 
   const parser = new Parser({ format: 'application/trig' });
-  const parsed = parser.parse(options.turtle) as Quad[];
+  const parsed = parser.parse(options.trig) as Quad[];
   const normalized = parsed.map((quad) => ensureGraph(quad, graphNode));
   ensureTypeQuad(normalized, subjectNode, options.targetClass, graphNode);
 

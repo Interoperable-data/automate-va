@@ -3,13 +3,13 @@ import { Writer } from 'n3';
 import type { DatasetCore, NamedNode, Quad } from '@rdfjs/types';
 import { DEFAULT_PREFIXES, RDFS_NODES } from './ontologies';
 
-export type RdfSerializationFormat = 'text/turtle' | 'application/n-triples';
+export type RdfSerializationFormat = 'application/trig' | 'text/plain';
 
 export function serializeQuads(quads: Quad[], format: RdfSerializationFormat): Promise<string> {
   const writer = new Writer(
-    format === 'text/turtle'
+    format === 'application/trig'
       ? {
-          format: 'Turtle',
+          format: 'application/trig',
           prefixes: DEFAULT_PREFIXES,
         }
       : {
@@ -28,8 +28,8 @@ export function serializeQuads(quads: Quad[], format: RdfSerializationFormat): P
   });
 }
 
-export function quadsToTurtle(quads: Quad[]): Promise<string> {
-  return serializeQuads(quads, 'text/turtle');
+export function quadsToTrig(quads: Quad[]): Promise<string> {
+  return serializeQuads(quads, 'application/trig');
 }
 
 export function isClassOrSubclassOf(

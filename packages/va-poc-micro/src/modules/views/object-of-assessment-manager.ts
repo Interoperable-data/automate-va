@@ -8,7 +8,7 @@ import { applyMaterialShaclTheme } from './shacl-material-theme';
 import { extractMessage } from './resource-store-utils';
 import {
   fetchResources,
-  readResourceAsTurtle,
+  readResourceAsTrig,
   persistForm,
   removeResource,
   createIdentifiers,
@@ -291,9 +291,9 @@ export async function initObjectOfAssessmentManagerView(
     modal.body.append(form, status);
 
     if (existing) {
-      const turtle = await readResourceAsTurtle(store, existing);
-      if (turtle) {
-        form.setAttribute('data-values', turtle);
+      const trig = await readResourceAsTrig(store, existing);
+      if (trig) {
+        form.setAttribute('data-values', trig);
       } else {
         form.removeAttribute('data-values');
       }
@@ -382,9 +382,9 @@ export async function initObjectOfAssessmentManagerView(
         }
 
         setStatusMessage(`Saving ${descriptor.label.toLowerCase()}…`);
-        const turtle = form.serialize('text/turtle');
+        const trig = form.serialize('application/trig');
         await persistForm(store, {
-          turtle,
+          trig,
           graph: identifiers.graph,
           subject: identifiers.subject,
           targetClass: descriptor.targetClass,

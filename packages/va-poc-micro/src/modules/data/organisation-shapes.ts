@@ -47,7 +47,7 @@ export async function loadViewerShapes(options: LoadViewerShapeOptions): Promise
   }
 
   const text = await response.text();
-  const parser = new Parser({ format: 'text/turtle' });
+  const parser = new Parser({ format: 'application/trig' });
   const quads = parser.parse(text) as Quad[];
   const dataset = (datasetFactoryOverride ?? datasetFactory).dataset(quads);
 

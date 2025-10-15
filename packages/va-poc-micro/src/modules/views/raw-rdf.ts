@@ -26,7 +26,7 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
   const { container, store } = options;
 
   let viewer: RdfViewerController;
-  let currentFormat: RdfSerializationFormat = 'text/turtle';
+  let currentFormat: RdfSerializationFormat = 'application/trig';
   let lastSerialized = '';
   let pending = false;
   let queued = false;
@@ -85,7 +85,7 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = currentFormat === 'text/turtle' ? 'va-dataset.ttl' : 'va-dataset.nt';
+    link.download = currentFormat === 'application/trig' ? 'va-dataset.trig' : 'va-dataset.nt';
     document.body.append(link);
     link.click();
     link.remove();

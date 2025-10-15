@@ -7,7 +7,7 @@ import { GraphStore } from '../data/graph-store.js';
 import { discoverShapeDescriptors } from '../data/shape-descriptors.js';
 import {
   fetchResources,
-  readResourceAsTurtle,
+  readResourceAsTrig,
   persistForm,
   removeResource,
   listIncomingReferenceSubjects,
@@ -43,7 +43,7 @@ const DCTERMS_VALID = namedNode('http://purl.org/dc/terms/valid');
 const TIME_END = namedNode('http://www.w3.org/2006/time#inXSDDateTime');
 
 describe('resource-manager-shared helpers', () => {
-  const parser = new Parser({ format: 'text/turtle' });
+  const parser = new Parser({ format: 'application/trig' });
   let store: GraphStore;
 
   beforeEach(async () => {
@@ -93,7 +93,7 @@ describe('resource-manager-shared helpers', () => {
     );
   });
 
-  it('readResourceAsTurtle serialises resource quads into turtle text', async () => {
+  it('readResourceAsTrig serialises resource quads into TriG text', async () => {
     const { organisation } = loadDescriptors();
     const subject = namedNode('https://data.example.test/org/c');
     const graph = namedNode(`${subject.value}#graph`);
@@ -106,19 +106,19 @@ describe('resource-manager-shared helpers', () => {
     const [record] = await fetchResources(store, [organisation]);
     expect(record).toBeDefined();
 
-    const turtle = await readResourceAsTurtle(store, record as ResourceRecord);
-    expect(turtle).toContain('<https://data.example.test/org/c>');
-    expect(turtle).toContain('Gamma Org');
+    const trig = await readResourceAsTrig(store, record as ResourceRecord);
+    expect(trig).toContain('<https://data.example.test/org/c>');
+    expect(trig).toContain('Gamma Org');
   });
 
   it('persistForm stores submitted data and enforces rdf:type and creation metadata', async () => {
     const { organisation } = loadDescriptors();
     const identifiers = createIdentifiers(organisation);
-    const turtle = `@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+    const trig = `@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 <${identifiers.subject}> skos:prefLabel "Delta Org" .`;
 
     await persistForm(store, {
-      turtle,
+      trig,
       subject: identifiers.subject,
       graph: identifiers.graph,
       targetClass: organisation.targetClass,

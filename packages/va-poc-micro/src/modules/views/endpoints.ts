@@ -1,10 +1,12 @@
 import { GraphStore } from '../data/graph-store';
 import { assert } from '../utils/assert';
+import { deriveInfoEndpoint, validateShacl } from '../utils/shacl-endpoint';
 import { serializeQuads } from './rdf-utils';
 
 interface EndpointsViewOptions {
   container: HTMLElement;
   store: GraphStore;
+  shapeSources: string[];
 }
 
 interface EndpointsViewController {
@@ -16,6 +18,7 @@ interface LayoutRefs {
   endpointInput: HTMLInputElement;
   tokenInput: HTMLInputElement;
   submitButton: HTMLButtonElement;
+  checkButton: HTMLButtonElement;
   status: HTMLElement;
   result: HTMLElement;
 }
@@ -25,11 +28,59 @@ const STORAGE_KEYS = {
   token: 'va:endpoints:authToken',
 } as const;
 
+const DEFAULT_VALIDATOR_ENDPOINT = 'https://www.itb.ec.europa.eu/shacl/any/api/validate';
+
 export function initEndpointsView(options: EndpointsViewOptions): EndpointsViewController {
-  const { container, store } = options;
+  const { container, store, shapeSources } = options;
+  const shapes = [...shapeSources];
   const layout = buildLayout(container);
 
   restorePreferences(layout);
+
+  layout.checkButton.addEventListener('click', async () => {
+    const endpointValue = layout.endpointInput.value.trim() || DEFAULT_VALIDATOR_ENDPOINT;
+    const infoUrl = deriveInfoEndpoint(endpointValue);
+    if (!infoUrl) {
+      layout.status.textContent = 'Provide a valid endpoint URL before checking.';
+      layout.endpointInput.focus();
+      return;
+    }
+
+    savePreferences({ endpointInput: layout.endpointInput, tokenInput: layout.tokenInput });
+
+    layout.checkButton.disabled = true;
+    layout.status.textContent = `Checking endpoint info at ${infoUrl}…`;
+    layout.result.textContent = '# Waiting for endpoint info…';
+
+    try {
+      const started = performance.now();
+      const response = await fetch(infoUrl, {
+        method: 'GET',
+        headers: {
+          accept: 'application/json, text/plain;q=0.9, */*;q=0.1',
+        },
+      });
+      const duration = formatDuration(performance.now() - started);
+      const contentType = response.headers.get('content-type') ?? '';
+      const body = await response.text();
+
+      if (!response.ok) {
+        layout.status.textContent = `Endpoint info failed (${response.status} ${response.statusText}, ${duration}).`;
+        layout.result.textContent = formatResponseBody(body, contentType);
+        return;
+      }
+
+      layout.status.textContent = `Endpoint info succeeded (${duration}).`;
+      layout.result.textContent = formatResponseBody(body, contentType);
+    } catch (error) {
+      const message = extractMessage(error);
+      const hint = message === 'Failed to fetch' ? ' (possible CORS restriction)' : '';
+      layout.status.textContent = `Endpoint info request failed${hint}: ${message}`;
+      layout.result.textContent = '';
+    } finally {
+      layout.checkButton.disabled = false;
+    }
+  });
 
   layout.form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -47,44 +98,51 @@ export function initEndpointsView(options: EndpointsViewOptions): EndpointsViewC
       return;
     }
 
-    const payload = await serializeQuads(quads, 'text/turtle');
-    const headers: Record<string, string> = {
-      'content-type': 'text/turtle',
-      accept: 'application/json, text/turtle;q=0.9, */*;q=0.1',
-    };
+    const payload = await serializeQuads(quads, 'application/trig');
     const rawToken = layout.tokenInput.value.trim();
-    if (rawToken) {
-      headers.Authorization = rawToken.startsWith('Bearer ') ? rawToken : `Bearer ${rawToken}`;
-    }
+    const token = rawToken
+      ? rawToken.startsWith('Bearer ')
+        ? rawToken
+        : `Bearer ${rawToken}`
+      : undefined;
 
     savePreferences(layout);
 
     layout.submitButton.disabled = true;
-    layout.status.textContent = `Sending ${quads.length} triples to the SHACL endpoint…`;
+    const shapeCount = shapes.length;
+    layout.status.textContent = `Sending ${quads.length} triples and ${shapeCount} shape graphs to the SHACL endpoint…`;
     layout.result.textContent = '# Waiting for response…';
 
     try {
-      const started = performance.now();
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers,
-        body: payload,
+      const result = await validateShacl({
+        endpoint,
+        dataGraph: payload,
+        shapeGraphs: shapes,
+        token,
       });
-      const duration = formatDuration(performance.now() - started);
-      const contentType = response.headers.get('content-type') ?? '';
-      const text = await response.text();
+      const duration = formatDuration(result.duration);
 
-      if (!response.ok) {
-        layout.status.textContent = `Validation failed (${response.status} ${response.statusText}, ${duration}).`;
-        layout.result.textContent = formatResponseBody(text, contentType);
+      if (!result.ok) {
+        layout.status.textContent = `Validation failed (${result.status} ${result.statusText}, ${duration}).`;
+        layout.result.textContent = formatResponseBody(
+          result.body,
+          result.contentType,
+          result.requestPayload
+        );
         return;
       }
 
       layout.status.textContent = `Validation succeeded (${duration}).`;
-      layout.result.textContent = formatResponseBody(text, contentType);
+      layout.result.textContent = formatResponseBody(
+        result.body,
+        result.contentType,
+        result.requestPayload
+      );
     } catch (error) {
       console.error('[endpoints] Validation request failed', error);
-      layout.status.textContent = `Request failed: ${extractMessage(error)}`;
+      const message = extractMessage(error);
+      const hint = message === 'Failed to fetch' ? ' (possible CORS restriction)' : '';
+      layout.status.textContent = `Request failed${hint}: ${message}`;
       layout.result.textContent = '';
     } finally {
       layout.submitButton.disabled = false;
@@ -103,7 +161,7 @@ function buildLayout(container: HTMLElement): LayoutRefs {
     <section class="panel">
       <h2 class="panel__title">Validate against remote SHACL endpoint</h2>
       <p class="panel__body">
-        Send the locally stored RDF graph to a SHACL validation service. The request uses HTTP POST with the Turtle payload.
+  Send the locally stored RDF graph to a SHACL validation service. The request uses HTTP POST with a TriG payload.
       </p>
       <form class="endpoint-form" data-role="endpoint-form">
         <label class="endpoint-form__field">
@@ -115,6 +173,7 @@ function buildLayout(container: HTMLElement): LayoutRefs {
           <input type="text" name="token" placeholder="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…" />
         </label>
         <div class="endpoint-form__actions">
+          <button type="button" class="panel__button panel__button--secondary" data-role="check-endpoint">Check endpoint</button>
           <button type="submit" class="panel__button">Validate dataset</button>
         </div>
       </form>
@@ -139,6 +198,10 @@ function buildLayout(container: HTMLElement): LayoutRefs {
     form.querySelector<HTMLButtonElement>('button[type="submit"]'),
     'Submit button missing'
   );
+  const checkButton = assert(
+    form.querySelector<HTMLButtonElement>('[data-role="check-endpoint"]'),
+    'Check endpoint button missing'
+  );
   const status = assert(
     container.querySelector<HTMLElement>('[data-role="status"]'),
     'Status element missing'
@@ -155,7 +218,7 @@ function buildLayout(container: HTMLElement): LayoutRefs {
   endpointInput.addEventListener('change', () => savePreferences(preferenceFields));
   tokenInput.addEventListener('change', () => savePreferences(preferenceFields));
 
-  return { form, endpointInput, tokenInput, submitButton, status, result };
+  return { form, endpointInput, tokenInput, submitButton, checkButton, status, result };
 }
 
 function restorePreferences(layout: Pick<LayoutRefs, 'endpointInput' | 'tokenInput'>): void {
@@ -163,6 +226,8 @@ function restorePreferences(layout: Pick<LayoutRefs, 'endpointInput' | 'tokenInp
     const storedEndpoint = window.localStorage.getItem(STORAGE_KEYS.endpoint);
     if (storedEndpoint) {
       layout.endpointInput.value = storedEndpoint;
+    } else {
+      layout.endpointInput.value = DEFAULT_VALIDATOR_ENDPOINT;
     }
     const storedToken = window.localStorage.getItem(STORAGE_KEYS.token);
     if (storedToken) {
@@ -192,18 +257,28 @@ function formatDuration(ms: number): string {
   return `${(ms / 1000).toFixed(2)} s`;
 }
 
-function formatResponseBody(body: string, contentType: string): string {
+function formatResponseBody(body: string, contentType: string, requestPayload?: string): string {
   if (!body) {
-    return '# Endpoint responded with no body.';
+    if (!requestPayload) {
+      return '# Endpoint responded with no body.';
+    }
+    return `# Endpoint responded with no body.\n\n# Request payload\n${requestPayload}`;
   }
   if (contentType.includes('application/json')) {
     try {
       const parsed = JSON.parse(body);
-      return JSON.stringify(parsed, null, 2);
+      const formatted = JSON.stringify(parsed, null, 2);
+      if (requestPayload) {
+        return `${formatted}\n\n# Request payload\n${requestPayload}`;
+      }
+      return formatted;
     } catch (error) {
       console.warn('[endpoints] Failed to parse JSON response', error);
       return body;
     }
+  }
+  if (requestPayload) {
+    return `${body}\n\n# Request payload\n${requestPayload}`;
   }
   return body;
 }

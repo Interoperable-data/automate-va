@@ -3,7 +3,7 @@ import datasetFactory from '@rdfjs/dataset';
 import { Parser } from 'n3';
 import { discoverShapeDescriptors } from './shape-descriptors.js';
 
-const parser = new Parser({ format: 'text/turtle' });
+const parser = new Parser({ format: 'application/trig' });
 
 const ttl = `
   @prefix sh: <http://www.w3.org/ns/shacl#> .
