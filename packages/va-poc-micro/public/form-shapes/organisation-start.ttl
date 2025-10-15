@@ -71,7 +71,9 @@ era-sh:FormalOrganisationShape a sh:NodeShape, rdfs:Class ;
     sh:datatype xsd:string ;
     sh:name "Name of the Holding or Group"@en ;
     sh:description "The legally recognized name of the mother holding or group. Do NOT include locations in this name." ;
-    sh:minCount 0 ; sh:maxCount 1
+    sh:message "The Formal Organisation MUST have ONE recognisable label."@en ;
+    sh:severity sh:Violation ;
+    sh:minCount 1 ; sh:maxCount 1
   ] ;
   sh:property [
     sh:path rdfs:comment ;
@@ -79,6 +81,7 @@ era-sh:FormalOrganisationShape a sh:NodeShape, rdfs:Class ;
     dash:singleLine false ;
     sh:name "Description of the Holding or Group"@en ;
     sh:description "A description of the mother holding or group. Do NOT include locations in this name." ;
+    sh:message "The Formal Organisation SHOULD have a description."@en ;
     sh:minCount 0 ; sh:maxCount 1
   ] ;
   sh:property [
@@ -120,14 +123,16 @@ era-sh:OrganisationShape a sh:NodeShape, rdfs:Class ;
     sh:datatype xsd:string ;
     sh:name "Name of the Organization"@en ;
     sh:description "The legally recognized name of the organisation. Do NOT include locations in this name." ;
+    sh:message "An organisation MUST have one recognisable name."@en ;
+    sh:severity sh:Violation
   ] ;
   sh:property [
-    sh:minCount 0 ; # Not mandatory
     sh:path org:hasSubOrganization;
     sh:nodeKind sh:IRI ;
     sh:class org:Organization ;
     sh:name "Subsidiary organisation";
     sh:description "An organization, as a separate legal entity, which is >50% part of this organization" ;
+    sh:minCount 0 ; # Not mandatory
   ];
   sh:property [
     # sh:maxCount 1 ;

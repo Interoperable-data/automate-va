@@ -57,6 +57,7 @@
   --color-rdf-token-iri-graph: #fbbf24;
   --color-rdf-token-literal: #34d399;
   --color-rdf-token-directive: #a5b4fc;
+  --color-rdf-token-predicate: #f59e0b;
 }
 
 *,
@@ -682,6 +683,27 @@ a:focus-visible {
   flex-wrap: wrap;
 }
 
+.rdf-toolbar__actions .panel__button.rdf-toolbar__button--success {
+  animation: rdf-toolbar-button-success 500ms ease-out;
+}
+
+@keyframes rdf-toolbar-button-success {
+  0% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+  30% {
+    transform: scale(1.25);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.35);
+    background-color: rgba(34, 197, 94, 0.15);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: none;
+    background-color: inherit;
+  }
+}
+
 .rdf-preview {
   background-color: var(--color-rdf-preview-bg);
   color: #e2e8f0;
@@ -719,6 +741,87 @@ a:focus-visible {
 
 .rdf-token--literal {
   color: var(--color-rdf-token-literal);
+}
+
+.rdf-token--predicate {
+  color: var(--color-rdf-token-predicate);
+  font-weight: 600;
+}
+
+.rdf-token--prefix-era {
+  color: #2563eb;
+}
+
+.rdf-token--prefix-org {
+  color: #9333ea;
+}
+
+.rdf-token--prefix-skos {
+  color: #f97316;
+}
+
+.rdf-token--prefix-locn {
+  color: #059669;
+}
+
+.rdf-token--prefix-rorg {
+  color: #f43f5e;
+}
+
+.rdf-token--prefix-uorg {
+  color: #14b8a6;
+}
+
+.rdf-token--prefix-orgr {
+  color: #c084fc;
+}
+
+.rdf-token--prefix-lorg {
+  color: #0ea5e9;
+}
+
+.rdf-token--prefix-rdf {
+  color: #dc2626;
+}
+
+.rdf-token--prefix-rdfs {
+  color: #eab308;
+}
+
+.rdf-token--prefix-xsd {
+  color: #6366f1;
+}
+
+.rdf-token--prefix-time {
+  color: #22c55e;
+}
+
+.rdf-token--prefix-geo {
+  color: #0891b2;
+}
+
+.rdf-token--prefix-dcterms {
+  color: #fb7185;
+}
+
+.rdf-token--prefix-era-sh {
+  color: #f97316;
+}
+
+.rdf-token--prefix-era-cert {
+  color: #ef4444;
+}
+
+.rdf-token--prefix-era-ecd {
+  color: #22d3ee;
+}
+
+.rdf-token--prefix-era-cld {
+  color: #8b5cf6;
+}
+
+.rdf-token--prefix-eraui {
+  color: #0ea5e9;
 }
 
 .rdf-status {

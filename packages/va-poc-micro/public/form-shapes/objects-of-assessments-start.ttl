@@ -31,8 +31,16 @@
 era-sh:AssessmentDeclarationShape a sh:NodeShape ;
   sh:targetClass era:ECDeclaration ;
   rdfs:label "EC declaration"@en ;
-  rdfs:comment "Add a reference to an EC Declaration."@en ;
+  rdfs:comment "Add a reference to an EC Declaration. If not yet available, you can link the underlying CLD's too."@en ;
   dash:stem era-ecd: ;
+
+  sh:property [
+    sh:path dcterms:identifier ;
+    sh:name "Document ID number"@en ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "Document ID number of the EC Declaration"@en
+  ] ;
 
   sh:property [
     sh:path skos:prefLabel ;
@@ -41,6 +49,7 @@ era-sh:AssessmentDeclarationShape a sh:NodeShape ;
     sh:minCount 1 ; sh:maxCount 1 ;
     sh:message "ECD object MUST be provided"@en
   ] ;
+
   sh:property [
     sh:path era:issuedOn ;
     sh:name "Issued on"@en ;
@@ -51,11 +60,11 @@ era-sh:AssessmentDeclarationShape a sh:NodeShape ;
   ] ;
   sh:property [
     sh:path dcterms:requires ;
-    sh:name "Subsystem certificate"@en ;
-    sh:class era:CLD ;
+    sh:name "Subsystem certificates collection"@en ;
+    sh:class era:CABEvidence ;
     sh:nodeKind sh:IRI ;
     sh:minCount 0 ;
-    sh:maxCount 3
+    sh:maxCount 1
   ] ;
   sh:closed false .
 
@@ -64,14 +73,23 @@ era-sh:AssessmentCertificateShape a sh:NodeShape ;
   rdfs:label "EC certificate"@en ;
   rdfs:comment "Add EC certifiate references, and link them to the Declarations"@en ;
   dash:stem era-cld: ;
+
+  sh:property [
+    sh:path dcterms:identifier ;
+    sh:name "Certificate number"@en ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ; sh:maxCount 1 ;
+    sh:message "Certificate number of the EC Certificate"@en
+  ] ;
   
   sh:property [
     sh:path skos:prefLabel ;
-    sh:name "Certificate title"@en ;
+    sh:name "Certificate label"@en ;
     sh:datatype xsd:string ;
     sh:minCount 1 ;
     sh:maxCount 1
   ] ;
+
   sh:property [
     sh:path dcterms:issued ;
     sh:name "Issued on"@en ;
@@ -79,10 +97,11 @@ era-sh:AssessmentCertificateShape a sh:NodeShape ;
     sh:minCount 0 ;
     sh:maxCount 1
   ] ;
+
   sh:property [
     sh:path dcterms:related ;
-    sh:name "Related declaration"@en ;
-    sh:class era:ECDeclaration ;
+    sh:name "In Evidence collection"@en ;
+    sh:class era:CABEvidence ;
     sh:nodeKind sh:IRI ;
     sh:minCount 0 ;
     sh:maxCount 1
@@ -110,13 +129,10 @@ era-sh:AssessmentEvidenceShape a sh:NodeShape ;
   ] ;
   sh:property [
     sh:path rdfs:member ;
-    sh:name "Document basis"@en ;
-    sh:description "Combine with ECD and CLD resources for reusable evidence collections."@en ;
+    sh:name "Combine CLDs"@en ;
+    sh:description "Combine CLD resources to link to a ECD."@en ;
     sh:nodeKind sh:IRI ;
-    sh:or (
-      [ rdfs:label "EC Declaration" ; sh:class era:ECDeclaration ]
-      [ rdfs:label "EC Certificate" ; sh:class era:CLD ]
-    );
+    sh:class era:CLD ;
     sh:minCount 0 ;
     sh:maxCount 10
   ] ;
