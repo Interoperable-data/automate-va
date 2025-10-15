@@ -108,32 +108,41 @@ era-sh:AssessmentCertificateShape a sh:NodeShape ;
   ] ;
   sh:closed false .
 
-era-sh:AssessmentEvidenceShape a sh:NodeShape ;
+era-sh:CLDCollectionShape a sh:NodeShape ;
   sh:targetClass era:CABEvidence ;
-  rdfs:label "Assessment evidence"@en ;
-  rdfs:comment "Combine CLDs with EC Declarations in order to create evidence collections."@en ;
+  rdfs:label "CLD Collection"@en ;
+  rdfs:comment "Group CLDs which ogether support a EC Declaration."@en ;
   dash:stem era-cert: ;
   sh:property [
     sh:path skos:prefLabel ;
-    sh:name "Evidence label"@en ;
+    sh:name "Collection name"@en ;
     sh:datatype xsd:string ;
     sh:minCount 1 ;
     sh:maxCount 1
   ] ;
   sh:property [
     sh:path rdfs:comment ;
-    sh:name "Description"@en ;
+    sh:name "Collection description"@en ;
     sh:datatype xsd:string ;
     sh:minCount 0 ;
     sh:maxCount 1
   ] ;
   sh:property [
     sh:path rdfs:member ;
-    sh:name "Combine CLDs"@en ;
-    sh:description "Combine CLD resources to link to a ECD."@en ;
+    sh:name "Combined CLDs"@en ;
+    sh:description "Select the CLDs to link together to a EC Declaration."@en ;
     sh:nodeKind sh:IRI ;
     sh:class era:CLD ;
     sh:minCount 0 ;
     sh:maxCount 10
+  ] ;
+  sh:property [
+    sh:path dcterms:isReuiredBy ;
+    sh:name "Supported EC Declaration"@en ;
+    sh:description "Select the EC Declaration to link these CLDs to."@en ;
+    sh:nodeKind sh:IRI ;
+    sh:class era:ECDeclaration ;
+    sh:minCount 0 ;
+    sh:maxCount 1
   ] ;
   sh:closed false .
