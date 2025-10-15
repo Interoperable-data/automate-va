@@ -278,44 +278,18 @@ export async function initOrganisationManagerView(
       form.replaceWith();
     });
 
-    const inspector = document.createElement('pre');
-    inspector.className = 'modal__inspector';
-    inspector.hidden = true;
-
-    const status = document.createElement('button');
-    status.type = 'button';
-    status.className = 'modal__status modal__status--toggle';
-    status.setAttribute('aria-expanded', 'false');
+    const status = document.createElement('p');
+    status.className = 'modal__status';
 
     const setStatusMessage = (message?: string) => {
       if (message) {
-        status.textContent = `${message} • Click to inspect form payload.`;
+        status.textContent = message;
       } else {
-        status.textContent =
-          'Values are validated against the SHACL shapes. Click to inspect form payload.';
-      }
-    };
-
-    const refreshInspector = () => {
-      const values = form.getAttribute('data-values');
-      if (values && values.trim().length > 0) {
-        inspector.textContent = values;
-      } else {
-        inspector.textContent = '# Form did not receive data-values. New resources start empty.';
+        status.textContent = 'Values are validated against the SHACL shapes defining the form.';
       }
     };
 
     setStatusMessage();
-    refreshInspector();
-
-    status.addEventListener('click', () => {
-      const willShow = inspector.hidden;
-      if (willShow) {
-        refreshInspector();
-      }
-      inspector.hidden = !willShow;
-      status.setAttribute('aria-expanded', String(willShow));
-    });
     const identifiers: ResourceIdentifiers = existing
       ? { subject: existing.subject, graph: existing.graph }
       : createIdentifiers(descriptor);
@@ -334,7 +308,7 @@ export async function initOrganisationManagerView(
       detachClassProvider();
     });
 
-    modal.body.append(form, status, inspector);
+    modal.body.append(form, status);
 
     if (existing) {
       const turtle = await readResourceAsTurtle(store, existing);
@@ -343,10 +317,8 @@ export async function initOrganisationManagerView(
       } else {
         form.removeAttribute('data-values');
       }
-      refreshInspector();
     } else {
       form.removeAttribute('data-values');
-      refreshInspector();
     }
 
     const deleteButton = document.createElement('button');

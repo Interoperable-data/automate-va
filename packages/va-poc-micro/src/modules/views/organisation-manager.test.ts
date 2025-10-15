@@ -133,23 +133,15 @@ describe('organisation-manager persistence', () => {
 
     await flushMicrotasks();
 
-    const statusButton = container.querySelector<HTMLButtonElement>('.modal__status--toggle');
-    const inspector = container.querySelector<HTMLPreElement>('.modal__inspector');
-    expect(statusButton, 'status toggle button rendered').not.toBeNull();
-    expect(inspector, 'inspector code block rendered').not.toBeNull();
-    expect(inspector?.hidden).toBe(true);
-
-    statusButton?.click();
-
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(statusButton?.getAttribute('aria-expanded')).toBe('true');
-    expect(inspector?.hidden).toBe(false);
-    expect(inspector?.textContent ?? '').toContain('Existing Org');
-    expect(inspector?.textContent ?? '').toContain('http://www.w3.org/ns/org#Organization');
+    const status = container.querySelector<HTMLElement>('.modal__status');
+    expect(status, 'status message rendered beneath form').not.toBeNull();
+    expect(status?.textContent ?? '').toContain(
+      'Values are validated against the SHACL shapes defining the form.'
+    );
+    expect(container.querySelector('.modal__inspector')).toBeNull();
   });
 
-  it('shows a helpful message when no data-values were supplied', async () => {
+  it('shows the validation reminder beneath newly created forms', async () => {
     const quads = parser.parse(SHAPE_TTL);
     const dataset = datasetFactory.dataset(quads);
     const shapes = { text: SHAPE_TTL, quads, dataset };
@@ -162,14 +154,12 @@ describe('organisation-manager persistence', () => {
 
     await flushMicrotasks();
 
-    const statusButton = container.querySelector<HTMLButtonElement>('.modal__status--toggle');
-    const inspector = container.querySelector<HTMLPreElement>('.modal__inspector');
-    expect(statusButton).not.toBeNull();
-    expect(inspector).not.toBeNull();
-
-    statusButton?.click();
-
-    expect(inspector?.textContent).toContain('Form did not receive data-values');
+    const status = container.querySelector<HTMLElement>('.modal__status');
+    expect(status).not.toBeNull();
+    expect(status?.textContent ?? '').toContain(
+      'Values are validated against the SHACL shapes defining the form.'
+    );
+    expect(container.querySelector('.modal__inspector')).toBeNull();
   });
 
   it('persists submitted resources into the quadstore using the descriptor namespace graph', async () => {
