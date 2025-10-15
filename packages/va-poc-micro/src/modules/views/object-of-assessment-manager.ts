@@ -43,6 +43,7 @@ interface DescriptorBuckets {
 }
 
 type ColumnKey = 'ecEvidence' | 'otherCertificates' | 'statements';
+type DescriptorBucketKey = keyof DescriptorBuckets;
 
 const COLUMN_COPY: Record<ColumnKey, { title: string; description: string; empty: string }> = {
   ecEvidence: {
@@ -64,6 +65,13 @@ const COLUMN_COPY: Record<ColumnKey, { title: string; description: string; empty
 } as const;
 
 const COLUMN_ORDER: ColumnKey[] = ['ecEvidence', 'otherCertificates', 'statements'];
+
+// Defines which descriptor buckets appear in each rendered column.
+const COLUMN_DESCRIPTOR_GROUPS: Record<ColumnKey, DescriptorBucketKey[]> = {
+  ecEvidence: ['evidence', 'declarations', 'certificates'],
+  otherCertificates: [],
+  statements: [],
+} as const;
 
 export async function initObjectOfAssessmentManagerView(
   options: ObjectOfAssessmentManagerOptions
@@ -217,21 +225,12 @@ export async function initObjectOfAssessmentManagerView(
   ) {
     resources = await fetchResources(store, descriptors);
 
-    // Aggregate current descriptor groups into the first column, leaving placeholders for upcoming ones.
-    const columnBuckets: Record<ColumnKey, ShapeDescriptor[]> = {
-      ecEvidence: [
-        ...descriptorBuckets.evidence,
-        ...descriptorBuckets.declarations,
-        ...descriptorBuckets.certificates,
-      ],
-      otherCertificates: [],
-      statements: [],
-    };
-
     const columnDefinitions: ColumnDefinition[] = COLUMN_ORDER.map((key) => ({
       key,
       host: layout.resourceColumns[key],
-      descriptors: columnBuckets[key],
+      descriptors: COLUMN_DESCRIPTOR_GROUPS[key].flatMap(
+        (bucketKey) => descriptorBuckets[bucketKey]
+      ),
       copy: COLUMN_COPY[key],
     }));
 

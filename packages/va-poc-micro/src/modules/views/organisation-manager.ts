@@ -47,6 +47,7 @@ interface DescriptorBuckets {
   sites: ShapeDescriptor[];
 }
 
+type DescriptorBucketKey = keyof DescriptorBuckets;
 type ColumnKey = keyof DescriptorBuckets;
 
 const COLUMN_COPY: Record<ColumnKey, { title: string; description: string; empty: string }> = {
@@ -68,6 +69,13 @@ const COLUMN_COPY: Record<ColumnKey, { title: string; description: string; empty
 } as const;
 
 const COLUMN_ORDER: ColumnKey[] = ['roles', 'organisations', 'sites'];
+
+// Defines which descriptor buckets appear in each rendered column.
+const COLUMN_DESCRIPTOR_GROUPS: Record<ColumnKey, DescriptorBucketKey[]> = {
+  roles: ['roles'],
+  organisations: ['organisations'],
+  sites: ['sites'],
+} as const;
 
 export async function initOrganisationManagerView(
   options: OrganisationManagerOptions
@@ -224,7 +232,9 @@ export async function initOrganisationManagerView(
     const columnDefinitions: ColumnDefinition[] = COLUMN_ORDER.map((key) => ({
       key,
       host: layout.resourceColumns[key],
-      descriptors: descriptorBuckets[key],
+      descriptors: COLUMN_DESCRIPTOR_GROUPS[key].flatMap(
+        (bucketKey) => descriptorBuckets[bucketKey]
+      ),
       copy: COLUMN_COPY[key],
     }));
 
