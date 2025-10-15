@@ -3,11 +3,16 @@ import '@ulb-darmstadt/shacl-form';
 import { initNavigation, type ViewId } from './modules/navigation';
 import { assert } from './modules/utils/assert';
 import { GraphStore } from './modules/data/graph-store';
-import { loadOrganisationShapes } from './modules/data/organisation-shapes';
+import { loadViewerShapes } from './modules/data/organisation-shapes';
 import { initOrganisationManagerView } from './modules/views/organisation-manager';
 import { initObjectOfAssessmentManagerView } from './modules/views/object-of-assessment-manager';
 import { initRawRdfView } from './modules/views/raw-rdf';
 import { initEndpointsView } from './modules/views/endpoints';
+
+const SHAPE_RESOURCES = {
+  organisation: '/form-shapes/organisation-start.ttl',
+  objects: '/form-shapes/objects-of-assessments-start.ttl',
+} as const;
 
 const appRoot = assert(document.querySelector<HTMLElement>('[data-app]'), 'App shell not found');
 
@@ -23,8 +28,8 @@ interface ViewController {
 async function bootstrap(): Promise<void> {
   const [store, organisationShapes, objectsShapes] = await Promise.all([
     GraphStore.create(),
-    loadOrganisationShapes(),
-    loadOrganisationShapes({ url: '/form-shapes/objects-of-assessments-start.ttl' }),
+    loadViewerShapes({ url: SHAPE_RESOURCES.organisation }),
+    loadViewerShapes({ url: SHAPE_RESOURCES.objects }),
   ]);
 
   const viewControllers: Partial<Record<ViewId, ViewController>> = {};
@@ -171,7 +176,7 @@ function renderFatalBootstrapError(error: unknown): void {
   const summary = document.createElement('p');
   summary.className = 'app-error__message';
   summary.textContent =
-    'The app could not load the organisation shapes it needs. Please review the shapes file and reload the page.';
+    'The app could not load the SHACL shapes it needs. Please review the shapes file and reload the page.';
 
   const details = document.createElement('details');
   details.className = 'app-error__details';

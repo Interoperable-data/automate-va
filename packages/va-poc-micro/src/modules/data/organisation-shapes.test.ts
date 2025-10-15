@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryLevel } from 'memory-level';
 import { namedNode } from '@rdfjs/data-model';
 import {
-  loadOrganisationShapes,
-  loadOrganisationShapesIntoStore,
+  loadViewerShapes,
+  loadViewerShapesIntoStore,
   resetShapeCache,
 } from './organisation-shapes.ts';
 import { GraphStore } from './graph-store.ts';
@@ -15,6 +15,8 @@ const turtle = `
     ex:targetNode ex:Organisation .
 `;
 
+const shapeUrl = '/test-viewer-shapes.ttl';
+
 const createFetchMock = (body: string = turtle) =>
   vi.fn(async () => ({
     ok: true,
@@ -23,7 +25,7 @@ const createFetchMock = (body: string = turtle) =>
     text: async () => body,
   })) as unknown as typeof fetch;
 
-describe('organisation shape loader', () => {
+describe('viewer shape loader', () => {
   let store: GraphStore | undefined;
 
   beforeEach(() => {
@@ -38,10 +40,10 @@ describe('organisation shape loader', () => {
     }
   });
 
-  it('fetches and caches organisation shapes', async () => {
+  it('fetches and caches viewer shapes', async () => {
     const fetchMock = createFetchMock();
-    const firstResult = await loadOrganisationShapes({ fetchFn: fetchMock });
-    const secondResult = await loadOrganisationShapes({ fetchFn: fetchMock });
+    const firstResult = await loadViewerShapes({ fetchFn: fetchMock, url: shapeUrl });
+    const secondResult = await loadViewerShapes({ fetchFn: fetchMock, url: shapeUrl });
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(firstResult).toBe(secondResult);
@@ -52,18 +54,22 @@ describe('organisation shape loader', () => {
 
   it('forces a reload when requested', async () => {
     const fetchMock = createFetchMock();
-    await loadOrganisationShapes({ fetchFn: fetchMock });
-    await loadOrganisationShapes({ fetchFn: fetchMock, forceReload: true });
+    await loadViewerShapes({ fetchFn: fetchMock, url: shapeUrl });
+    await loadViewerShapes({ fetchFn: fetchMock, url: shapeUrl, forceReload: true });
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it('loads organisation shapes into a graph store', async () => {
+  it('loads viewer shapes into a graph store', async () => {
     const fetchMock = createFetchMock();
     const backend = new MemoryLevel({ storeEncoding: 'view' });
     store = await GraphStore.create({ backend });
 
-    const { quads } = await loadOrganisationShapesIntoStore({ store, fetchFn: fetchMock });
+    const { quads } = await loadViewerShapesIntoStore({
+      store,
+      fetchFn: fetchMock,
+      url: shapeUrl,
+    });
     const stored = await store.getQuads();
 
     expect(fetchMock).toHaveBeenCalledTimes(1);

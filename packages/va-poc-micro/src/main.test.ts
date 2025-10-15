@@ -2,11 +2,11 @@ import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 
 vi.mock('@ulb-darmstadt/shacl-form', () => ({}));
 
-const loadShapesMock = vi.fn<() => Promise<unknown>>();
+const loadShapesMock = vi.fn<(options: unknown) => Promise<unknown>>();
 const graphStoreCreateMock = vi.fn<() => Promise<unknown>>();
 
 vi.mock('./modules/data/organisation-shapes', () => ({
-  loadOrganisationShapes: loadShapesMock,
+  loadViewerShapes: loadShapesMock,
 }));
 
 vi.mock('./modules/data/graph-store', () => ({
