@@ -1,0 +1,85 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix era: <http://data.europa.eu/949/> .
+@prefix era-sh: <http://data.europa.eu/949/shapes/> .
+@prefix ooa: <http://data.europa.eu/949/objects-of-assessment/> .
+
+# Minimal placeholder shapes to bootstrap the Objects of Assessments view.
+era-sh:AssessmentDeclarationShape a sh:NodeShape ;
+  sh:targetClass era:ECDeclaration ;
+  sh:name "Assessment declaration"@en ;
+  sh:property [
+    sh:path skos:prefLabel ;
+    sh:name "Title"@en ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path era:issuedOn ;
+    sh:name "Issued on"@en ;
+    sh:datatype xsd:date ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path era:belongsToSubsystem ;
+    sh:name "Subsystem"@en ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:closed false .
+
+era-sh:AssessmentCertificateShape a sh:NodeShape ;
+  sh:targetClass era:ECCertificate ;
+  sh:name "Assessment certificate"@en ;
+  sh:property [
+    sh:path skos:prefLabel ;
+    sh:name "Certificate title"@en ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path era:issuedOn ;
+    sh:name "Issued on"@en ;
+    sh:datatype xsd:date ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path era:relatesTo ;
+    sh:name "Related resource"@en ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:closed false .
+
+era-sh:AssessmentEvidenceShape a sh:NodeShape ;
+  sh:targetClass era:AssessmentEvidence ;
+  sh:name "Assessment evidence"@en ;
+  sh:property [
+    sh:path skos:prefLabel ;
+    sh:name "Evidence label"@en ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path era:description ;
+    sh:name "Description"@en ;
+    sh:datatype xsd:string ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:property [
+    sh:path era:hasDocument ;
+    sh:name "Document reference"@en ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 0 ;
+    sh:maxCount 1
+  ] ;
+  sh:closed false .

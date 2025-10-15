@@ -1,32 +1,25 @@
-import { Parser } from 'n3';
-import rdfDataFactory from '@rdfjs/data-model';
-import type { Quad, NamedNode, DatasetCore } from '@rdfjs/types';
+import type { DatasetCore } from '@rdfjs/types';
 import type { GraphStore } from '../data/graph-store';
 import type { LoadedShape } from '../data/organisation-shapes';
 import { discoverShapeDescriptors, type ShapeDescriptor } from '../data/shape-descriptors';
 import { assert } from '../utils/assert';
-import { quadsToTurtle } from './rdf-utils';
 import { attachClassInstanceProvider } from './shacl-class-provider';
 import { applyMaterialShaclTheme } from './shacl-material-theme';
+import { extractMessage } from './resource-store-utils';
 import {
-  ensureGraph,
-  ensureTypeQuad,
-  resolveLabel,
-  getGraphId,
-  extractMessage,
-  collectIncomingReferenceSubjects,
-  ensureCreationMetadata,
-  ensureModificationMetadata,
-  ensureValidityMetadata,
-  readValidityWindow,
-  isExpired,
-  markResourceExpiration,
-} from './resource-store-utils';
-import { RDF_NODES, RDFS_NODES, ORG, DCTERMS, LOCN, ERA } from './ontologies';
-
-const RDFS_SUBCLASS_OF = RDFS_NODES.subClassOf;
-
-const RDF_TYPE = RDF_NODES.type;
+  fetchResources,
+  readResourceAsTurtle,
+  persistForm,
+  removeResource,
+  createIdentifiers,
+  ensureTrailingSlash,
+  listIncomingReferenceSubjects,
+  type ResourceIdentifiers,
+  type ResourceRecord,
+} from './resource-manager-shared';
+import { renderResourceColumns, type ColumnDefinition } from './resource-column-renderer';
+import { isClassOrSubclassOf } from './rdf-utils';
+import { ORG, DCTERMS, LOCN, ERA } from './ontologies';
 
 const ORG_FORMAL_ORGANIZATION = ORG.FormalOrganization;
 const ORG_ORGANIZATION = ORG.Organization;
@@ -47,26 +40,10 @@ interface OrganisationManagerController {
   activate: () => void;
 }
 
-interface ResourceRecord {
-  descriptor: ShapeDescriptor;
-  subject: string;
-  graph: string;
-  label: string;
-  expired: boolean;
-}
-
-type ResourceIdentifiers = Pick<ResourceRecord, 'subject' | 'graph'>;
-
 interface DescriptorBuckets {
   roles: ShapeDescriptor[];
   organisations: ShapeDescriptor[];
   sites: ShapeDescriptor[];
-}
-
-interface ResourceColumnElements {
-  roles: HTMLElement;
-  organisations: HTMLElement;
-  sites: HTMLElement;
 }
 
 type ColumnKey = keyof DescriptorBuckets;
@@ -254,7 +231,15 @@ export async function initOrganisationManagerView(
     { keepSelection = false }: { keepSelection?: boolean } = {}
   ) {
     resources = await fetchResources(store, descriptors);
-    renderResourceList(layout.resourceColumns, descriptorBuckets, resources, {
+
+    const columnDefinitions: ColumnDefinition[] = COLUMN_ORDER.map((key) => ({
+      key,
+      host: layout.resourceColumns[key],
+      descriptors: descriptorBuckets[key],
+      copy: COLUMN_COPY[key],
+    }));
+
+    renderResourceColumns(columnDefinitions, resources, {
       onSelect(resource) {
         selectedSubject = resource.subject;
         void openForm(resource.descriptor, resource);
@@ -332,12 +317,12 @@ export async function initOrganisationManagerView(
       }
       deleteButton.disabled = true;
       try {
-        const references = await collectIncomingReferenceSubjects(store, existing.subject);
+        const references = await listIncomingReferenceSubjects(store, existing.subject);
         if (references.length > 0) {
           const previewLimit = 10;
           const listed = references
             .slice(0, previewLimit)
-            .map((iri) => `• ${iri}`)
+            .map((iri: string) => `• ${iri}`)
             .join('\n');
           const remainder =
             references.length > previewLimit
@@ -411,7 +396,7 @@ export async function initOrganisationManagerView(
         });
         setStatusMessage(`${descriptor.label} saved.`);
         selectedSubject = identifiers.subject;
-        await refreshResourceList(selectedSubject);
+        await refreshResourceList(selectedSubject ?? undefined);
         modal.close();
       } catch (error) {
         console.error('[organisation-manager] Failed to save form', error);
@@ -488,7 +473,7 @@ function categorizeDescriptors(
 
   descriptors.forEach((descriptor) => {
     if (
-      isTargetClass(descriptor.targetClass, ORG_ROLE, dataset) ||
+      isClassOrSubclassOf(descriptor.targetClass, ORG_ROLE, dataset) ||
       descriptor.targetClass.value === ERA_ORGANISATION_ROLE
     ) {
       buckets.roles.push(descriptor);
@@ -516,249 +501,4 @@ function categorizeDescriptors(
   });
 
   return buckets;
-}
-
-function isTargetClass(target: NamedNode, parentIri: string, dataset: DatasetCore): boolean {
-  if (target.value === parentIri) {
-    return true;
-  }
-
-  const parent = rdfDataFactory.namedNode(parentIri);
-  const visited = new Set<string>();
-
-  const hasSubclass = (candidate: NamedNode): boolean => {
-    if (visited.has(candidate.value)) {
-      return false;
-    }
-    visited.add(candidate.value);
-
-    for (const quad of dataset.match(candidate, RDFS_SUBCLASS_OF, undefined)) {
-      if (quad.object.termType !== 'NamedNode') {
-        continue;
-      }
-      if (quad.object.value === parent.value) {
-        return true;
-      }
-      if (hasSubclass(quad.object)) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  return hasSubclass(target);
-}
-
-async function fetchResources(
-  store: GraphStore,
-  descriptors: ShapeDescriptor[]
-): Promise<ResourceRecord[]> {
-  const results: ResourceRecord[] = [];
-
-  for (const descriptor of descriptors) {
-    const quads = await store.getQuads({ predicate: RDF_TYPE, object: descriptor.targetClass });
-    for (const quad of quads) {
-      if (quad.subject.termType !== 'NamedNode') {
-        continue;
-      }
-      const graph = getGraphId(quad.graph);
-      const label = await resolveLabel(store, quad.subject, graph ?? undefined);
-      const graphNode = rdfDataFactory.namedNode(graph ?? `${quad.subject.value}#graph`);
-      const resourceQuads = await store.getQuads({ graph: graphNode });
-      const validity = readValidityWindow(resourceQuads, quad.subject);
-      const expired = isExpired(validity);
-      results.push({
-        descriptor,
-        subject: quad.subject.value,
-        graph: graph ?? `${quad.subject.value}#graph`,
-        label,
-        expired,
-      });
-    }
-  }
-
-  results.sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));
-  return results;
-}
-
-interface RenderResourceListOptions {
-  onSelect: (resource: ResourceRecord) => void;
-  onCreate: (descriptor: ShapeDescriptor) => void;
-  highlightSubject?: string;
-}
-
-function renderResourceList(
-  columns: ResourceColumnElements,
-  buckets: DescriptorBuckets,
-  items: ResourceRecord[],
-  options: RenderResourceListOptions
-): void {
-  COLUMN_ORDER.forEach((key) => {
-    const host = columns[key];
-    const descriptors = buckets[key];
-
-    host.replaceChildren();
-
-    if (descriptors.length === 0) {
-      const empty = document.createElement('p');
-      empty.className = 'resource-list__column-empty';
-      empty.textContent = COLUMN_COPY[key].empty;
-      host.append(empty);
-      return;
-    }
-
-    descriptors.forEach((descriptor) => {
-      const subset = items.filter((item) => item.descriptor.shape.equals(descriptor.shape));
-
-      const section = document.createElement('section');
-      section.className = 'resource-list__group';
-
-      const heading = document.createElement('h4');
-      heading.className = 'resource-list__heading';
-      heading.textContent = descriptor.pluralLabel;
-      section.append(heading);
-
-      const sectionDescription = document.createElement('p');
-      sectionDescription.className = 'resource-list__description';
-      sectionDescription.textContent = descriptor.description;
-      section.append(sectionDescription);
-
-      if (subset.length === 0) {
-        const empty = document.createElement('p');
-        empty.className = 'resource-list__empty';
-        empty.textContent = `No ${descriptor.pluralLabel.toLowerCase()} stored yet.`;
-        section.append(empty);
-      } else {
-        const list = document.createElement('ul');
-        list.className = 'resource-list__items';
-
-        subset.forEach((resource) => {
-          const listItem = document.createElement('li');
-          listItem.className = 'resource-list__item';
-
-          const button = document.createElement('button');
-          button.className = 'resource-list__button';
-          button.type = 'button';
-          button.dataset.subject = resource.subject;
-          button.textContent = resource.label;
-          if (resource.expired) {
-            button.classList.add('resource-list__button--expired');
-            button.style.textDecoration = 'line-through';
-            button.title = `${resource.label} (expired)`;
-          }
-          if (options.highlightSubject && options.highlightSubject === resource.subject) {
-            button.classList.add('is-active');
-          }
-
-          button.addEventListener('click', () => options.onSelect(resource));
-
-          listItem.append(button);
-          list.append(listItem);
-        });
-
-        section.append(list);
-      }
-
-      const createButton = document.createElement('button');
-      createButton.type = 'button';
-      createButton.className = 'panel__button resource-list__create';
-      createButton.textContent = descriptor.createButtonLabel;
-      createButton.addEventListener('click', () => options.onCreate(descriptor));
-      section.append(createButton);
-
-      host.append(section);
-    });
-  });
-}
-
-async function readResourceAsTurtle(store: GraphStore, record: ResourceRecord): Promise<string> {
-  const graphNode = rdfDataFactory.namedNode(record.graph);
-  const quads = await store.getQuads({ graph: graphNode });
-  if (quads.length === 0) {
-    return '';
-  }
-  return quadsToTurtle(quads);
-}
-
-async function persistForm(
-  store: GraphStore,
-  options: { turtle: string; subject: string; graph: string; targetClass: NamedNode }
-): Promise<void> {
-  const graphNode = rdfDataFactory.namedNode(options.graph);
-  const subjectNode = rdfDataFactory.namedNode(options.subject);
-
-  const parser = new Parser({ format: 'application/trig' });
-  const parsed = parser.parse(options.turtle) as Quad[];
-  const normalized = parsed.map((quad) => ensureGraph(quad, graphNode));
-  ensureTypeQuad(normalized, subjectNode, options.targetClass, graphNode);
-
-  const existing = await store.getQuads({ graph: graphNode });
-  const isNewResource = existing.length === 0;
-  const timestamp = new Date().toISOString();
-  const createdAt = isNewResource ? timestamp : undefined;
-
-  ensureCreationMetadata({
-    quads: normalized,
-    graph: graphNode,
-    existingQuads: existing,
-    timestamp: createdAt,
-  });
-
-  if (!isNewResource) {
-    ensureModificationMetadata({
-      quads: normalized,
-      subject: subjectNode,
-      graph: graphNode,
-      timestamp,
-    });
-  }
-
-  const { validity, beginning, end } = ensureValidityMetadata({
-    quads: normalized,
-    subject: subjectNode,
-    graph: graphNode,
-    existingQuads: existing,
-  });
-
-  if (existing.length > 0) {
-    const removableSubjects = new Set([
-      subjectNode.value,
-      validity.value,
-      beginning.value,
-      end.value,
-    ]);
-    const staleQuads = existing.filter((quad) => {
-      if (quad.subject.termType !== 'NamedNode') {
-        return false;
-      }
-      if (!removableSubjects.has(quad.subject.value)) {
-        return false;
-      }
-      if (quad.subject.value === subjectNode.value) {
-        if (quad.predicate.termType === 'NamedNode' && quad.predicate.value === DCTERMS.created) {
-          return false;
-        }
-      }
-      return true;
-    });
-    if (staleQuads.length > 0) {
-      await store.deleteQuads(staleQuads);
-    }
-  }
-  await store.putQuads(normalized);
-}
-
-async function removeResource(store: GraphStore, record: ResourceRecord): Promise<void> {
-  await markResourceExpiration(store, record.subject, record.graph);
-}
-
-function createIdentifiers(descriptor: ShapeDescriptor): ResourceIdentifiers {
-  const id = crypto.randomUUID();
-  const subject = `${ensureTrailingSlash(descriptor.valuesNamespace)}${id}`;
-  const graph = `${subject}#graph`;
-  return { subject, graph };
-}
-
-function ensureTrailingSlash(input: string): string {
-  return input.endsWith('/') ? input : `${input}/`;
 }
