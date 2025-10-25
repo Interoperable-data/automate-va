@@ -1,4 +1,5 @@
 import type { Quad } from '@rdfjs/types';
+import { Parser } from 'n3';
 import { GraphStore } from '../data/graph-store';
 import { serializeQuads, type RdfSerializationFormat } from './rdf-utils';
 import { RDF_NODES, DCTERMS_NODES, TIME_NODES } from './ontologies';
@@ -31,6 +32,7 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
   let pending = false;
   let queued = false;
   let lastTripleCount = 0;
+  let statusSuffix: string | null = null;
   const refreshDataset = async (): Promise<void> => {
     if (pending) {
       queued = true;
@@ -45,11 +47,14 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
       lastSerialized = await serializeQuads(quads, currentFormat);
       const content = lastSerialized || '# Dataset is empty.';
       viewer.setContent(content, currentFormat);
-      viewer.setStatus(formatRdfViewerStatus(lastTripleCount, currentFormat));
+      const statusText = formatRdfViewerStatus(lastTripleCount, currentFormat);
+      viewer.setStatus(statusSuffix ? `${statusText} • ${statusSuffix}` : statusText);
+      statusSuffix = null;
     } catch (error) {
       console.error('[raw-rdf] Failed to serialize dataset', error);
       viewer.setContent(`# Unable to render dataset\n# ${extractMessage(error)}`, currentFormat);
       viewer.setStatus('Failed to refresh dataset.');
+      statusSuffix = null;
     } finally {
       pending = false;
       if (queued) {
@@ -91,6 +96,63 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
     link.remove();
     URL.revokeObjectURL(url);
     viewer.setStatus(`${formatRdfViewerStatus(lastTripleCount, currentFormat)} • Downloaded.`);
+  };
+
+  const handleUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.trig,.nt';
+
+    const handleChange = async () => {
+      const file = input.files?.[0];
+      if (!file) {
+        viewer.setStatus('Upload cancelled.');
+        return;
+      }
+
+      let parserFormat: UploadParserFormat;
+      try {
+        parserFormat = detectUploadParserFormat(file.name);
+      } catch (error) {
+        viewer.setStatus(extractMessage(error));
+        return;
+      }
+
+      viewer.setStatus(`Uploading ${file.name}…`);
+
+      try {
+        const source = await file.text();
+        const parser = new Parser({ format: parserFormat });
+        const quads = parser.parse(source);
+
+        if (!Array.isArray(quads) || quads.length === 0) {
+          viewer.setStatus(`${file.name} contained no RDF quads.`);
+          return;
+        }
+
+        statusSuffix = `Imported ${quads.length} ${formatQuadLabel(quads.length)} from ${
+          file.name
+        }`;
+        await store.putQuads(quads);
+        viewer.flashAction('upload');
+      } catch (error) {
+        console.error('[raw-rdf] Failed to upload dataset', error);
+        viewer.setStatus(`Failed to upload ${file.name}: ${extractMessage(error)}`);
+        statusSuffix = null;
+      } finally {
+        input.value = '';
+      }
+    };
+
+    input.addEventListener(
+      'change',
+      () => {
+        void handleChange();
+      },
+      { once: true }
+    );
+
+    input.click();
   };
 
   const handleClear = async () => {
@@ -150,6 +212,9 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
       void handleCopy();
     },
     onDownload: handleDownload,
+    onUpload: () => {
+      handleUpload();
+    },
     onClear: () => {
       void handleClear();
     },
@@ -255,4 +320,21 @@ async function removeDanglingReferenceQuads(store: GraphStore): Promise<number> 
 
   await store.deleteQuads(dangling);
   return dangling.length;
+}
+
+type UploadParserFormat = 'application/trig' | 'application/n-triples';
+
+function detectUploadParserFormat(filename: string): UploadParserFormat {
+  const lower = filename.toLowerCase();
+  if (lower.endsWith('.trig')) {
+    return 'application/trig';
+  }
+  if (lower.endsWith('.nt')) {
+    return 'application/n-triples';
+  }
+  throw new Error('Unsupported file extension. Please upload a .trig or .nt file.');
+}
+
+function formatQuadLabel(count: number): string {
+  return count === 1 ? 'quad' : 'quads';
 }

@@ -5,7 +5,7 @@ import type { RdfSerializationFormat } from '../modules/views/rdf-utils';
 const BUTTON_SUCCESS_CLASS = 'rdf-toolbar__button--success';
 const BUTTON_FEEDBACK_DURATION = 500;
 
-export type ViewerAction = 'refresh' | 'copy' | 'download' | 'clear' | 'clean';
+export type ViewerAction = 'refresh' | 'copy' | 'download' | 'upload' | 'clear' | 'clean';
 
 export interface RdfViewerOptions {
   container: HTMLElement;
@@ -16,6 +16,7 @@ export interface RdfViewerOptions {
   onRefresh?: () => void;
   onCopy?: () => void;
   onDownload?: () => void;
+  onUpload?: () => void;
   onClear?: () => void;
   onClean?: () => void;
 }
@@ -52,6 +53,7 @@ export function initRdfViewer(options: RdfViewerOptions): RdfViewerController {
     onRefresh,
     onCopy,
     onDownload,
+    onUpload,
     onClear,
     onClean,
   } = options;
@@ -72,6 +74,7 @@ export function initRdfViewer(options: RdfViewerOptions): RdfViewerController {
     refresh: onRefresh,
     copy: onCopy,
     download: onDownload,
+    upload: onUpload,
     clear: onClear,
     clean: onClean,
   };
@@ -140,6 +143,10 @@ function buildLayout(container: HTMLElement): LayoutRefs {
             <i aria-hidden="true" class="panel__button-icon bi bi-download"></i>
             <span>Download</span>
           </button>
+          <button type="button" data-role="upload" class="panel__button panel__button--secondary">
+            <i aria-hidden="true" class="panel__button-icon bi bi-upload"></i>
+            <span>Upload</span>
+          </button>
         </div>
       </div>
       <pre class="rdf-preview" data-role="output"></pre>
@@ -186,6 +193,10 @@ function buildLayout(container: HTMLElement): LayoutRefs {
       download: assert(
         container.querySelector<HTMLButtonElement>('[data-role="download"]'),
         'RDF viewer download button missing'
+      ),
+      upload: assert(
+        container.querySelector<HTMLButtonElement>('[data-role="upload"]'),
+        'RDF viewer upload button missing'
       ),
       clear: assert(
         container.querySelector<HTMLButtonElement>('[data-role="clear"]'),

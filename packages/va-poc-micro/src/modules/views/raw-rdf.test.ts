@@ -11,8 +11,11 @@ describe('raw rdf view', () => {
 
   function createStore(initialQuads = [] as ReturnType<typeof quad>[]) {
     let listeners: GraphStoreListener[] = [];
-    const getQuads = vi.fn().mockResolvedValue(initialQuads);
+    const state: ReturnType<typeof quad>[] = [...initialQuads];
+
+    const getQuads = vi.fn().mockImplementation(async () => [...state]);
     const clear = vi.fn().mockImplementation(async () => {
+      state.length = 0;
       for (const listener of listeners) {
         listener({ type: 'clear' });
       }
@@ -23,6 +26,15 @@ describe('raw rdf view', () => {
       }
       for (const listener of listeners) {
         listener({ type: 'delete', quads: entries });
+      }
+    });
+    const putQuads = vi.fn().mockImplementation(async (entries: ReturnType<typeof quad>[]) => {
+      if (!entries || entries.length === 0) {
+        return;
+      }
+      state.push(...entries);
+      for (const listener of listeners) {
+        listener({ type: 'put', quads: entries });
       }
     });
     const subscribe = vi.fn((listener: GraphStoreListener) => {
@@ -37,11 +49,13 @@ describe('raw rdf view', () => {
         getQuads,
         clear,
         deleteQuads,
+        putQuads,
         subscribe,
       } as unknown as GraphStore,
       clear,
       getQuads,
       deleteQuads,
+      putQuads,
     };
   }
 
@@ -214,5 +228,101 @@ describe('raw rdf view', () => {
     expect(status!.textContent).toBe('Graph cleanup cancelled.');
 
     confirmSpy.mockRestore();
+  });
+
+  it('uploads TriG data and merges it into the store', async () => {
+    const container = document.createElement('div');
+    const { store, putQuads, getQuads } = createStore();
+
+    initRawRdfView({ container, store });
+    await flushPromises();
+
+    const uploadButton = container.querySelector<HTMLButtonElement>('[data-role="upload"]');
+    const status = container.querySelector<HTMLElement>('[data-role="status"]');
+    expect(uploadButton).not.toBeNull();
+    expect(status).not.toBeNull();
+
+    const trig = `@prefix ex: <https://example.com/> .\nGRAPH ex:g {\n  ex:s ex:p ex:o .\n}`;
+    const file = new File([trig], 'import.trig', { type: 'application/trig' });
+    const fileInput = document.createElement('input');
+    const originalCreateElement = document.createElement;
+    const createElementSpy = vi
+      .spyOn(document, 'createElement')
+      .mockImplementation(function (this: Document, tagName: string) {
+        if (typeof tagName === 'string' && tagName.toLowerCase() === 'input') {
+          return fileInput;
+        }
+        return originalCreateElement.call(this, tagName);
+      });
+
+    fileInput.type = 'file';
+    fileInput.click = () => {
+      Object.defineProperty(fileInput, 'files', {
+        value: [file],
+        configurable: true,
+      });
+      fileInput.dispatchEvent(new Event('change'));
+    };
+
+    uploadButton!.click();
+    await flushPromises();
+    await flushPromises();
+
+    expect(putQuads).toHaveBeenCalledTimes(1);
+    const [uploaded] = putQuads.mock.calls[0] as [ReturnType<typeof quad>[]];
+    expect(uploaded).toHaveLength(1);
+    expect(uploaded[0].graph.termType).toBe('NamedNode');
+    expect(uploaded[0].graph.value).toBe('https://example.com/g');
+    expect(getQuads).toHaveBeenCalled();
+    expect(status!.textContent ?? '').toContain('Imported 1 quad from import.trig');
+
+    createElementSpy.mockRestore();
+  });
+
+  it('uploads N-Triples data into the default graph', async () => {
+    const container = document.createElement('div');
+    const { store, putQuads } = createStore();
+
+    initRawRdfView({ container, store });
+    await flushPromises();
+
+    const uploadButton = container.querySelector<HTMLButtonElement>('[data-role="upload"]');
+    const status = container.querySelector<HTMLElement>('[data-role="status"]');
+    expect(uploadButton).not.toBeNull();
+    expect(status).not.toBeNull();
+
+    const nt = '<https://example.com/s> <https://example.com/p> "value" .';
+    const file = new File([nt], 'dataset.nt', { type: 'text/plain' });
+    const fileInput = document.createElement('input');
+    const originalCreateElement = document.createElement;
+    const createElementSpy = vi
+      .spyOn(document, 'createElement')
+      .mockImplementation(function (this: Document, tagName: string) {
+        if (typeof tagName === 'string' && tagName.toLowerCase() === 'input') {
+          return fileInput;
+        }
+        return originalCreateElement.call(this, tagName);
+      });
+
+    fileInput.type = 'file';
+    fileInput.click = () => {
+      Object.defineProperty(fileInput, 'files', {
+        value: [file],
+        configurable: true,
+      });
+      fileInput.dispatchEvent(new Event('change'));
+    };
+
+    uploadButton!.click();
+    await flushPromises();
+    await flushPromises();
+
+    expect(putQuads).toHaveBeenCalledTimes(1);
+    const [uploaded] = putQuads.mock.calls[0] as [ReturnType<typeof quad>[]];
+    expect(uploaded).toHaveLength(1);
+    expect(uploaded[0].graph.termType).toBe('DefaultGraph');
+    expect(status!.textContent ?? '').toContain('Imported 1 quad from dataset.nt');
+
+    createElementSpy.mockRestore();
   });
 });
