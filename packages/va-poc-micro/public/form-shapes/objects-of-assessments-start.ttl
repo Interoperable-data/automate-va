@@ -33,7 +33,8 @@ era-sh:AssessmentDeclarationShape a sh:NodeShape ;
   rdfs:label "EC declaration"@en ;
   rdfs:comment "Add a reference to an EC Declaration. If not yet available, you can link the underlying CLD's too."@en ;
   dash:stem era-ecd: ;
-
+  dcterms:source <https://era-dev.ontotext.com/repositories/ERADIS-KG> ;
+  
   sh:property [
     sh:path dcterms:identifier ;
     sh:name "Document ID number"@en ;
@@ -73,6 +74,7 @@ era-sh:AssessmentCertificateShape a sh:NodeShape ;
   rdfs:label "EC certificate"@en ;
   rdfs:comment "Add EC certifiate references, and link them to the Declarations"@en ;
   dash:stem era-cld: ;
+  dcterms:source <https://era-dev.ontotext.com/repositories/ERADIS-KG> ;
 
   sh:property [
     sh:path dcterms:identifier ;

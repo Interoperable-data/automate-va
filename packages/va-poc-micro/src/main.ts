@@ -54,7 +54,7 @@ async function bootstrap(): Promise<void> {
   viewControllers.endpoints = initEndpointsView({
     container: getViewSlot('endpoints'),
     store,
-    shapeSources: [organisationShapes.text, objectsShapes.text],
+    shapes: [organisationShapes, objectsShapes],
   });
 
   const navigation = initNavigation({
