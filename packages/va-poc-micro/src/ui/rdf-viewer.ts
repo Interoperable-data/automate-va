@@ -5,6 +5,14 @@ import type { RdfSerializationFormat } from '../modules/views/rdf-utils';
 const BUTTON_SUCCESS_CLASS = 'rdf-toolbar__button--success';
 const BUTTON_FEEDBACK_DURATION = 500;
 
+type ViewerAlertLevel = 'success' | 'warning' | 'error';
+
+const ALERT_LEVEL_CLASSES: Record<ViewerAlertLevel, string> = {
+  success: 'rdf-alert--success',
+  warning: 'rdf-alert--warning',
+  error: 'rdf-alert--error',
+} as const;
+
 export type ViewerAction = 'refresh' | 'copy' | 'download' | 'upload' | 'clear' | 'clean';
 
 export interface RdfViewerOptions {
@@ -13,12 +21,12 @@ export interface RdfViewerOptions {
   initialStatus?: string;
   initialContent?: string;
   onFormatChange?: (format: RdfSerializationFormat) => void;
-  onRefresh?: () => void;
-  onCopy?: () => void;
-  onDownload?: () => void;
-  onUpload?: () => void;
-  onClear?: () => void;
-  onClean?: () => void;
+  onRefresh?: () => void | Promise<unknown>;
+  onCopy?: () => void | Promise<unknown>;
+  onDownload?: () => void | Promise<unknown>;
+  onUpload?: () => void | Promise<unknown>;
+  onClear?: () => void | Promise<unknown>;
+  onClean?: () => void | Promise<unknown>;
 }
 
 export interface RdfViewerController {
@@ -27,6 +35,8 @@ export interface RdfViewerController {
   setStatus: (message: string) => void;
   setContent: (content: string, format?: RdfSerializationFormat) => void;
   flashAction: (action: ViewerAction) => void;
+  showAlert: (level: ViewerAlertLevel, message: string) => void;
+  clearAlert: () => void;
 }
 
 const FORMAT_LABELS: Record<RdfSerializationFormat, string> = {
@@ -38,6 +48,9 @@ type LayoutRefs = {
   output: HTMLElement;
   status: HTMLElement;
   formatSelect: HTMLSelectElement;
+  alert: HTMLElement;
+  alertMessage: HTMLElement;
+  alertDismiss: HTMLButtonElement;
   buttons: Record<ViewerAction, HTMLButtonElement>;
 };
 
@@ -60,6 +73,30 @@ export function initRdfViewer(options: RdfViewerOptions): RdfViewerController {
 
   const layout = buildLayout(container);
   let currentFormat: RdfSerializationFormat = initialFormat;
+  let currentAlertLevel: ViewerAlertLevel | null = null;
+
+  const clearAlert = () => {
+    if (currentAlertLevel) {
+      layout.alert.classList.remove(ALERT_LEVEL_CLASSES[currentAlertLevel]);
+    }
+    layout.alertMessage.textContent = '';
+    layout.alert.hidden = true;
+    currentAlertLevel = null;
+  };
+
+  const showAlert = (level: ViewerAlertLevel, message: string) => {
+    if (currentAlertLevel) {
+      layout.alert.classList.remove(ALERT_LEVEL_CLASSES[currentAlertLevel]);
+    }
+    layout.alert.classList.add(ALERT_LEVEL_CLASSES[level]);
+    layout.alertMessage.textContent = message;
+    layout.alert.hidden = false;
+    currentAlertLevel = level;
+  };
+
+  layout.alertDismiss.addEventListener('click', () => {
+    clearAlert();
+  });
 
   layout.formatSelect.value = initialFormat;
   layout.status.textContent = initialStatus;
@@ -70,7 +107,7 @@ export function initRdfViewer(options: RdfViewerOptions): RdfViewerController {
     onFormatChange?.(currentFormat);
   });
 
-  const actionMap: Record<ViewerAction, (() => void) | undefined> = {
+  const actionMap: Record<ViewerAction, (() => void | Promise<unknown>) | undefined> = {
     refresh: onRefresh,
     copy: onCopy,
     download: onDownload,
@@ -80,9 +117,7 @@ export function initRdfViewer(options: RdfViewerOptions): RdfViewerController {
   };
 
   (Object.keys(actionMap) as ViewerAction[]).forEach((action) => {
-    attachButton(layout, action, () => {
-      actionMap[action]?.();
-    });
+    attachButton(layout, action, actionMap[action]);
   });
 
   return {
@@ -108,6 +143,8 @@ export function initRdfViewer(options: RdfViewerOptions): RdfViewerController {
       }
       triggerButtonFeedback(button);
     },
+    showAlert,
+    clearAlert,
   };
 }
 
@@ -149,6 +186,17 @@ function buildLayout(container: HTMLElement): LayoutRefs {
           </button>
         </div>
       </div>
+      <div class="rdf-alert" data-role="alert" hidden>
+        <span class="rdf-alert__message" data-role="alert-message"></span>
+        <button
+          type="button"
+          data-role="alert-dismiss"
+          class="rdf-alert__dismiss"
+          aria-label="Dismiss notification"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
       <pre class="rdf-preview" data-role="output"></pre>
       <aside class="rdf-warning">
         <p class="rdf-warning__message">Cleaning the browser graph from non-existing IRI's removes triples linking to non-existing subject nodes and cannot be undone.</p>
@@ -181,6 +229,18 @@ function buildLayout(container: HTMLElement): LayoutRefs {
       container.querySelector<HTMLSelectElement>('[data-role="format"]'),
       'RDF viewer format selector missing'
     ),
+    alert: assert(
+      container.querySelector<HTMLElement>('[data-role="alert"]'),
+      'RDF viewer alert container missing'
+    ),
+    alertMessage: assert(
+      container.querySelector<HTMLElement>('[data-role="alert-message"]'),
+      'RDF viewer alert message missing'
+    ),
+    alertDismiss: assert(
+      container.querySelector<HTMLButtonElement>('[data-role="alert-dismiss"]'),
+      'RDF viewer alert dismiss button missing'
+    ),
     buttons: {
       refresh: assert(
         container.querySelector<HTMLButtonElement>('[data-role="refresh"]'),
@@ -210,8 +270,43 @@ function buildLayout(container: HTMLElement): LayoutRefs {
   };
 }
 
-function attachButton(layout: LayoutRefs, action: ViewerAction, handler: () => void): void {
-  layout.buttons[action].addEventListener('click', handler);
+function attachButton(
+  layout: LayoutRefs,
+  action: ViewerAction,
+  handler?: () => void | Promise<unknown>
+): void {
+  const button = layout.buttons[action];
+  button.addEventListener('click', () => {
+    if (!handler) {
+      triggerButtonFeedback(button);
+      return;
+    }
+
+    try {
+      const result = handler();
+      if (isPromise(result)) {
+        result
+          .then(() => {
+            triggerButtonFeedback(button);
+          })
+          .catch((error) => {
+            console.error(`[rdf-viewer] Action "${action}" handler failed`, error);
+            triggerButtonFeedback(button);
+          });
+        return;
+      }
+      triggerButtonFeedback(button);
+    } catch (error) {
+      console.error(`[rdf-viewer] Action "${action}" handler threw`, error);
+      triggerButtonFeedback(button);
+    }
+  });
+}
+
+function isPromise<T = unknown>(value: unknown): value is Promise<T> {
+  return (
+    typeof value === 'object' && value !== null && typeof (value as Promise<T>).then === 'function'
+  );
 }
 
 function triggerButtonFeedback(button: HTMLButtonElement): void {

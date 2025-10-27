@@ -683,6 +683,98 @@ a:focus-visible {
   flex-wrap: wrap;
 }
 
+.rdf-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+.rdf-alert[hidden] {
+  display: none;
+}
+
+.rdf-alert__message {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.rdf-alert__dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: none;
+  background-color: rgba(15, 23, 42, 0.08);
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+}
+
+.rdf-alert__dismiss:hover,
+.rdf-alert__dismiss:focus-visible {
+  background-color: rgba(15, 23, 42, 0.16);
+}
+
+.rdf-alert__dismiss span {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.rdf-alert--success {
+  background-color: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.rdf-alert--success .rdf-alert__dismiss {
+  background-color: rgba(22, 101, 52, 0.12);
+}
+
+.rdf-alert--success .rdf-alert__dismiss:hover,
+.rdf-alert--success .rdf-alert__dismiss:focus-visible {
+  background-color: rgba(22, 101, 52, 0.2);
+}
+
+.rdf-alert--warning {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.rdf-alert--warning .rdf-alert__dismiss {
+  background-color: rgba(146, 64, 14, 0.12);
+}
+
+.rdf-alert--warning .rdf-alert__dismiss:hover,
+.rdf-alert--warning .rdf-alert__dismiss:focus-visible {
+  background-color: rgba(146, 64, 14, 0.2);
+}
+
+.rdf-alert--error {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.rdf-alert--error .rdf-alert__dismiss {
+  background-color: rgba(185, 28, 28, 0.12);
+}
+
+.rdf-alert--error .rdf-alert__dismiss:hover,
+.rdf-alert--error .rdf-alert__dismiss:focus-visible {
+  background-color: rgba(185, 28, 28, 0.2);
+}
+
 .rdf-toolbar__actions .panel__button.rdf-toolbar__button--success {
   animation: rdf-toolbar-button-success 500ms ease-out;
 }

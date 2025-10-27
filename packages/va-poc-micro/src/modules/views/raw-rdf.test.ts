@@ -59,6 +59,40 @@ describe('raw rdf view', () => {
     };
   }
 
+  function mockFilePicker(file: File) {
+    const originalCreateElement = document.createElement.bind(document);
+    const input = originalCreateElement('input');
+    input.type = 'file';
+
+    const spy = vi.spyOn(document, 'createElement').mockImplementation(((
+      tagName: string,
+      options?: unknown
+    ) => {
+      if (typeof tagName === 'string' && tagName.toLowerCase() === 'input') {
+        return input;
+      }
+      return originalCreateElement(tagName as any, options as any);
+    }) as typeof document.createElement);
+
+    input.click = () => {
+      Object.defineProperty(input, 'files', {
+        value: [file],
+        configurable: true,
+      });
+      input.dispatchEvent(new Event('change'));
+    };
+
+    return {
+      restore: () => spy.mockRestore(),
+    };
+  }
+
+  function getAlertElements(container: HTMLElement) {
+    const alert = container.querySelector<HTMLElement>('[data-role="alert"]');
+    const message = container.querySelector<HTMLElement>('[data-role="alert-message"]');
+    return { alert, message };
+  }
+
   it('clears the browser storage when the user confirms the warning dialog', async () => {
     const container = document.createElement('div');
     const { store, clear } = createStore();
@@ -72,9 +106,13 @@ describe('raw rdf view', () => {
 
     clearButton!.click();
     await flushPromises();
+    await flushPromises();
 
     expect(confirmSpy).toHaveBeenCalledTimes(1);
     expect(clear).toHaveBeenCalledTimes(1);
+    const { alert, message } = getAlertElements(container);
+    expect(alert?.hidden).toBe(false);
+    expect(message?.textContent).toBe('Browser storage cleared.');
 
     confirmSpy.mockRestore();
   });
@@ -98,6 +136,9 @@ describe('raw rdf view', () => {
     expect(confirmSpy).toHaveBeenCalledTimes(1);
     expect(clear).not.toHaveBeenCalled();
     expect(status!.textContent).toBe('Storage purge cancelled.');
+    const { alert, message } = getAlertElements(container);
+    expect(alert?.hidden).toBe(false);
+    expect(message?.textContent).toBe('Storage purge cancelled.');
 
     confirmSpy.mockRestore();
   });
@@ -203,6 +244,9 @@ describe('raw rdf view', () => {
     const [payload] = deleteQuads.mock.calls[0];
     expect(payload).toEqual([referenceToExpired]);
     expect(status!.textContent).toBe('Removed 1 dangling triple.');
+    const { alert, message } = getAlertElements(container);
+    expect(alert?.hidden).toBe(false);
+    expect(message?.textContent).toBe('Removed 1 dangling triple.');
 
     confirmSpy.mockRestore();
   });
@@ -226,6 +270,9 @@ describe('raw rdf view', () => {
     expect(confirmSpy).toHaveBeenCalledTimes(1);
     expect(deleteQuads).not.toHaveBeenCalled();
     expect(status!.textContent).toBe('Graph cleanup cancelled.');
+    const { alert, message } = getAlertElements(container);
+    expect(alert?.hidden).toBe(false);
+    expect(message?.textContent).toBe('Graph cleanup cancelled.');
 
     confirmSpy.mockRestore();
   });
@@ -244,25 +291,7 @@ describe('raw rdf view', () => {
 
     const trig = `@prefix ex: <https://example.com/> .\nGRAPH ex:g {\n  ex:s ex:p ex:o .\n}`;
     const file = new File([trig], 'import.trig', { type: 'application/trig' });
-    const fileInput = document.createElement('input');
-    const originalCreateElement = document.createElement;
-    const createElementSpy = vi
-      .spyOn(document, 'createElement')
-      .mockImplementation(function (this: Document, tagName: string) {
-        if (typeof tagName === 'string' && tagName.toLowerCase() === 'input') {
-          return fileInput;
-        }
-        return originalCreateElement.call(this, tagName);
-      });
-
-    fileInput.type = 'file';
-    fileInput.click = () => {
-      Object.defineProperty(fileInput, 'files', {
-        value: [file],
-        configurable: true,
-      });
-      fileInput.dispatchEvent(new Event('change'));
-    };
+    const { restore } = mockFilePicker(file);
 
     uploadButton!.click();
     await flushPromises();
@@ -275,8 +304,11 @@ describe('raw rdf view', () => {
     expect(uploaded[0].graph.value).toBe('https://example.com/g');
     expect(getQuads).toHaveBeenCalled();
     expect(status!.textContent ?? '').toContain('Imported 1 quad from import.trig');
+    const { alert, message } = getAlertElements(container);
+    expect(alert?.hidden).toBe(false);
+    expect(message?.textContent).toBe('Imported 1 quad from import.trig');
 
-    createElementSpy.mockRestore();
+    restore();
   });
 
   it('uploads N-Triples data into the default graph', async () => {
@@ -293,25 +325,7 @@ describe('raw rdf view', () => {
 
     const nt = '<https://example.com/s> <https://example.com/p> "value" .';
     const file = new File([nt], 'dataset.nt', { type: 'text/plain' });
-    const fileInput = document.createElement('input');
-    const originalCreateElement = document.createElement;
-    const createElementSpy = vi
-      .spyOn(document, 'createElement')
-      .mockImplementation(function (this: Document, tagName: string) {
-        if (typeof tagName === 'string' && tagName.toLowerCase() === 'input') {
-          return fileInput;
-        }
-        return originalCreateElement.call(this, tagName);
-      });
-
-    fileInput.type = 'file';
-    fileInput.click = () => {
-      Object.defineProperty(fileInput, 'files', {
-        value: [file],
-        configurable: true,
-      });
-      fileInput.dispatchEvent(new Event('change'));
-    };
+    const { restore } = mockFilePicker(file);
 
     uploadButton!.click();
     await flushPromises();
@@ -322,7 +336,71 @@ describe('raw rdf view', () => {
     expect(uploaded).toHaveLength(1);
     expect(uploaded[0].graph.termType).toBe('DefaultGraph');
     expect(status!.textContent ?? '').toContain('Imported 1 quad from dataset.nt');
+    const { alert, message } = getAlertElements(container);
+    expect(alert?.hidden).toBe(false);
+    expect(message?.textContent).toBe('Imported 1 quad from dataset.nt');
 
-    createElementSpy.mockRestore();
+    restore();
+  });
+
+  it('uploads Turtle data into the default graph', async () => {
+    const container = document.createElement('div');
+    const { store, putQuads } = createStore();
+
+    initRawRdfView({ container, store });
+    await flushPromises();
+
+    const uploadButton = container.querySelector<HTMLButtonElement>('[data-role="upload"]');
+    const status = container.querySelector<HTMLElement>('[data-role="status"]');
+    expect(uploadButton).not.toBeNull();
+    expect(status).not.toBeNull();
+
+    const ttl = `@prefix ex: <https://example.com/> .\nex:s ex:p ex:o .`;
+    const file = new File([ttl], 'dataset.ttl', { type: 'text/turtle' });
+    const { restore } = mockFilePicker(file);
+
+    uploadButton!.click();
+    await flushPromises();
+    await flushPromises();
+
+    expect(putQuads).toHaveBeenCalledTimes(1);
+    const [uploaded] = putQuads.mock.calls[0] as [ReturnType<typeof quad>[]];
+    expect(uploaded).toHaveLength(1);
+    expect(uploaded[0].graph.termType).toBe('DefaultGraph');
+    expect(status!.textContent ?? '').toContain('Imported 1 quad from dataset.ttl');
+    const { alert, message } = getAlertElements(container);
+    expect(alert?.hidden).toBe(false);
+    expect(message?.textContent).toBe('Imported 1 quad from dataset.ttl');
+
+    restore();
+  });
+
+  it('rejects Turtle uploads that contain named graphs', async () => {
+    const container = document.createElement('div');
+    const { store, putQuads } = createStore();
+
+    initRawRdfView({ container, store });
+    await flushPromises();
+
+    const uploadButton = container.querySelector<HTMLButtonElement>('[data-role="upload"]');
+    const status = container.querySelector<HTMLElement>('[data-role="status"]');
+    expect(uploadButton).not.toBeNull();
+    expect(status).not.toBeNull();
+
+    const invalidTtl = `@prefix ex: <https://example.com/> .\nGRAPH ex:g { ex:s ex:p ex:o . }`;
+    const file = new File([invalidTtl], 'invalid.ttl', { type: 'text/turtle' });
+    const { restore } = mockFilePicker(file);
+
+    uploadButton!.click();
+    await flushPromises();
+    await flushPromises();
+
+    expect(putQuads).not.toHaveBeenCalled();
+    expect(status!.textContent ?? '').toContain('Failed to upload invalid.ttl');
+    const { alert, message } = getAlertElements(container);
+    expect(alert?.hidden).toBe(false);
+    expect(message?.textContent ?? '').toContain('Failed to upload invalid.ttl');
+
+    restore();
   });
 });

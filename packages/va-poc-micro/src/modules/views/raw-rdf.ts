@@ -67,6 +67,7 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
   const handleCopy = async () => {
     if (!lastSerialized) {
       viewer.setStatus('No data to copy yet.');
+      viewer.showAlert('warning', 'No data available to copy yet.');
       return;
     }
     try {
@@ -74,39 +75,45 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
       viewer.setStatus(
         `${formatRdfViewerStatus(lastTripleCount, currentFormat)} • Copied to clipboard.`
       );
-      viewer.flashAction('copy');
+      viewer.showAlert('success', 'Dataset copied to clipboard.');
     } catch (error) {
       console.warn('[raw-rdf] Clipboard copy failed', error);
-      viewer.setStatus('Clipboard access denied. Please copy manually.');
+      const message = 'Clipboard access denied. Please copy manually.';
+      viewer.setStatus(message);
+      viewer.showAlert('error', message);
     }
   };
 
   const handleDownload = () => {
     if (!lastSerialized) {
       viewer.setStatus('No data to download yet.');
+      viewer.showAlert('warning', 'No data available to download yet.');
       return;
     }
+    const filename = currentFormat === 'application/trig' ? 'va-dataset.trig' : 'va-dataset.nt';
     const blob = new Blob([lastSerialized], { type: currentFormat });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = currentFormat === 'application/trig' ? 'va-dataset.trig' : 'va-dataset.nt';
+    link.download = filename;
     document.body.append(link);
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
     viewer.setStatus(`${formatRdfViewerStatus(lastTripleCount, currentFormat)} • Downloaded.`);
+    viewer.showAlert('success', `Dataset downloaded as ${filename}.`);
   };
 
   const handleUpload = () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.trig,.nt';
+    input.accept = '.trig,.ttl,.nt';
 
     const handleChange = async () => {
       const file = input.files?.[0];
       if (!file) {
         viewer.setStatus('Upload cancelled.');
+        viewer.showAlert('warning', 'Upload cancelled.');
         return;
       }
 
@@ -114,7 +121,9 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
       try {
         parserFormat = detectUploadParserFormat(file.name);
       } catch (error) {
-        viewer.setStatus(extractMessage(error));
+        const message = extractMessage(error);
+        viewer.setStatus(message);
+        viewer.showAlert('error', message);
         return;
       }
 
@@ -125,8 +134,14 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
         const parser = new Parser({ format: parserFormat });
         const quads = parser.parse(source);
 
+        if (parserFormat === 'text/turtle') {
+          ensureTurtleUsesDefaultGraph(quads);
+        }
+
         if (!Array.isArray(quads) || quads.length === 0) {
-          viewer.setStatus(`${file.name} contained no RDF quads.`);
+          const message = `${file.name} contained no RDF quads.`;
+          viewer.setStatus(message);
+          viewer.showAlert('warning', message);
           return;
         }
 
@@ -134,10 +149,12 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
           file.name
         }`;
         await store.putQuads(quads);
-        viewer.flashAction('upload');
+        viewer.showAlert('success', statusSuffix);
       } catch (error) {
         console.error('[raw-rdf] Failed to upload dataset', error);
-        viewer.setStatus(`Failed to upload ${file.name}: ${extractMessage(error)}`);
+        const message = `Failed to upload ${file.name}: ${extractMessage(error)}`;
+        viewer.setStatus(message);
+        viewer.showAlert('error', message);
         statusSuffix = null;
       } finally {
         input.value = '';
@@ -161,6 +178,7 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
     );
     if (!confirmed) {
       viewer.setStatus('Storage purge cancelled.');
+      viewer.showAlert('warning', 'Storage purge cancelled.');
       return;
     }
 
@@ -168,9 +186,12 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
     try {
       await store.clear();
       viewer.setStatus('Browser storage cleared.');
+      viewer.showAlert('success', 'Browser storage cleared.');
     } catch (error) {
       console.error('[raw-rdf] Failed to clear data store', error);
-      viewer.setStatus(`Failed to clear storage: ${extractMessage(error)}`);
+      const message = `Failed to clear storage: ${extractMessage(error)}`;
+      viewer.setStatus(message);
+      viewer.showAlert('error', message);
     }
   };
 
@@ -180,6 +201,7 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
     );
     if (!confirmed) {
       viewer.setStatus('Graph cleanup cancelled.');
+      viewer.showAlert('warning', 'Graph cleanup cancelled.');
       return;
     }
 
@@ -188,13 +210,18 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
       const removed = await removeDanglingReferenceQuads(store);
       if (removed === 0) {
         viewer.setStatus('No dangling references found.');
+        viewer.showAlert('success', 'No dangling references found.');
       } else {
         const label = removed === 1 ? 'dangling triple' : 'dangling triples';
-        viewer.setStatus(`Removed ${removed} ${label}.`);
+        const message = `Removed ${removed} ${label}.`;
+        viewer.setStatus(message);
+        viewer.showAlert('success', message);
       }
     } catch (error) {
       console.error('[raw-rdf] Failed to clean dangling references', error);
-      viewer.setStatus(`Failed to clean graph: ${extractMessage(error)}`);
+      const message = `Failed to clean graph: ${extractMessage(error)}`;
+      viewer.setStatus(message);
+      viewer.showAlert('error', message);
     }
   };
 
@@ -205,22 +232,12 @@ export function initRawRdfView(options: RawRdfViewOptions): RawRdfViewController
       currentFormat = format;
       void refreshDataset();
     },
-    onRefresh: () => {
-      void refreshDataset();
-    },
-    onCopy: () => {
-      void handleCopy();
-    },
+    onRefresh: () => refreshDataset(),
+    onCopy: () => handleCopy(),
     onDownload: handleDownload,
-    onUpload: () => {
-      handleUpload();
-    },
-    onClear: () => {
-      void handleClear();
-    },
-    onClean: () => {
-      void handleClean();
-    },
+    onUpload: handleUpload,
+    onClear: () => handleClear(),
+    onClean: () => handleClean(),
   });
 
   store.subscribe(() => {
@@ -322,19 +339,29 @@ async function removeDanglingReferenceQuads(store: GraphStore): Promise<number> 
   return dangling.length;
 }
 
-type UploadParserFormat = 'application/trig' | 'application/n-triples';
+type UploadParserFormat = 'application/trig' | 'application/n-triples' | 'text/turtle';
 
 function detectUploadParserFormat(filename: string): UploadParserFormat {
   const lower = filename.toLowerCase();
   if (lower.endsWith('.trig')) {
     return 'application/trig';
   }
+  if (lower.endsWith('.ttl')) {
+    return 'text/turtle';
+  }
   if (lower.endsWith('.nt')) {
     return 'application/n-triples';
   }
-  throw new Error('Unsupported file extension. Please upload a .trig or .nt file.');
+  throw new Error('Unsupported file extension. Please upload a .trig, .ttl, or .nt file.');
 }
 
 function formatQuadLabel(count: number): string {
   return count === 1 ? 'quad' : 'quads';
+}
+
+function ensureTurtleUsesDefaultGraph(quads: Quad[]): void {
+  const hasNamedGraph = quads.some((quad) => quad.graph.termType !== 'DefaultGraph');
+  if (hasNamedGraph) {
+    throw new Error('Turtle uploads must not contain named GRAPH contexts.');
+  }
 }
